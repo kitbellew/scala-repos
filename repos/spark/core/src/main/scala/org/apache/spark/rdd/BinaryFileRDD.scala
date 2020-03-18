@@ -43,9 +43,8 @@ private[spark] class BinaryFileRDD[T](
     val inputFormat = inputFormatClass.newInstance
     val conf = getConf
     inputFormat match {
-      case configurable: Configurable =>
-        configurable.setConf(conf)
-      case _ =>
+      case configurable: Configurable => configurable.setConf(conf)
+      case _                          =>
     }
     val jobContext = new JobContextImpl(conf, jobId)
     inputFormat.setMinPartitions(jobContext, minPartitions)

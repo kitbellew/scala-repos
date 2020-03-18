@@ -91,8 +91,7 @@ object Test {
         println(a.x);
       } catch { case Leaf(a) => Console.println(a); }
     } catch {
-      case npe: NullPointerException =>
-        Console.println("Caught an NPE");
+      case npe: NullPointerException => Console.println("Caught an NPE");
     }
 
   def withValue1: Unit = {
@@ -188,10 +187,8 @@ object Test {
   /** bug #1020, no crash at compile time */
   def tryCatchInFinally: Unit = {
     try { Console.println("Try") }
-    catch {
-      case e: java.io.IOException =>
-        throw e
-    } finally {
+    catch { case e: java.io.IOException => throw e }
+    finally {
       val x = 10
       // Always make sure result sets and statements are closed,
       // and the connection is returned to the pool

@@ -22,8 +22,7 @@ class SimpleClusterListener extends Actor with ActorLogging {
   override def postStop(): Unit = cluster.unsubscribe(self)
 
   def receive = {
-    case MemberUp(member) =>
-      log.info("Member is Up: {}", member.address)
+    case MemberUp(member) => log.info("Member is Up: {}", member.address)
     case UnreachableMember(member) =>
       log.info("Member detected as unreachable: {}", member)
     case MemberRemoved(member, previousStatus) =>

@@ -144,8 +144,7 @@ class MarathonSchedulerActor private (
         log.info("task reconciliation has finished")
         activeReconciliation = None
 
-      case ReconcileHealthChecks =>
-        schedulerActions.reconcileHealthChecks()
+      case ReconcileHealthChecks => schedulerActions.reconcileHealthChecks()
 
       case ScaleApps => schedulerActions.scaleApps()
 
@@ -162,11 +161,9 @@ class MarathonSchedulerActor private (
           }
         }
 
-      case cmd: CancelDeployment =>
-        deploymentManager forward cmd
+      case cmd: CancelDeployment => deploymentManager forward cmd
 
-      case cmd @ Deploy(plan, force) =>
-        deploy(sender(), cmd)
+      case cmd @ Deploy(plan, force) => deploy(sender(), cmd)
 
       case cmd @ KillTasks(appId, taskIds) =>
         val origSender = sender()
@@ -420,11 +417,9 @@ object MarathonSchedulerActor {
     def sendAnswer(receiver: ActorRef, cmd: Command)(implicit
         ec: ExecutionContext): Future[A] = {
       f onComplete {
-        case Success(_) =>
-          receiver ! cmd.answer
+        case Success(_) => receiver ! cmd.answer
 
-        case Failure(t) =>
-          receiver ! CommandFailed(cmd, t)
+        case Failure(t) => receiver ! CommandFailed(cmd, t)
       }
 
       f

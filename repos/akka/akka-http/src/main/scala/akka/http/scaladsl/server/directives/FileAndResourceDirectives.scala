@@ -333,8 +333,7 @@ object ContentTypeResolver {
         val mediaType =
           if (lastDotIx >= 0) {
             fileName.substring(lastDotIx + 1) match {
-              case "gz" ⇒
-                fileName.lastIndexOf('.', lastDotIx - 1) match {
+              case "gz" ⇒ fileName.lastIndexOf('.', lastDotIx - 1) match {
                   case -1 ⇒ MediaTypes.`application/octet-stream`
                   case x ⇒
                     MediaTypes

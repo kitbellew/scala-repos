@@ -184,15 +184,14 @@ trait DagOptimizer[P <: Platform[P]] {
 
     hm.get(prod) match {
       case Some(lit) => (hm, lit)
-      case None =>
-        prod match {
+      case None => prod match {
           case s @ Source(_) => source(s)
-          case a: AlsoTailProducer[_, _, _] =>
-            alsoTail(a.asInstanceOf[AlsoTailProducer[P, _, T]])
+          case a: AlsoTailProducer[_, _, _] => alsoTail(
+              a.asInstanceOf[AlsoTailProducer[P, _, T]])
           case a @ AlsoProducer(_, _)   => also(a)
           case m @ MergedProducer(l, r) => merge(m)
-          case n: TPNamedProducer[_, _] =>
-            namedTP(n.asInstanceOf[TPNamedProducer[P, T]])
+          case n: TPNamedProducer[_, _] => namedTP(
+              n.asInstanceOf[TPNamedProducer[P, T]])
           case n @ NamedProducer(producer, name)       => named(n)
           case w @ WrittenProducer(producer, sink)     => writer(w)
           case fm @ FlatMappedProducer(producer, fn)   => flm(fm)
@@ -357,11 +356,9 @@ trait DagOptimizer[P <: Platform[P]] {
     //Can't do this operation if the merge fans out
     def applyWhere[T](on: ExpressionDag[Prod]) = {
       case OptionMappedProducer(m @ MergedProducer(a, b), fn)
-          if (on.fanOut(m) == 1) =>
-        (a.optionMap(fn)) ++ (b.optionMap(fn))
+          if (on.fanOut(m) == 1) => (a.optionMap(fn)) ++ (b.optionMap(fn))
       case FlatMappedProducer(m @ MergedProducer(a, b), fn)
-          if (on.fanOut(m) == 1) =>
-        (a.flatMap(fn)) ++ (b.flatMap(fn))
+          if (on.fanOut(m) == 1) => (a.flatMap(fn)) ++ (b.flatMap(fn))
     }
   }
 
@@ -376,18 +373,15 @@ trait DagOptimizer[P <: Platform[P]] {
     def apply[T](on: ExpressionDag[Prod]) = {
       case a @ AlsoProducer(_, _) =>
         None // If we are already an also, we are done
-      case MergedProducer(AlsoProducer(tail, l), r) =>
-        Some(AlsoProducer(tail, l ++ r))
-      case MergedProducer(l, AlsoProducer(tail, r)) =>
-        Some(AlsoProducer(tail, l ++ r))
-      case node =>
-        on.toLiteral(node) match {
+      case MergedProducer(AlsoProducer(tail, l), r) => Some(
+          AlsoProducer(tail, l ++ r))
+      case MergedProducer(l, AlsoProducer(tail, r)) => Some(
+          AlsoProducer(tail, l ++ r))
+      case node => on.toLiteral(node) match {
           // There are a lot of unary operators, use the literal graph here:
           // note that this cannot be an Also, due to the first case
-          case UnaryLit(alsoLit, fn) =>
-            alsoLit.evaluate match {
-              case AlsoProducer(tail, rest) =>
-                fn(rest) match {
+          case UnaryLit(alsoLit, fn) => alsoLit.evaluate match {
+              case AlsoProducer(tail, rest) => fn(rest) match {
                   case rightTail: TailProducer[_, _] =>
                     // The type of the result must be T, but scala
                     // can't see this

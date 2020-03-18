@@ -72,8 +72,7 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
           configuration.setShowConsoleOnStdOut(cfg.isShowConsoleOnStdOut)
           configuration.setTestKind(cfg.getTestKind)
           true
-        case _ =>
-          false
+        case _ => false
       }
     }
   }

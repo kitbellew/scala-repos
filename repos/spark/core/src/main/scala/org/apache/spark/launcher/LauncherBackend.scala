@@ -93,8 +93,7 @@ private[spark] abstract class LauncherBackend {
 
     override protected def handle(m: Message): Unit =
       m match {
-        case _: Stop =>
-          fireStopRequest()
+        case _: Stop => fireStopRequest()
 
         case _ =>
           throw new IllegalArgumentException(

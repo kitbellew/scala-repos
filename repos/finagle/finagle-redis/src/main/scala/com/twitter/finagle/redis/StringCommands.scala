@@ -158,8 +158,7 @@ trait Strings {
     */
   def mGet(keys: Seq[ChannelBuffer]): Future[Seq[Option[ChannelBuffer]]] =
     doRequest(MGet(keys)) {
-      case MBulkReply(messages) =>
-        Future {
+      case MBulkReply(messages) => Future {
           messages.map {
             case BulkReply(message) => Some(message)
             case EmptyBulkReply()   => None

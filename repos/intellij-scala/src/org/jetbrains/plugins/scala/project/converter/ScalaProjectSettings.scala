@@ -35,8 +35,7 @@ class ScalaProjectSettings(basePackages: Seq[String]) extends XmlConversion {
       case StorageScheme.DIRECTORY_BASED =>
         val file = getDirectorySettingsFileIn(context)
         if (file.exists()) Set(file) else Set.empty
-      case StorageScheme.DEFAULT =>
-        Set(context.getProjectFile)
+      case StorageScheme.DEFAULT => Set(context.getProjectFile)
     }
   }
 

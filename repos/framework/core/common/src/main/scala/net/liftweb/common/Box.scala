@@ -1002,8 +1002,8 @@ object ParamFailure {
 
   def unapply(in: Box[_]): Option[(String, Box[Throwable], Box[Failure], Any)] =
     in match {
-      case pf: ParamFailure[_] =>
-        Some((pf.msg, pf.exception, pf.chain, pf.param))
+      case pf: ParamFailure[_] => Some(
+          (pf.msg, pf.exception, pf.chain, pf.param))
       case _ => None
     }
 }

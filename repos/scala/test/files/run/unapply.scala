@@ -103,9 +103,7 @@ object Test1256 {
 
   class Buffer {
     val Get = new Sync
-    val jp: PartialFunction[Any, Any] = {
-      case Get() =>
-    }
+    val jp: PartialFunction[Any, Any] = { case Get() => }
   }
 
   def run() { assert(!(new Buffer).jp.isDefinedAt(42)) }

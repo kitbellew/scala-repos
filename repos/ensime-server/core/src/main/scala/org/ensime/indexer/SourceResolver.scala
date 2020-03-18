@@ -26,8 +26,7 @@ class SourceResolver(config: EnsimeConfig)(implicit vfs: EnsimeVFS)
   def resolve(clazz: PackageName, source: RawSource): Option[FileObject] =
     source.filename match {
       case None => None
-      case Some(filename) =>
-        all.get(clazz) flatMap {
+      case Some(filename) => all.get(clazz) flatMap {
           _.find(_.getName.getBaseName == filename)
         } match {
           case s @ Some(_)               => s

@@ -42,8 +42,7 @@ final class SbtHandler(
       case Some(SbtInstance(process, server)) =>
         f(process, server)
         i
-      case None =>
-        onNewSbtInstance(f)
+      case None => onNewSbtInstance(f)
     }
   private[this] def onNewSbtInstance(
       f: (Process, IPC.Server) => Unit): Option[SbtInstance] = {

@@ -45,8 +45,7 @@ object ScTypeUtil {
         v.getType(TypingContext.empty).toOption.flatMap(removeTypeDesignator)
       case ScDesignatorType(p: ScParameter) =>
         p.getType(TypingContext.empty).toOption.flatMap(removeTypeDesignator)
-      case p: ScProjectionType =>
-        p.actualElement match {
+      case p: ScProjectionType => p.actualElement match {
           case v: ScBindingPattern =>
             v.getType(TypingContext.empty)
               .map(p.actualSubst.subst)

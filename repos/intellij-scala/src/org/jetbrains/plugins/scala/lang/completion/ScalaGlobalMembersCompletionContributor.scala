@@ -71,8 +71,7 @@ class ScalaGlobalMembersCompletionContributor
           case ref: ScReferenceExpression =>
             val qualifier = ref.qualifier match {
               case Some(qual) => qual
-              case None =>
-                ref.getContext match {
+              case None => ref.getContext match {
                   case inf: ScInfixExpr if inf.operation == ref =>
                     inf.getBaseExpr
                   case posf: ScPostfixExpr if posf.operation == ref =>
@@ -101,8 +100,7 @@ class ScalaGlobalMembersCompletionContributor
 
   private def isStatic(member: PsiNamedElement): Boolean = {
     ScalaPsiUtil.nameContext(member) match {
-      case memb: PsiMember =>
-        isStatic(member, memb.containingClass)
+      case memb: PsiMember => isStatic(member, memb.containingClass)
     }
   }
 
@@ -188,9 +186,8 @@ class ScalaGlobalMembersCompletionContributor
           proc.execute(element, ResolveState.initial())
         case c: ScClass if isStatic(c) =>
           c.getSyntheticImplicitMethod match {
-            case Some(f: ScFunction) =>
-              proc.execute(f, ResolveState.initial())
-            case _ =>
+            case Some(f: ScFunction) => proc.execute(f, ResolveState.initial())
+            case _                   =>
           }
         case _ =>
       }

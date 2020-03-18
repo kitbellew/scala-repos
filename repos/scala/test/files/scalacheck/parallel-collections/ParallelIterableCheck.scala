@@ -422,10 +422,7 @@ abstract class ParallelIterableCheck[T](collName: String)
           }
           ("traversable " + ind) |: areEqual(tadded, cadded)
         }).reduceLeft(_ && _)
-      } catch {
-        case e: java.lang.Exception =>
-          throw e
-      }
+      } catch { case e: java.lang.Exception => throw e }
   }
 
   if (hasStrictOrder)

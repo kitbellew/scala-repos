@@ -85,8 +85,7 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
     g.forecastable ?? {
       loadForPlay(Pov player g) flatMap {
         case None => fuccess(none)
-        case Some(fc) =>
-          fc(g, last) match {
+        case Some(fc) => fc(g, last) match {
             case Some((newFc, uciMove)) if newFc.steps.nonEmpty =>
               coll.update(
                 BSONDocument("_id" -> fc._id),

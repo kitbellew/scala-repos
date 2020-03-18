@@ -16,9 +16,7 @@ class Crash {
   val t = new c.T
 
   // Crash via a Typed Pattern...
-  (t: Any) match {
-    case e: Alias =>
-  }
+  (t: Any) match { case e: Alias => }
 
   // ... or via a Typed Extractor Pattern.
   object Extractor {
@@ -40,13 +38,11 @@ class Crash {
   outerField.setAccessible(true)
 
   (t: Any) match {
-    case _: C2dotT =>
-      println(
+    case _: C2dotT => println(
         s"!!! wrong match. t.outer=${outerField.get(t)} / c2 = $c2"
       ) // this matches on 2.10.0
     case _: CdotT =>
-    case _ =>
-      println(s"!!! wrong match. t.outer=${outerField.get(t)} / c = $c")
+    case _        => println(s"!!! wrong match. t.outer=${outerField.get(t)} / c = $c")
   }
 }
 

@@ -16,9 +16,7 @@ import akka.ConfigurationException
 object ActorConfigurationVerificationSpec {
 
   class TestActor extends Actor {
-    def receive: Receive = {
-      case _ ⇒
-    }
+    def receive: Receive = { case _ ⇒ }
   }
 
   val config = """

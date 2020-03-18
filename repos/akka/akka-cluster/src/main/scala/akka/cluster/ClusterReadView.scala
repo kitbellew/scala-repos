@@ -56,8 +56,7 @@ private[akka] class ClusterReadView(cluster: Cluster) extends Closeable {
           override def postStop(): Unit = cluster.unsubscribe(self)
 
           def receive = {
-            case e: ClusterDomainEvent ⇒
-              e match {
+            case e: ClusterDomainEvent ⇒ e match {
                 case SeenChanged(convergence, seenBy) ⇒
                   _state = _state.copy(seenBy = seenBy)
                 case ReachabilityChanged(reachability) ⇒

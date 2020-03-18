@@ -47,16 +47,11 @@ trait Parsers {
           case (pos1, (start1, end1)) :: _ if containsOffset(start1, end1) =>
             (pos1, offset - start1)
           case (pos1, (start1, end1)) :: (pos2, (start2, _)) :: _
-              if containsOffset(end1, start2) =>
-            (pos1, end1 - start1)
+              if containsOffset(end1, start2) => (pos1, end1 - start1)
           case _ :: (pos2, (start2, end2)) :: _
-              if containsOffset(start2, end2) =>
-            (pos2, offset - start2)
+              if containsOffset(start2, end2) => (pos2, offset - start2)
         }
-        .map {
-          case (pos, offset) =>
-            pos.withPoint(pos.point + offset)
-        }
+        .map { case (pos, offset) => pos.withPoint(pos.point + offset) }
         .toList
         .headOption
         .getOrElse(fallbackPosition)
@@ -100,8 +95,7 @@ trait Parsers {
         // q"{ $x }"
         override def makeBlock(stats: List[Tree]): Tree =
           method match {
-            case nme.apply =>
-              stats match {
+            case nme.apply => stats match {
                 // we don't want to eagerly flatten trees with placeholders as they
                 // might have to be wrapped into a block depending on their value
                 case (head @ Ident(name)) :: Nil if isHole(name) =>
@@ -198,8 +192,7 @@ trait Parsers {
             val ann = ModsPlaceholder(in.name)
             in.nextToken()
             ann :: readAnnots(annot)
-          case _ =>
-            Nil
+          case _ => Nil
         }
 
       override def refineStat(): List[Tree] =

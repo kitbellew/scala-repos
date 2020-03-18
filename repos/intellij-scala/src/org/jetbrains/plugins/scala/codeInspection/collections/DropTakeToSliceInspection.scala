@@ -51,8 +51,7 @@ object DropTakeToSlice extends SimplificationType {
   object intLiteral {
     def unapply(expr: ScExpression): Option[Int] = {
       expr match {
-        case l: ScLiteral =>
-          l.getValue match {
+        case l: ScLiteral => l.getValue match {
             case int: java.lang.Integer => Some(int)
             case _                      => None
           }

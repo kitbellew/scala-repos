@@ -133,8 +133,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
     // convert ID to Int index
     val items = data.items.map {
-      case (id, item) =>
-        (itemStringIntMap(id), item)
+      case (id, item) => (itemStringIntMap(id), item)
     }
 
     // join item with the trained productFeatures

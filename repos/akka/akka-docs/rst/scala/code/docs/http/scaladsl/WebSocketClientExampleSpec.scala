@@ -27,8 +27,7 @@ class WebSocketClientExampleSpec extends WordSpec with Matchers {
 
     // print each incoming strict text message
     val printSink: Sink[Message, Future[Done]] = Sink.foreach {
-      case message: TextMessage.Strict =>
-        println(message.text)
+      case message: TextMessage.Strict => println(message.text)
     }
 
     val helloSource: Source[Message, NotUsed] = Source.single(TextMessage(
@@ -107,8 +106,7 @@ class WebSocketClientExampleSpec extends WordSpec with Matchers {
     // Future[Done] is the materialized value of Sink.foreach,
     // emitted when the stream completes
     val incoming: Sink[Message, Future[Done]] = Sink.foreach[Message] {
-      case message: TextMessage.Strict =>
-        println(message.text)
+      case message: TextMessage.Strict => println(message.text)
     }
 
     // send this as a message over the WebSocket

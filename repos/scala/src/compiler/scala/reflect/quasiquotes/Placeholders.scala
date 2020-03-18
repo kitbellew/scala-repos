@@ -109,8 +109,7 @@ trait Placeholders {
     def matching = {
       case Apply(
             Select(New(Ident(tpnme.QUASIQUOTE_MODS)), nme.CONSTRUCTOR),
-            List(Literal(Constant(s: String)))) =>
-        TermName(s)
+            List(Literal(Constant(s: String)))) => TermName(s)
     }
   }
 
@@ -178,9 +177,8 @@ trait Placeholders {
         case CaseDef(
               Apply(Ident(nme.QUASIQUOTE_CASE), List(Placeholder(hole))),
               EmptyTree,
-              EmptyTree) =>
-          Some(hole)
-        case _ => None
+              EmptyTree) => Some(hole)
+        case _           => None
       }
   }
 
@@ -193,9 +191,8 @@ trait Placeholders {
               _,
               nme.QUASIQUOTE_REFINE_STAT,
               Ident(Placeholder(hole)),
-              _) =>
-          Some(hole)
-        case _ => None
+              _) => Some(hole)
+        case _   => None
       }
   }
 
@@ -223,9 +220,8 @@ trait Placeholders {
               NoMods,
               nme.QUASIQUOTE_PACKAGE_STAT,
               Ident(Placeholder(hole)),
-              EmptyTree) =>
-          Some(hole)
-        case _ => None
+              EmptyTree) => Some(hole)
+        case _           => None
       }
   }
 
@@ -238,9 +234,8 @@ trait Placeholders {
       tree match {
         case build.SyntacticValFrom(
               Bind(Placeholder(hole), Ident(nme.WILDCARD)),
-              Ident(nme.QUASIQUOTE_FOR_ENUM)) =>
-          Some(hole)
-        case _ => None
+              Ident(nme.QUASIQUOTE_FOR_ENUM)) => Some(hole)
+        case _                                => None
       }
   }
 }

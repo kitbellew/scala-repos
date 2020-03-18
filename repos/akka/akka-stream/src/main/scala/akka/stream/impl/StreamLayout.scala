@@ -646,8 +646,7 @@ private[stream] final class VirtualProcessor[T]
           else rec(sub)
         case pub: Publisher[_] =>
           if (compareAndSet(pub, Inert)) pub.subscribe(sub) else rec(sub)
-        case _ =>
-          rejectAdditionalSubscriber(sub, "VirtualProcessor")
+        case _ => rejectAdditionalSubscriber(sub, "VirtualProcessor")
       }
 
     if (s == null) {
@@ -662,14 +661,12 @@ private[stream] final class VirtualProcessor[T]
     def rec(obj: AnyRef): Unit =
       get() match {
         case null => if (!compareAndSet(null, obj)) rec(obj)
-        case subscriber: Subscriber[_] =>
-          obj match {
+        case subscriber: Subscriber[_] => obj match {
             case subscription: Subscription =>
               if (compareAndSet(subscriber, Both.create(subscriber)))
                 establishSubscription(subscriber, subscription)
               else rec(obj)
-            case pub: Publisher[_] =>
-              getAndSet(Inert) match {
+            case pub: Publisher[_] => getAndSet(Inert) match {
                 case Inert => // nothing to be done
                 case _ =>
                   pub.subscribe(subscriber.asInstanceOf[Subscriber[Any]])

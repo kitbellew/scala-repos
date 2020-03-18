@@ -33,8 +33,7 @@ object MethodRepr {
             Some(expr, Some(baseExpr), None, args)
           case ref: ScReferenceExpression =>
             Some(expr, ref.qualifier, Some(ref), args)
-          case genericCall: ScGenericCall =>
-            genericCall.referencedExpr match {
+          case genericCall: ScGenericCall => genericCall.referencedExpr match {
               case ref: ScReferenceExpression =>
                 Some(expr, ref.qualifier, Some(ref), args)
               case other => Some(expr, None, None, args)
@@ -64,8 +63,7 @@ object MethodRepr {
           Some(stripped(postfix.getBaseExpr)),
           Some(postfix.operation),
           Seq())
-      case refExpr: ScReferenceExpression =>
-        refExpr.getParent match {
+      case refExpr: ScReferenceExpression => refExpr.getParent match {
           case _: ScGenericCall                            => None
           case mc: ScMethodCall if !mc.isApplyOrUpdateCall => None
           case ScInfixExpr(_, `refExpr`, _)                => None
@@ -73,11 +71,9 @@ object MethodRepr {
           case ScPrefixExpr(`refExpr`, _)                  => None
           case _                                           => Some(expr, refExpr.qualifier, Some(refExpr), Seq())
         }
-      case genCall: ScGenericCall =>
-        genCall.getParent match {
+      case genCall: ScGenericCall => genCall.getParent match {
           case mc: ScMethodCall if !mc.isApplyOrUpdateCall => None
-          case _ =>
-            genCall.referencedExpr match {
+          case _ => genCall.referencedExpr match {
               case ref: ScReferenceExpression =>
                 Some(genCall, ref.qualifier, Some(ref), Seq.empty)
               case other => Some(genCall, None, None, Seq.empty)
@@ -106,8 +102,8 @@ object MethodSeq {
         case MethodRepr(itself, optionalBase, optionalMethodRef, args) =>
           result += MethodRepr(expr, optionalBase, optionalMethodRef, args)
           optionalBase match {
-            case Some(ScParenthesisedExpr(inner)) =>
-              extractMethods(stripped(inner))
+            case Some(ScParenthesisedExpr(inner)) => extractMethods(
+                stripped(inner))
             case Some(expression) => extractMethods(expression)
             case _                =>
           }

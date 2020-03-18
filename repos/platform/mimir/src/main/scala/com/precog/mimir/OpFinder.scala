@@ -81,8 +81,7 @@ trait StdLibOpFinderModule[M[+_]]
         case And => Some(Infix.And)
 
         case WrapObject | JoinObject | JoinArray | ArraySwap | DerefMetadata |
-            DerefObject | DerefArray =>
-          None
+            DerefObject | DerefArray => None
       }
     }
   }

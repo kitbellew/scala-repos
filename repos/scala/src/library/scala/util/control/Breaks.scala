@@ -35,10 +35,7 @@ class Breaks {
     */
   def breakable(op: => Unit) {
     try { op }
-    catch {
-      case ex: BreakControl =>
-        if (ex ne breakException) throw ex
-    }
+    catch { case ex: BreakControl => if (ex ne breakException) throw ex }
   }
 
   sealed trait TryBlock[T] {

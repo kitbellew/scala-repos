@@ -43,8 +43,7 @@ class ScTypedPatternImpl(node: ASTNode)
 
   override def isIrrefutableFor(t: Option[ScType]): Boolean = {
     t match {
-      case Some(t) =>
-        getType(TypingContext.empty) match {
+      case Some(t) => getType(TypingContext.empty) match {
           case Success(tp, _) if t conforms tp => true
           case _                               => false
         }
@@ -133,8 +132,7 @@ class ScTypedPatternImpl(node: ASTNode)
             case tp: ScType => tp
           }
         expectedType match {
-          case Some(expectedType) =>
-            typeElementType.map {
+          case Some(expectedType) => typeElementType.map {
               case resType =>
                 Bounds.glb(expectedType, resType, checkWeak = false)
             }

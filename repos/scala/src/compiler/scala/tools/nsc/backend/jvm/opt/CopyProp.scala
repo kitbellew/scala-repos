@@ -141,14 +141,11 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
             toNullOut += ((vi, isStoreNull))
           }
 
-        case ii: IincInsnNode if hasNoCons(ii, ii.`var`) =>
-          toDelete += ii
+        case ii: IincInsnNode if hasNoCons(ii, ii.`var`) => toDelete += ii
 
-        case vi: VarInsnNode =>
-          liveVars(vi.`var`) = true
+        case vi: VarInsnNode => liveVars(vi.`var`) = true
 
-        case ii: IincInsnNode =>
-          liveVars(ii.`var`) = true
+        case ii: IincInsnNode => liveVars(ii.`var`) = true
 
         case _ =>
       }
@@ -238,11 +235,9 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
               // producer would not be removed.
               false
 
-            case _: ParameterProducer =>
-              true
+            case _: ParameterProducer => true
 
-            case _ =>
-              (prod.getOpcode: @switch) match {
+            case _ => (prod.getOpcode: @switch) match {
                 case DUP  => true
                 case DUP2 => prodCons.frameAt(prod).peekStack(0).getSize == 2
                 case _ =>
@@ -288,8 +283,7 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
         while (it.hasNext) {
           val insn = it.next()
           (insn.getOpcode: @switch) match {
-            case POP | POP2 =>
-              handleInitialPop(insn)
+            case POP | POP2 => handleInitialPop(insn)
 
             case INVOKESPECIAL =>
               val mi = insn.asInstanceOf[MethodInsnNode]
@@ -406,8 +400,7 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
                   Type.getArgumentTypes(methodInsn.desc).length + receiver)
               } else popAfterProd()
 
-            case INVOKEDYNAMIC =>
-              prod match {
+            case INVOKEDYNAMIC => prod match {
                 case callGraph.LambdaMetaFactoryCall(indy, _, _, _) =>
                   handleClosureInst(indy)
                 case _ => popAfterProd()
@@ -417,8 +410,7 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
               if (isNewForSideEffectFreeConstructor(prod)) toRemove += prod
               else popAfterProd()
 
-            case LDC =>
-              prod.asInstanceOf[LdcInsnNode].cst match {
+            case LDC => prod.asInstanceOf[LdcInsnNode].cst match {
                 case _: java.lang.Integer | _: java.lang.Float |
                     _: java.lang.Long | _: java.lang.Double | _: String =>
                   toRemove += prod
@@ -432,8 +424,7 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
               toRemove += prod
               handleInputs(prod, prod.asInstanceOf[MultiANewArrayInsnNode].dims)
 
-            case _ =>
-              popAfterProd()
+            case _ => popAfterProd()
           }
         }
 
@@ -495,8 +486,7 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
 
       var changed = false
       toInsertAfter foreach {
-        case (target, insn) =>
-          nextExecutableInstructionOrLabel(target) match {
+        case (target, insn) => nextExecutableInstructionOrLabel(target) match {
             // `insn` is of type `InsnNode`, so we only need to check the Opcode when comparing to another instruction
             case Some(next)
                 if next.getOpcode == insn.getOpcode && toRemove(next) =>

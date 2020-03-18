@@ -108,8 +108,7 @@ trait StackRegistry {
   private[this] def addEntries(entry: Entry): Unit = {
     val gRegistry = GlobalRegistry.get
     entry.modules.foreach {
-      case Module(paramName, _, reflected) =>
-        reflected.foreach {
+      case Module(paramName, _, reflected) => reflected.foreach {
           case (field, value) =>
             val key = Seq(
               registryName,
@@ -127,8 +126,7 @@ trait StackRegistry {
     val gRegistry = GlobalRegistry.get
     val name = entry.name
     entry.modules.foreach {
-      case Module(paramName, _, reflected) =>
-        reflected.foreach {
+      case Module(paramName, _, reflected) => reflected.foreach {
           case (field, value) =>
             val key = Seq(
               registryName,

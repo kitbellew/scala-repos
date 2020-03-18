@@ -413,8 +413,7 @@ private[akka] class LocalActorRef private[akka] (
             case any ⇒ l.getSingleChild(any)
           }
           if (next == Nobody || name.isEmpty) next else rec(next, name)
-        case _ ⇒
-          ref.getChild(name)
+        case _ ⇒ ref.getChild(name)
       }
 
     if (names.isEmpty) this else rec(this, names)
@@ -456,8 +455,7 @@ private[akka] final case class SerializedActorRef private (path: String) {
         throw new IllegalStateException(
           "Trying to deserialize a serialized ActorRef without an ActorSystem in scope." +
             " Use 'akka.serialization.Serialization.currentSystem.withValue(system) { ... }'")
-      case someSystem ⇒
-        someSystem.provider.resolveActorRef(path)
+      case someSystem ⇒ someSystem.provider.resolveActorRef(path)
     }
 }
 
@@ -602,8 +600,7 @@ private[akka] class EmptyLocalActorRef(
         true
       case sel: ActorSelectionMessage ⇒
         sel.identifyRequest match {
-          case Some(identify) ⇒
-            if (!sel.wildcardFanOut)
+          case Some(identify) ⇒ if (!sel.wildcardFanOut)
               sender ! ActorIdentity(identify.messageId, None)
           case None ⇒
             eventStream.publish(DeadLetter(
@@ -640,8 +637,7 @@ private[akka] class DeadLetterActorRef(
       case Identify(messageId) ⇒ sender ! ActorIdentity(messageId, None)
       case d: DeadLetter ⇒
         if (!specialHandle(d.message, d.sender)) eventStream.publish(d)
-      case _ ⇒
-        if (!specialHandle(message, sender))
+      case _ ⇒ if (!specialHandle(message, sender))
           eventStream.publish(DeadLetter(
             message,
             if (sender eq Actor.noSender) provider.deadLetters else sender,
@@ -695,16 +691,13 @@ private[akka] class VirtualPathContainer(
             provider.systemGuardian.underlying.system.eventStream)
 
         elements.head match {
-          case SelectChildName(name) ⇒
-            getChild(name) match {
-              case null ⇒
-                if (!wildcardFanOut) emptyRef.tell(msg, sender)
+          case SelectChildName(name) ⇒ getChild(name) match {
+              case null ⇒ if (!wildcardFanOut) emptyRef.tell(msg, sender)
               case child ⇒
                 if (elements.tail.isEmpty) { child ! msg }
                 else if (!wildcardFanOut) { emptyRef.tell(msg, sender) }
             }
-          case _ ⇒
-            if (!wildcardFanOut) emptyRef.tell(msg, sender)
+          case _ ⇒ if (!wildcardFanOut) emptyRef.tell(msg, sender)
         }
       }
       case _ ⇒ super.!(message)
@@ -747,8 +740,7 @@ private[akka] class VirtualPathContainer(
       else
         children.get(n) match {
           case null ⇒ Nobody
-          case some ⇒
-            if (name.isEmpty) some else some.getChild(name)
+          case some ⇒ if (name.isEmpty) some else some.getChild(name)
         }
     }
   }

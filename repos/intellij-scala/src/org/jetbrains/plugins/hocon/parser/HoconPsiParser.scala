@@ -221,8 +221,7 @@ class HoconPsiParser extends PsiParser {
               new URL(unquote(builder.getTokenText))
               parseStringLiteral(IncludeTarget)
             } catch {
-              case e: MalformedURLException =>
-                tokenError(
+              case e: MalformedURLException => tokenError(
                   if (e.getMessage != null) e.getMessage else "malformed URL")
             }
           } else { parseStringLiteral(IncludeTarget) }

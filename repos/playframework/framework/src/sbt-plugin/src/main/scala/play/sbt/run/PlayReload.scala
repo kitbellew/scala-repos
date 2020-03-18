@@ -109,8 +109,7 @@ object PlayReload {
                 .collect {
                   case JavacError(file, line, message) =>
                     parsed = Some((file, line, message)) -> None
-                  case JavacErrorInfo(key, message) =>
-                    parsed._1.foreach { o =>
+                  case JavacErrorInfo(key, message) => parsed._1.foreach { o =>
                       parsed = Some((
                         parsed._1.get._1,
                         parsed._1.get._2,

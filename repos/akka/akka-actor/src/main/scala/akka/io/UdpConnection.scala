@@ -39,16 +39,14 @@ private[io] class UdpConnection(
 
   if (remoteAddress.isUnresolved) {
     Dns.resolve(remoteAddress.getHostName)(context.system, self) match {
-      case Some(r) ⇒
-        doConnect(new InetSocketAddress(r.addr, remoteAddress.getPort))
-      case None ⇒
-        context.become(resolving(), discardOld = true)
+      case Some(r) ⇒ doConnect(
+          new InetSocketAddress(r.addr, remoteAddress.getPort))
+      case None ⇒ context.become(resolving(), discardOld = true)
     }
   } else { doConnect(remoteAddress) }
 
   def resolving(): Receive = {
-    case r: Dns.Resolved ⇒
-      reportConnectFailure {
+    case r: Dns.Resolved ⇒ reportConnectFailure {
         doConnect(new InetSocketAddress(r.addr, remoteAddress.getPort))
       }
   }

@@ -134,8 +134,7 @@ class MongoQueryExecutor(
             success(
               JNum(db.getCollection(collectionName).getStats.getLong("count")))
 
-          case _ =>
-            success(JNum(0))
+          case _ => success(JNum(0))
         }
       }.onFailure { case t => logger.error("Failure during size", t) }
 
@@ -151,8 +150,9 @@ class MongoQueryExecutor(
 
             val finalNames = dbs
               .foldLeft(dbs.toSet) {
-                case (acc, dbName) =>
-                  acc.filterNot { t => t.startsWith(dbName) && t != dbName }
+                case (acc, dbName) => acc.filterNot { t =>
+                    t.startsWith(dbName) && t != dbName
+                  }
               }
               .toList
               .sorted
@@ -171,8 +171,7 @@ class MongoQueryExecutor(
                   .serialize
                   .asInstanceOf[JArray])
 
-          case dbName :: collectionName :: Nil =>
-            Success(JArray(Nil))
+          case dbName :: collectionName :: Nil => Success(JArray(Nil))
 
           case _ =>
             Failure(

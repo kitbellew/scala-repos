@@ -40,8 +40,7 @@ class InsertCompiler(val mode: InsertCompiler.Mode) extends Phase {
       def tr(n: Node): Node =
         n match {
           case _: OptionApply | _: GetOrElse | _: ProductNode |
-              _: TypeMapping =>
-            n.mapChildren(tr, keepType = true)
+              _: TypeMapping => n.mapChildren(tr, keepType = true)
           case OptionFold(from, _, Ref(s2), s1) if s1 == s2 =>
             tr(GetOrElse(from, null).infer())
           case te @ TableExpansion(_, _, expansion) =>
@@ -56,8 +55,7 @@ class InsertCompiler(val mode: InsertCompiler.Mode) extends Phase {
                   Select(rref, ElementSymbol(cols.length)) :@ sel.nodeType)
               } else ConstArray.empty
             InsertColumn(ch, fs, sel.nodeType).infer()
-          case Ref(s) if s == expansionRef =>
-            tr(tableExpansion.columns)
+          case Ref(s) if s == expansionRef => tr(tableExpansion.columns)
           case Bind(
                 gen,
                 te @ TableExpansion(_, t: TableNode, _),

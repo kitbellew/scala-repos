@@ -245,8 +245,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       val translateRestParam = outputMode match {
         case OutputMode.ECMAScript51Global | OutputMode.ECMAScript51Isolated =>
           params.nonEmpty && params.last.rest
-        case _ =>
-          false
+        case _ => false
       }
 
       val extractRestParam =
@@ -319,16 +318,13 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         // VarDefs at the end of block. Normal VarDefs are handled in
         // transformBlockStats
 
-        case VarDef(_, _, _, EmptyTree) =>
-          js.Skip()
+        case VarDef(_, _, _, EmptyTree) => js.Skip()
 
-        case VarDef(_, _, _, rhs) =>
-          pushLhsInto(EmptyTree, rhs)
+        case VarDef(_, _, _, rhs) => pushLhsInto(EmptyTree, rhs)
 
         // Statement-only language constructs
 
-        case Skip() =>
-          js.Skip()
+        case Skip() => js.Skip()
 
         case Assign(RecordFieldVarRef(lhs), rhs) =>
           pushLhsInto(Assign(lhs, EmptyTree), rhs)
@@ -386,14 +382,12 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 transformExpr(rhs))
           }
 
-        case Assign(_: VarRef, rhs) =>
-          pushLhsInto(tree, rhs)
+        case Assign(_: VarRef, rhs) => pushLhsInto(tree, rhs)
 
         case Assign(_, _) =>
           sys.error(s"Illegal Assign in transformStat: $tree")
 
-        case StoreModule(cls, value) =>
-          unnest(value) { (newValue, env0) =>
+        case StoreModule(cls, value) => unnest(value) { (newValue, env0) =>
             implicit val env = env0
             js.Assign(envField("n", cls.className), transformExpr(newValue))
           }
@@ -442,104 +436,102 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             )
           }
 
-        case Debugger() =>
-          js.Debugger()
+        case Debugger() => js.Debugger()
 
-        case JSSuperConstructorCall(args) =>
-          unnestOrSpread(args) { (newArgs, env0) =>
-            implicit val env = env0
+        case JSSuperConstructorCall(args) => unnestOrSpread(args) {
+            (newArgs, env0) =>
+              implicit val env = env0
 
-            val linkedClass = classEmitter.linkedClassByName(enclosingClassName)
+              val linkedClass = classEmitter.linkedClassByName(
+                enclosingClassName)
 
-            val superCtorCall = {
-              outputMode match {
-                case OutputMode.ECMAScript51Global |
-                    OutputMode.ECMAScript51Isolated =>
-                  val superCtor = genRawJSClassConstructor(
-                    getSuperClassOfJSClass(linkedClass))
+              val superCtorCall = {
+                outputMode match {
+                  case OutputMode.ECMAScript51Global |
+                      OutputMode.ECMAScript51Isolated =>
+                    val superCtor = genRawJSClassConstructor(
+                      getSuperClassOfJSClass(linkedClass))
 
-                  if (containsAnySpread(newArgs)) {
-                    val argArray = spreadToArgArray(newArgs)
-                    js.Apply(
-                      genIdentBracketSelect(superCtor, "apply"),
-                      List(js.This(), transformExpr(argArray)))
-                  } else {
-                    js.Apply(
-                      genIdentBracketSelect(superCtor, "call"),
-                      js.This() :: newArgs.map(transformExpr))
-                  }
+                    if (containsAnySpread(newArgs)) {
+                      val argArray = spreadToArgArray(newArgs)
+                      js.Apply(
+                        genIdentBracketSelect(superCtor, "apply"),
+                        List(js.This(), transformExpr(argArray)))
+                    } else {
+                      js.Apply(
+                        genIdentBracketSelect(superCtor, "call"),
+                        js.This() :: newArgs.map(transformExpr))
+                    }
 
-                case OutputMode.ECMAScript6 =>
-                  js.Apply(js.Super(), newArgs.map(transformExpr))
+                  case OutputMode.ECMAScript6 =>
+                    js.Apply(js.Super(), newArgs.map(transformExpr))
+                }
               }
-            }
 
-            val fieldDefs = for {
-              field @ FieldDef(name, ftpe, mutable) <- linkedClass.fields
-            } yield {
-              implicit val pos = field.pos
-              /* Here, a naive translation would emit something like this:
-               *
-               *   this["field"] = 0;
-               *
-               * However, this won't work if we override a getter from the
-               * superclass with a val in this class, because the assignment
-               * would try to set the property which has a getter but no
-               * setter.
-               * Instead, we must force the creation of a field on the object,
-               * irrespective of the presence of a getter/setter in the
-               * prototype chain. This is why we use `defineProperties`:
-               *
-               *   Object.defineProperties(this, { "field": {
-               *     "configurable": true,
-               *     "enumerable": true,
-               *     "writable": true,
-               *     "value": 0
-               *   } });
-               *
-               * which has all the same semantics as the assignment, except
-               * it disregards the prototype chain.
-               */
-              val defineProperties = {
-                genIdentBracketSelect(
-                  genIdentBracketSelect(envField("g"), "Object"),
-                  "defineProperties")
+              val fieldDefs = for {
+                field @ FieldDef(name, ftpe, mutable) <- linkedClass.fields
+              } yield {
+                implicit val pos = field.pos
+                /* Here, a naive translation would emit something like this:
+                 *
+                 *   this["field"] = 0;
+                 *
+                 * However, this won't work if we override a getter from the
+                 * superclass with a val in this class, because the assignment
+                 * would try to set the property which has a getter but no
+                 * setter.
+                 * Instead, we must force the creation of a field on the object,
+                 * irrespective of the presence of a getter/setter in the
+                 * prototype chain. This is why we use `defineProperties`:
+                 *
+                 *   Object.defineProperties(this, { "field": {
+                 *     "configurable": true,
+                 *     "enumerable": true,
+                 *     "writable": true,
+                 *     "value": 0
+                 *   } });
+                 *
+                 * which has all the same semantics as the assignment, except
+                 * it disregards the prototype chain.
+                 */
+                val defineProperties = {
+                  genIdentBracketSelect(
+                    genIdentBracketSelect(envField("g"), "Object"),
+                    "defineProperties")
+                }
+                val transformedName = name match {
+                  case name: Ident      => transformIdent(name)
+                  case StringLiteral(s) => js.StringLiteral(s)
+                }
+                val descriptor = js.ObjectConstr(List(
+                  js.StringLiteral("configurable") -> js.BooleanLiteral(true),
+                  js.StringLiteral("enumerable") -> js.BooleanLiteral(true),
+                  js.StringLiteral("writable") -> js.BooleanLiteral(true),
+                  js.StringLiteral("value") -> transformExpr(zeroOf(ftpe))
+                ))
+                val descriptors = js.ObjectConstr(List(
+                  transformedName -> descriptor))
+                js.Apply(defineProperties, List(js.This(), descriptors))
               }
-              val transformedName = name match {
-                case name: Ident      => transformIdent(name)
-                case StringLiteral(s) => js.StringLiteral(s)
-              }
-              val descriptor = js.ObjectConstr(List(
-                js.StringLiteral("configurable") -> js.BooleanLiteral(true),
-                js.StringLiteral("enumerable") -> js.BooleanLiteral(true),
-                js.StringLiteral("writable") -> js.BooleanLiteral(true),
-                js.StringLiteral("value") -> transformExpr(zeroOf(ftpe))
-              ))
-              val descriptors = js.ObjectConstr(List(
-                transformedName -> descriptor))
-              js.Apply(defineProperties, List(js.This(), descriptors))
-            }
 
-            js.Block(superCtorCall :: fieldDefs)
+              js.Block(superCtorCall :: fieldDefs)
           }
 
-        case JSDelete(JSDotSelect(obj, prop)) =>
-          unnest(obj) { (newObj, env0) =>
+        case JSDelete(JSDotSelect(obj, prop)) => unnest(obj) { (newObj, env0) =>
             implicit val env = env0
             js.Delete(js.DotSelect(transformExpr(newObj), prop))
           }
 
-        case JSDelete(JSBracketSelect(obj, prop)) =>
-          unnest(obj, prop) { (newObj, newProp, env0) =>
-            implicit val env = env0
-            js.Delete(
-              genBracketSelect(transformExpr(newObj), transformExpr(newProp)))
+        case JSDelete(JSBracketSelect(obj, prop)) => unnest(obj, prop) {
+            (newObj, newProp, env0) =>
+              implicit val env = env0
+              js.Delete(
+                genBracketSelect(transformExpr(newObj), transformExpr(newProp)))
           }
 
         // Treat 'return' as an LHS
 
-        case Return(expr, label) =>
-          pushLhsInto(tree, expr)
+        case Return(expr, label) => pushLhsInto(tree, expr)
 
         /* Anything else is an expression => pushLhsInto(EmptyTree, _)
          * In order not to duplicate all the code of pushLhsInto() here, we
@@ -549,8 +541,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
          * the expression, but does nothing with its result.
          */
 
-        case _ =>
-          pushLhsInto(EmptyTree, tree)
+        case _ => pushLhsInto(EmptyTree, tree)
       }
     }
 
@@ -560,8 +551,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           case Select(RecordVarRef(VarRef(recIdent)), fieldIdent) =>
             implicit val pos = tree.pos
             Some(VarRef(makeRecordFieldIdent(recIdent, fieldIdent))(tree.tpe))
-          case _ =>
-            None
+          case _ => None
         }
       }
     }
@@ -583,8 +573,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           case tree :: ts =>
             transformLoop(ts, env, transformStat(tree)(env) :: acc)
 
-          case Nil =>
-            (acc.reverse, env)
+          case Nil => (acc.reverse, env)
         }
 
       transformLoop(trees, env, Nil)
@@ -677,18 +666,15 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 js.Block(jsStats) +=: extractedStatements
                 result
 
-              case UnaryOp(op, lhs) =>
-                UnaryOp(op, rec(lhs))
+              case UnaryOp(op, lhs) => UnaryOp(op, rec(lhs))
               case BinaryOp(op, lhs, rhs) =>
                 val newRhs = rec(rhs)
                 BinaryOp(op, rec(lhs), newRhs)
               case JSBinaryOp(op, lhs, rhs) =>
                 val newRhs = rec(rhs)
                 JSBinaryOp(op, rec(lhs), newRhs)
-              case JSUnaryOp(op, lhs) =>
-                JSUnaryOp(op, rec(lhs))
-              case IsInstanceOf(expr, tpe) =>
-                IsInstanceOf(rec(expr), tpe)
+              case JSUnaryOp(op, lhs)      => JSUnaryOp(op, rec(lhs))
+              case IsInstanceOf(expr, tpe) => IsInstanceOf(rec(expr), tpe)
 
               case AsInstanceOf(expr, tpe)
                   if noExtractYet || semantics.asInstanceOfs == Unchecked =>
@@ -697,10 +683,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                   if noExtractYet || semantics.asInstanceOfs == Unchecked =>
                 Unbox(rec(expr), tpe)
 
-              case NewArray(tpe, lengths) =>
-                NewArray(tpe, recs(lengths))
-              case ArrayValue(tpe, elems) =>
-                ArrayValue(tpe, recs(elems))
+              case NewArray(tpe, lengths) => NewArray(tpe, recs(lengths))
+              case ArrayValue(tpe, elems) => ArrayValue(tpe, recs(elems))
               case JSArrayConstr(items) if !containsAnySpread(items) =>
                 JSArrayConstr(recs(items))
               case arg @ JSObjectConstr(items)
@@ -723,8 +707,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 ApplyStatically(rec(receiver), cls, method, newArgs)(arg.tpe)
               case ApplyStatic(cls, method, args) if noExtractYet =>
                 ApplyStatic(cls, method, recs(args))(arg.tpe)
-              case ArrayLength(array) if noExtractYet =>
-                ArrayLength(rec(array))
+              case ArrayLength(array) if noExtractYet => ArrayLength(rec(array))
               case ArraySelect(array, index) if noExtractYet =>
                 val newIndex = rec(index)
                 ArraySelect(rec(array), newIndex)(arg.tpe)
@@ -733,8 +716,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
               case If(cond, thenp, elsep)
                   if noExtractYet && isExpression(thenp) && isExpression(
-                    elsep) =>
-                If(rec(cond), thenp, elsep)(arg.tpe)
+                    elsep) => If(rec(cond), thenp, elsep)(arg.tpe)
 
               case _ =>
                 val temp = newSyntheticVar()
@@ -809,12 +791,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           case _: JSLinkingInfo => true
 
           // Vars (side-effect free, pure if immutable)
-          case VarRef(name) =>
-            allowUnpure || !env.isLocalMutable(name)
+          case VarRef(name) => allowUnpure || !env.isLocalMutable(name)
 
           // Fields may throw if qualifier is null
-          case Select(qualifier, item) =>
-            allowSideEffects && test(qualifier)
+          case Select(qualifier, item) => allowSideEffects && test(qualifier)
 
           // Expressions preserving pureness
           case Block(trees) => trees forall test
@@ -828,14 +808,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           case IsInstanceOf(expr, _)   => test(expr)
 
           // Expressions preserving side-effect freedom
-          case NewArray(tpe, lengths) =>
-            allowUnpure && (lengths forall test)
-          case ArrayValue(tpe, elems) =>
-            allowUnpure && (elems forall test)
+          case NewArray(tpe, lengths) => allowUnpure && (lengths forall test)
+          case ArrayValue(tpe, elems) => allowUnpure && (elems forall test)
           case ArraySelect(array, index) =>
             allowUnpure && test(array) && test(index)
-          case JSArrayConstr(items) =>
-            allowUnpure && (items forall test)
+          case JSArrayConstr(items) => allowUnpure && (items forall test)
           case tree @ JSObjectConstr(items) =>
             allowUnpure && (items forall (item => test(item._2))) &&
               !doesObjectConstrRequireDesugaring(tree)
@@ -843,8 +820,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             allowUnpure && (captureValues forall test)
 
           // Scala expressions that can always have side-effects
-          case New(cls, constr, args) =>
-            allowSideEffects && (args forall test)
+          case New(cls, constr, args) => allowSideEffects && (args forall test)
           case LoadModule(cls) => // unfortunately
             allowSideEffects
           case Apply(receiver, method, args) =>
@@ -853,8 +829,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             allowSideEffects && test(receiver) && (args forall test)
           case ApplyStatic(cls, method, args) =>
             allowSideEffects && (args forall test)
-          case GetClass(arg) =>
-            allowSideEffects && test(arg)
+          case GetClass(arg) => allowSideEffects && test(arg)
           case CallHelper(helper, args) =>
             allowSideEffects && (args forall test)
 
@@ -873,8 +848,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           // And because the env is a frozen object too, linkingInfo["envInfo"]["global"] is pure
           case JSBracketSelect(
                 JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")),
-                StringLiteral("global")) =>
-            true
+                StringLiteral("global")) => true
 
           // JavaScript expressions that can always have side-effects
           case JSNew(fun, args) =>
@@ -893,8 +867,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             )
           case JSSuperBracketSelect(_, qualifier, item) =>
             allowSideEffects && test(qualifier) && test(item)
-          case LoadJSModule(_) =>
-            allowSideEffects
+          case LoadJSModule(_) => allowSideEffects
 
           // LoadJSConstructor is pure only for Scala.js-defined JS classes
           case LoadJSConstructor(cls) =>
@@ -930,8 +903,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       tpe match {
         case RecordType(fields) =>
           val elems = (rhs: @unchecked) match {
-            case RecordValue(_, elems) =>
-              elems
+            case RecordValue(_, elems) => elems
             case VarRef(rhsIdent) =>
               for (RecordType.Field(fName, fOrigName, fTpe, _) <- fields)
                 yield VarRef(makeRecordFieldIdent(rhsIdent, fName, fOrigName))(
@@ -949,8 +921,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               fRhs)
           })
 
-        case _ =>
-          genLet(ident, mutable, transformExpr(rhs))
+        case _ => genLet(ident, mutable, transformExpr(rhs))
       }
     }
 
@@ -965,8 +936,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             doEmptyVarDef(makeRecordFieldIdent(ident, fName, fOrigName), fTpe)
           })
 
-        case _ =>
-          genLet(ident, mutable = true, js.EmptyTree)
+        case _ => genLet(ident, mutable = true, js.EmptyTree)
       }
     }
 
@@ -991,8 +961,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               fRhs)
           })
 
-        case _ =>
-          js.Assign(transformExpr(lhs), transformExpr(rhs))
+        case _ => js.Assign(transformExpr(lhs), transformExpr(rhs))
       }
     }
 
@@ -1014,16 +983,13 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       def extractLet(inner: Tree => js.Tree): js.Tree = {
         outputMode match {
           case OutputMode.ECMAScript51Global |
-              OutputMode.ECMAScript51Isolated =>
-            inner(lhs)
-          case OutputMode.ECMAScript6 =>
-            lhs match {
+              OutputMode.ECMAScript51Isolated => inner(lhs)
+          case OutputMode.ECMAScript6 => lhs match {
               case VarDef(name, tpe, mutable, oldRhs) =>
                 js.Block(
                   doEmptyVarDef(name, tpe),
                   inner(Assign(VarRef(name)(tpe), oldRhs)))
-              case _ =>
-                inner(lhs)
+              case _ => inner(lhs)
             }
         }
       }
@@ -1041,8 +1007,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
              */
             js.Block(doEmptyVarDef(name, tpe), transformedRhs)
 
-          case _ =>
-            transformedRhs
+          case _ => transformedRhs
         }
       } else
         (rhs match {
@@ -1062,12 +1027,9 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 else transformExpr(rhs)
               case VarDef(name, tpe, mutable, _) =>
                 doVarDef(name, tpe, mutable, rhs)
-              case Assign(lhs, _) =>
-                doAssign(lhs, rhs)
-              case Return(_, None) =>
-                js.Return(transformExpr(rhs))
-              case Return(_, label @ Some(l)) =>
-                labeledExprLHSes(l) match {
+              case Assign(lhs, _)  => doAssign(lhs, rhs)
+              case Return(_, None) => js.Return(transformExpr(rhs))
+              case Return(_, label @ Some(l)) => labeledExprLHSes(l) match {
                   case newLhs @ Return(_, _) =>
                     pushLhsInto(newLhs, rhs) // no need to break here
                   case newLhs =>
@@ -1079,18 +1041,16 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
           // Almost base case with RecordValue
 
-          case RecordValue(recTpe, elems) =>
-            (lhs: @unchecked) match {
+          case RecordValue(recTpe, elems) => (lhs: @unchecked) match {
               case EmptyTree =>
                 val (newStat, _) = transformBlockStats(elems)
                 js.Block(newStat)
-              case VarDef(name, tpe, mutable, _) =>
-                unnest(elems) { (newElems, env) =>
-                  doVarDef(name, tpe, mutable, RecordValue(recTpe, newElems))(
-                    env)
+              case VarDef(name, tpe, mutable, _) => unnest(elems) {
+                  (newElems, env) =>
+                    doVarDef(name, tpe, mutable, RecordValue(recTpe, newElems))(
+                      env)
                 }
-              case Assign(lhs, _) =>
-                unnest(elems) { (newElems, env0) =>
+              case Assign(lhs, _) => unnest(elems) { (newElems, env0) =>
                   implicit val env = env0
                   val temp = newSyntheticVar()
                   js.Block(
@@ -1110,8 +1070,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
           // Control flow constructs
 
-          case Labeled(label, tpe, body) =>
-            extractLet { newLhs =>
+          case Labeled(label, tpe, body) => extractLet { newLhs =>
               val savedMap = labeledExprLHSes
               labeledExprLHSes = labeledExprLHSes + (label -> newLhs)
               try {
@@ -1122,14 +1081,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               } finally { labeledExprLHSes = savedMap }
             }
 
-          case Return(expr, _) =>
-            pushLhsInto(rhs, expr)
+          case Return(expr, _) => pushLhsInto(rhs, expr)
 
-          case Continue(label) =>
-            js.Continue(label.map(transformIdent))
+          case Continue(label) => js.Continue(label.map(transformIdent))
 
-          case If(cond, thenp, elsep) =>
-            unnest(cond) { (newCond, env0) =>
+          case If(cond, thenp, elsep) => unnest(cond) { (newCond, env0) =>
               implicit val env = env0
               extractLet { newLhs =>
                 js.If(
@@ -1139,8 +1095,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               }
             }
 
-          case Try(block, errVar, handler, finalizer) =>
-            extractLet { newLhs =>
+          case Try(block, errVar, handler, finalizer) => extractLet { newLhs =>
               val newBlock = pushLhsInto(newLhs, block)
               val newHandler =
                 if (handler == EmptyTree) js.EmptyTree
@@ -1171,8 +1126,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             }
 
           // TODO Treat throw as an LHS?
-          case Throw(expr) =>
-            unnest(expr) { (newExpr, env) =>
+          case Throw(expr) => unnest(expr) { (newExpr, env) =>
               js.Throw(transformExpr(newExpr)(env))
             }
 
@@ -1187,44 +1141,43 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             *  * Match supports _alternatives_ explicitly (with a switch, one
             *    would use the fall-through behavior to implement alternatives).
             */
-          case Match(selector, cases, default) =>
-            unnest(selector) { (newSelector, env0) =>
-              implicit val env = env0
-              extractLet { newLhs =>
-                val newCases = {
-                  for {
-                    (values, body) <- cases
-                    newValues = (values map transformExpr)
-                    // add the break statement
-                    newBody = js.Block(pushLhsInto(newLhs, body), js.Break())
-                    // desugar alternatives into several cases falling through
-                    caze <- (
-                      newValues.init map (v => (v, js.Skip()))
-                    ) :+ (newValues.last, newBody)
-                  } yield { caze }
+          case Match(selector, cases, default) => unnest(selector) {
+              (newSelector, env0) =>
+                implicit val env = env0
+                extractLet { newLhs =>
+                  val newCases = {
+                    for {
+                      (values, body) <- cases
+                      newValues = (values map transformExpr)
+                      // add the break statement
+                      newBody = js.Block(pushLhsInto(newLhs, body), js.Break())
+                      // desugar alternatives into several cases falling through
+                      caze <- (
+                        newValues.init map (v => (v, js.Skip()))
+                      ) :+ (newValues.last, newBody)
+                    } yield { caze }
+                  }
+                  val newDefault =
+                    if (default == EmptyTree) js.EmptyTree
+                    else pushLhsInto(newLhs, default)
+                  js.Switch(transformExpr(newSelector), newCases, newDefault)
                 }
-                val newDefault =
-                  if (default == EmptyTree) js.EmptyTree
-                  else pushLhsInto(newLhs, default)
-                js.Switch(transformExpr(newSelector), newCases, newDefault)
-              }
             }
 
           // Scala expressions (if we reach here their arguments are not expressions)
 
-          case New(cls, ctor, args) =>
-            unnest(args) { (newArgs, env) =>
+          case New(cls, ctor, args) => unnest(args) { (newArgs, env) =>
               redo(New(cls, ctor, newArgs))(env)
             }
 
-          case Select(qualifier, item) =>
-            unnest(qualifier) { (newQualifier, env) =>
-              redo(Select(newQualifier, item)(rhs.tpe))(env)
+          case Select(qualifier, item) => unnest(qualifier) {
+              (newQualifier, env) =>
+                redo(Select(newQualifier, item)(rhs.tpe))(env)
             }
 
-          case Apply(receiver, method, args) =>
-            unnest(receiver, args) { (newReceiver, newArgs, env) =>
-              redo(Apply(newReceiver, method, newArgs)(rhs.tpe))(env)
+          case Apply(receiver, method, args) => unnest(receiver, args) {
+              (newReceiver, newArgs, env) =>
+                redo(Apply(newReceiver, method, newArgs)(rhs.tpe))(env)
             }
 
           case ApplyStatically(receiver, cls, method, args) =>
@@ -1233,41 +1186,37 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 env)
             }
 
-          case ApplyStatic(cls, method, args) =>
-            unnest(args) { (newArgs, env) =>
-              redo(ApplyStatic(cls, method, newArgs)(rhs.tpe))(env)
+          case ApplyStatic(cls, method, args) => unnest(args) {
+              (newArgs, env) =>
+                redo(ApplyStatic(cls, method, newArgs)(rhs.tpe))(env)
             }
 
-          case UnaryOp(op, lhs) =>
-            unnest(lhs) { (newLhs, env) => redo(UnaryOp(op, newLhs))(env) }
-
-          case BinaryOp(op, lhs, rhs) =>
-            unnest(lhs, rhs) { (newLhs, newRhs, env) =>
-              redo(BinaryOp(op, newLhs, newRhs))(env)
+          case UnaryOp(op, lhs) => unnest(lhs) { (newLhs, env) =>
+              redo(UnaryOp(op, newLhs))(env)
             }
 
-          case NewArray(tpe, lengths) =>
-            unnest(lengths) { (newLengths, env) =>
+          case BinaryOp(op, lhs, rhs) => unnest(lhs, rhs) {
+              (newLhs, newRhs, env) => redo(BinaryOp(op, newLhs, newRhs))(env)
+            }
+
+          case NewArray(tpe, lengths) => unnest(lengths) { (newLengths, env) =>
               redo(NewArray(tpe, newLengths))(env)
             }
 
-          case ArrayValue(tpe, elems) =>
-            unnest(elems) { (newElems, env) =>
+          case ArrayValue(tpe, elems) => unnest(elems) { (newElems, env) =>
               redo(ArrayValue(tpe, newElems))(env)
             }
 
-          case ArrayLength(array) =>
-            unnest(array) { (newArray, env) =>
+          case ArrayLength(array) => unnest(array) { (newArray, env) =>
               redo(ArrayLength(newArray))(env)
             }
 
-          case ArraySelect(array, index) =>
-            unnest(array, index) { (newArray, newIndex, env) =>
-              redo(ArraySelect(newArray, newIndex)(rhs.tpe))(env)
+          case ArraySelect(array, index) => unnest(array, index) {
+              (newArray, newIndex, env) =>
+                redo(ArraySelect(newArray, newIndex)(rhs.tpe))(env)
             }
 
-          case IsInstanceOf(expr, cls) =>
-            unnest(expr) { (newExpr, env) =>
+          case IsInstanceOf(expr, cls) => unnest(expr) { (newExpr, env) =>
               redo(IsInstanceOf(newExpr, cls))(env)
             }
 
@@ -1279,16 +1228,15 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               }
             }
 
-          case Unbox(expr, charCode) =>
-            unnest(expr) { (newExpr, env) =>
+          case Unbox(expr, charCode) => unnest(expr) { (newExpr, env) =>
               redo(Unbox(newExpr, charCode))(env)
             }
 
-          case GetClass(expr) =>
-            unnest(expr) { (newExpr, env) => redo(GetClass(newExpr))(env) }
+          case GetClass(expr) => unnest(expr) { (newExpr, env) =>
+              redo(GetClass(newExpr))(env)
+            }
 
-          case CallHelper(helper, args) =>
-            unnest(args) { (newArgs, env) =>
+          case CallHelper(helper, args) => unnest(args) { (newArgs, env) =>
               redo(CallHelper(helper, newArgs)(rhs.tpe))(env)
             }
 
@@ -1378,18 +1326,18 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 receiver :: args)
             }
 
-          case JSDotSelect(qualifier, item) =>
-            unnest(qualifier) { (newQualifier, env) =>
-              redo(JSDotSelect(newQualifier, item))(env)
+          case JSDotSelect(qualifier, item) => unnest(qualifier) {
+              (newQualifier, env) => redo(JSDotSelect(newQualifier, item))(env)
             }
 
-          case JSBracketSelect(qualifier, item) =>
-            unnest(qualifier, item) { (newQualifier, newItem, env) =>
-              redo(JSBracketSelect(newQualifier, newItem))(env)
+          case JSBracketSelect(qualifier, item) => unnest(qualifier, item) {
+              (newQualifier, newItem, env) =>
+                redo(JSBracketSelect(newQualifier, newItem))(env)
             }
 
-          case JSUnaryOp(op, lhs) =>
-            unnest(lhs) { (newLhs, env) => redo(JSUnaryOp(op, newLhs))(env) }
+          case JSUnaryOp(op, lhs) => unnest(lhs) { (newLhs, env) =>
+              redo(JSUnaryOp(op, newLhs))(env)
+            }
 
           case JSBinaryOp(JSBinaryOp.&&, lhs, rhs) =>
             if (lhs.tpe == BooleanType) {
@@ -1409,9 +1357,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               }
             }
 
-          case JSBinaryOp(op, lhs, rhs) =>
-            unnest(lhs, rhs) { (newLhs, newRhs, env) =>
-              redo(JSBinaryOp(op, newLhs, newRhs))(env)
+          case JSBinaryOp(op, lhs, rhs) => unnest(lhs, rhs) {
+              (newLhs, newRhs, env) => redo(JSBinaryOp(op, newLhs, newRhs))(env)
             }
 
           case JSArrayConstr(items) =>
@@ -1474,8 +1421,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               rhs match {
                 case _: Skip | _: VarDef | _: Assign | _: While | _: DoWhile |
                     _: Debugger | _: JSSuperConstructorCall | _: JSDelete |
-                    _: StoreModule | _: ClassDef =>
-                  transformStat(rhs)
+                    _: StoreModule | _: ClassDef => transformStat(rhs)
                 case _ =>
                   sys.error(
                     "Illegal tree in JSDesugar.pushLhsInto():\n" +
@@ -1512,8 +1458,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           case JSSpread(spreadArray) =>
             closeReversedPartUnderConstruction()
             reversedParts ::= spreadArray
-          case _ =>
-            reversedPartUnderConstruction ::= arg
+          case _ => reversedPartUnderConstruction ::= arg
         }
       }
       closeReversedPartUnderConstruction()
@@ -1540,8 +1485,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     private def withTempVar(expr: Tree)(makeTree: (Tree, Env) => js.Tree)(
         implicit env: Env): js.Tree = {
       expr match {
-        case VarRef(ident) if !env.isLocalMutable(ident) =>
-          makeTree(expr, env)
+        case VarRef(ident) if !env.isLocalMutable(ident) => makeTree(expr, env)
         case _ =>
           implicit val pos = expr.pos
           val temp = newSyntheticVar()
@@ -1587,14 +1531,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             js.New(encodeClassVar(cls.className), Nil) DOT ctor,
             args map transformExpr)
 
-        case LoadModule(cls) =>
-          genLoadModule(cls.className)
+        case LoadModule(cls) => genLoadModule(cls.className)
 
-        case RecordFieldVarRef(VarRef(name)) =>
-          js.VarRef(name)
+        case RecordFieldVarRef(VarRef(name)) => js.VarRef(name)
 
-        case Select(qualifier, item) =>
-          transformExpr(qualifier) DOT item
+        case Select(qualifier, item) => transformExpr(qualifier) DOT item
 
         case Apply(receiver, method, args) =>
           val newReceiver = transformExpr(receiver)
@@ -1635,10 +1576,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
             case DoubleToFloat => genFround(newLhs)
 
-            case IntToLong =>
-              genNewLong(LongImpl.initFromInt, newLhs)
-            case DoubleToLong =>
-              genLongModuleApply(LongImpl.fromDouble, newLhs)
+            case IntToLong    => genNewLong(LongImpl.initFromInt, newLhs)
+            case DoubleToLong => genLongModuleApply(LongImpl.fromDouble, newLhs)
           }
 
         case BinaryOp(op, lhs, rhs) =>
@@ -1653,8 +1592,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                * operands to ints. So we get rid of the conversion here.
                */
               inner
-            case _ =>
-              lhs
+            case _ => lhs
           }
 
           val newLhs = transformExpr(lhs1)
@@ -1677,8 +1615,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               }
 
             case Int_+ => or0(js.BinaryOp(JSBinaryOp.+, newLhs, newRhs))
-            case Int_- =>
-              lhs match {
+            case Int_- => lhs match {
                 case IntLiteral(0) => or0(js.UnaryOp(JSUnaryOp.-, newRhs))
                 case _             => or0(js.BinaryOp(JSBinaryOp.-, newLhs, newRhs))
               }
@@ -1688,8 +1625,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
             case Int_| => js.BinaryOp(JSBinaryOp.|, newLhs, newRhs)
             case Int_& => js.BinaryOp(JSBinaryOp.&, newLhs, newRhs)
-            case Int_^ =>
-              lhs match {
+            case Int_^ => lhs match {
                 case IntLiteral(-1) => js.UnaryOp(JSUnaryOp.~, newRhs)
                 case _              => js.BinaryOp(JSBinaryOp.^, newLhs, newRhs)
               }
@@ -1698,8 +1634,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             case Int_>>  => js.BinaryOp(JSBinaryOp.>>, newLhs, newRhs)
 
             case Float_+ => genFround(js.BinaryOp(JSBinaryOp.+, newLhs, newRhs))
-            case Float_- =>
-              genFround(lhs match {
+            case Float_- => genFround(lhs match {
                 case DoubleLiteral(0.0) => js.UnaryOp(JSUnaryOp.-, newRhs)
                 case _                  => js.BinaryOp(JSBinaryOp.-, newLhs, newRhs)
               })
@@ -1708,8 +1643,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             case Float_% => genFround(js.BinaryOp(JSBinaryOp.%, newLhs, newRhs))
 
             case Double_+ => js.BinaryOp(JSBinaryOp.+, newLhs, newRhs)
-            case Double_- =>
-              lhs match {
+            case Double_- => lhs match {
                 case DoubleLiteral(0.0) => js.UnaryOp(JSUnaryOp.-, newRhs)
                 case _                  => js.BinaryOp(JSBinaryOp.-, newLhs, newRhs)
               }
@@ -1723,8 +1657,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             case Num_>= => js.BinaryOp(JSBinaryOp.>=, newLhs, newRhs)
 
             case Long_+ => genLongMethodApply(newLhs, LongImpl.+, newRhs)
-            case Long_- =>
-              lhs match {
+            case Long_- => lhs match {
                 case LongLiteral(0L) =>
                   genLongMethodApply(newRhs, LongImpl.UNARY_-)
                 case _ => genLongMethodApply(newLhs, LongImpl.-, newRhs)
@@ -1735,8 +1668,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
             case Long_| => genLongMethodApply(newLhs, LongImpl.|, newRhs)
             case Long_& => genLongMethodApply(newLhs, LongImpl.&, newRhs)
-            case Long_^ =>
-              lhs match {
+            case Long_^ => lhs match {
                 case LongLiteral(-1L) =>
                   genLongMethodApply(newRhs, LongImpl.UNARY_~)
                 case _ => genLongMethodApply(newLhs, LongImpl.^, newRhs)
@@ -1805,12 +1737,9 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         case GetClass(expr) =>
           genCallHelper("objectGetClass", transformExpr(expr))
 
-        case CallHelper(helper, args) =>
-          helper match {
-            case "classDataOf" =>
-              args.head match {
-                case ClassOf(tpe) =>
-                  genClassDataOf(tpe)
+        case CallHelper(helper, args) => helper match {
+            case "classDataOf" => args.head match {
+                case ClassOf(tpe) => genClassDataOf(tpe)
                 case jlClass =>
                   js.DotSelect(transformExpr(jlClass), js.Ident("data$1"))
               }
@@ -1822,8 +1751,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               js.DotSelect(
                 js.DotSelect(transformExpr(args.head), js.Ident("data$1")),
                 js.Ident("zero"))
-            case _ =>
-              genCallHelper(helper, args map transformExpr: _*)
+            case _ => genCallHelper(helper, args map transformExpr: _*)
           }
 
         // JavaScript expressions
@@ -1864,8 +1792,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           val protectedFun = transformedFun match {
             case _: js.DotSelect | _: js.BracketSelect =>
               js.Block(js.IntLiteral(0), transformedFun)
-            case _ =>
-              transformedFun
+            case _ => transformedFun
           }
           js.Apply(protectedFun, args map transformExpr)
 
@@ -1892,21 +1819,18 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           val linkedClass = classEmitter.linkedClassByName(cls.className)
           genRawJSClassConstructor(linkedClass)
 
-        case LoadJSModule(cls) =>
-          genLoadModule(cls.className)
+        case LoadJSModule(cls) => genLoadModule(cls.className)
 
         case JSSpread(items) =>
           assert(outputMode == OutputMode.ECMAScript6)
           js.Spread(transformExpr(items))
 
-        case JSUnaryOp(op, lhs) =>
-          js.UnaryOp(op, transformExpr(lhs))
+        case JSUnaryOp(op, lhs) => js.UnaryOp(op, transformExpr(lhs))
 
         case JSBinaryOp(op, lhs, rhs) =>
           js.BinaryOp(op, transformExpr(lhs), transformExpr(rhs))
 
-        case JSArrayConstr(items) =>
-          js.ArrayConstr(items map transformExpr)
+        case JSArrayConstr(items) => js.ArrayConstr(items map transformExpr)
 
         case JSObjectConstr(fields) =>
           js.ObjectConstr(fields map {
@@ -1916,8 +1840,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               (js.StringLiteral(name), transformExpr(value))
           })
 
-        case JSLinkingInfo() =>
-          envField("linkingInfo")
+        case JSLinkingInfo() => envField("linkingInfo")
 
         // Literals
 
@@ -1929,8 +1852,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         case DoubleLiteral(value)  => js.DoubleLiteral(value)
         case StringLiteral(value)  => js.StringLiteral(value)
 
-        case LongLiteral(0L) =>
-          genLongModuleApply(LongImpl.Zero)
+        case LongLiteral(0L) => genLongModuleApply(LongImpl.Zero)
         case LongLiteral(value) =>
           if (hasNewRuntimeLong) {
             val (lo, hi) = LongImpl.extractParts(value)
@@ -1952,11 +1874,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
         // Atomic expressions
 
-        case VarRef(name) =>
-          js.VarRef(name)
+        case VarRef(name) => js.VarRef(name)
 
-        case This() =>
-          thisIdent.fold[js.Tree] { js.This() } { ident => js.VarRef(ident) }
+        case This() => thisIdent.fold[js.Tree] { js.This() } { ident =>
+            js.VarRef(ident)
+          }
 
         case Closure(captureParams, params, body, captureValues) =>
           val innerFunction = desugarToFunction(
@@ -1989,10 +1911,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           Definitions.HijackedClasses.contains(cls) ||
             Definitions.AncestorsOfHijackedClasses.contains(cls)
         case AnyType | UndefType | BooleanType | IntType | LongType |
-            FloatType | DoubleType | StringType =>
-          true
-        case _ =>
-          false
+            FloatType | DoubleType | StringType => true
+        case _                                  => false
       }
 
     val hijackedClassMethodToHelperName: Map[String, String] = Map(
@@ -2029,8 +1949,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
     def genClassDataOf(cls: ReferenceType)(implicit pos: Position): js.Tree = {
       cls match {
-        case ClassType(className) =>
-          envField("d", className)
+        case ClassType(className) => envField("d", className)
         case ArrayType(base, dims) =>
           (1 to dims).foldLeft(envField("d", base)) { (prev, _) =>
             js.Apply(js.DotSelect(prev, js.Ident("getArrayOf")), Nil)
@@ -2082,10 +2001,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     private implicit class RecordAwareEnv(env: Env) {
       def withDef(ident: Ident, tpe: Type, mutable: Boolean): Env =
         tpe match {
-          case RecordType(fields) =>
-            withRecordDefs(ident, fields, mutable)
-          case _ =>
-            env.withDef(ident, mutable)
+          case RecordType(fields) => withRecordDefs(ident, fields, mutable)
+          case _                  => env.withDef(ident, mutable)
         }
 
       private def withRecordDefs(
@@ -2134,8 +2051,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     outputMode match {
       case OutputMode.ECMAScript51Global | OutputMode.ECMAScript51Isolated =>
         js.VarDef(name, rhs)
-      case OutputMode.ECMAScript6 =>
-        js.Let(name, mutable, rhs)
+      case OutputMode.ECMAScript6 => js.Let(name, mutable, rhs)
     }
   }
 
@@ -2291,20 +2207,16 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     def globalVarIdent = globalVar.asInstanceOf[js.VarRef].ident
 
     outputMode match {
-      case OutputMode.ECMAScript51Global =>
-        js.Assign(globalVar, value)
+      case OutputMode.ECMAScript51Global => js.Assign(globalVar, value)
 
-      case OutputMode.ECMAScript51Isolated =>
-        value match {
+      case OutputMode.ECMAScript51Isolated => value match {
           case js.Function(args, body) =>
             // Make sure the function has a meaningful `name` property
             js.FunctionDef(globalVarIdent, args, body)
-          case _ =>
-            js.VarDef(globalVarIdent, value)
+          case _ => js.VarDef(globalVarIdent, value)
         }
 
-      case OutputMode.ECMAScript6 =>
-        genLet(globalVarIdent, mutable, value)
+      case OutputMode.ECMAScript6 => genLet(globalVarIdent, mutable, value)
     }
   }
 
@@ -2318,8 +2230,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
          * specificities of eval().
          */
         js.DotSelect(qual, js.Ident(name))
-      case _ =>
-        js.BracketSelect(qual, item)
+      case _ => js.BracketSelect(qual, item)
     }
   }
 

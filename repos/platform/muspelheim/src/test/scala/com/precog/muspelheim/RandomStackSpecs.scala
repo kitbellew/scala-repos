@@ -124,8 +124,7 @@ trait RandomStackSpecs extends EvalStackSpecs {
           fields.keys must contain("predict")
 
           fields("predict") must beLike {
-            case SString(str) =>
-              Set("foo", "bar") must contain(str)
+            case SString(str) => Set("foo", "bar") must contain(str)
           }
       }
     }

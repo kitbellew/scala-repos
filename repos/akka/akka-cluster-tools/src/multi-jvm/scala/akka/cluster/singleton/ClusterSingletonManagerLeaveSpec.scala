@@ -48,10 +48,7 @@ object ClusterSingletonManagerLeaveSpec extends MultiNodeConfig {
   class Echo(testActor: ActorRef) extends Actor {
     override def postStop(): Unit = { testActor ! "stopped" }
 
-    def receive = {
-      case _ ⇒
-        sender() ! self
-    }
+    def receive = { case _ ⇒ sender() ! self }
   }
 }
 

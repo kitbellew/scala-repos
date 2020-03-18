@@ -380,12 +380,10 @@ class PCDataXmlParser(val input: Source)
       (base, what) match {
         case (_, Null) => Null
         case (upb: UnprefixedAttribute, upn: UnprefixedAttribute)
-            if upb.key == upn.key =>
-          upn
+            if upb.key == upn.key => upn
         case (pb: PrefixedAttribute, pn: PrefixedAttribute)
-            if pb.key == pn.key && pb.pre == pn.key =>
-          pn
-        case _ => findIt(base, what.next)
+            if pb.key == pn.key && pb.pre == pn.key => pn
+        case _                                      => findIt(base, what.next)
       }
 
     if (!aMap.wellformed(scope)) {
@@ -551,8 +549,7 @@ object AltXML {
       case a: Atom[_] if a.getClass eq classOf[Atom[_]] =>
         escape(a.data.toString, sb, !convertAmp)
 
-      case c: Comment if !stripComment =>
-        c.buildString(sb)
+      case c: Comment if !stripComment => c.buildString(sb)
 
       case er: EntityRef if convertAmp =>
         HtmlEntities.entMap.get(er.entityName) match {
@@ -560,8 +557,7 @@ object AltXML {
           case _                             => er.buildString(sb)
         }
 
-      case x: SpecialNode =>
-        x.buildString(sb)
+      case x: SpecialNode => x.buildString(sb)
 
       case g: Group =>
         for (c <- g.nodes) toXML(c, x.scope, sb, stripComment, convertAmp)
@@ -648,8 +644,7 @@ object AltXML {
       case a: Atom[_] if a.getClass eq classOf[Atom[_]] =>
         escape(a.data.toString, sb, !convertAmp)
 
-      case c: Comment if !stripComment =>
-        c.buildString(sb)
+      case c: Comment if !stripComment => c.buildString(sb)
 
       case er: EntityRef if convertAmp =>
         HtmlEntities.entMap.get(er.entityName) match {
@@ -657,8 +652,7 @@ object AltXML {
           case _                             => er.buildString(sb)
         }
 
-      case x: SpecialNode =>
-        x.buildString(sb)
+      case x: SpecialNode => x.buildString(sb)
 
       case g: Group =>
         for (c <- g.nodes)

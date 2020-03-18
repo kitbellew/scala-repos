@@ -15,18 +15,10 @@ class VariableDefinitionAnnotatorTest extends SimpleTestCase {
     "class A; class B; object A extends A; object B extends B\n"
 
   def testFine() {
-    assertMatches(messages("var v = A")) {
-      case Nil =>
-    }
-    assertMatches(messages("var v: A = A")) {
-      case Nil =>
-    }
-    assertMatches(messages("var foo, bar = A")) {
-      case Nil =>
-    }
-    assertMatches(messages("var foo, bar: A = A")) {
-      case Nil =>
-    }
+    assertMatches(messages("var v = A")) { case Nil           => }
+    assertMatches(messages("var v: A = A")) { case Nil        => }
+    assertMatches(messages("var foo, bar = A")) { case Nil    => }
+    assertMatches(messages("var foo, bar: A = A")) { case Nil => }
   }
 
   def testTypeMismatch() {
@@ -54,11 +46,7 @@ class VariableDefinitionAnnotatorTest extends SimpleTestCase {
     }
   }*/
 
-  def testWildchar() {
-    assertMatches(messages("var v: A = _")) {
-      case Nil =>
-    }
-  }
+  def testWildchar() { assertMatches(messages("var v: A = _")) { case Nil => } }
 
   def messages(@Language(value = "Scala", prefix = Header) code: String)
       : List[Message] = {

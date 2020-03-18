@@ -55,8 +55,7 @@ class HStringManipulator extends AbstractElementManipulator[HString] {
 
   override def getRangeInElement(element: HString) =
     element.stringType match {
-      case UnquotedString =>
-        new TextRange(0, element.getTextLength)
+      case UnquotedString => new TextRange(0, element.getTextLength)
       case QuotedString =>
         new TextRange(
           1,
@@ -65,7 +64,6 @@ class HStringManipulator extends AbstractElementManipulator[HString] {
         new TextRange(
           3,
           element.getTextLength - (if (element.isClosed) 3 else 0))
-      case _ =>
-        super.getRangeInElement(element)
+      case _ => super.getRangeInElement(element)
     }
 }

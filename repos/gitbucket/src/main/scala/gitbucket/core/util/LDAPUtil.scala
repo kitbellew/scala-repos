@@ -105,8 +105,7 @@ object LDAPUtil {
           ldapSettings.userNameAttribute,
           userName,
           ldapSettings.mailAttribute.get) match {
-          case Some(mailAddress) =>
-            Right(LDAPUserInfo(
+          case Some(mailAddress) => Right(LDAPUserInfo(
               userName = getUserNameFromMailAddress(userName),
               fullName = ldapSettings.fullNameAttribute
                 .flatMap { fullNameAttribute =>

@@ -85,17 +85,15 @@ class NumericTypeTest extends FunSuite with IntegrationClient {
 
     test("extract %s from %s".format("float", rowType)) {
       row("float") match {
-        case Some(FloatValue(f)) =>
-          assert(math.abs((f - 1.61f)) <= .000001)
-        case v => fail("expected FloatValue but got %s".format(v))
+        case Some(FloatValue(f)) => assert(math.abs((f - 1.61f)) <= .000001)
+        case v                   => fail("expected FloatValue but got %s".format(v))
       }
     }
 
     test("extract %s from %s".format("double", rowType)) {
       row("double") match {
-        case Some(DoubleValue(d)) =>
-          assert(math.abs((d - 1.618)) <= .000001)
-        case v => fail("expected DoubleValue but got %s".format(v))
+        case Some(DoubleValue(d)) => assert(math.abs((d - 1.618)) <= .000001)
+        case v                    => fail("expected DoubleValue but got %s".format(v))
       }
     }
 

@@ -59,8 +59,7 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
         case Some(server) =>
           testServers :+= server
           zkServerSetCluster.join(server.address)
-        case None =>
-          throw new Exception("could not start TestMemcachedServer")
+        case None => throw new Exception("could not start TestMemcachedServer")
       }
     }
 

@@ -59,8 +59,7 @@ object Fishnet extends LilaController {
                   s"key: ${data.fishnet.apikey} ip: $ip | ${msg.getMessage}")
                 Unauthorized(jsonError(msg.getMessage)).fuccess
               }
-              case Success(client) =>
-                f(data)(client).map {
+              case Success(client) => f(data)(client).map {
                   case Some(work) => Accepted(Json toJson work)
                   case _          => NoContent
                 }

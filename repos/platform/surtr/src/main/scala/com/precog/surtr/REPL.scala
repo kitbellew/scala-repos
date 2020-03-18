@@ -379,8 +379,7 @@ object Console extends App {
     }
 
   val run = repl.flatMap[PrecogUnit] {
-    case scalaz.Success(lifecycle) =>
-      for {
+    case scalaz.Success(lifecycle) => for {
         _ <- lifecycle.startup
         _ <- lifecycle.run
         _ <- lifecycle.shutdown

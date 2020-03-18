@@ -54,9 +54,8 @@ class ImportAllMembersIntention extends PsiElementBaseIntentionAction {
         importHolder.addImportForPath(pathWithWildcard)
         sorted(usages, isQualifier = true).foreach {
           case isQualifierFor(ref @ resolve(resolved: PsiNamedElement))
-              if !isInImport(ref) =>
-            replaceAndBind(ref, ref.refName, resolved)
-          case _ =>
+              if !isInImport(ref) => replaceAndBind(ref, ref.refName, resolved)
+          case _                  =>
         }
       case _ =>
     }

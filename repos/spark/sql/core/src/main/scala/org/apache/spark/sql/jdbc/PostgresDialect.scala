@@ -55,11 +55,10 @@ private object PostgresDialect extends JdbcDialect {
       case "float4"           => Some(FloatType)
       case "money" | "float8" => Some(DoubleType)
       case "text" | "varchar" | "char" | "cidr" | "inet" | "json" | "jsonb" |
-          "uuid" =>
-        Some(StringType)
+          "uuid"   => Some(StringType)
       case "bytea" => Some(BinaryType)
-      case "timestamp" | "timestamptz" | "time" | "timetz" =>
-        Some(TimestampType)
+      case "timestamp" | "timestamptz" | "time" | "timetz" => Some(
+          TimestampType)
       case "date"                => Some(DateType)
       case "numeric" | "decimal" => Some(DecimalType.bounded(precision, scale))
       case _                     => None

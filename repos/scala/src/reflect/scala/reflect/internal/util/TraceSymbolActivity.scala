@@ -78,8 +78,7 @@ trait TraceSymbolActivity {
   private def showMapFreq[T](xs: scala.collection.Map[T, Traversable[_]])(
       showFn: T => String) {
     xs.mapValues(_.size).toList.sortBy(-_._2) take 100 foreach {
-      case (k, size) =>
-        show(size, showFn(k))
+      case (k, size) => show(size, showFn(k))
     }
     println("\n")
   }

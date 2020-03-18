@@ -86,23 +86,19 @@ private[spark] class BlockManagerMasterEndpoint(
       listenerBus.post(SparkListenerBlockUpdated(
         BlockUpdatedInfo(_updateBlockInfo)))
 
-    case GetLocations(blockId) =>
-      context.reply(getLocations(blockId))
+    case GetLocations(blockId) => context.reply(getLocations(blockId))
 
     case GetLocationsMultipleBlockIds(blockIds) =>
       context.reply(getLocationsMultipleBlockIds(blockIds))
 
-    case GetPeers(blockManagerId) =>
-      context.reply(getPeers(blockManagerId))
+    case GetPeers(blockManagerId) => context.reply(getPeers(blockManagerId))
 
     case GetExecutorEndpointRef(executorId) =>
       context.reply(getExecutorEndpointRef(executorId))
 
-    case GetMemoryStatus =>
-      context.reply(memoryStatus)
+    case GetMemoryStatus => context.reply(memoryStatus)
 
-    case GetStorageStatus =>
-      context.reply(storageStatus)
+    case GetStorageStatus => context.reply(storageStatus)
 
     case GetBlockStatus(blockId, askSlaves) =>
       context.reply(blockStatus(blockId, askSlaves))
@@ -110,11 +106,9 @@ private[spark] class BlockManagerMasterEndpoint(
     case GetMatchingBlockIds(filter, askSlaves) =>
       context.reply(getMatchingBlockIds(filter, askSlaves))
 
-    case RemoveRdd(rddId) =>
-      context.reply(removeRdd(rddId))
+    case RemoveRdd(rddId) => context.reply(removeRdd(rddId))
 
-    case RemoveShuffle(shuffleId) =>
-      context.reply(removeShuffle(shuffleId))
+    case RemoveShuffle(shuffleId) => context.reply(removeShuffle(shuffleId))
 
     case RemoveBroadcast(broadcastId, removeFromDriver) =>
       context.reply(removeBroadcast(broadcastId, removeFromDriver))

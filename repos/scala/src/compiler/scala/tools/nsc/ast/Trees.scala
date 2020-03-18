@@ -95,14 +95,11 @@ trait Trees extends scala.reflect.internal.Trees {
 
   override protected def xtraverse(traverser: Traverser, tree: Tree): Unit =
     tree match {
-      case Parens(ts) =>
-        traverser.traverseTrees(ts)
-      case DocDef(comment, definition) =>
-        traverser.traverse(definition)
+      case Parens(ts)                  => traverser.traverseTrees(ts)
+      case DocDef(comment, definition) => traverser.traverse(definition)
       case SelectFromArray(qualifier, selector, erasure) =>
         traverser.traverse(qualifier)
-      case InjectDerivedValue(arg) =>
-        traverser.traverse(arg)
+      case InjectDerivedValue(arg)        => traverser.traverse(arg)
       case TypeTreeWithDeferredRefCheck() =>
       // (and rewrap the result? how to update the deferred check? would need to store wrapped tree instead of returning it from check)
       case _ => super.xtraverse(traverser, tree)
@@ -146,9 +143,8 @@ trait Trees extends scala.reflect.internal.Trees {
     def DocDef(tree: Tree, comment: DocComment, definition: Tree) =
       tree match {
         case t @ DocDef(comment0, definition0)
-            if (comment0 == comment) && (definition0 == definition) =>
-          t
-        case _ => this.treeCopy.DocDef(tree, comment, definition)
+            if (comment0 == comment) && (definition0 == definition) => t
+        case _                                                      => this.treeCopy.DocDef(tree, comment, definition)
       }
     def SelectFromArray(
         tree: Tree,
@@ -157,8 +153,7 @@ trait Trees extends scala.reflect.internal.Trees {
         erasure: Type) =
       tree match {
         case t @ SelectFromArray(qualifier0, selector0, _)
-            if (qualifier0 == qualifier) && (selector0 == selector) =>
-          t
+            if (qualifier0 == qualifier) && (selector0 == selector) => t
         case _ =>
           this.treeCopy.SelectFromArray(tree, qualifier, selector, erasure)
       }
@@ -207,8 +202,9 @@ trait Trees extends scala.reflect.internal.Trees {
           selector,
           erasure)
       case InjectDerivedValue(arg) =>
-        transformer.treeCopy
-          .InjectDerivedValue(tree, transformer.transform(arg))
+        transformer.treeCopy.InjectDerivedValue(
+          tree,
+          transformer.transform(arg))
       case TypeTreeWithDeferredRefCheck() =>
         transformer.treeCopy.TypeTreeWithDeferredRefCheck(tree)
     }
@@ -294,10 +290,9 @@ trait Trees extends scala.reflect.internal.Trees {
 
       override def traverse(tree: Tree) = {
         tree match {
-          case _: DefTree | Function(_, _) | Template(_, _, _) =>
-            markLocal(tree)
-          case _ =>
-            tree
+          case _: DefTree | Function(_, _) | Template(_, _, _) => markLocal(
+              tree)
+          case _ => tree
         }
 
         super.traverse(tree)
@@ -310,8 +305,7 @@ trait Trees extends scala.reflect.internal.Trees {
         else
           super.transform {
             tree match {
-              case tree if !tree.canHaveAttrs =>
-                tree
+              case tree if !tree.canHaveAttrs => tree
               case tpt: TypeTree =>
                 if (tpt.original != null) transform(tpt.original)
                 else {
@@ -333,10 +327,8 @@ trait Trees extends scala.reflect.internal.Trees {
               // These symbols will be erased, because we can't leave alive a type referring to them.
               // Here we can only hope that everything will work fine afterwards.
               case TypeApply(fn, args)
-                  if args map transform exists (_.isEmpty) =>
-                transform(fn)
-              case EmptyTree =>
-                tree
+                  if args map transform exists (_.isEmpty) => transform(fn)
+              case EmptyTree                               => tree
               case _ =>
                 val dupl = tree.duplicate
                 // Typically the resetAttrs transformer cleans both symbols and types.

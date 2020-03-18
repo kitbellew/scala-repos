@@ -61,8 +61,7 @@ class TracingFilterTest
     test(s"$prefix: should trace Finagle version") {
       val versions = record(mkFilter("1.2.3")) collect {
         case Record(_, _, Annotation.BinaryAnnotation(key, ver), _)
-            if key == s"$prefix/finagle.version" =>
-          ver
+            if key == s"$prefix/finagle.version" => ver
       }
       assert(versions == Seq("1.2.3"))
     }
@@ -70,8 +69,7 @@ class TracingFilterTest
     test(s"$prefix: should trace unknown Finagle version") {
       val versions = record(mkFilter("?")) collect {
         case Record(_, _, Annotation.BinaryAnnotation(key, ver), _)
-            if key == s"$prefix/finagle.version" =>
-          ver
+            if key == s"$prefix/finagle.version" => ver
       }
       assert(versions == Seq("?"))
     }
@@ -88,8 +86,7 @@ class TracingFilterTest
       val dtab = Dtab.read("/fox=>/spooky;/dana=>/starbuck")
       val dtabs = record(withDtab(dtab) andThen mkFilter("")) collect {
         case Record(_, _, Annotation.BinaryAnnotation(key, dtab), _)
-            if key == s"$prefix/dtab.local" =>
-          dtab
+            if key == s"$prefix/dtab.local" => dtab
       }
       assert(dtabs == Seq(dtab.show))
     }
@@ -97,8 +94,7 @@ class TracingFilterTest
     test(s"$prefix: should not trace empty Dtab.local") {
       val dtabs = record(withDtab(Dtab.empty) andThen mkFilter("")) collect {
         case Record(_, _, Annotation.BinaryAnnotation(key, dtab), _)
-            if key == s"$prefix/dtab.local" =>
-          dtab
+            if key == s"$prefix/dtab.local" => dtab
       }
       assert(dtabs.isEmpty)
     }

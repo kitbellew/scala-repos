@@ -338,8 +338,7 @@ object MessageSerializerRemotingSpec {
   class RemoteActor extends Actor {
     def receive = {
       case p @ PersistentRepr(MyPayload(data), _) ⇒ p.sender ! s"p${data}"
-      case a: AtomicWrite ⇒
-        a.payload.foreach {
+      case a: AtomicWrite ⇒ a.payload.foreach {
           case p @ PersistentRepr(MyPayload(data), _) ⇒ p.sender ! s"p${data}"
         }
     }
@@ -446,8 +445,7 @@ class MyPayload2Serializer extends SerializerWithStringManifest {
         MyPayload2(data = parts(0) + ".", n = parts(1).toInt)
       case ManifestV1 ⇒
         MyPayload2(data = s"${new String(bytes, UTF_8)}.", n = 0)
-      case other ⇒
-        throw new Exception(s"unexpected manifest [$other]")
+      case other ⇒ throw new Exception(s"unexpected manifest [$other]")
     }
 }
 
@@ -481,10 +479,9 @@ class MySnapshotSerializer2 extends SerializerWithStringManifest {
 
   def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     manifest match {
-      case CurrentManifest | OldManifest ⇒
-        MySnapshot2(s"${new String(bytes, UTF_8)}.")
-      case other ⇒
-        throw new Exception(s"unexpected manifest [$other]")
+      case CurrentManifest | OldManifest ⇒ MySnapshot2(
+          s"${new String(bytes, UTF_8)}.")
+      case other ⇒ throw new Exception(s"unexpected manifest [$other]")
     }
 }
 
@@ -505,10 +502,8 @@ class OldPayloadSerializer extends SerializerWithStringManifest {
 
   def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     manifest match {
-      case OldPayloadClassName ⇒
-        MyPayload(new String(bytes, UTF_8))
+      case OldPayloadClassName ⇒ MyPayload(new String(bytes, UTF_8))
       case MyPayloadClassName ⇒ MyPayload(s"${new String(bytes, UTF_8)}.")
-      case other ⇒
-        throw new Exception(s"unexpected manifest [$other]")
+      case other ⇒ throw new Exception(s"unexpected manifest [$other]")
     }
 }

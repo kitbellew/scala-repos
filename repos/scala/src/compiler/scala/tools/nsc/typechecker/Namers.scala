@@ -78,10 +78,8 @@ trait Namers extends MethodSynthesis {
         sym.owner.isConstructor
       }
       val ownerCtx = tree match {
-        case vd: ValDef if isConstrParam(vd) =>
-          context.makeConstructorContext
-        case _ =>
-          context
+        case vd: ValDef if isConstrParam(vd) => context.makeConstructorContext
+        case _                               => context
       }
       newNamer(ownerCtx.makeNewScope(tree, sym))
     }
@@ -335,10 +333,8 @@ trait Namers extends MethodSynthesis {
     private def logAssignSymbol(tree: Tree, sym: Symbol): Symbol = {
       if (isPastTyper) sym.name.toTermName match {
         case nme.IMPORT | nme.OUTER | nme.ANON_CLASS_NAME | nme.ANON_FUN_NAME |
-            nme.CONSTRUCTOR =>
-          ()
-        case _ =>
-          tree match {
+            nme.CONSTRUCTOR => ()
+        case _ => tree match {
             case md: DefDef => log("[+symbol] " + sym.debugLocationString)
             case _          =>
           }
@@ -905,12 +901,9 @@ trait Namers extends MethodSynthesis {
         tp match {
           case SingleType(pre, sym) =>
             (sym isLessAccessibleThan getter) || isHidden(pre)
-          case ThisType(sym) =>
-            sym isLessAccessibleThan getter
-          case p: SimpleTypeProxy =>
-            isHidden(p.underlying)
-          case _ =>
-            false
+          case ThisType(sym)      => sym isLessAccessibleThan getter
+          case p: SimpleTypeProxy => isHidden(p.underlying)
+          case _                  => false
         }
       val shouldWiden =
         (!tpe.typeSymbolDirect.isModuleClass // Infer Foo.type instead of "object Foo"
@@ -1419,9 +1412,8 @@ trait Namers extends MethodSynthesis {
                 eraseAllMentionsOfTparams(rvparam.tpt match {
                   // default getter for by-name params
                   case AppliedTypeTree(_, List(arg))
-                      if sym.hasFlag(BYNAMEPARAM) =>
-                    arg
-                  case t => t
+                      if sym.hasFlag(BYNAMEPARAM) => arg
+                  case t                          => t
                 })
               }
             val defRhs = rvparam.rhs
@@ -1482,8 +1474,7 @@ trait Namers extends MethodSynthesis {
           TypeBounds.empty
         case tp @ TypeBounds(lt, rt) if (tdef.symbol hasFlag JAVA) =>
           TypeBounds(lt, objToAny(rt))
-        case tp =>
-          tp
+        case tp => tp
       }
       // see neg/bug1275, #3419
       // used to do a rudimentary kind check here to ensure overriding in refinements
@@ -1520,8 +1511,7 @@ trait Namers extends MethodSynthesis {
           // SI-8207 okay, typedIdent expands Ident(self) to C.this which doesn't satisfy the next case
           // TODO should we change `typedIdent` not to expand to the `Ident` to a `This`?
           case _ if treeInfo.isStableIdentifierPattern(expr1) =>
-          case _ =>
-            typer.TyperErrorGen.UnstableTreeError(expr1)
+          case _                                              => typer.TyperErrorGen.UnstableTreeError(expr1)
         }
 
         val newImport = treeCopy
@@ -1607,23 +1597,17 @@ trait Namers extends MethodSynthesis {
 
       def getSig =
         tree match {
-          case cdef: ClassDef =>
-            createNamer(tree).classSig(cdef)
+          case cdef: ClassDef => createNamer(tree).classSig(cdef)
 
-          case mdef: ModuleDef =>
-            createNamer(tree).moduleSig(mdef)
+          case mdef: ModuleDef => createNamer(tree).moduleSig(mdef)
 
-          case ddef: DefDef =>
-            createNamer(tree).methodSig(ddef)
+          case ddef: DefDef => createNamer(tree).methodSig(ddef)
 
-          case vdef: ValDef =>
-            createNamer(tree).valDefSig(vdef)
+          case vdef: ValDef => createNamer(tree).valDefSig(vdef)
 
-          case tdef: TypeDef =>
-            createNamer(tree).typeDefSig(tdef) //@M!
+          case tdef: TypeDef => createNamer(tree).typeDefSig(tdef) //@M!
 
-          case imp: Import =>
-            importSig(imp)
+          case imp: Import => importSig(imp)
         }
 
       try getSig
@@ -1637,8 +1621,7 @@ trait Namers extends MethodSynthesis {
         case ClassInfoType(parents, decls, clazz) =>
           if (parents exists (_.typeSymbol == parent)) tpe
           else ClassInfoType(parents :+ parent.tpe, decls, clazz)
-        case _ =>
-          tpe
+        case _ => tpe
       }
 
     class LogTransitions[S](onEnter: S => String, onExit: S => String) {
@@ -1676,8 +1659,7 @@ trait Namers extends MethodSynthesis {
               pre,
               ArrayClass,
               List(intersectionType(List(elemtp, ObjectTpe))))
-          case _ =>
-            mapOver(tp)
+          case _ => mapOver(tp)
         }
     }
 

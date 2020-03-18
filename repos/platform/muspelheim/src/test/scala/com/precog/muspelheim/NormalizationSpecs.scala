@@ -26,25 +26,14 @@ trait NormalizationSpecs extends EvalStackSpecs {
   import stack._
 
   def summaryHeight(obj: Map[String, SValue]) = {
-    obj("count") must beLike {
-      case SDecimal(d) =>
-        d.toDouble mustEqual 993
-    }
+    obj("count") must beLike { case SDecimal(d) => d.toDouble mustEqual 993 }
     obj("mean") must beLike {
-      case SDecimal(d) =>
-        d.toDouble mustEqual 176.4370594159114
+      case SDecimal(d) => d.toDouble mustEqual 176.4370594159114
     }
-    obj("min") must beLike {
-      case SDecimal(d) =>
-        d.toDouble mustEqual 140
-    }
-    obj("max") must beLike {
-      case SDecimal(d) =>
-        d.toDouble mustEqual 208
-    }
+    obj("min") must beLike { case SDecimal(d) => d.toDouble mustEqual 140 }
+    obj("max") must beLike { case SDecimal(d) => d.toDouble mustEqual 208 }
     obj("stdDev") must beLike {
-      case SDecimal(d) =>
-        d.toDouble mustEqual 11.56375193112367
+      case SDecimal(d) => d.toDouble mustEqual 11.56375193112367
     }
   }
 
@@ -99,8 +88,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
         summaryHeight(obj)
 
         obj("sqVariance") must beLike {
-          case SDecimal(d) =>
-            d.toDouble mustEqual 17881.13433742673
+          case SDecimal(d) => d.toDouble mustEqual 17881.13433742673
         }
       }
       case _ => ko
@@ -161,8 +149,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
               summary mustEqual heightResult
             }
 
-            case SObject(summary) =>
-              summary mustEqual ageResult
+            case SObject(summary) => summary mustEqual ageResult
 
             case SArray(model) => {
               model must haveSize(1)

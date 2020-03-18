@@ -188,8 +188,7 @@ private[spark] class BlockManagerMaster(
     blockManagerIds
       .zip(blockStatus)
       .flatMap {
-        case (blockManagerId, status) =>
-          status.map { s => (blockManagerId, s) }
+        case (blockManagerId, status) => status.map { s => (blockManagerId, s) }
       }
       .toMap
   }

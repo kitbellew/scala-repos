@@ -13,8 +13,7 @@ private[http4] object ReaderUtils {
     */
   def readChunk(chunk: Any): Future[Option[Buf]] =
     chunk match {
-      case chunk: NettyHttp.LastHttpContent =>
-        Future.None
+      case chunk: NettyHttp.LastHttpContent => Future.None
 
       case chunk: NettyHttp.HttpContent =>
         Future.value(Some(ByteBufAsBuf.Owned(chunk.content.duplicate)))
@@ -40,8 +39,7 @@ private[http4] object ReaderUtils {
       // TODO Find a better number for bufSize, e.g. 32KiB - Buf overhead
       bufSize: Int = Int.MaxValue): Future[Unit] = {
     r.read(bufSize).flatMap {
-      case None =>
-        trans.write(NettyHttp.LastHttpContent.EMPTY_LAST_CONTENT)
+      case None => trans.write(NettyHttp.LastHttpContent.EMPTY_LAST_CONTENT)
       case Some(buf) =>
         trans.write(chunkOfBuf(buf)).transform {
           case Return(_) => streamChunks(trans, r, bufSize)

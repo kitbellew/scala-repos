@@ -37,8 +37,7 @@ object ImportMembersUtil {
       case _ childOf(ScInfixExpr(qual: ScReferenceExpression, `ref`, _)) => true
       case _ childOf(ScPostfixExpr(qual: ScReferenceExpression, `ref`))  => true
       case ScReferenceExpression.withQualifier(
-            qualRef: ScReferenceExpression) =>
-        true
+            qualRef: ScReferenceExpression) => true
       case stCodeRef: ScStableCodeReferenceElement =>
         stCodeRef.qualifier.isDefined
       case _ => false
@@ -108,8 +107,7 @@ object ImportMembersUtil {
             replaceAndBind(oldRef, named.name, named)
           case _ =>
         }
-      case _ =>
-        oldRef match {
+      case _ => oldRef match {
           case _ childOf (inf @ ScInfixExpr(
                 qual: ScReferenceExpression,
                 `oldRef`,
@@ -135,12 +133,10 @@ object ImportMembersUtil {
               case m: PsiMember => Option(m.getContainingClass)
               case _            => None
             }
-            val refExpr = ScalaPsiElementFactory.createExpressionFromText(
-              name,
-              oldRef.getManager)
-            val replaced = expr.replaceExpression(
-              refExpr,
-              removeParenthesis = true)
+            val refExpr = ScalaPsiElementFactory
+              .createExpressionFromText(name, oldRef.getManager)
+            val replaced = expr
+              .replaceExpression(refExpr, removeParenthesis = true)
             replaced
               .asInstanceOf[ScReferenceExpression]
               .bindToElement(toBind, clazz)
@@ -190,9 +186,8 @@ object ImportMembersUtil {
         case ScInfixExpr(`qual`, op, _)                        => Some(op)
         case ScPostfixExpr(`qual`, op: ScReferenceElement)     => Some(op)
         case stRef: ScStableCodeReferenceElement
-            if stRef.qualifier.contains(qual) =>
-          Some(stRef)
-        case _ => None
+            if stRef.qualifier.contains(qual) => Some(stRef)
+        case _                                => None
       }
     }
   }

@@ -280,8 +280,7 @@ class NumericAttribute private[ml] (
           (max == o.max) &&
           (std == o.std) &&
           (sparsity == o.sparsity)
-      case _ =>
-        false
+      case _ => false
     }
   }
 
@@ -444,8 +443,7 @@ class NominalAttribute private[ml] (
           (isOrdinal == o.isOrdinal) &&
           (numValues == o.numValues) &&
           (values.map(_.toSeq) == o.values.map(_.toSeq))
-      case _ =>
-        false
+      case _ => false
     }
   }
 
@@ -561,8 +559,7 @@ class BinaryAttribute private[ml] (
         (name == o.name) &&
           (index == o.index) &&
           (values.map(_.toSeq) == o.values.map(_.toSeq))
-      case _ =>
-        false
+      case _ => false
     }
   }
 

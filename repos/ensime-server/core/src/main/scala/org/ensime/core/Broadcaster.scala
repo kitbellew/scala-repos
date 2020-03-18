@@ -48,8 +48,7 @@ class Broadcaster extends Actor with ActorLogging {
     case Persist(message) =>
       persistant += ((sender(), message))
       send(message)
-    case message =>
-      send(message)
+    case message => send(message)
   }
 
   private def send(message: Any): Unit =

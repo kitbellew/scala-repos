@@ -47,8 +47,7 @@ trait SchedulerSpec
       val tickActor, tickActor2 = system.actorOf(Props(new Actor {
         var ticks = 0
         def receive = {
-          case Tick ⇒
-            if (ticks < 3) {
+          case Tick ⇒ if (ticks < 3) {
               sender() ! Tock
               ticks += 1
             }

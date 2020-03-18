@@ -63,38 +63,33 @@ private[spark] object JsonProtocol {
     * -------------------------------------------------- */
   def sparkEventToJson(event: SparkListenerEvent): JValue = {
     event match {
-      case stageSubmitted: SparkListenerStageSubmitted =>
-        stageSubmittedToJson(stageSubmitted)
-      case stageCompleted: SparkListenerStageCompleted =>
-        stageCompletedToJson(stageCompleted)
-      case taskStart: SparkListenerTaskStart =>
-        taskStartToJson(taskStart)
+      case stageSubmitted: SparkListenerStageSubmitted => stageSubmittedToJson(
+          stageSubmitted)
+      case stageCompleted: SparkListenerStageCompleted => stageCompletedToJson(
+          stageCompleted)
+      case taskStart: SparkListenerTaskStart => taskStartToJson(taskStart)
       case taskGettingResult: SparkListenerTaskGettingResult =>
         taskGettingResultToJson(taskGettingResult)
-      case taskEnd: SparkListenerTaskEnd =>
-        taskEndToJson(taskEnd)
-      case jobStart: SparkListenerJobStart =>
-        jobStartToJson(jobStart)
-      case jobEnd: SparkListenerJobEnd =>
-        jobEndToJson(jobEnd)
+      case taskEnd: SparkListenerTaskEnd   => taskEndToJson(taskEnd)
+      case jobStart: SparkListenerJobStart => jobStartToJson(jobStart)
+      case jobEnd: SparkListenerJobEnd     => jobEndToJson(jobEnd)
       case environmentUpdate: SparkListenerEnvironmentUpdate =>
         environmentUpdateToJson(environmentUpdate)
       case blockManagerAdded: SparkListenerBlockManagerAdded =>
         blockManagerAddedToJson(blockManagerAdded)
       case blockManagerRemoved: SparkListenerBlockManagerRemoved =>
         blockManagerRemovedToJson(blockManagerRemoved)
-      case unpersistRDD: SparkListenerUnpersistRDD =>
-        unpersistRDDToJson(unpersistRDD)
+      case unpersistRDD: SparkListenerUnpersistRDD => unpersistRDDToJson(
+          unpersistRDD)
       case applicationStart: SparkListenerApplicationStart =>
         applicationStartToJson(applicationStart)
-      case applicationEnd: SparkListenerApplicationEnd =>
-        applicationEndToJson(applicationEnd)
-      case executorAdded: SparkListenerExecutorAdded =>
-        executorAddedToJson(executorAdded)
+      case applicationEnd: SparkListenerApplicationEnd => applicationEndToJson(
+          applicationEnd)
+      case executorAdded: SparkListenerExecutorAdded => executorAddedToJson(
+          executorAdded)
       case executorRemoved: SparkListenerExecutorRemoved =>
         executorRemovedToJson(executorRemoved)
-      case logStart: SparkListenerLogStart =>
-        logStartToJson(logStart)
+      case logStart: SparkListenerLogStart => logStartToJson(logStart)
       case metricsUpdate: SparkListenerExecutorMetricsUpdate =>
         executorMetricsUpdateToJson(metricsUpdate)
       case blockUpdated: SparkListenerBlockUpdated =>
@@ -455,8 +450,8 @@ private[spark] object JsonProtocol {
     val result = Utils.getFormattedClassName(jobResult)
     val json = jobResult match {
       case JobSucceeded => Utils.emptyJson
-      case jobFailed: JobFailed =>
-        JObject("Exception" -> exceptionToJson(jobFailed.exception))
+      case jobFailed: JobFailed => JObject(
+          "Exception" -> exceptionToJson(jobFailed.exception))
     }
     ("Result" -> result) ~ json
   }
@@ -879,11 +874,11 @@ private[spark] object JsonProtocol {
         case (JInt(v), IntAccumulatorParam)       => v.toInt
         case (JInt(v), LongAccumulatorParam)      => v.toLong
         case (JString(v), StringAccumulatorParam) => v
-        case (JArray(v), UpdatedBlockStatusesAccumulatorParam) =>
-          v.map { blockJson =>
-            val id = BlockId((blockJson \ "Block ID").extract[String])
-            val status = blockStatusFromJson(blockJson \ "Status")
-            (id, status)
+        case (JArray(v), UpdatedBlockStatusesAccumulatorParam) => v.map {
+            blockJson =>
+              val id = BlockId((blockJson \ "Block ID").extract[String])
+              val status = blockStatusFromJson(blockJson \ "Status")
+              (id, status)
           }
         case (v, p) =>
           throw new IllegalArgumentException(

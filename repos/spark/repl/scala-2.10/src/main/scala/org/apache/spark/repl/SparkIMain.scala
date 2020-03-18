@@ -524,8 +524,7 @@ class SparkIMain(
         // deadlocks on startup if we try to translate names too early
         case null if isInitializeComplete =>
           generatedName(name) map (x => super.findAbstractFile(x)) orNull
-        case file =>
-          file
+        case file => file
       }
     }
   }

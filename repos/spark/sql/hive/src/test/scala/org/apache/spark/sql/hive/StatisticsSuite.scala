@@ -127,8 +127,7 @@ class StatisticsSuite extends QueryTest with TestHiveSingleton {
   test("estimates the size of a test MetastoreRelation") {
     val df = sql("""SELECT * FROM src""")
     val sizes = df.queryExecution.analyzed.collect {
-      case mr: MetastoreRelation =>
-        mr.statistics.sizeInBytes
+      case mr: MetastoreRelation => mr.statistics.sizeInBytes
     }
     assert(sizes.size === 1, s"Size wrong for:\n ${df.queryExecution}")
     assert(
@@ -220,8 +219,7 @@ class StatisticsSuite extends QueryTest with TestHiveSingleton {
     val sizes = df.queryExecution.analyzed.collect {
       case r
           if implicitly[ClassTag[MetastoreRelation]].runtimeClass
-            .isAssignableFrom(r.getClass) =>
-        r.statistics.sizeInBytes
+            .isAssignableFrom(r.getClass) => r.statistics.sizeInBytes
     }
     assert(
       sizes.size === 2 && sizes(

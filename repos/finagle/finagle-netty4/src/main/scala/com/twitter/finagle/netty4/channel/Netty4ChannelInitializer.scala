@@ -149,9 +149,8 @@ private[netty4] class ChannelExceptionHandler(
           _: WriteTimedOutException | _: javax.net.ssl.SSLException =>
         Level.FINEST
       case e: java.io.IOException
-          if FinestIOExceptionMessages.contains(e.getMessage) =>
-        Level.FINEST
-      case _ => Level.WARNING
+          if FinestIOExceptionMessages.contains(e.getMessage) => Level.FINEST
+      case _                                                  => Level.WARNING
     }
 
   override def exceptionCaught(

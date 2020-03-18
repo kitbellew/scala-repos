@@ -65,8 +65,7 @@ trait TypeInferencer extends DAG {
           case UnfixedSolution(id, target) =>
             inner(Some(universe), typing, splits, target)
 
-          case Extra(target) =>
-            inner(Some(universe), typing, splits, target)
+          case Extra(target) => inner(Some(universe), typing, splits, target)
         }
 
       def inner(
@@ -131,8 +130,7 @@ trait TypeInferencer extends DAG {
 
           case Join(WrapObject, Cross(_), ConstString(str), right) => {
             val jtpe2 = jtpe map {
-              case JObjectFixedT(map) =>
-                map get str getOrElse universe
+              case JObjectFixedT(map) => map get str getOrElse universe
 
               case _ => universe
             }

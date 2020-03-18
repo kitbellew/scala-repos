@@ -112,8 +112,7 @@ class BasicHttpClient(port: Int) {
               out.flush()
               Thread.sleep(timeout)
             }
-          case None =>
-            out.write(request.body)
+          case None => out.write(request.body)
         }
       }
       out.flush()
@@ -211,8 +210,7 @@ class BasicHttpClient(port: Int) {
 
       BasicResponse(version, status, reasonPhrase, headers, body)
     } catch {
-      case io: IOException =>
-        throw io
+      case io: IOException => throw io
       case e: Exception =>
         throw new RuntimeException(
           s"Exception while reading response $responseDesc ${e.getClass.getName}: ${e.getMessage}",

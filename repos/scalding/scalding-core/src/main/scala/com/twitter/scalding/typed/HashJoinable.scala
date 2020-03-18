@@ -120,8 +120,7 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
       eachOperation: Operation[_],
       mode: Mode): Boolean = {
     eachOperation match {
-      case f: FlatMapFunction[_, _] =>
-        f.getFunction match {
+      case f: FlatMapFunction[_, _] => f.getFunction match {
           case _: Converter[_] => true
           case _: FilteredFn[_] =>
             false //we'd like to forceToDisk after a filter

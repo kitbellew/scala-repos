@@ -59,7 +59,8 @@ object XmlApiSpec extends Specification {
       case r @ Req(List("api", "sum"), _, GetRequest)     => () => doSum(r)
       case r @ Req(List("api", "product"), _, GetRequest) => () => doProduct(r)
       case r @ Req(List("api", "max"), _, GetRequest)     => () => doMax(r)
-      case r @ Req(List("api", "min"), _, GetRequest) => () => doMin(r)
+      case r @ Req(List("api", "min"), _, GetRequest) =>
+        () => doMin(r)
       // Tests putResponseInBox
       case Req("api" :: _, _, _) => () => BadRequestResponse()
     }

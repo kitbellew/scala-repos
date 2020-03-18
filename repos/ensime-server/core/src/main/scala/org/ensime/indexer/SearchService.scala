@@ -369,8 +369,7 @@ class IndexingQueueActor(searchService: SearchService)
                   log.error(
                     s"failed to remove stale entries in ${batch.size} files",
                     t)
-                case Success(_) =>
-                  indexed.collect {
+                case Success(_) => indexed.collect {
                     case (file, syms) if syms.isEmpty =>
                     case (file, syms) =>
                       searchService

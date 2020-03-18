@@ -51,8 +51,7 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
   object SpecialLimits extends Strategy {
     override def apply(plan: LogicalPlan): Seq[SparkPlan] =
       plan match {
-        case logical.ReturnAnswer(rootPlan) =>
-          rootPlan match {
+        case logical.ReturnAnswer(rootPlan) => rootPlan match {
             case logical.Limit(
                   IntegerLiteral(limit),
                   logical.Sort(order, true, child)) =>

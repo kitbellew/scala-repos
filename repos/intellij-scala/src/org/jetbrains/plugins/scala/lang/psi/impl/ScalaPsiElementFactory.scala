@@ -531,8 +531,7 @@ object ScalaPsiElementFactory {
     val p = classDef.members(0).asInstanceOf[ScPatternDefinition]
     p.expr.getOrElse(
       throw new IllegalArgumentException("Expression not found")) match {
-      case x: ScParenthesisedExpr =>
-        x.expr match {
+      case x: ScParenthesisedExpr => x.expr match {
           case Some(y) => y
           case _       => x
         }
@@ -1070,9 +1069,8 @@ object ScalaPsiElementFactory {
         case None    => return false
       }
     imp.resolve() match {
-      case x: PsiClass =>
-        x.qualifiedName == clazz.qualifiedName
-      case _ => false
+      case x: PsiClass => x.qualifiedName == clazz.qualifiedName
+      case _           => false
     }
   }
 
@@ -1196,8 +1194,7 @@ object ScalaPsiElementFactory {
                 .isIdentifier(method.name + ":")
             val colon = if (needWhitespace) " : " else ": "
             s"$colon$text = $body"
-          case _ =>
-            " = " + body
+          case _ => " = " + body
         }
         builder ++= retAndBody
       case _ =>
@@ -1227,8 +1224,7 @@ object ScalaPsiElementFactory {
           val params =
             for (param <- method.getParameterList.getParameters) yield {
               val paramName = param.name match {
-                case null =>
-                  param match {
+                case null => param match {
                     case param: ClsParameterImpl => param.getStub.getName
                     case _                       => null
                   }
@@ -1342,9 +1338,8 @@ object ScalaPsiElementFactory {
       case ValType("Long")                  => "0L"
       case ValType("Float" | "Double")      => "0.0"
       case ScDesignatorType(c: PsiClass)
-          if c.qualifiedName == "java.lang.String" =>
-        "\"\""
-      case _ => "null"
+          if c.qualifiedName == "java.lang.String" => "\"\""
+      case _                                       => "null"
     }
   }
 

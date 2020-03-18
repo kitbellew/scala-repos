@@ -334,8 +334,7 @@ trait JobResultManager[M[+_]] {
   def getResult(job: JobId)
       : M[Either[String, (Option[MimeType], StreamT[M, Array[Byte]])]] = {
     fs.load(job) map (_ map {
-      case FileData(mimeType, data) =>
-        Right((mimeType, data))
+      case FileData(mimeType, data) => Right((mimeType, data))
     } getOrElse { Left("No results exist for job " + job) })
   }
 }

@@ -74,8 +74,7 @@ trait AnalysisTest extends PlanTest {
     val analysisAttempt = analyzer.execute(inputPlan)
     try analyzer.checkAnalysis(analysisAttempt)
     catch {
-      case a: AnalysisException =>
-        fail(
+      case a: AnalysisException => fail(
           s"""
             |Failed to Analyze Plan
             |$inputPlan

@@ -163,8 +163,7 @@ class CoordinateMatrix @Since("1.0.0") (
   private def computeSize() {
     // Reduce will throw an exception if `entries` is empty.
     val (m1, n1) = entries.map(entry => (entry.i, entry.j)).reduce {
-      case ((i1, j1), (i2, j2)) =>
-        (math.max(i1, i2), math.max(j1, j2))
+      case ((i1, j1), (i2, j2)) => (math.max(i1, i2), math.max(j1, j2))
     }
     // There may be empty columns at the very right and empty rows at the very bottom.
     nRows = math.max(nRows, m1 + 1L)
@@ -177,8 +176,7 @@ class CoordinateMatrix @Since("1.0.0") (
     val n = numCols().toInt
     val mat = BDM.zeros[Double](m, n)
     entries.collect().foreach {
-      case MatrixEntry(i, j, value) =>
-        mat(i.toInt, j.toInt) = value
+      case MatrixEntry(i, j, value) => mat(i.toInt, j.toInt) = value
     }
     mat
   }

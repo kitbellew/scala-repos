@@ -15,8 +15,6 @@ object Test {
 
     // these work, without producing a match error
 
-    (z.get("msg"): @unchecked) match {
-      case Some(_: Array[String]) =>
-    }
+    (z.get("msg"): @unchecked) match { case Some(_: Array[String]) => }
   }
 }

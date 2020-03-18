@@ -114,9 +114,8 @@ sealed trait Stack[T] {
     */
   def replace(target: Role, replacement: Stackable[T]): Stack[T] =
     transform {
-      case n @ Node(head, _, next) if head.role == target =>
-        replacement +: next
-      case stk => stk
+      case n @ Node(head, _, next) if head.role == target => replacement +: next
+      case stk                                            => stk
     }
 
   /**

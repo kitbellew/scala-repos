@@ -152,23 +152,19 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
       PsiTreeUtil.getParentOfType(element, classOf[ScFunction]) match {
         case null => null
         case funDef: ScFunctionDefinition
-            if !funDef.body.exists(_.isAncestorOf(element)) =>
-          funDef
-        case decl: ScFunctionDeclaration => decl
-        case _                           => null
+            if !funDef.body.exists(_.isAncestorOf(element)) => funDef
+        case decl: ScFunctionDeclaration                    => decl
+        case _                                              => null
       }
     def primaryConstr =
       PsiTreeUtil.getParentOfType(element, classOf[ScClass]) match {
         case null => null
-        case c: ScClass =>
-          c.constructor match {
+        case c: ScClass => c.constructor match {
             case Some(constr)
-                if PsiTreeUtil.isAncestor(
-                  c.nameId,
-                  element,
-                  false) || PsiTreeUtil.isAncestor(constr, element, false) =>
-              constr
-            case _ => null
+                if PsiTreeUtil
+                  .isAncestor(c.nameId, element, false) || PsiTreeUtil
+                  .isAncestor(constr, element, false) => constr
+            case _                                    => null
           }
       }
     Option(resolvedMethod) orElse Option(

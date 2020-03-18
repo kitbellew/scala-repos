@@ -29,10 +29,8 @@ object Generator {
       return false
     }
     builder.getTokenType match {
-      case ScalaTokenTypes.tCHOOSE =>
-        builder.advanceLexer
-      case _ =>
-        builder error ErrMsg("choose.expected")
+      case ScalaTokenTypes.tCHOOSE => builder.advanceLexer
+      case _                       => builder error ErrMsg("choose.expected")
     }
     if (!Expr.parse(builder)) builder error ErrMsg("wrong.expression")
     genMarker.done(ScalaElementTypes.GENERATOR)

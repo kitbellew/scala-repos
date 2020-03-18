@@ -84,8 +84,7 @@ class ParHashMap[K, +V] private[immutable] (
     var i = 0
     def dup =
       triter match {
-        case t: TrieIterator[_] =>
-          dupFromIterator(t.dupIterator)
+        case t: TrieIterator[_] => dupFromIterator(t.dupIterator)
         case _ =>
           val buff = triter.toBuffer
           triter = buff.iterator
@@ -138,8 +137,7 @@ class ParHashMap[K, +V] private[immutable] (
         println(
           "computed hash of " + hm.getKey + ": " + hm.computeHashFor(hm.getKey))
         println("trie.get(key): " + hm.get(hm.getKey))
-      case _ =>
-        println("other kind of node")
+      case _ => println("other kind of node")
     }
   }
 }

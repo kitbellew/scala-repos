@@ -752,8 +752,7 @@ trait AppAndGroupFormats {
         def portDefinitions: Seq[PortDefinition] =
           extra.ipAddress match {
             case Some(ipAddress) => Seq.empty[PortDefinition]
-            case None =>
-              extra.maybePortDefinitions.getOrElse {
+            case None => extra.maybePortDefinitions.getOrElse {
                 extra.maybePorts
                   .map { ports => PortDefinitions.apply(ports: _*) }
                   .getOrElse(AppDefinition.DefaultPortDefinitions)

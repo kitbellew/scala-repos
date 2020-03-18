@@ -87,10 +87,8 @@ object EndToEndEventAdapterSpec {
     var state: List[Any] = Nil
 
     val persistIncoming: Receive = {
-      case GetState ⇒
-        state.reverse.foreach { sender() ! _ }
-      case in ⇒
-        persist(in) { e ⇒
+      case GetState ⇒ state.reverse.foreach { sender() ! _ }
+      case in ⇒ persist(in) { e ⇒
           state ::= e
           sender() ! e
         }

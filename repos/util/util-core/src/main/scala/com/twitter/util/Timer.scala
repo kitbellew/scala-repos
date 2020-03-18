@@ -200,8 +200,7 @@ class JavaTimer(isDaemon: Boolean, name: Option[String]) extends Timer {
   }
 
   private[this] val catcher: PartialFunction[Throwable, Unit] = {
-    case NonFatal(t) =>
-      logError(t)
+    case NonFatal(t) => logError(t)
     case fatal: Throwable =>
       logError(fatal)
       throw fatal
@@ -277,8 +276,7 @@ class ScheduledThreadPoolTimer(
     this(poolSize, new NamedPoolThreadFactory(name, makeDaemons), None)
 
   private[this] val underlying = rejectedExecutionHandler match {
-    case None =>
-      new ScheduledThreadPoolExecutor(poolSize, threadFactory)
+    case None => new ScheduledThreadPoolExecutor(poolSize, threadFactory)
     case Some(h: RejectedExecutionHandler) =>
       new ScheduledThreadPoolExecutor(poolSize, threadFactory, h)
   }

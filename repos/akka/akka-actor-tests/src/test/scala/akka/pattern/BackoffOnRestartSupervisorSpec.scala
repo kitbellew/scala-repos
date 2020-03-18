@@ -128,8 +128,7 @@ class BackoffOnRestartSupervisorSpec extends AkkaSpec with ImplicitSender {
         case "THROW" ⇒
           sender ! "THROWN"
           throw new NormalException
-        case "PING" ⇒
-          sender ! "PONG"
+        case "PING" ⇒ sender ! "PONG"
       }
 
       override def postStop(): Unit = { latch.await(3, TimeUnit.SECONDS) }

@@ -93,11 +93,9 @@ private[play] class PlayRequestHandler(val server: NettyServer)
         clientError(Status.REQUEST_URI_TOO_LONG, exception.getMessage)
       case Failure(exception) =>
         clientError(Status.BAD_REQUEST, exception.getMessage)
-      case Success(untagged) =>
-        server.getHandlerFor(untagged) match {
+      case Success(untagged) => server.getHandlerFor(untagged) match {
 
-          case Left(directResult) =>
-            untagged -> Left(directResult)
+          case Left(directResult) => untagged -> Left(directResult)
 
           case Right((taggedRequestHeader, handler, application)) =>
             taggedRequestHeader -> Right((handler, application))
@@ -285,10 +283,8 @@ private[play] class PlayRequestHandler(val server: NettyServer)
     val body = modelConversion.convertRequestBody(request)
     val bodyParser = action(requestHeader)
     val resultFuture = body match {
-      case None =>
-        bodyParser.run()
-      case Some(source) =>
-        bodyParser.run(source)
+      case None         => bodyParser.run()
+      case Some(source) => bodyParser.run(source)
     }
 
     resultFuture

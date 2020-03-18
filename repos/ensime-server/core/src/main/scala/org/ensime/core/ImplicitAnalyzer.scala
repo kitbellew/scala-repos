@@ -38,10 +38,7 @@ class ImplicitAnalyzer(val global: RichPresentationCompiler) {
                 funIsImplicit))
             case _ =>
           }
-        } catch {
-          case e: Throwable =>
-            log.error("Error in AST traverse:", e)
-        }
+        } catch { case e: Throwable => log.error("Error in AST traverse:", e) }
         super.traverse(t)
       }
     }

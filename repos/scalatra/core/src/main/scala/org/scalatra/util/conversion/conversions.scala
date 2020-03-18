@@ -42,8 +42,7 @@ trait LowPriorityImplicitConversions extends LowestPriorityImplicitConversions {
   implicit val anyToBoolean: TypeConverter[Any, Boolean] = safe {
     case b: Boolean => b
     case "ON" | "TRUE" | "OK" | "1" | "CHECKED" | "YES" | "ENABLE" |
-        "ENABLED" =>
-      true
+        "ENABLED"  => true
     case n: Number => n != 0
     case _         => false
   }
@@ -129,9 +128,8 @@ trait DefaultImplicitConversions extends LowPriorityImplicitConversions {
   implicit val stringToBoolean: TypeConverter[String, Boolean] = safe { s =>
     s.toUpperCase match {
       case "ON" | "TRUE" | "OK" | "1" | "CHECKED" | "YES" | "ENABLE" |
-          "ENABLED" =>
-        true
-      case _ => false
+          "ENABLED" => true
+      case _        => false
     }
   }
 

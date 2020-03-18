@@ -60,8 +60,7 @@ class HoconObjectEntryMover extends LineMover {
       (file match {
         case hoconFile: HoconPsiFile =>
           checkAvailableHocon(editor, hoconFile, info, down)
-        case _ =>
-          false
+        case _ => false
       })
 
   private def checkAvailableHocon(
@@ -248,8 +247,7 @@ class HoconObjectEntryMover extends LineMover {
       enclosingAnchoredEntry(element).flatMap {
         case objField: HObjectField =>
           trySpecializedFieldMove(objField) orElse tryEntryMove(objField)
-        case include: HInclude =>
-          tryEntryMove(include)
+        case include: HInclude => tryEntryMove(include)
       }
 
     rangesOpt.foreach {

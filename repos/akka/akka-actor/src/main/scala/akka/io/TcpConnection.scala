@@ -88,11 +88,9 @@ private[io] abstract class TcpConnection(
       context.setReceiveTimeout(Duration.Undefined)
       context.become(connected(info))
 
-    case ResumeReading ⇒
-      readingSuspended = false
+    case ResumeReading ⇒ readingSuspended = false
 
-    case SuspendReading ⇒
-      readingSuspended = true
+    case SuspendReading ⇒ readingSuspended = true
 
     case cmd: CloseCommand ⇒
       val info = ConnectionInfo(
@@ -282,10 +280,8 @@ private[io] abstract class TcpConnection(
 
       val buffer = bufferPool.acquire()
       try innerRead(buffer, ReceivedMessageSizeLimit) match {
-        case AllRead ⇒
-          if (!pullMode) info.registration.enableInterest(OP_READ)
-        case MoreDataWaiting ⇒
-          if (!pullMode) self ! ChannelReadable
+        case AllRead ⇒ if (!pullMode) info.registration.enableInterest(OP_READ)
+        case MoreDataWaiting ⇒ if (!pullMode) self ! ChannelReadable
         case EndOfStream if channel.socket.isOutputShutdown ⇒
           if (TraceLogging)
             log.debug("Read returned end-of-stream, our side already closed")

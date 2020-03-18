@@ -14,8 +14,7 @@ class PatMatTests {
         println(first /*#*/ )
         println(tmp /*#*/ )
 
-      case CaseTwo /*#*/ (mystring) =>
-        println(mystring /*#*/ )
+      case CaseTwo /*#*/ (mystring) => println(mystring /*#*/ )
     }
   }
 

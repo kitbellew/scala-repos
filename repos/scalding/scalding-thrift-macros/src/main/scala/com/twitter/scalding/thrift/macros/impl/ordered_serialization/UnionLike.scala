@@ -43,16 +43,14 @@ object UnionLike {
             .getOrElse[Tree](q"0")
 
           existing match {
-            case Some(t) =>
-              Some(q"""
+            case Some(t) => Some(q"""
               if($valueA == $idx) {
                 $commonCmp
               } else {
                 $t
               }
             """)
-            case None =>
-              Some(q"""
+            case None    => Some(q"""
                 if($valueA == $idx) {
                   $commonCmp
                 } else {
@@ -137,8 +135,7 @@ object UnionLike {
             .getOrElse[Tree](q"()")
 
           optiExisting match {
-            case Some(s) =>
-              Some(q"""
+            case Some(s) => Some(q"""
             if($element.isInstanceOf[$tpe]) {
               $inputStream.writeByte($idx.toByte)
               $commonPut
@@ -146,8 +143,7 @@ object UnionLike {
               $s
             }
             """)
-            case None =>
-              Some(q"""
+            case None    => Some(q"""
             if($element.isInstanceOf[$tpe]) {
               $inputStream.writeByte($idx.toByte)
               $commonPut
@@ -204,16 +200,14 @@ object UnionLike {
           }): _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.MaybeLength
         """
           optiTree match {
-            case Some(t) =>
-              Some(q"""
+            case Some(t) => Some(q"""
             if($element.isInstanceOf[$tpe]) {
               $lenT
             } else {
               $t
             }
           """)
-            case None =>
-              Some(q"""
+            case None    => Some(q"""
             if($element.isInstanceOf[$tpe]) {
             $lenT
           } else {
@@ -247,16 +241,14 @@ object UnionLike {
             .getOrElse { q"""(new Object).asInstanceOf[$tpe]""" }
 
           existing match {
-            case Some(t) =>
-              Some(q"""
+            case Some(t) => Some(q"""
             if($valueA == $idx) {
               $extract : $tpe
             } else {
               $t
             }
           """)
-            case None =>
-              Some(q"""
+            case None    => Some(q"""
           if($valueA == $idx) {
             $extract
           } else {
@@ -289,18 +281,15 @@ object UnionLike {
 
     val toIdOpt: Tree = subData
       .foldLeft(Option.empty[Tree]) {
-        case (existing, (idx, tpe, _)) =>
-          existing match {
-            case Some(t) =>
-              Some(q"""
+        case (existing, (idx, tpe, _)) => existing match {
+            case Some(t) => Some(q"""
             if($arg.isInstanceOf[$tpe]) {
               $idx
             } else {
               $t
             }
           """)
-            case None =>
-              Some(q"""
+            case None    => Some(q"""
               if($arg.isInstanceOf[$tpe]) {
                 $idx
               } else {
@@ -325,16 +314,14 @@ object UnionLike {
           .getOrElse(q"0")
 
         existing match {
-          case Some(t) =>
-            Some(q"""
+          case Some(t) => Some(q"""
             if($idxA == $idx) {
               $commonCmp : Int
             } else {
               $t : Int
             }
           """)
-          case None =>
-            Some(q"""
+          case None    => Some(q"""
               if($idxA == $idx) {
                 $commonCmp : Int
               } else {

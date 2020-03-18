@@ -70,8 +70,8 @@ trait TypeInferencerSpecs[M[+_]]
 
         case JUnionT(left, right) => flattenAux(left) ++ flattenAux(right)
 
-        case u @ (JArrayUnfixedT | JObjectUnfixedT) =>
-          Set((JPath.Identity, None))
+        case u @ (JArrayUnfixedT | JObjectUnfixedT) => Set(
+            (JPath.Identity, None))
       }
 
     flattenAux(jtpe).groupBy(_._1).mapValues(_.flatMap(_._2))
@@ -108,11 +108,9 @@ trait TypeInferencerSpecs[M[+_]]
         case Group(id, target, child) =>
           merge(extractLoads(target), extractSpecLoads(child))
 
-        case UnfixedSolution(id, target) =>
-          extractLoads(target)
+        case UnfixedSolution(id, target) => extractLoads(target)
 
-        case Extra(target) =>
-          extractLoads(target)
+        case Extra(target) => extractLoads(target)
       }
 
     graph match {
@@ -120,8 +118,8 @@ trait TypeInferencerSpecs[M[+_]]
 
       case New(parent) => extractLoads(parent)
 
-      case AbsoluteLoad(Const(CString(path)), jtpe) =>
-        Map(path -> flattenType(jtpe))
+      case AbsoluteLoad(Const(CString(path)), jtpe) => Map(
+          path -> flattenType(jtpe))
 
       case Operate(_, parent) => extractLoads(parent)
 

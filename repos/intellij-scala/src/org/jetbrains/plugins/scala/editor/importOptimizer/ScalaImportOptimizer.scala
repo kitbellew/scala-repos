@@ -736,9 +736,8 @@ object ScalaImportOptimizer {
     }
 
     expr.findImplicitParameters match {
-      case Some(seq) =>
-        for (rr <- seq if rr != null) { res ++= rr.importsUsed }
-      case _ =>
+      case Some(seq) => for (rr <- seq if rr != null) { res ++= rr.importsUsed }
+      case _         =>
     }
     res.toSet
   }
@@ -757,10 +756,8 @@ object ScalaImportOptimizer {
             importedNames += scalaResult.name
           case _ =>
         }
-      case simple: ScSimpleTypeElement =>
-        simple.findImplicitParameters match {
-          case Some(parameters) =>
-            parameters.foreach {
+      case simple: ScSimpleTypeElement => simple.findImplicitParameters match {
+          case Some(parameters) => parameters.foreach {
               case r: ScalaResolveResult => result ++= r.importsUsed
               case _                     =>
             }
@@ -791,8 +788,7 @@ object ScalaImportOptimizer {
           addName(p.getName)
       case ScalaResolveResult(o: ScObject, _) if o.isPackageObject =>
         if (o.qualifiedName.contains(".")) addName(o.name)
-      case ScalaResolveResult(o: ScObject, _) =>
-        o.getParent match {
+      case ScalaResolveResult(o: ScObject, _) => o.getParent match {
           case file: ScalaFile =>
           case _               => addName(o.name)
         }

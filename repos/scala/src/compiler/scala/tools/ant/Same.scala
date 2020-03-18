@@ -77,10 +77,8 @@ class Same extends ScalaMatchingTask {
 
   private def getMapper: FileNameMapper =
     mapperElement match {
-      case None =>
-        new IdentityMapper()
-      case Some(me) =>
-        me.getImplementation
+      case None     => new IdentityMapper()
+      case Some(me) => me.getImplementation
     }
 
   /*============================================================================*\

@@ -233,9 +233,7 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
       override def onStart(): Unit = { calledMethods += "start" }
 
-      override def receive: PartialFunction[Any, Unit] = {
-        case msg: String =>
-      }
+      override def receive: PartialFunction[Any, Unit] = { case msg: String => }
 
       override def onStop(): Unit = {
         calledMethods += "stop"
@@ -258,9 +256,7 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
         override def onStart(): Unit = { throw new RuntimeException("Oops!") }
 
-        override def receive: PartialFunction[Any, Unit] = {
-          case m =>
-        }
+        override def receive: PartialFunction[Any, Unit] = { case m => }
 
         override def onError(cause: Throwable): Unit = { e = cause }
       }
@@ -279,9 +275,7 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
       new RpcEndpoint {
         override val rpcEnv = env
 
-        override def receive: PartialFunction[Any, Unit] = {
-          case m =>
-        }
+        override def receive: PartialFunction[Any, Unit] = { case m => }
 
         override def onError(cause: Throwable): Unit = { e = cause }
 
@@ -333,9 +327,7 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
           callSelfSuccessfully = true
         }
 
-        override def receive: PartialFunction[Any, Unit] = {
-          case m =>
-        }
+        override def receive: PartialFunction[Any, Unit] = { case m => }
       }
     )
 
@@ -379,9 +371,7 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
       new RpcEndpoint {
         override val rpcEnv = env
 
-        override def receive: PartialFunction[Any, Unit] = {
-          case m =>
-        }
+        override def receive: PartialFunction[Any, Unit] = { case m => }
 
         override def onStop(): Unit = { selfOption = Option(self) }
       }
@@ -435,9 +425,7 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
       new RpcEndpoint {
         override val rpcEnv = env
 
-        override def receive: PartialFunction[Any, Unit] = {
-          case m =>
-        }
+        override def receive: PartialFunction[Any, Unit] = { case m => }
 
         override def onStop(): Unit = { onStopCount += 1 }
       })

@@ -60,9 +60,7 @@ object CpuProfileBenchmark {
       threads = for (_ <- 0 until nthreads) yield new Thread {
         override def run() {
           try stack()
-          catch {
-            case _: InterruptedException =>
-          }
+          catch { case _: InterruptedException => }
         }
       }
 

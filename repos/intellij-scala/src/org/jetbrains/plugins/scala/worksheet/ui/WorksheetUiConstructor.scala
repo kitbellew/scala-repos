@@ -46,9 +46,8 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
     @inline
     def addFiller(): Unit = {
       panel.getComponent(0) match {
-        case child: JComponent =>
-          addChild(panel, createFillerFor(child))
-        case _ =>
+        case child: JComponent => addChild(panel, createFillerFor(child))
+        case _                 =>
       }
     }
 

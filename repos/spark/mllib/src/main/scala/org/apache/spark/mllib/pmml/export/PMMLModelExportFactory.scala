@@ -34,8 +34,7 @@ private[mllib] object PMMLModelExportFactory {
     */
   def createPMMLModelExport(model: Any): PMMLModelExport = {
     model match {
-      case kmeans: KMeansModel =>
-        new KMeansPMMLModelExport(kmeans)
+      case kmeans: KMeansModel => new KMeansPMMLModelExport(kmeans)
       case linear: LinearRegressionModel =>
         new GeneralizedLinearPMMLModelExport(linear, "linear regression")
       case ridge: RidgeRegressionModel =>

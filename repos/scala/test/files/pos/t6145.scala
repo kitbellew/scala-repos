@@ -3,9 +3,6 @@ object Test {
   // can we get rid of the useless cast?
   @annotation.tailrec
   final def searchClass: Class[_] = {
-    "packageName" match {
-      case _ =>
-        searchClass
-    }
+    "packageName" match { case _ => searchClass }
   }
 }

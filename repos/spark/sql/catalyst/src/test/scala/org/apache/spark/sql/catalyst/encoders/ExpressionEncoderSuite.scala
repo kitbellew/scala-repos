@@ -304,8 +304,7 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
       val convertedBack =
         try boundEncoder.fromRow(row)
         catch {
-          case e: Exception =>
-            fail(
+          case e: Exception => fail(
               s"""Exception thrown while decoding
               |Converted: $row
               |Schema: ${schema.mkString(",")}
@@ -363,8 +362,7 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
                       a: ArrayData,
                       AttributeReference(_, ArrayType(et, _), _, _)) =>
                   a.toArray[Any](et).toSeq
-                case (other, _) =>
-                  other
+                case (other, _) => other
               }
               .mkString("[", ",", "]")
           } catch { case e: Throwable => s"Failed to toSeq: $e" }

@@ -34,8 +34,8 @@ class ScalaPropertiesReferenceProvider extends PsiReferenceProvider {
     }
 
     element match {
-      case PossibleKey(str) =>
-        Array(new PropertyReference(str, element, null, true))
+      case PossibleKey(str) => Array(
+          new PropertyReference(str, element, null, true))
       case _ => Array.empty
     }
   }

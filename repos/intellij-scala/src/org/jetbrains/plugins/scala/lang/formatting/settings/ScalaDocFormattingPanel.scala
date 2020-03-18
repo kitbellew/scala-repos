@@ -90,9 +90,8 @@ class ScalaDocFormattingPanel(val settings: CodeStyleSettings)
     val children = c.getComponents
     for (child <- children) {
       child match {
-        case c1: JComponent =>
-          setEnabled(c1, enabled)
-        case _ =>
+        case c1: JComponent => setEnabled(c1, enabled)
+        case _              =>
       }
     }
   }

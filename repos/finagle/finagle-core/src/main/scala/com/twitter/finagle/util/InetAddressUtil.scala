@@ -18,8 +18,7 @@ object InetAddressUtil {
         else if (addr(0) == 192.toByte && addr(1) == 168.toByte) // 192.168/16
           true
         else false
-      case _ =>
-        false
+      case _ => false
     }
 
   /**
@@ -35,8 +34,7 @@ object InetAddressUtil {
           ((i & 0x0000ff00) >> 8).toByte,
           ((i & 0x000000ff)).toByte)
         InetAddress.getByAddress(host, bytes)
-      case None =>
-        InetAddress.getByName(host)
+      case None => InetAddress.getByName(host)
     }
   }
 }

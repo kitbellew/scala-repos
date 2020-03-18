@@ -100,9 +100,8 @@ class ScalaFindUsagesHandlerFactory(project: Project)
     named match {
       case fun: ScFunction
           if fun.containingClass.qualifiedName.startsWith(
-            "scala.Function") && fun.name == "apply" =>
-        false
-      case _ => true
+            "scala.Function") && fun.name == "apply" => false
+      case _                                         => true
     }
   }
 }

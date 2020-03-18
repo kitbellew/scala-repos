@@ -207,9 +207,7 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
         // Someone else is fetching it; wait for them to be done
         while (fetching.contains(shuffleId)) {
           try { fetching.wait() }
-          catch {
-            case e: InterruptedException =>
-          }
+          catch { case e: InterruptedException => }
         }
 
         // Either while we waited the fetch happened successfully, or
@@ -456,8 +454,7 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
         cacheEpoch = epoch
       }
       cachedSerializedStatuses.get(shuffleId) match {
-        case Some(bytes) =>
-          return bytes
+        case Some(bytes) => return bytes
         case None =>
           statuses = mapStatuses.getOrElse(shuffleId, Array[MapStatus]())
           epochGotten = epoch

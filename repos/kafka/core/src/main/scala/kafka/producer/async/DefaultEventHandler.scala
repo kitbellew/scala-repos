@@ -445,8 +445,7 @@ class DefaultEventHandler[K, V](
                   messages.size,
                   topicAndPartition))
                 new ByteBufferMessageSet(NoCompressionCodec, rawMessages: _*)
-              case _ =>
-                config.compressedTopics.size match {
+              case _ => config.compressedTopics.size match {
                   case 0 =>
                     debug(
                       "Sending %d messages with compression codec %d to %s"

@@ -136,8 +136,7 @@ trait ScTypePsiTypeBridge {
                     .map(tp => {
                       val psiType = substitutor.substitute(tp)
                       psiType match {
-                        case wild: PsiWildcardType =>
-                          ScSkolemizedType(
+                        case wild: PsiWildcardType => ScSkolemizedType(
                             s"_$$${ index += 1; index }",
                             Nil,
                             if (wild.isSuper)
@@ -186,8 +185,8 @@ trait ScTypePsiTypeBridge {
             }
           case _ => types.Nothing
         }
-      case arrayType: PsiArrayType =>
-        JavaArrayType(create(arrayType.getComponentType, project, scope))
+      case arrayType: PsiArrayType => JavaArrayType(
+          create(arrayType.getComponentType, project, scope))
       case PsiType.VOID    => types.Unit
       case PsiType.BOOLEAN => types.Boolean
       case PsiType.CHAR    => types.Char
@@ -198,8 +197,7 @@ trait ScTypePsiTypeBridge {
       case PsiType.BYTE    => types.Byte
       case PsiType.SHORT   => types.Short
       case PsiType.NULL    => types.Null
-      case wild: PsiWildcardType =>
-        ScExistentialType.simpleExistential(
+      case wild: PsiWildcardType => ScExistentialType.simpleExistential(
           "_$1",
           Nil,
           if (wild.isSuper)
@@ -381,10 +379,8 @@ trait ScTypePsiTypeBridge {
       case ScParameterizedType(tpt: ScTypeParameterType, _) =>
         EmptySubstitutor.getInstance().substitute(tpt.param)
       case JavaArrayType(arg) => new PsiArrayType(toPsi(arg, project, scope))
-      case proj @ ScProjectionType(_, _, _) =>
-        proj.actualElement match {
-          case clazz: PsiClass =>
-            clazz match {
+      case proj @ ScProjectionType(_, _, _) => proj.actualElement match {
+          case clazz: PsiClass => clazz match {
               case syn: ScSyntheticClass => toPsi(syn.t, project, scope)
               case _ =>
                 createType(clazz, raw = outerClassHasTypeParameters(proj))

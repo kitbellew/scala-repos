@@ -52,16 +52,11 @@ private[scalajs] object CoreJSLibs {
 
     def getOption(name: String): String =
       name match {
-        case "asInstanceOfs" =>
-          semantics.asInstanceOfs.toString()
-        case "moduleInit" =>
-          semantics.moduleInit.toString()
-        case "floats" =>
-          if (semantics.strictFloats) "Strict" else "Loose"
-        case "productionMode" =>
-          semantics.productionMode.toString()
-        case "outputMode" =>
-          outputMode.toString()
+        case "asInstanceOfs"  => semantics.asInstanceOfs.toString()
+        case "moduleInit"     => semantics.moduleInit.toString()
+        case "floats"         => if (semantics.strictFloats) "Strict" else "Loose"
+        case "productionMode" => semantics.productionMode.toString()
+        case "outputMode"     => outputMode.toString()
       }
 
     val originalLines = ScalaJSEnvLines
@@ -110,8 +105,7 @@ private[scalajs] object CoreJSLibs {
       .replace("{{LINKER_VERSION}}", ScalaJSVersions.current)
 
     val content1 = outputMode match {
-      case OutputMode.ECMAScript51Global =>
-        content
+      case OutputMode.ECMAScript51Global => content
 
       case OutputMode.ECMAScript51Isolated | OutputMode.ECMAScript6 =>
         content
@@ -134,8 +128,7 @@ private[scalajs] object CoreJSLibs {
         content1
           .replaceAll(raw"\b(let|const)\b", "var")
 
-      case OutputMode.ECMAScript6 =>
-        content1
+      case OutputMode.ECMAScript6 => content1
     }
   }
 

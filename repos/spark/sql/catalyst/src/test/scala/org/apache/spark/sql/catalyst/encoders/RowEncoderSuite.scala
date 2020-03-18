@@ -165,8 +165,7 @@ class RowEncoderSuite extends SparkFunSuite {
           assert(input == convertedBack)
         }
       } catch {
-        case e: Exception =>
-          fail(s"""
+        case e: Exception => fail(s"""
                |schema: ${schema.simpleString}
                |input: ${input}
              """.stripMargin, e)

@@ -197,8 +197,7 @@ class StringIndexerSuite
       .setOutputCol("actual")
       .setLabels(labels)
     idxToStr0.transform(df0).select("actual", "expected").collect().foreach {
-      case Row(actual, expected) =>
-        assert(actual === expected)
+      case Row(actual, expected) => assert(actual === expected)
     }
 
     val attr = NominalAttribute.defaultAttr.withValues(labels)
@@ -210,8 +209,7 @@ class StringIndexerSuite
       .setInputCol("indexWithAttr")
       .setOutputCol("actual")
     idxToStr1.transform(df1).select("actual", "expected").collect().foreach {
-      case Row(actual, expected) =>
-        assert(actual === expected)
+      case Row(actual, expected) => assert(actual === expected)
     }
   }
 
@@ -233,10 +231,7 @@ class StringIndexerSuite
       .transform(transformed)
       .select("label", "sameLabel")
       .collect()
-      .foreach {
-        case Row(a: String, b: String) =>
-          assert(a === b)
-      }
+      .foreach { case Row(a: String, b: String) => assert(a === b) }
   }
 
   test("IndexToString.transformSchema (SPARK-10573)") {

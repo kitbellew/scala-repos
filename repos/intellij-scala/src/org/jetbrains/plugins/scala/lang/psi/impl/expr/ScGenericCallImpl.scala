@@ -75,8 +75,7 @@ class ScGenericCallImpl(node: ASTNode)
     if (candidates.length != 1) types.Nothing
     else {
       candidates(0) match {
-        case ScalaResolveResult(fun: PsiMethod, s: ScSubstitutor) =>
-          fun match {
+        case ScalaResolveResult(fun: PsiMethod, s: ScSubstitutor) => fun match {
             case fun: ScFun      => s.subst(fun.polymorphicType)
             case fun: ScFunction => s.subst(fun.polymorphicType())
             case meth: PsiMethod =>

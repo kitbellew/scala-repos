@@ -163,8 +163,7 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 val s = c(row)
                 try { parseDateTime(s, true) }
                 catch {
-                  case e: IllegalArgumentException =>
-                    parseDateTimeFlexibly(s)
+                  case e: IllegalArgumentException => parseDateTimeFlexibly(s)
                 }
               }
             }

@@ -18,10 +18,7 @@ object Test extends App {
       println(fm.get)
       fm.set(2)
       println(fm.get)
-    } catch {
-      case ex: Throwable =>
-        println(ex.getMessage)
-    }
+    } catch { case ex: Throwable => println(ex.getMessage) }
   }
 
   test(cs.info.decl(TermName("x")).asTerm)

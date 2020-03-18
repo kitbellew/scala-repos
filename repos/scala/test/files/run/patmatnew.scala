@@ -405,12 +405,7 @@ object Test {
     class Foo(j: Int) {
       case class Bar(i: Int)
     }
-    def run() {
-      "baz" match {
-        case Foo1(x) =>
-          Foo1.p(x)
-      }
-    }
+    def run() { "baz" match { case Foo1(x) => Foo1.p(x) } }
   }
 
   // these are exhaustive matches
@@ -485,7 +480,9 @@ object Test {
     class Buffer {
       val Get = new Sync
       val jp: PartialFunction[Any, Any] = {
-        case Get(xs) => // the argDummy <unapply-selector> should have proper arg.tpe (Int in this case)
+        case Get(
+              xs
+            ) => // the argDummy <unapply-selector> should have proper arg.tpe (Int in this case)
       }
     }
     def run() {

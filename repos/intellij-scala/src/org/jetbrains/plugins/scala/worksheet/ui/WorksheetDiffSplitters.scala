@@ -95,9 +95,8 @@ object WorksheetDiffSplitters {
         Option(
           PsiDocumentManager.getInstance(
             editor1.getProject) getCachedPsiFile editor1.getDocument) foreach {
-          case file: ScalaFile =>
-            WorksheetEditorPrinter.saveOnlyRatio(file, f)
-          case _ =>
+          case file: ScalaFile => WorksheetEditorPrinter.saveOnlyRatio(file, f)
+          case _               =>
         }
       }
     })

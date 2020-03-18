@@ -74,8 +74,7 @@ class HoconHighlightKeyUsagesHandler(
           def fromPath(keys: List[HKey], pathKeys: List[HKey]): Option[HKey] =
             (keys, pathKeys) match {
               case (key :: Nil, pathKey :: _)
-                  if key.stringValue == pathKey.stringValue =>
-                Some(pathKey)
+                  if key.stringValue == pathKey.stringValue => Some(pathKey)
               case (key :: rest, pathKey :: pathRest)
                   if key.stringValue == pathKey.stringValue =>
                 fromPath(rest, pathRest)
@@ -88,8 +87,7 @@ class HoconHighlightKeyUsagesHandler(
             else Iterator.empty
 
           fromFields(Iterator(firstKey.enclosingEntries), keys) ++ fromPaths
-        case Nil =>
-          Iterator.empty
+        case Nil => Iterator.empty
       }
     foundKeys.foreach(key =>
       key

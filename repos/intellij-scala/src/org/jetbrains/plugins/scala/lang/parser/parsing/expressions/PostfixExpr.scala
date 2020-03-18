@@ -34,8 +34,7 @@ object PostfixExpr {
           case _ => {}
         }*/
         postfixMarker.done(ScalaElementTypes.POSTFIX_EXPR)
-      case _ =>
-        postfixMarker.drop
+      case _ => postfixMarker.drop
     }
     return true
   }

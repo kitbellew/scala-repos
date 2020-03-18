@@ -422,10 +422,8 @@ trait AnnotationInfos extends api.Annotations {
             // in that case we're going to have correctly typed Array.apply calls, however that's 2.12 territory
             // and for 2.11 exposing an untyped call to ArrayModule should suffice
             Apply(Ident(ArrayModule), args.toList)
-          case NestedAnnotArg(ann: Annotation) =>
-            annotationToTree(ann)
-          case _ =>
-            EmptyTree
+          case NestedAnnotArg(ann: Annotation) => annotationToTree(ann)
+          case _                               => EmptyTree
         }
       def reverseEngineerArgs(
           jargs: List[(Name, ClassfileAnnotArg)]): List[Tree] =
@@ -453,8 +451,8 @@ trait AnnotationInfos extends api.Annotations {
         def encodeJavaArg(arg: Tree): ClassfileAnnotArg =
           arg match {
             case Literal(const) => LiteralAnnotArg(const)
-            case Apply(ArrayModule, args) =>
-              ArrayAnnotArg(args map encodeJavaArg toArray)
+            case Apply(ArrayModule, args) => ArrayAnnotArg(
+                args map encodeJavaArg toArray)
             case Apply(Select(New(tpt), nme.CONSTRUCTOR), args) =>
               NestedAnnotArg(treeToAnnotation(arg))
             case _ =>
@@ -498,16 +496,13 @@ trait AnnotationInfos extends api.Annotations {
   object ThrownException {
     def unapply(ann: AnnotationInfo): Option[Type] = {
       ann match {
-        case AnnotationInfo(tpe, _, _) if tpe.typeSymbol != ThrowsClass =>
-          None
+        case AnnotationInfo(tpe, _, _) if tpe.typeSymbol != ThrowsClass => None
         // old-style: @throws(classOf[Exception]) (which is throws[T](classOf[Exception]))
-        case AnnotationInfo(_, List(Literal(Constant(tpe: Type))), _) =>
-          Some(tpe)
+        case AnnotationInfo(_, List(Literal(Constant(tpe: Type))), _) => Some(
+            tpe)
         // new-style: @throws[Exception], @throws[Exception]("cause")
-        case AnnotationInfo(TypeRef(_, _, arg :: _), _, _) =>
-          Some(arg)
-        case AnnotationInfo(TypeRef(_, _, Nil), _, _) =>
-          Some(ThrowableTpe)
+        case AnnotationInfo(TypeRef(_, _, arg :: _), _, _) => Some(arg)
+        case AnnotationInfo(TypeRef(_, _, Nil), _, _)      => Some(ThrowableTpe)
       }
     }
   }

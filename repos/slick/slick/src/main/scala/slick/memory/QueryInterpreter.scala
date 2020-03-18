@@ -53,9 +53,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
         new StructValue(
           n.children.toSeq.map(run),
           n.nodeType.asInstanceOf[StructType].symbolToIndex)
-      case ProductNode(ch) =>
-        new ProductValue(ch.map(run).toSeq)
-      case Pure(n, _) => Vector(run(n))
+      case ProductNode(ch) => new ProductValue(ch.map(run).toSeq)
+      case Pure(n, _)      => Vector(run(n))
       case t: TableNode =>
         val dbt = db.getTable(t.tableName)
         val acc = dbt.columnIndexes
@@ -252,8 +251,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
           }
       case GetOrElse(ch, default) =>
         run(ch).asInstanceOf[Option[Any]].getOrElse(default())
-      case OptionApply(ch) =>
-        Option(run(ch))
+      case OptionApply(ch) => Option(run(ch))
       case c: IfThenElse =>
         val opt = n.nodeType.asInstanceOf[ScalaType[_]].nullable
         val take = c.ifThenClauses.find {
@@ -272,8 +270,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
                   .nullable) Option(res)
             else res
         }
-      case QueryParameter(extractor, _, _) =>
-        extractor(params)
+      case QueryParameter(extractor, _, _) => extractor(params)
       case Library.SilentCast(ch) =>
         val chV = run(ch)
         (ch.nodeType, n.nodeType) match {
@@ -281,8 +278,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
             chV.asInstanceOf[Option[Any]].get
           case (tpe, OptionType(tpe2)) if tpe == tpe2 => Option(chV)
         }
-      case Library.Exists(coll) =>
-        !run(coll).asInstanceOf[Coll].isEmpty
+      case Library.Exists(coll) => !run(coll).asInstanceOf[Coll].isEmpty
       case Library.IfNull(cond, default) =>
         val condV = run(cond)
         if ((condV.asInstanceOf[AnyRef] eq null) || condV == None) {

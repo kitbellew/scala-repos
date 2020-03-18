@@ -38,8 +38,8 @@ private case class ScalaSdkData(
     val libraryElement = createLibraryElement()
 
     context.getStorageScheme match {
-      case StorageScheme.DIRECTORY_BASED =>
-        Some(addDirectoryBasedLibrary(libraryElement, context))
+      case StorageScheme.DIRECTORY_BASED => Some(
+          addDirectoryBasedLibrary(libraryElement, context))
       case StorageScheme.DEFAULT =>
         addProjectBasedLibrary(libraryElement, context)
         None

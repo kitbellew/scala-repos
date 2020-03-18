@@ -26,10 +26,8 @@ object HttpServer {
       service(request) handle {
         case error =>
           val statusCode = error match {
-            case _: IllegalArgumentException =>
-              Status.Forbidden
-            case _ =>
-              Status.InternalServerError
+            case _: IllegalArgumentException => Status.Forbidden
+            case _                           => Status.InternalServerError
           }
           val errorResponse = Response(Version.Http11, statusCode)
           errorResponse.contentString = error.getStackTraceString

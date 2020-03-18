@@ -77,10 +77,8 @@ private[stream] class ConnectionSourceStage(
             bindingPromise.failure(ex)
             unbindPromise.success(() ⇒ Future.successful(()))
             failStage(ex)
-          case c: Connected ⇒
-            push(out, connectionFor(c, sender))
-          case Unbind ⇒
-            if (!isClosed(out) && (listener ne null)) tryUnbind()
+          case c: Connected ⇒ push(out, connectionFor(c, sender))
+          case Unbind ⇒ if (!isClosed(out) && (listener ne null)) tryUnbind()
           case Unbound ⇒ // If we're unbound then just shut down
             if (connectionFlowsAwaitingInitialization.get() == 0)
               completeStage()
@@ -230,8 +228,8 @@ private[stream] object TcpConnectionStage {
         case Terminated(_) ⇒
           failStage(new StreamTcpException(
             "The IO manager actor (TCP) has terminated. Stopping now."))
-        case CommandFailed(cmd) ⇒
-          failStage(new StreamTcpException(s"Tcp command [$cmd] failed"))
+        case CommandFailed(cmd) ⇒ failStage(
+            new StreamTcpException(s"Tcp command [$cmd] failed"))
         case c: Connected ⇒
           role
             .asInstanceOf[Outbound]
@@ -258,13 +256,12 @@ private[stream] object TcpConnectionStage {
         case Terminated(_) ⇒
           failStage(new StreamTcpException(
             "The connection actor has terminated. Stopping now."))
-        case CommandFailed(cmd) ⇒
-          failStage(new StreamTcpException(s"Tcp command [$cmd] failed"))
-        case ErrorClosed(cause) ⇒
-          failStage(
+        case CommandFailed(cmd) ⇒ failStage(
+            new StreamTcpException(s"Tcp command [$cmd] failed"))
+        case ErrorClosed(cause) ⇒ failStage(
             new StreamTcpException(s"The connection closed with error: $cause"))
-        case Aborted ⇒
-          failStage(new StreamTcpException("The connection has been aborted"))
+        case Aborted ⇒ failStage(
+            new StreamTcpException("The connection has been aborted"))
         case Closed ⇒ completeStage()
         case ConfirmedClosed ⇒ completeStage()
         case PeerClosed ⇒ complete(bytesOut)

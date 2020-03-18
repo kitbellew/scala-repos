@@ -30,8 +30,7 @@ class TestAsyncInetResolver extends Resolver {
 
   def bind(spec: String): Var[Addr] =
     spec match {
-      case HostPort(host, port) =>
-        Var.async[Addr](Addr.Pending) { update =>
+      case HostPort(host, port) => Var.async[Addr](Addr.Pending) { update =>
           pool { update() = Addr.Bound(Address(host, port)) }
           Closable.nop
         }

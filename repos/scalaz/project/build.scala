@@ -143,10 +143,8 @@ object build extends Build {
     genTypeClasses := {
       typeClasses.value.flatMap { tc =>
         val dir = name.value match {
-          case ConcurrentName =>
-            (scalaSource in Compile).value
-          case _ =>
-            ScalazCrossType.shared(baseDirectory.value, "main")
+          case ConcurrentName => (scalaSource in Compile).value
+          case _              => ScalazCrossType.shared(baseDirectory.value, "main")
         }
         typeclassSource(tc).sources
           .map(_.createOrUpdate(dir, streams.value.log))
@@ -224,8 +222,7 @@ object build extends Build {
         ("nuttycom", "Kris Nuttycombe"),
         ("larsrh", "Lars Hupel")
       ).map {
-        case (id, name) =>
-          <developer>
+        case (id, name) => <developer>
                 <id>{id}</id>
                 <name>{name}</name>
                 <url>http://github.com/{id}</url>
@@ -405,8 +402,7 @@ object build extends Build {
           "oss.sonatype.org",
           user,
           pass)
-      case _ =>
-        Credentials(Path.userHome / ".ivy2" / ".credentials")
+      case _ => Credentials(Path.userHome / ".ivy2" / ".credentials")
     }
   }
 

@@ -1092,8 +1092,7 @@ class BlockManagerSuite
     }
     assert(updatedBlocks3.size === 2)
     updatedBlocks3.foreach {
-      case (id, status) =>
-        id match {
+      case (id, status) => id match {
           case TestBlockId("list1") =>
             assert(status.storageLevel === StorageLevel.NONE)
           case TestBlockId("list3") =>
@@ -1113,8 +1112,7 @@ class BlockManagerSuite
     }
     assert(updatedBlocks4.size === 2)
     updatedBlocks4.foreach {
-      case (id, status) =>
-        id match {
+      case (id, status) => id match {
           case TestBlockId("list2") =>
             assert(status.storageLevel === StorageLevel.DISK_ONLY)
           case TestBlockId("list4") =>

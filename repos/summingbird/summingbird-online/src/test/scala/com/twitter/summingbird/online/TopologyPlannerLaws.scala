@@ -110,8 +110,7 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
     forAll { (dag: MemoryDag) =>
       dag.nodes.forall { n =>
         val (_, inError) = n.members.foldLeft((false, false)) {
-          case ((seenMergeProducer, inError), producer) =>
-            producer match {
+          case ((seenMergeProducer, inError), producer) => producer match {
               case MergedProducer(_, _) => (true, inError)
               case NamedProducer(_, _)  => (seenMergeProducer, inError)
               case _                    => (seenMergeProducer, (inError || seenMergeProducer))
@@ -186,8 +185,7 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
     (dag: MemoryDag) =>
       dag.nodes.forall { n =>
         val success = n match {
-          case n: SourceNode[_] =>
-            n.members.forall { p =>
+          case n: SourceNode[_] => n.members.forall { p =>
               !p.isInstanceOf[FlatMappedProducer[_, _, _]]
             }
           case _ => true

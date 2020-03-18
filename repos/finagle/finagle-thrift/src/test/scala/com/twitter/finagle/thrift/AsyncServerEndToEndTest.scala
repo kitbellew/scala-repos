@@ -42,8 +42,7 @@ class AsyncServerEndToEndTest extends FunSuite {
                   val response = bleep.newReply
                   response.setSuccess(bleep.arguments.request.reverse)
                   Channels.write(ctx.getChannel, bleep.reply(response))
-                case _ =>
-                  throw new IllegalArgumentException
+                case _ => throw new IllegalArgumentException
               }
             }
           }

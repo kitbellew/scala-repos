@@ -100,14 +100,12 @@ object Test extends InteractiveTest {
       val reloadResponse = new Response[Unit]
       compiler.askReload(List(batch), reloadResponse)
       reloadResponse.get.left.toOption match {
-        case None =>
-          println("Couldn't reload")
+        case None => println("Couldn't reload")
         case Some(_) =>
           val parseResponse = new Response[Tree]
           askParsedEntered(batch, true, parseResponse)
           parseResponse.get.left.toOption match {
-            case None =>
-              println("Couldn't parse")
+            case None => println("Couldn't parse")
             case Some(_) =>
               val sym = compiler.ask { () =>
                 val toplevel = compiler.rootMirror.EmptyPackage.info

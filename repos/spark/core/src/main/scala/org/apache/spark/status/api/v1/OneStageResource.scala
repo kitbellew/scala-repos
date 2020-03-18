@@ -136,8 +136,7 @@ private[v1] class OneStageResource(ui: SparkUI) {
         stage.info.attemptId == stageAttemptId
       }
       oneAttempt match {
-        case Some(stage) =>
-          f(stage)
+        case Some(stage) => f(stage)
         case None =>
           val stageAttempts = attempts.map { _.info.attemptId }
           throw new NotFoundException(

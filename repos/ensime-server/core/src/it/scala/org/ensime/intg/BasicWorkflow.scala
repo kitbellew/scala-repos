@@ -76,9 +76,8 @@ class BasicWorkflow
                   "java.io.File",
                   "File",
                   DeclaredAs.Class,
-                  Some(_)) =>
-              true
-            case _ => false
+                  Some(_)) => true
+            case _         => false
           })
           //-----------------------------------------------------------------------------------------------
           // public symbol search - scala.util.Random

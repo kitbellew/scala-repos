@@ -70,17 +70,14 @@ case class BroadcastNestedLoopJoin(
 
   override def output: Seq[Attribute] = {
     joinType match {
-      case Inner =>
-        left.output ++ right.output
-      case LeftOuter =>
-        left.output ++ right.output.map(_.withNullability(true))
+      case Inner     => left.output ++ right.output
+      case LeftOuter => left.output ++ right.output.map(_.withNullability(true))
       case RightOuter =>
         left.output.map(_.withNullability(true)) ++ right.output
       case FullOuter =>
         left.output.map(_.withNullability(true)) ++ right.output.map(
           _.withNullability(true))
-      case LeftSemi =>
-        left.output
+      case LeftSemi => left.output
       case x =>
         throw new IllegalArgumentException(
           s"BroadcastNestedLoopJoin should not take $x as the JoinType")
@@ -288,13 +285,11 @@ case class BroadcastNestedLoopJoin(
     val broadcastedRelation = broadcast.executeBroadcast[Array[InternalRow]]()
 
     val resultRdd = (joinType, buildSide) match {
-      case (Inner, _) =>
-        innerJoin(broadcastedRelation)
-      case (LeftOuter, BuildRight) | (RightOuter, BuildLeft) =>
-        outerJoin(broadcastedRelation)
-      case (LeftSemi, BuildRight) =>
-        leftSemiJoin(broadcastedRelation)
-      case _ =>
+      case (Inner, _) => innerJoin(broadcastedRelation)
+      case (LeftOuter, BuildRight) | (RightOuter, BuildLeft) => outerJoin(
+          broadcastedRelation)
+      case (LeftSemi, BuildRight) => leftSemiJoin(broadcastedRelation)
+      case _                      =>
         /**
           * LeftOuter with BuildLeft
           * RightOuter with BuildRight

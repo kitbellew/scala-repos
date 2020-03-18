@@ -120,8 +120,7 @@ trait Picklers {
     }
     def makeSymbol(root: Symbol, names: List[Name]): Symbol =
       names match {
-        case List() =>
-          root
+        case List() => root
         case name :: rest =>
           val sym = root.info.decl(name)
           if (sym.isOverloaded)

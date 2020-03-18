@@ -48,8 +48,7 @@ class InputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
                 case head :: tail ⇒
                   buf = tail
                   head
-                case Nil ⇒
-                  -1
+                case Nil ⇒ -1
               }
 
             }

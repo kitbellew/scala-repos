@@ -54,12 +54,10 @@ class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
       request.parameters get 'jobId map {
         jobId =>
           jobManager.findJob(jobId) flatMap {
-            case Some(job) =>
-              job.state match {
+            case Some(job) => job.state match {
                 case NotStarted | Started(_, _) | Cancelled(_, _, _) =>
                   Future(HttpResponse[ByteChunk](Accepted))
-                case Finished(_, _) =>
-                  for {
+                case Finished(_, _) => for {
                     result <- jobManager.getResult(jobId)
                     warnings <- jobManager
                       .listMessages(jobId, channels.Warning, None)
@@ -103,8 +101,7 @@ class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
                   Future(HttpResponse[ByteChunk](Gone))
               }
 
-            case None =>
-              Future(HttpResponse[ByteChunk](NotFound))
+            case None => Future(HttpResponse[ByteChunk](NotFound))
           }
       } getOrElse {
         Future(HttpResponse[ByteChunk](

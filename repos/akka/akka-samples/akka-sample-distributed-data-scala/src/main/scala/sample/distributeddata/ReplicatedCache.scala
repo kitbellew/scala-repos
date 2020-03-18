@@ -41,14 +41,12 @@ class ReplicatedCache extends Actor {
       replicator ! Get(dataKey(key), ReadLocal, Some(Request(key, sender())))
     case g @ GetSuccess(LWWMapKey(_), Some(Request(key, replyTo))) ⇒
       g.dataValue match {
-        case data: LWWMap[_] ⇒
-          data.get(key) match {
+        case data: LWWMap[_] ⇒ data.get(key) match {
             case Some(value) ⇒ replyTo ! Cached(key, Some(value))
             case None ⇒ replyTo ! Cached(key, None)
           }
       }
-    case NotFound(_, Some(Request(key, replyTo))) ⇒
-      replyTo ! Cached(key, None)
+    case NotFound(_, Some(Request(key, replyTo))) ⇒ replyTo ! Cached(key, None)
     case _: UpdateResponse[_] ⇒ // ok
   }
 

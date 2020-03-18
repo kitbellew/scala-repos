@@ -13,8 +13,7 @@ private[http] object ReaderUtils {
     */
   def readChunk(chunk: Any): Future[Option[Buf]] =
     chunk match {
-      case chunk: HttpChunk if chunk.isLast =>
-        Future.None
+      case chunk: HttpChunk if chunk.isLast => Future.None
 
       case chunk: HttpChunk =>
         Future.value(Some(ChannelBufferBuf.Owned(chunk.getContent.duplicate)))
@@ -41,8 +40,7 @@ private[http] object ReaderUtils {
       // TODO Find a better number for bufSize, e.g. 32KiB - Buf overhead
       bufSize: Int = Int.MaxValue): Future[Unit] = {
     r.read(bufSize) flatMap {
-      case None =>
-        trans.write(HttpChunk.LAST_CHUNK)
+      case None => trans.write(HttpChunk.LAST_CHUNK)
       case Some(buf) =>
         trans.write(chunkOfBuf(buf)) transform {
           case Return(_) => streamChunks(trans, r, bufSize)

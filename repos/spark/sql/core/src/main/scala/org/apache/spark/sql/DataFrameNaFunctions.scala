@@ -345,8 +345,7 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val replacementMap: Map[_, _] = replacement.head._2 match {
       case v: String  => replacement
       case v: Boolean => replacement
-      case _ =>
-        replacement.map {
+      case _ => replacement.map {
           case (k, v) => (convertToDouble(k), convertToDouble(v))
         }
     }
@@ -394,8 +393,7 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
       values
         .find { case (k, _) => columnEquals(k, f.name) }
         .map {
-          case (_, v) =>
-            v match {
+          case (_, v) => v match {
               case v: jl.Float   => fillCol[Double](f, v.toDouble)
               case v: jl.Double  => fillCol[Double](f, v)
               case v: jl.Long    => fillCol[Double](f, v.toDouble)
@@ -437,8 +435,7 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val keyExpr = df.col(col.name).expr
     def buildExpr(v: Any) = Cast(Literal(v), keyExpr.dataType)
     val branches = replacementMap.flatMap {
-      case (source, target) =>
-        Seq(buildExpr(source), buildExpr(target))
+      case (source, target) => Seq(buildExpr(source), buildExpr(target))
     }.toSeq
     new Column(CaseKeyWhen(keyExpr, branches :+ keyExpr)).as(col.name)
   }

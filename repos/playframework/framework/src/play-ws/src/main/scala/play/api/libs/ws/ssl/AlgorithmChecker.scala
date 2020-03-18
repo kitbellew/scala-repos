@@ -203,10 +203,7 @@ class AlgorithmChecker(
         if ("CN".equalsIgnoreCase(rdn.getType)) { cn = rdn.getValue.toString }
       }
       cn
-    } catch {
-      case e: InvalidNameException =>
-        null
-    }
+    } catch { case e: InvalidNameException => null }
   }
 
 }

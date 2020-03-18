@@ -11,10 +11,7 @@ class Foo {
       val cls = cm.reflect(this).reflectModule(sym)
       cls.instance
       println("this indicates a failure")
-    } catch {
-      case ex: Throwable =>
-        println(ex.getMessage)
-    }
+    } catch { case ex: Throwable => println(ex.getMessage) }
   }
 
 }

@@ -71,11 +71,9 @@ class AddBracesIntention extends PsiElementBaseIntentionAction {
         }
       case finallyBlock: ScFinallyBlock =>
         finallyBlock.expression.filter(isAncestorOfElement)
-      case whileStmt: ScWhileStmt =>
-        whileStmt.body.filter(isAncestorOfElement)
-      case doStmt: ScDoStmt =>
-        doStmt.getExprBody.filter(isAncestorOfElement)
-      case _ => None
+      case whileStmt: ScWhileStmt => whileStmt.body.filter(isAncestorOfElement)
+      case doStmt: ScDoStmt       => doStmt.getExprBody.filter(isAncestorOfElement)
+      case _                      => None
     }
     val oneLinerExpr: Option[ScExpression] = expr.filter { x =>
       val startLine = editor.getDocument.getLineNumber(

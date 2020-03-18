@@ -407,9 +407,7 @@ private[streaming] class ObjectInputStreamWithLoader(
       // scalastyle:off classforname
       return Class.forName(desc.getName(), false, loader)
       // scalastyle:on classforname
-    } catch {
-      case e: Exception =>
-    }
+    } catch { case e: Exception => }
     super.resolveClass(desc)
   }
 }

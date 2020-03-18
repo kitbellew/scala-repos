@@ -41,17 +41,14 @@ class ScAnnotationElementType[Func <: ScAnnotation]
       psi: ScAnnotation,
       parentStub: StubElement[ParentPsi]): ScAnnotationStub = {
     val name = psi.typeElement match {
-      case p: ScParenthesisedTypeElement =>
-        p.typeElement match {
-          case Some(s: ScSimpleTypeElement) =>
-            s.reference match {
+      case p: ScParenthesisedTypeElement => p.typeElement match {
+          case Some(s: ScSimpleTypeElement) => s.reference match {
               case Some(ref: ScStableCodeReferenceElement) => ref.refName
               case _                                       => ""
             }
           case _ => ""
         }
-      case s: ScSimpleTypeElement =>
-        s.reference match {
+      case s: ScSimpleTypeElement => s.reference match {
           case Some(ref) => ref.refName
           case _         => ""
         }

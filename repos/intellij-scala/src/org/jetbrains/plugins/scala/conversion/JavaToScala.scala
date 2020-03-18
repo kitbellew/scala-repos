@@ -87,11 +87,9 @@ object JavaToScala {
       case t: PsiTypeElement =>
         TypeConstruction.createStringTypePresentation(t.getType, t.getProject)
       case w: PsiWhiteSpace => LiteralExpression(w.getText)
-      case r: PsiReturnStatement =>
-        ReturnStatement(
+      case r: PsiReturnStatement => ReturnStatement(
           convertPsiToIntermdeiate(r.getReturnValue, externalProperties))
-      case t: PsiThrowStatement =>
-        ThrowStatement(
+      case t: PsiThrowStatement => ThrowStatement(
           convertPsiToIntermdeiate(t.getException, externalProperties))
       case i: PsiImportStatement =>
         ImportStatement(
@@ -104,8 +102,7 @@ object JavaToScala {
       case i: PsiImportList =>
         ImportStatementList(i.getAllImportStatements.map(
           convertPsiToIntermdeiate(_, externalProperties)))
-      case a: PsiAssignmentExpression =>
-        BinaryExpressionConstruction(
+      case a: PsiAssignmentExpression => BinaryExpressionConstruction(
           convertPsiToIntermdeiate(a.getLExpression, externalProperties),
           convertPsiToIntermdeiate(a.getRExpression, externalProperties),
           a.getOperationSign.getText
@@ -124,8 +121,7 @@ object JavaToScala {
         val body = Option(s.getBody)
           .map(convertPsiToIntermdeiate(_, externalProperties))
         SynchronizedStatement(lock, body)
-      case b: PsiCodeBlock =>
-        BlockConstruction(
+      case b: PsiCodeBlock => BlockConstruction(
           b.getStatements.map(convertPsiToIntermdeiate(_, externalProperties)))
       case t: PsiTypeParameter =>
         TypeParameterConstruction(
@@ -209,8 +205,7 @@ object JavaToScala {
         val body = Option(s.getBody)
           .map(convertPsiToIntermdeiate(_, externalProperties))
         SwitchStatemtnt(expr, body)
-      case p: PsiPackageStatement =>
-        PackageStatement(
+      case p: PsiPackageStatement => PackageStatement(
           convertPsiToIntermdeiate(p.getPackageReference, externalProperties))
       case f: PsiForeachStatement =>
         val tp = Option(f.getIteratedValue).flatMap((e: PsiExpression) =>
@@ -284,8 +279,7 @@ object JavaToScala {
           convertPsiToIntermdeiate(be.getLOperand, externalProperties),
           convertPsiToIntermdeiate(be.getROperand, externalProperties),
           operation)
-      case c: PsiTypeCastExpression =>
-        ClassCast(
+      case c: PsiTypeCastExpression => ClassCast(
           convertPsiToIntermdeiate(c.getOperand, externalProperties),
           convertPsiToIntermdeiate(c.getCastType, externalProperties),
           c.getCastType.getType
@@ -299,15 +293,13 @@ object JavaToScala {
       case a: PsiArrayInitializerExpression =>
         ArrayInitializer(a.getInitializers.map(
           convertPsiToIntermdeiate(_, externalProperties)))
-      case c: PsiClassObjectAccessExpression =>
-        ClassObjectAccess(
+      case c: PsiClassObjectAccessExpression => ClassObjectAccess(
           convertPsiToIntermdeiate(c.getOperand, externalProperties))
       case i: PsiInstanceOfExpression =>
         InstanceOfConstruction(
           convertPsiToIntermdeiate(i.getOperand, externalProperties),
           convertPsiToIntermdeiate(i.getCheckType, externalProperties))
-      case m: PsiMethodCallExpression =>
-        m.getMethodExpression.resolve() match {
+      case m: PsiMethodCallExpression => m.getMethodExpression.resolve() match {
           case method: PsiMethod
               if method.getName == "parseInt" && m.getArgumentList.getExpressions.length == 1 &&
                 method.getContainingClass != null && method.getContainingClass.qualifiedName == "java.lang.Integer" =>
@@ -347,8 +339,7 @@ object JavaToScala {
                 m.getArgumentList.getExpressions.apply(0),
                 externalProperties)
             )
-          case _ =>
-            MethodCallExpression(
+          case _ => MethodCallExpression(
               m.getMethodExpression.getQualifiedName,
               convertPsiToIntermdeiate(
                 m.getMethodExpression,
@@ -362,8 +353,7 @@ object JavaToScala {
       case s: PsiSuperExpression =>
         SuperExpression(Option(s.getQualifier).map(
           convertPsiToIntermdeiate(_, externalProperties)))
-      case e: PsiExpressionList =>
-        ExpressionList(
+      case e: PsiExpressionList => ExpressionList(
           e.getExpressions.map(convertPsiToIntermdeiate(_, externalProperties)))
       case l: PsiLocalVariable =>
         val parent = PsiTreeUtil.getParentOfType(
@@ -390,8 +380,7 @@ object JavaToScala {
           convertPsiToIntermdeiate(f.getTypeElement, externalProperties),
           needVar,
           initalizer)
-      case p: PsiParameterList =>
-        ParameterListConstruction(
+      case p: PsiParameterList => ParameterListConstruction(
           p.getParameters.map(convertPsiToIntermdeiate(_, externalProperties)))
       case m: PsiMethod =>
         def body: Option[IntermediateNode] = {
@@ -925,9 +914,8 @@ object JavaToScala {
         val firstStatement = getFirstStatement(constructor)
         val isSuper = firstStatement.map(_.getExpression).flatMap {
           case mc: PsiMethodCallExpression
-              if mc.getMethodExpression.getQualifiedName == "super" =>
-            Some(mc)
-          case _ => None
+              if mc.getMethodExpression.getQualifiedName == "super" => Some(mc)
+          case _                                                    => None
         }
         if (isSuper.isDefined) {
           dropStatements += firstStatement.get
@@ -1142,9 +1130,9 @@ object JavaToScala {
           case _: PsiLocalVariable =>
           case _: PsiParameter     =>
           case _ =>
-            modifiers.append(SimpleModifier(
-              ModifierType.FINAL
-            )) //only to classes, not objects
+            modifiers.append(
+              SimpleModifier(ModifierType.FINAL)
+            ) //only to classes, not objects
         }
       }
 
@@ -1189,8 +1177,7 @@ object JavaToScala {
     */
   private def canBeSimpified(expr: PsiExpression): Boolean = {
     expr.getParent match {
-      case b: PsiExpressionStatement =>
-        b.getParent match {
+      case b: PsiExpressionStatement => b.getParent match {
           case b: PsiBlockStatement => true
           case b: PsiCodeBlock      => true
           case _                    => false

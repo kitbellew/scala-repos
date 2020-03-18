@@ -266,8 +266,7 @@ private[sql] class SQLListener(conf: SparkConf)
           activeExecutions(executionId) = executionUIData
           _executionIdToData(executionId) = executionUIData
         }
-      case SparkListenerSQLExecutionEnd(executionId, time) =>
-        synchronized {
+      case SparkListenerSQLExecutionEnd(executionId, time) => synchronized {
           _executionIdToData.get(executionId).foreach { executionUIData =>
             executionUIData.completionTime = Some(time)
             if (!executionUIData.hasRunningJobs) {

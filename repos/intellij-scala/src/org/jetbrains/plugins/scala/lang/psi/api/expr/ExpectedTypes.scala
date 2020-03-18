@@ -117,8 +117,7 @@ private[expr] object ExpectedTypes {
     val result: Array[(ScType, Option[ScTypeElement])] = expr.getContext match {
       case p: ScParenthesisedExpr => p.expectedTypesEx(fromUnderscore = false)
       //see SLS[6.11]
-      case b: ScBlockExpr =>
-        b.lastExpr match {
+      case b: ScBlockExpr => b.lastExpr match {
           case Some(e)
               if b.needCheckExpectedType && e == expr.getSameElementInContext =>
             b.expectedTypesEx(fromUnderscore = true)
@@ -132,8 +131,7 @@ private[expr] object ExpectedTypes {
       case cond: ScIfStmt if cond.elseBranch.isDefined =>
         cond.expectedTypesEx(fromUnderscore = true)
       //see SLA[6.22]
-      case tb: ScTryBlock =>
-        tb.lastExpr match {
+      case tb: ScTryBlock => tb.lastExpr match {
           case Some(e) if e == expr =>
             tb.getContext
               .asInstanceOf[ScTryStmt]
@@ -162,8 +160,7 @@ private[expr] object ExpectedTypes {
           .getOrElse(Any)
         Array((throwableType, None))
       //see SLS[8.4]
-      case c: ScCaseClause =>
-        c.getContext.getContext match {
+      case c: ScCaseClause => c.getContext.getContext match {
           case m: ScMatchStmt => m.expectedTypesEx(fromUnderscore = true)
           case b: ScBlockExpr if b.isInCatchBlock =>
             b.getContext.getContext
@@ -180,10 +177,9 @@ private[expr] object ExpectedTypes {
       case t: ScTypedStmt if t.getLastChild.isInstanceOf[ScSequenceArg] =>
         t.expectedTypesEx(fromUnderscore = true)
       //SLS[6.13]
-      case t: ScTypedStmt =>
-        t.typeElement match {
-          case Some(te) =>
-            Array((te.getType(TypingContext.empty).getOrAny, Some(te)))
+      case t: ScTypedStmt => t.typeElement match {
+          case Some(te) => Array(
+              (te.getType(TypingContext.empty).getOrAny, Some(te)))
           case _ => Array.empty
         }
       //SLS[6.15]
@@ -247,8 +243,7 @@ private[expr] object ExpectedTypes {
               case _ => Array.empty
             }
           case ref: ScReferenceExpression => expectedExprTypes(a)
-          case call: ScMethodCall =>
-            a.mirrorMethodCall match {
+          case call: ScMethodCall => a.mirrorMethodCall match {
               case Some(mirrorCall) =>
                 mirrorCall.args.exprs.last
                   .expectedTypesEx(fromUnderscore = fromUnderscore)
@@ -270,8 +265,7 @@ private[expr] object ExpectedTypes {
               if (!withResolvedFunction)
                 mapResolves(ref.shapeResolve, ref.shapeMultiType)
               else mapResolves(ref.multiResolve(false), ref.multiType)
-            case _ =>
-              Array(
+            case _ => Array(
                 (callExpression.getNonValueType(TypingContext.empty), false))
           }
           tps.foreach {
@@ -334,15 +328,15 @@ private[expr] object ExpectedTypes {
       case v @ ScPatternDefinition.expr(expr)
           if expr == expr.getSameElementInContext =>
         v.typeElement match {
-          case Some(te) =>
-            Array((v.getType(TypingContext.empty).getOrAny, Some(te)))
+          case Some(te) => Array(
+              (v.getType(TypingContext.empty).getOrAny, Some(te)))
           case _ => Array.empty
         }
       case v @ ScVariableDefinition.expr(expr)
           if expr == expr.getSameElementInContext =>
         v.typeElement match {
-          case Some(te) =>
-            Array((v.getType(TypingContext.empty).getOrAny, Some(te)))
+          case Some(te) => Array(
+              (v.getType(TypingContext.empty).getOrAny, Some(te)))
           case _ => Array.empty
         }
       //SLS[4.6]
@@ -356,10 +350,8 @@ private[expr] object ExpectedTypes {
           case _                    => v.getInheritedReturnType.map((_, None)).toArray
         }
       //default parameters
-      case param: ScParameter =>
-        param.typeElement match {
-          case Some(_) =>
-            Array(
+      case param: ScParameter => param.typeElement match {
+          case Some(_) => Array(
               (param.getType(TypingContext.empty).getOrAny, param.typeElement))
           case _ => Array.empty
         }
@@ -370,8 +362,7 @@ private[expr] object ExpectedTypes {
           classOf[ScFunction])
         if (fun == null) return Array.empty
         fun.returnTypeElement match {
-          case Some(rte: ScTypeElement) =>
-            fun.returnType match {
+          case Some(rte: ScTypeElement) => fun.returnType match {
               case Success(rt: ScType, _) => Array((rt, Some(rte)))
               case _                      => Array.empty
             }
@@ -401,8 +392,7 @@ private[expr] object ExpectedTypes {
                   .map(mapResolves(_, multiType))
                   .getOrElse(multiType.map((_, false)))
               }
-            case _ =>
-              Array(
+            case _ => Array(
                 (callExpression.getNonValueType(TypingContext.empty), false))
           }
           val callOption = args.getParent match {
@@ -462,8 +452,7 @@ private[expr] object ExpectedTypes {
     @tailrec
     def checkIsUnderscore(expr: ScExpression): Boolean = {
       expr match {
-        case p: ScParenthesisedExpr =>
-          p.expr match {
+        case p: ScParenthesisedExpr => p.expr match {
             case Some(e) => checkIsUnderscore(e)
             case _       => false
           }
@@ -591,8 +580,7 @@ private[expr] object ExpectedTypes {
               }
               var polyType: TypeResult[ScType] = Success(
                 s.subst(fun.polymorphicType()) match {
-                  case ScTypePolymorphicType(internal, params) =>
-                    update(
+                  case ScTypePolymorphicType(internal, params) => update(
                       ScTypePolymorphicType(internal, params ++ typeParams))
                   case tp => update(ScTypePolymorphicType(tp, typeParams))
                 },

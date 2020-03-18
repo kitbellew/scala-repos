@@ -61,8 +61,7 @@ object NaiveBayesSuite {
     for (i <- 0 until nPoints) yield {
       val y = calcLabel(rnd.nextDouble(), _pi)
       val xi = modelType match {
-        case Bernoulli =>
-          Array.tabulate[Double](D) { j =>
+        case Bernoulli => Array.tabulate[Double](D) { j =>
             if (rnd.nextDouble() < _theta(y)(j)) 1 else 0
           }
         case Multinomial =>
@@ -102,8 +101,7 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   def validatePrediction(predictions: Seq[Double], input: Seq[LabeledPoint]) {
     val numOfPredictions = predictions.zip(input).count {
-      case (prediction, expected) =>
-        prediction != expected.label
+      case (prediction, expected) => prediction != expected.label
     }
     // At least 80% of the predictions should be on.
     assert(numOfPredictions < input.length / 5)

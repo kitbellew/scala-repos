@@ -177,8 +177,8 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
 
   private def createWithoutUnderlyingFile(zipFile: AbstractFile) =
     zipFile match {
-      case manifestRes: ManifestResources =>
-        ManifestResourcesFlatClassPath(manifestRes)
+      case manifestRes: ManifestResources => ManifestResourcesFlatClassPath(
+          manifestRes)
       case _ =>
         val errorMsg =
           s"Abstract files which don't have an underlying file and are not ManifestResources are not supported. There was $zipFile"

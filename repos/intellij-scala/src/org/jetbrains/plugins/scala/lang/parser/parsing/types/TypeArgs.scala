@@ -61,9 +61,8 @@ object TypeArgs {
           } else builder error ScalaBundle.message("wrong.type")
 
           builder.getTokenType match {
-            case ScalaTokenTypes.tRSQBRACKET =>
-              builder.advanceLexer() //Ate ]
-            case _ => builder error ScalaBundle.message("rsqbracket.expected")
+            case ScalaTokenTypes.tRSQBRACKET => builder.advanceLexer() //Ate ]
+            case _                           => builder error ScalaBundle.message("rsqbracket.expected")
           }
           builder.restoreNewlinesState
           true

@@ -51,8 +51,7 @@ class ScExistentialTypeElementImpl(node: ASTNode)
               }.toList,
               lb.getOrNothing,
               ub.getOrAny)
-          case value: ScValueDeclaration =>
-            value.typeElement match {
+          case value: ScValueDeclaration => value.typeElement match {
               case Some(te) =>
                 val ttype = te.getType(ctx)
                 problems += ttype

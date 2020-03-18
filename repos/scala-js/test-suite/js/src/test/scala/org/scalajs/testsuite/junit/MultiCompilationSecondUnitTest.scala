@@ -13,8 +13,7 @@ class MultiCompilationSecondUnitTestCheck {
       "org.scalajs.testsuite.junit.MultiCompilationSecondUnitTest")
     try { boot.invoke(boot.newInstance(), "testFromMultiCompilation") }
     catch {
-      case e: Throwable =>
-        fail(s"Could not invoke a test: ${e.getMessage}")
+      case e: Throwable => fail(s"Could not invoke a test: ${e.getMessage}")
     }
   }
 }

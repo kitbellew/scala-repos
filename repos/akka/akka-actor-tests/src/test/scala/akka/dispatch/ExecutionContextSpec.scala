@@ -145,10 +145,7 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
 
     "work with same-thread dispatcher plus blocking" in {
       val a = TestActorRef(Props(new Actor {
-        def receive = {
-          case msg ⇒
-            blocking { sender() ! msg }
-        }
+        def receive = { case msg ⇒ blocking { sender() ! msg } }
       }))
       val b = TestActorRef(Props(new Actor {
         def receive = { case msg ⇒ a forward msg }

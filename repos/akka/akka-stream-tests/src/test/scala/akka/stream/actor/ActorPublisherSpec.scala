@@ -51,8 +51,8 @@ object ActorPublisherSpec {
       case Request(element) ⇒ probe ! TotalDemand(totalDemand)
       case Produce(elem) ⇒ onNext(elem)
       case Err(reason) ⇒ onError(new RuntimeException(reason) with NoStackTrace)
-      case ErrThenStop(reason) ⇒
-        onErrorThenStop(new RuntimeException(reason) with NoStackTrace)
+      case ErrThenStop(reason) ⇒ onErrorThenStop(
+          new RuntimeException(reason) with NoStackTrace)
       case Complete ⇒ onComplete()
       case CompleteThenStop ⇒ onCompleteThenStop()
       case Boom ⇒ throw new RuntimeException("boom") with NoStackTrace
@@ -75,10 +75,8 @@ object ActorPublisherSpec {
           buf :+= i
           deliverBuf()
         }
-      case Request(_) ⇒
-        deliverBuf()
-      case Cancel ⇒
-        context.stop(self)
+      case Request(_) ⇒ deliverBuf()
+      case Cancel ⇒ context.stop(self)
     }
 
     @tailrec
@@ -109,8 +107,7 @@ object ActorPublisherSpec {
     override def subscriptionTimeout = timeout
 
     override def receive: Receive = {
-      case Request(_) ⇒
-        onNext(1)
+      case Request(_) ⇒ onNext(1)
       case SubscriptionTimeoutExceeded ⇒
         probe ! "timed-out"
         context.system.scheduler.scheduleOnce(timeout, probe, "cleaned-up")
@@ -126,10 +123,7 @@ object ActorPublisherSpec {
 
     override val requestStrategy = WatermarkRequestStrategy(10)
 
-    def receive = {
-      case OnNext(s: String) ⇒
-        probe ! s
-    }
+    def receive = { case OnNext(s: String) ⇒ probe ! s }
   }
 
 }

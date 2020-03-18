@@ -52,8 +52,7 @@ trait Memoizer extends DAG {
       def inner(target: DepGraph): DepGraph =
         target match {
           // not using extractors due to bug
-          case s: dag.SplitParam =>
-            dag.SplitParam(s.id, s.parentId)(s.loc)
+          case s: dag.SplitParam => dag.SplitParam(s.id, s.parentId)(s.loc)
 
           // not using extractors due to bug
           case s: dag.SplitGroup =>
@@ -220,8 +219,7 @@ trait Memoizer extends DAG {
           case dag.UnfixedSolution(id, target) =>
             dag.UnfixedSolution(id, memoized(target))
 
-          case dag.Extra(target) =>
-            dag.Extra(memoized(target))
+          case dag.Extra(target) => dag.Extra(memoized(target))
         }
 
       memotable.get(node) getOrElse {
@@ -256,8 +254,7 @@ trait Memoizer extends DAG {
       case UnfixedSolution(_, solution) =>
         findForcingRefs(solution, OpSide.Center(split))
 
-      case Extra(expr) =>
-        findForcingRefs(expr, OpSide.Center(split))
+      case Extra(expr) => findForcingRefs(expr, OpSide.Center(split))
     }
 
   private def findForcingRefs(
@@ -294,8 +291,7 @@ trait Memoizer extends DAG {
           OpSide.Center(graph)
         ) // load is a forcing point, but not a memo candidate
 
-      case Operate(_, parent) =>
-        findForcingRefs(parent, force)
+      case Operate(_, parent) => findForcingRefs(parent, force)
 
       case Reduce(_, parent) =>
         findForcingRefs(

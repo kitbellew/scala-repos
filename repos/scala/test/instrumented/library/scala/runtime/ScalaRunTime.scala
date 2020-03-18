@@ -52,9 +52,8 @@ object ScalaRunTime {
   def isAnyVal(x: Any) =
     x match {
       case _: Byte | _: Short | _: Char | _: Int | _: Long | _: Float |
-          _: Double | _: Boolean | _: Unit =>
-        true
-      case _ => false
+          _: Double | _: Boolean | _: Unit => true
+      case _                               => false
     }
 
   /** Return the class object representing an array with element class `clazz`.
@@ -381,8 +380,7 @@ object ScalaRunTime {
     try inner(arg)
     catch {
       case _: StackOverflowError | _: UnsupportedOperationException |
-          _: AssertionError =>
-        "" + arg
+          _: AssertionError => "" + arg
     }
   }
 

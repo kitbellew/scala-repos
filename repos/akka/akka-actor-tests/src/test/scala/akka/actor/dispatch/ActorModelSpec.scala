@@ -278,9 +278,7 @@ object ActorModelSpec {
       try {
         done = condition
         if (!done) Thread.sleep(25)
-      } catch {
-        case e: InterruptedException ⇒
-      }
+      } catch { case e: InterruptedException ⇒ }
       if (!done) await(until)(condition)
     } else throw new AssertionError("await failed")
 }

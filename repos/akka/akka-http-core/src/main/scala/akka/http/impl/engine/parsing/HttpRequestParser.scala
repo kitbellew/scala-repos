@@ -51,8 +51,7 @@ private[http] class HttpRequestParser(
         sb: JStringBuilder = new JStringBuilder(16)): Int =
       if (ix < maxMethodLength) {
         byteChar(input, cursor + ix) match {
-          case ' ' ⇒
-            customMethods(sb.toString) match {
+          case ' ' ⇒ customMethods(sb.toString) match {
               case Some(m) ⇒
                 method = m
                 cursor + ix + 1
@@ -85,8 +84,7 @@ private[http] class HttpRequestParser(
     import HttpMethods._
     byteChar(input, cursor) match {
       case 'G' ⇒ parseMethod(GET)
-      case 'P' ⇒
-        byteChar(input, cursor + 1) match {
+      case 'P' ⇒ byteChar(input, cursor + 1) match {
           case 'O' ⇒ parseMethod(POST, 2)
           case 'U' ⇒ parseMethod(PUT, 2)
           case 'A' ⇒ parseMethod(PATCH, 2)

@@ -250,8 +250,7 @@ object SwaggerSerializers {
         value \ "uniqueItems" match {
           case JBool(true) =>
             items map (DataType.GenSet(_)) getOrElse DataType.GenSet()
-          case _ =>
-            items map (DataType.GenList(_)) getOrElse DataType.GenList()
+          case _ => items map (DataType.GenList(_)) getOrElse DataType.GenList()
         }
       } else {
         DataType((value \ "type").as[String], format = str(value \ "format"))
@@ -265,18 +264,17 @@ object SwaggerSerializers {
           {
             case value @ JObject(flds) if flds.exists(_._1 == "enum") =>
               value \ "enum" match {
-                case JArray(entries) =>
-                  entries.headOption match {
-                    case Some(_: JInt) =>
-                      AllowableValuesList(entries.map(_.as[Int]))
-                    case Some(_: JDouble) =>
-                      AllowableValuesList(entries.map(_.as[Double]))
-                    case Some(_: JDecimal) =>
-                      AllowableValuesList(entries.map(_.as[BigDecimal]))
-                    case Some(_: JBool) =>
-                      AllowableValuesList(entries.map(_.as[Boolean]))
-                    case Some(_: JString) =>
-                      AllowableValuesList(entries.map(_.as[String]))
+                case JArray(entries) => entries.headOption match {
+                    case Some(_: JInt) => AllowableValuesList(
+                        entries.map(_.as[Int]))
+                    case Some(_: JDouble) => AllowableValuesList(
+                        entries.map(_.as[Double]))
+                    case Some(_: JDecimal) => AllowableValuesList(
+                        entries.map(_.as[BigDecimal]))
+                    case Some(_: JBool) => AllowableValuesList(
+                        entries.map(_.as[Boolean]))
+                    case Some(_: JString) => AllowableValuesList(
+                        entries.map(_.as[String]))
                     case _ => AnyValue
                   }
                 case _ => AnyValue
@@ -300,8 +298,7 @@ object SwaggerSerializers {
       extends CustomSerializer[ModelProperty](implicit formats =>
         (
           {
-            case json: JObject =>
-              ModelProperty(
+            case json: JObject => ModelProperty(
                 `type` = readDataType(json),
                 position = (json \ "position").getAsOrElse(0),
                 json \ "required" match {
@@ -368,8 +365,7 @@ object SwaggerSerializers {
       extends CustomSerializer[ResponseMessage[_]](implicit formats =>
         (
           {
-            case value: JObject =>
-              StringResponseMessage(
+            case value: JObject => StringResponseMessage(
                 (value \ "code").as[Int],
                 (value \ "message").as[String])
           },
@@ -429,8 +425,7 @@ object SwaggerSerializers {
       extends CustomSerializer[Operation](implicit formats =>
         (
           {
-            case value =>
-              Operation(
+            case value => Operation(
                 (value \ "method").extract[HttpMethod],
                 readDataType(value),
                 (value \ "summary").extract[String],
@@ -477,8 +472,7 @@ object SwaggerSerializers {
       extends CustomSerializer[Endpoint](implicit formats =>
         (
           {
-            case value =>
-              Endpoint(
+            case value => Endpoint(
                 (value \ "path").extract[String],
                 (value \ "description")
                   .extractOpt[String]
@@ -496,8 +490,7 @@ object SwaggerSerializers {
       extends CustomSerializer[Api](implicit formats =>
         (
           {
-            case json =>
-              Api(
+            case json => Api(
                 (json \ "apiVersion").extractOrElse(""),
                 (json \ "swaggerVersion").extractOrElse(""),
                 (json \ "resourcePath").extractOrElse(""),

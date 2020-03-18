@@ -67,12 +67,11 @@ package scala.collection.immutable {
         case m: HashSet.HashTrieSet[_] =>
           println(prefix + m.getClass.getSimpleName + " " + m.size)
           m.elems.foreach(child => printStructure(child, prefix + "  "))
-        case m: HashSet.HashSetCollision1[_] =>
-          println(prefix + m.getClass.getSimpleName + " " + m.ks.size)
-        case m: HashSet.HashSet1[_] =>
-          println(prefix + m.getClass.getSimpleName + " " + m.head)
-        case _ =>
-          println(prefix + "empty")
+        case m: HashSet.HashSetCollision1[_] => println(
+            prefix + m.getClass.getSimpleName + " " + m.ks.size)
+        case m: HashSet.HashSet1[_] => println(
+            prefix + m.getClass.getSimpleName + " " + m.head)
+        case _ => println(prefix + "empty")
       }
     }
 
@@ -84,10 +83,9 @@ package scala.collection.immutable {
               .elems(0)
               .isInstanceOf[HashSet.HashTrieSet[_]]))
           m.elems.foreach(validate _)
-        case m: HashSet.HashSetCollision1[_] =>
-          require(m.ks.size > 1)
-        case m: HashSet.HashSet1[_] =>
-        case _                      =>
+        case m: HashSet.HashSetCollision1[_] => require(m.ks.size > 1)
+        case m: HashSet.HashSet1[_]          =>
+        case _                               =>
       }
     }
   }

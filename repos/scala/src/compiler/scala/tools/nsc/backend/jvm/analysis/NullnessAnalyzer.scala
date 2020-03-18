@@ -102,8 +102,7 @@ final class NullnessInterpreter(bTypes: BTypes)
     (insn.getOpcode: @switch) match {
       case Opcodes.ACONST_NULL => NullValue
 
-      case Opcodes.LDC =>
-        insn.asInstanceOf[LdcInsnNode].cst match {
+      case Opcodes.LDC => insn.asInstanceOf[LdcInsnNode].cst match {
           case _: String | _: Type => NotNullValue
           case _                   => NullnessValue.unknown(insn)
         }
@@ -143,8 +142,7 @@ final class NullnessInterpreter(bTypes: BTypes)
       values: util.List[_ <: NullnessValue]): NullnessValue =
     insn match {
       case mi: MethodInsnNode
-          if bTypes.backendUtils.isNonNullMethodInvocation(mi) =>
-        NotNullValue
+          if bTypes.backendUtils.isNonNullMethodInvocation(mi) => NotNullValue
 
       case _ =>
         if (insn.getOpcode == Opcodes.MULTIANEWARRAY) NotNullValue
@@ -177,29 +175,23 @@ class NullnessFrame(nLocals: Int, nStack: Int)
     // aliases of the value that becomes not-null.
     val nullCheckedAliases: AliasSet = (insn.getOpcode: @switch) match {
       case IALOAD | LALOAD | FALOAD | DALOAD | AALOAD | BALOAD | CALOAD |
-          SALOAD =>
-        aliasesOf(this.stackTop - 1)
+          SALOAD => aliasesOf(this.stackTop - 1)
 
       case IASTORE | FASTORE | AASTORE | BASTORE | CASTORE | SASTORE | LASTORE |
-          DASTORE =>
-        aliasesOf(this.stackTop - 2)
+          DASTORE => aliasesOf(this.stackTop - 2)
 
-      case GETFIELD =>
-        aliasesOf(this.stackTop)
+      case GETFIELD => aliasesOf(this.stackTop)
 
-      case PUTFIELD =>
-        aliasesOf(this.stackTop - 1)
+      case PUTFIELD => aliasesOf(this.stackTop - 1)
 
       case INVOKEVIRTUAL | INVOKESPECIAL | INVOKEINTERFACE =>
         val desc = insn.asInstanceOf[MethodInsnNode].desc
         val numArgs = Type.getArgumentTypes(desc).length
         aliasesOf(this.stackTop - numArgs)
 
-      case ARRAYLENGTH | MONITORENTER | MONITOREXIT =>
-        aliasesOf(this.stackTop)
+      case ARRAYLENGTH | MONITORENTER | MONITOREXIT => aliasesOf(this.stackTop)
 
-      case _ =>
-        null
+      case _ => null
     }
 
     super.execute(insn, interpreter)

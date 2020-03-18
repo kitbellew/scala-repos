@@ -19,16 +19,14 @@ object SnapshotExample extends App {
       case "snap"                                => saveSnapshot(state)
       case SaveSnapshotSuccess(metadata)         => // ...
       case SaveSnapshotFailure(metadata, reason) => // ...
-      case s: String =>
-        persist(s) { evt => state = state.updated(evt) }
+      case s: String                             => persist(s) { evt => state = state.updated(evt) }
     }
 
     def receiveRecover: Receive = {
       case SnapshotOffer(_, s: ExampleState) =>
         println("offered state = " + s)
         state = s
-      case evt: String =>
-        state = state.updated(evt)
+      case evt: String => state = state.updated(evt)
     }
 
   }

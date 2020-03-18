@@ -252,8 +252,7 @@ trait BasicBackend {
           runInContext(a, ctx, false, topLevel).onComplete(v =>
             p.success(v.asInstanceOf[R]))(DBIO.sameThreadExecutionContext)
           p.future
-        case NamedAction(a, _) =>
-          runInContext(a, ctx, streaming, topLevel)
+        case NamedAction(a, _) => runInContext(a, ctx, streaming, topLevel)
         case a: SynchronousDatabaseAction[_, _, _, _] =>
           if (streaming) {
             if (a.supportsStreaming)

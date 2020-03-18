@@ -172,8 +172,7 @@ class TestTransport(
     new SwitchableLoggedBehavior[(TestAssociationHandle, ByteString), Boolean](
       defaultBehavior = { defaultWrite _ },
       logCallback = {
-        case (handle, payload) ⇒
-          registry.logActivity(
+        case (handle, payload) ⇒ registry.logActivity(
             WriteAttempt(handle.localAddress, handle.remoteAddress, payload))
       })
 

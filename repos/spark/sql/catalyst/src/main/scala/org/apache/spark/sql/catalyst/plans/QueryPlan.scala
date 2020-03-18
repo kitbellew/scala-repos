@@ -52,20 +52,13 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
     // and ranges. For all other cases, we return an empty set of constraints
     constraints
       .map {
-        case EqualTo(l, r) =>
-          Set(IsNotNull(l), IsNotNull(r))
-        case GreaterThan(l, r) =>
-          Set(IsNotNull(l), IsNotNull(r))
-        case GreaterThanOrEqual(l, r) =>
-          Set(IsNotNull(l), IsNotNull(r))
-        case LessThan(l, r) =>
-          Set(IsNotNull(l), IsNotNull(r))
-        case LessThanOrEqual(l, r) =>
-          Set(IsNotNull(l), IsNotNull(r))
-        case Not(EqualTo(l, r)) =>
-          Set(IsNotNull(l), IsNotNull(r))
-        case _ =>
-          Set.empty[Expression]
+        case EqualTo(l, r)            => Set(IsNotNull(l), IsNotNull(r))
+        case GreaterThan(l, r)        => Set(IsNotNull(l), IsNotNull(r))
+        case GreaterThanOrEqual(l, r) => Set(IsNotNull(l), IsNotNull(r))
+        case LessThan(l, r)           => Set(IsNotNull(l), IsNotNull(r))
+        case LessThanOrEqual(l, r)    => Set(IsNotNull(l), IsNotNull(r))
+        case Not(EqualTo(l, r))       => Set(IsNotNull(l), IsNotNull(r))
+        case _                        => Set.empty[Expression]
       }
       .foldLeft(Set.empty[Expression])(_ union _.toSet)
   }

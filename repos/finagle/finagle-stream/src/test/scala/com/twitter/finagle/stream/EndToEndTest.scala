@@ -76,10 +76,7 @@ class EndToEndTest extends FunSuite {
       val latch = new CountDownLatch(1)
       (clientRes.error ?) ensure { Future { latch.countDown() } }
 
-      clientRes.messages.foreach {
-        case Buf.Utf8(str) =>
-          result += str
-      }
+      clientRes.messages.foreach { case Buf.Utf8(str) => result += str }
 
       messages !! Buf.Utf8("1")
       messages !! Buf.Utf8("2")
@@ -191,8 +188,7 @@ class EndToEndTest extends FunSuite {
         })
 
         assert(Await.result(recvd ?, 1.second) match {
-          case m: MessageEvent =>
-            m.getMessage match {
+          case m: MessageEvent => m.getMessage match {
               case res: HttpResponse => res.isChunked
               case _                 => false
             }
@@ -200,8 +196,7 @@ class EndToEndTest extends FunSuite {
         })
 
         assert(Await.result(recvd ?, 1.second) match {
-          case m: MessageEvent =>
-            m.getMessage match {
+          case m: MessageEvent => m.getMessage match {
               case res: HttpChunk => !res.isLast // get "chunk1"
               case _              => false
             }
@@ -219,8 +214,7 @@ class EndToEndTest extends FunSuite {
         messages !! Buf.Utf8("chunk2")
 
         assert(Await.result(recvd ?, 1.second) match {
-          case m: MessageEvent =>
-            m.getMessage match {
+          case m: MessageEvent => m.getMessage match {
               case res: HttpChunk => !res.isLast // get "chunk2"
               case _              => false
             }
@@ -233,8 +227,7 @@ class EndToEndTest extends FunSuite {
           // "java.io.IOException: Connection reset by peer". Uncomment the
           // following line to observe.
           // case e: ExceptionEvent => throw new Exception(e.getCause)
-          case m: MessageEvent =>
-            m.getMessage match {
+          case m: MessageEvent => m.getMessage match {
               case res: HttpChunkTrailer => res.isLast
               case _                     => false
             }
@@ -267,10 +260,7 @@ class EndToEndTest extends FunSuite {
 
       (clientRes.error ?) ensure { Future { latch.countDown() } }
 
-      clientRes.messages.foreach {
-        case Buf.Utf8(str) =>
-          result += str
-      }
+      clientRes.messages.foreach { case Buf.Utf8(str) => result += str }
 
       FuturePool.unboundedPool {
         messages !! Buf.Utf8("12")

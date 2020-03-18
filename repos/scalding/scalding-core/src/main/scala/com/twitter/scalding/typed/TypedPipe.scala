@@ -563,8 +563,7 @@ trait TypedPipe[+T] extends Serializable {
       mode match {
         case _: CascadingLocal => // Local or Test mode
           (this, inMemoryDest)
-        case _: HadoopMode =>
-          (this, hadoopTypedSource(conf))
+        case _: HadoopMode => (this, hadoopTypedSource(conf))
       }
     }
 
@@ -572,8 +571,7 @@ trait TypedPipe[+T] extends Serializable {
       mode match {
         case _: CascadingLocal => // Local or Test mode
           TypedPipe.from(inMemoryDest.readResults)
-        case _: HadoopMode =>
-          TypedPipe.from(hadoopTypedSource(conf))
+        case _: HadoopMode => TypedPipe.from(hadoopTypedSource(conf))
       }
     }
 
@@ -973,8 +971,8 @@ object TypedPipeFactory {
   def unapply[T](
       tp: TypedPipe[T]): Option[NoStackAndThen[(FlowDef, Mode), TypedPipe[T]]] =
     tp match {
-      case tp: TypedPipeFactory[_] =>
-        Some(tp.asInstanceOf[TypedPipeFactory[T]].next)
+      case tp: TypedPipeFactory[_] => Some(
+          tp.asInstanceOf[TypedPipeFactory[T]].next)
       case _ => None
     }
 }

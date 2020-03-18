@@ -46,14 +46,13 @@ case class ShuffledHashJoin(
 
   override def outputPartitioning: Partitioning =
     joinType match {
-      case Inner =>
-        PartitioningCollection(
+      case Inner => PartitioningCollection(
           Seq(left.outputPartitioning, right.outputPartitioning))
       case LeftSemi   => left.outputPartitioning
       case LeftOuter  => left.outputPartitioning
       case RightOuter => right.outputPartitioning
-      case FullOuter =>
-        UnknownPartitioning(left.outputPartitioning.numPartitions)
+      case FullOuter => UnknownPartitioning(
+          left.outputPartitioning.numPartitions)
       case x =>
         throw new IllegalArgumentException(
           s"ShuffledHashJoin should not take $x as the JoinType")
@@ -72,11 +71,9 @@ case class ShuffledHashJoin(
           buildSideKeyGenerator)
         val joinedRow = new JoinedRow
         joinType match {
-          case Inner =>
-            hashJoin(streamIter, hashed, numOutputRows)
+          case Inner => hashJoin(streamIter, hashed, numOutputRows)
 
-          case LeftSemi =>
-            hashSemiJoin(streamIter, hashed, numOutputRows)
+          case LeftSemi => hashSemiJoin(streamIter, hashed, numOutputRows)
 
           case LeftOuter =>
             val keyGenerator = streamSideKeyGenerator

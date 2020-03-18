@@ -173,8 +173,7 @@ private[akka] trait Dispatch {
             case ser2: SerializerWithStringManifest ⇒
               val manifest = ser2.manifest(unwrapped)
               s.deserialize(bytes, serializer.identifier, manifest).get != null
-            case _ ⇒
-              s.deserialize(bytes, unwrapped.getClass).get
+            case _ ⇒ s.deserialize(bytes, unwrapped.getClass).get
           }
         }
       }

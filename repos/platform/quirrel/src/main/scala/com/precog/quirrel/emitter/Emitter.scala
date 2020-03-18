@@ -124,8 +124,7 @@ trait Emitter
         e.lineStack match {
           case (`line`, `col`, `text`) :: _ => (e2, ())
 
-          case stack =>
-            emitInstr(Line(line, col, text))(e2)
+          case stack => emitInstr(Line(line, col, text))(e2)
         }
       }
 
@@ -547,8 +546,7 @@ trait Emitter
                     btrace =>
                       btrace takeWhile (expr !=) collect {
                         case d: ast.Dispatch
-                            if d.binding.isInstanceOf[LetBinding] =>
-                          d
+                            if d.binding.isInstanceOf[LetBinding] => d
                       }
                   } toSet
 
@@ -561,8 +559,7 @@ trait Emitter
               emitExpr(body, dispatches) >>
               emitInstr(Merge)
 
-          case ast.Import(_, _, child) =>
-            emitExpr(child, dispatches)
+          case ast.Import(_, _, child) => emitExpr(child, dispatches)
 
           case ast.Assert(_, pred, child) =>
             emitExpr(pred, dispatches) >> emitExpr(
@@ -577,8 +574,7 @@ trait Emitter
           case ast.New(_, child) =>
             emitExpr(child, dispatches) >> emitInstr(Map1(New))
 
-          case ast.Relate(_, _, _, in) =>
-            emitExpr(in, dispatches)
+          case ast.Relate(_, _, _, in) => emitExpr(in, dispatches)
 
           case t @ ast.TicVar(_, name) => {
             t.binding match {
@@ -596,11 +592,9 @@ trait Emitter
             }
           }
 
-          case ast.StrLit(_, value) =>
-            emitInstr(PushString(value))
+          case ast.StrLit(_, value) => emitInstr(PushString(value))
 
-          case ast.NumLit(_, value) =>
-            emitInstr(PushNum(value))
+          case ast.NumLit(_, value) => emitInstr(PushNum(value))
 
           case ast.BoolLit(_, value) =>
             emitInstr(value match {
@@ -608,14 +602,11 @@ trait Emitter
               case false => PushFalse
             })
 
-          case ast.NullLit(_) =>
-            emitInstr(PushNull)
+          case ast.NullLit(_) => emitInstr(PushNull)
 
-          case ast.UndefinedLit(_) =>
-            emitInstr(PushUndefined)
+          case ast.UndefinedLit(_) => emitInstr(PushUndefined)
 
-          case ast.ObjectDef(_, Vector()) =>
-            emitInstr(PushObject)
+          case ast.ObjectDef(_, Vector()) => emitInstr(PushObject)
 
           case ast.ObjectDef(_, props) => {
             def fieldToObjInstr(t: (String, Expr)) =
@@ -652,8 +643,7 @@ trait Emitter
             reduce(groups ++ joins)
           }
 
-          case ast.ArrayDef(_, Vector()) =>
-            emitInstr(PushArray)
+          case ast.ArrayDef(_, Vector()) => emitInstr(PushArray)
 
           case ast.ArrayDef(_, values) => {
             val indexedValues = values.zipWithIndex
@@ -776,8 +766,7 @@ trait Emitter
                 emitExpr(actuals.head, dispatches) >> emitInstr(
                   Reduce(BuiltInReduction(f)))
 
-              case FormalBinding(let) =>
-                emitOrDup(MarkFormal(name, let)) {
+              case FormalBinding(let) => emitOrDup(MarkFormal(name, let)) {
                   StateT.apply[Id, Emission, Unit] { e =>
                     e.formals((name, let))(e)
                   }
@@ -810,8 +799,7 @@ trait Emitter
                   emitOrDup(MarkExpr(left))(emitExpr(left, dispatches + d))
                 }
 
-              case NullBinding =>
-                notImpl(expr)
+              case NullBinding => notImpl(expr)
             }
           }
 
@@ -824,8 +812,7 @@ trait Emitter
               emitExpr(pred, dispatches) >> emitInstr(Map1(Comp)),
               pred.provenance) >> emitInstr(IUnion)
 
-          case where @ ast.Where(_, _, _) =>
-            emitWhere(where, dispatches)
+          case where @ ast.Where(_, _, _) => emitWhere(where, dispatches)
 
           case ast.With(_, left, right) =>
             emitMap(left, right, JoinObject, dispatches)
@@ -845,47 +832,36 @@ trait Emitter
               right,
               dispatches) >> emitInstr(SetDifference)
 
-          case ast.Add(_, left, right) =>
-            emitMap(left, right, Add, dispatches)
+          case ast.Add(_, left, right) => emitMap(left, right, Add, dispatches)
 
-          case ast.Sub(_, left, right) =>
-            emitMap(left, right, Sub, dispatches)
+          case ast.Sub(_, left, right) => emitMap(left, right, Sub, dispatches)
 
-          case ast.Mul(_, left, right) =>
-            emitMap(left, right, Mul, dispatches)
+          case ast.Mul(_, left, right) => emitMap(left, right, Mul, dispatches)
 
-          case ast.Div(_, left, right) =>
-            emitMap(left, right, Div, dispatches)
+          case ast.Div(_, left, right) => emitMap(left, right, Div, dispatches)
 
-          case ast.Mod(_, left, right) =>
-            emitMap(left, right, Mod, dispatches)
+          case ast.Mod(_, left, right) => emitMap(left, right, Mod, dispatches)
 
-          case ast.Pow(_, left, right) =>
-            emitMap(left, right, Pow, dispatches)
+          case ast.Pow(_, left, right) => emitMap(left, right, Pow, dispatches)
 
-          case ast.Lt(_, left, right) =>
-            emitMap(left, right, Lt, dispatches)
+          case ast.Lt(_, left, right) => emitMap(left, right, Lt, dispatches)
 
           case ast.LtEq(_, left, right) =>
             emitMap(left, right, LtEq, dispatches)
 
-          case ast.Gt(_, left, right) =>
-            emitMap(left, right, Gt, dispatches)
+          case ast.Gt(_, left, right) => emitMap(left, right, Gt, dispatches)
 
           case ast.GtEq(_, left, right) =>
             emitMap(left, right, GtEq, dispatches)
 
-          case ast.Eq(_, left, right) =>
-            emitMap(left, right, Eq, dispatches)
+          case ast.Eq(_, left, right) => emitMap(left, right, Eq, dispatches)
 
           case ast.NotEq(_, left, right) =>
             emitMap(left, right, NotEq, dispatches)
 
-          case ast.Or(_, left, right) =>
-            emitMap(left, right, Or, dispatches)
+          case ast.Or(_, left, right) => emitMap(left, right, Or, dispatches)
 
-          case ast.And(_, left, right) =>
-            emitMap(left, right, And, dispatches)
+          case ast.And(_, left, right) => emitMap(left, right, And, dispatches)
 
           case ast.Comp(_, child) =>
             emitExpr(child, dispatches) >> emitInstr(Map1(Comp))
@@ -893,8 +869,7 @@ trait Emitter
           case ast.Neg(_, child) =>
             emitExpr(child, dispatches) >> emitInstr(Map1(Neg))
 
-          case ast.Paren(_, child) =>
-            emitExpr(child, dispatches)
+          case ast.Paren(_, child) => emitExpr(child, dispatches)
         }) >> emitConstraints(expr, dispatches) >> emitPopLine
     }
 

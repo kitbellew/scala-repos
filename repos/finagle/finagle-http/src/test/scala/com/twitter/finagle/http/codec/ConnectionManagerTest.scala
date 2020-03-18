@@ -36,19 +36,13 @@ class ConnectionManagerTest extends FunSuite with MockitoSugar {
 
   def makeRequest(version: Version, headers: (String, String)*) = {
     val request = Request(version, Method.Get, "/")
-    headers foreach {
-      case (k, v) =>
-        request.headers.set(k, v)
-    }
+    headers foreach { case (k, v) => request.headers.set(k, v) }
     request
   }
 
   def makeResponse(version: Version, headers: (String, String)*) = {
     val response = Response(version, Status.Ok)
-    headers foreach {
-      case (k, v) =>
-        response.headers.set(k, v)
-    }
+    headers foreach { case (k, v) => response.headers.set(k, v) }
     response
   }
 
@@ -84,8 +78,7 @@ class ConnectionManagerTest extends FunSuite with MockitoSugar {
         assert(r.version == response.version)
         assert(r.status == response.status)
 
-      case _ =>
-        fail()
+      case _ => fail()
     }
 
     if (shouldMarkDead) verify(trans, times(1)).close

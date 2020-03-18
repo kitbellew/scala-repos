@@ -42,8 +42,8 @@ trait InteractiveTestSettings
 
     // pass any options coming from outside
     settings.processArgumentString(argsString) match {
-      case (false, rest) =>
-        println("error processing arguments (unprocessed: %s)".format(rest))
+      case (false, rest) => println(
+          "error processing arguments (unprocessed: %s)".format(rest))
       case _ => ()
     }
 

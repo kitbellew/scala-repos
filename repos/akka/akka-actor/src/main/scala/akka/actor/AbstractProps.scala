@@ -50,8 +50,7 @@ private[akka] trait AbstractProps {
     val ac = classOf[Actor]
     val coc = classOf[Creator[_]]
     val actorClass = Reflect.findMarker(cc, coc) match {
-      case t: ParameterizedType ⇒
-        t.getActualTypeArguments.head match {
+      case t: ParameterizedType ⇒ t.getActualTypeArguments.head match {
           case c: Class[_] ⇒ c // since T <: Actor
           case v: TypeVariable[_] ⇒
             v.getBounds collectFirst {

@@ -103,9 +103,8 @@ private[thrift] class ThriftServerChannelBufferEncoder
       case array: Array[Byte] if (!array.isEmpty) =>
         val buffer = ChannelBuffers.wrappedBuffer(array)
         Channels.write(ctx, e.getFuture, buffer)
-      case array: Array[Byte] =>
-        e.getFuture.setSuccess()
-      case _ => throw new IllegalArgumentException("no byte array")
+      case array: Array[Byte] => e.getFuture.setSuccess()
+      case _                  => throw new IllegalArgumentException("no byte array")
     }
   }
 }

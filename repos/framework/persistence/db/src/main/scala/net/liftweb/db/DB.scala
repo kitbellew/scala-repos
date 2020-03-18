@@ -73,9 +73,7 @@ trait DB extends Loggable {
     * S.addAnalyzer
     */
   @volatile
-  var queryCollector: LogFunc = {
-    case (query: DBLog, time) =>
-  }
+  var queryCollector: LogFunc = { case (query: DBLog, time) => }
 
   /**
     * Try to obtain a Connection using the jndiName of the ConnectionIdentifier
@@ -452,8 +450,7 @@ trait DB extends Loggable {
           case s    => s.toString
         }
 
-      case DECIMAL | NUMERIC =>
-        rs.getBigDecimal(pos) match {
+      case DECIMAL | NUMERIC => rs.getBigDecimal(pos) match {
           case null => null
           case x    => x.toString
         }
@@ -465,8 +462,7 @@ trait DB extends Loggable {
 
       case VARCHAR | CHAR | CLOB | LONGVARCHAR => rs.getString(pos)
 
-      case DATE | TIME | TIMESTAMP =>
-        rs.getTimestamp(pos) match {
+      case DATE | TIME | TIMESTAMP => rs.getTimestamp(pos) match {
           case null => null
           case x    => x.toString
         }
@@ -1207,18 +1203,15 @@ class StandardDBVendor(
     } { Class.forName(driverName); () }
 
     (dbUser, dbPassword) match {
-      case (Full(user), Full(pwd)) =>
-        tryo { t: Throwable =>
+      case (Full(user), Full(pwd)) => tryo { t: Throwable =>
           logger.error(
             "Unable to get database connection. url=%s, user=%s"
               .format(dbUrl, user),
             t)
         }(DriverManager.getConnection(dbUrl, user, pwd))
-      case _ =>
-        tryo { t: Throwable =>
-          logger.error(
-            "Unable to get database connection. url=%s".format(dbUrl),
-            t)
+      case _ => tryo { t: Throwable =>
+          logger
+            .error("Unable to get database connection. url=%s".format(dbUrl), t)
         }(DriverManager.getConnection(dbUrl))
     }
   }

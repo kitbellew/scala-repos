@@ -230,8 +230,7 @@ class TimerBasedThrottler(var rate: Rate) extends Actor with FSM[State, Data] {
     // Set the target
     case Event(SetTarget(t @ Some(_)), d) if !d.queue.isEmpty ⇒
       goto(Active) using deliverMessages(d.copy(target = t))
-    case Event(SetTarget(t), d) ⇒
-      stay using d.copy(target = t)
+    case Event(SetTarget(t), d) ⇒ stay using d.copy(target = t)
 
     // Queuing
     case Event(msg, d @ Data(None, _, queue)) ⇒
@@ -257,8 +256,7 @@ class TimerBasedThrottler(var rate: Rate) extends Actor with FSM[State, Data] {
       stay using d.copy(target = None)
 
     // Set the target (when the new target is not None)
-    case Event(SetTarget(t @ Some(_)), d) ⇒
-      stay using d.copy(target = t)
+    case Event(SetTarget(t @ Some(_)), d) ⇒ stay using d.copy(target = t)
 
     // Tick after a `SetTarget(None)`: take the additional permits and go to `Idle`
     case Event(Tick, d @ Data(None, _, _)) ⇒

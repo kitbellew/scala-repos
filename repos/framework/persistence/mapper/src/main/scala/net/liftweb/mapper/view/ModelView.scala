@@ -126,8 +126,7 @@ class ModelView[T <: Mapper[T]](var entity: T, val snippet: ModelSnippet[T]) {
     entity.validate match {
       case Nil =>
         if (entity.save) snippet.onSave(this) else S.error("Save failed")
-      case errors =>
-        S.error(errors)
+      case errors => S.error(errors)
     }
   }
 
@@ -141,9 +140,8 @@ class ModelView[T <: Mapper[T]](var entity: T, val snippet: ModelSnippet[T]) {
     */
   def idString =
     if (entity.saved_?) entity match {
-      case e: net.liftweb.mapper.KeyedMapper[_, T] =>
-        e.primaryKeyField.toString
-      case _ => entity.fieldByName("id").toString
+      case e: net.liftweb.mapper.KeyedMapper[_, T] => e.primaryKeyField.toString
+      case _                                       => entity.fieldByName("id").toString
     }
     else "<new>"
 

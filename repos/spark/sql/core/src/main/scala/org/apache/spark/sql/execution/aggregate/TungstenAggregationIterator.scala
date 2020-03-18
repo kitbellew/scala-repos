@@ -257,9 +257,8 @@ class TungstenAggregationIterator(
     val newExpressions = aggregateExpressions.map {
       case agg @ AggregateExpression(_, Partial, _) =>
         agg.copy(mode = PartialMerge)
-      case agg @ AggregateExpression(_, Complete, _) =>
-        agg.copy(mode = Final)
-      case other => other
+      case agg @ AggregateExpression(_, Complete, _) => agg.copy(mode = Final)
+      case other                                     => other
     }
     val newFunctions = initializeAggregateFunctions(newExpressions, 0)
     val newInputAttributes = newFunctions.flatMap(_.inputAggBufferAttributes)

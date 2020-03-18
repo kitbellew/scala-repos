@@ -34,8 +34,7 @@ final class Importer(
       else
         situation.status match {
           case Some(status) => game.finish(status, situation.winner).game
-          case _ =>
-            result.fold(game) {
+          case _ => result.fold(game) {
               case Result(Status.Draw, _) => game.finish(Status.Draw, None).game
               case Result(Status.Resign, winner) =>
                 game.finish(Status.Resign, winner).game

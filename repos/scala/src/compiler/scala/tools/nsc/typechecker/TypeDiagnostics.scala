@@ -97,8 +97,7 @@ trait TypeDiagnostics {
         case TypeRef(pre, sym, args)
             if sym.isAliasType && !sym.isInDefaultNamespace =>
           mapOver(tp.dealias)
-        case _ =>
-          mapOver(tp)
+        case _ => mapOver(tp)
       }
   }
 
@@ -686,8 +685,7 @@ trait TypeDiagnostics {
           enclClassOrMethodOrTypeMember(context).outer.lookupSymbol(
             tp.name,
             s => s != tp.symbol && s.hasRawInfo && reallyExists(s)) match {
-            case LookupSucceeded(_, sym2) =>
-              context.warning(
+            case LookupSucceeded(_, sym2) => context.warning(
                 tp.pos,
                 s"type parameter ${tp.name} defined in $sym shadows $sym2 defined in ${sym2.owner}. You may want to rename your type parameter, or possibly remove it."
               )
@@ -726,8 +724,7 @@ trait TypeDiagnostics {
             if (sym == ObjectClass)
               throw new FatalError("cannot redefine root " + sym)
           }
-        case _ =>
-          context0.error(ex.pos, ex.msg)
+        case _ => context0.error(ex.pos, ex.msg)
       }
     }
   }

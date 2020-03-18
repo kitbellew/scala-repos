@@ -82,8 +82,7 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
             f: Formula[T2]): (HMap[Formula, L], L[T2]) =
           memo.get(f) match {
             case Some(l) => (memo, l)
-            case None =>
-              f match {
+            case None => f match {
                 case c @ Constant(_) =>
                   def makeLit[T1](c: Constant[T1]) = {
                     val lit: L[T1] = ConstLit(c)

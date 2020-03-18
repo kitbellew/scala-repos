@@ -65,8 +65,7 @@ private[deploy] class ClientArguments(args: Array[String]) {
         supervise = true
         parse(tail)
 
-      case ("--help" | "-h") :: tail =>
-        printUsageAndExit(0)
+      case ("--help" | "-h") :: tail => printUsageAndExit(0)
 
       case ("--verbose" | "-v") :: tail =>
         logLevel = Level.INFO
@@ -95,8 +94,7 @@ private[deploy] class ClientArguments(args: Array[String]) {
         masters = Utils.parseStandaloneMasterUrls(_master)
         driverId = _driverId
 
-      case _ =>
-        printUsageAndExit(1)
+      case _ => printUsageAndExit(1)
     }
 
   /**

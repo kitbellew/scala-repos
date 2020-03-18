@@ -140,8 +140,7 @@ final class EMLDAOptimizer extends LDAOptimizer {
       case (docID: Long, termCounts: Vector) =>
         // Add edges for terms with non-zero counts.
         termCounts.toBreeze.activeIterator.filter(_._2 != 0.0).map {
-          case (term, cnt) =>
-            Edge(docID, term2index(term), cnt)
+          case (term, cnt) => Edge(docID, term2index(term), cnt)
         }
     }
 

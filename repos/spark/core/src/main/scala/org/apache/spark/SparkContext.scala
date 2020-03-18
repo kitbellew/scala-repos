@@ -1760,10 +1760,8 @@ class SparkContext(config: SparkConf)
               }
             }
           // A JAR file which exists locally on every worker node
-          case "local" =>
-            "file:" + uri.getPath
-          case _ =>
-            path
+          case "local" => "file:" + uri.getPath
+          case _       => path
         }
       }
       if (key != null) {
@@ -2455,8 +2453,8 @@ object SparkContext extends Logging {
     master match {
       case "local"                                 => 1
       case SparkMasterRegex.LOCAL_N_REGEX(threads) => convertToInt(threads)
-      case SparkMasterRegex.LOCAL_N_FAILURES_REGEX(threads, _) =>
-        convertToInt(threads)
+      case SparkMasterRegex.LOCAL_N_FAILURES_REGEX(threads, _) => convertToInt(
+          threads)
       case _ => 0 // driver is not used for execution
     }
   }

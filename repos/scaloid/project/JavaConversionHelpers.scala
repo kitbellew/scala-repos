@@ -124,14 +124,12 @@ trait JavaConversionHelpers {
       tpe match {
         case ga: GenericArrayType =>
           step(ga.getGenericComponentType) + arrayNotation
-        case p: ParameterizedType =>
-          p.toString.replace("$", ".")
-        case _: WildcardType => "?"
+        case p: ParameterizedType => p.toString.replace("$", ".")
+        case _: WildcardType      => "?"
         case c: Class[_] =>
           if (c.isArray) { step(c.getComponentType) + arrayNotation }
           else { c.getName.replace("$", innerClassDelim(c)) }
-        case _ =>
-          tpe.toString
+        case _ => tpe.toString
       }
     }
     step(_tpe)

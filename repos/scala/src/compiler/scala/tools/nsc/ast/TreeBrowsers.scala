@@ -378,14 +378,11 @@ abstract class TreeBrowsers {
     /** Return a list of children for the given tree node */
     def children(t: Tree): List[Tree] =
       t match {
-        case ProgramTree(units) =>
-          units
+        case ProgramTree(units) => units
 
-        case UnitTree(unit) =>
-          List(unit.body)
+        case UnitTree(unit) => List(unit.body)
 
-        case DocDef(comment, definition) =>
-          List(definition)
+        case DocDef(comment, definition) => List(definition)
 
         case ClassDef(mods, name, tparams, impl) => {
           var children: List[Tree] = List()
@@ -393,14 +390,11 @@ abstract class TreeBrowsers {
           mods.annotations ::: impl :: children
         }
 
-        case PackageDef(pid, stats) =>
-          stats
+        case PackageDef(pid, stats) => stats
 
-        case ModuleDef(mods, name, impl) =>
-          mods.annotations ::: List(impl)
+        case ModuleDef(mods, name, impl) => mods.annotations ::: List(impl)
 
-        case ValDef(mods, name, tpe, rhs) =>
-          mods.annotations ::: List(tpe, rhs)
+        case ValDef(mods, name, tpe, rhs) => mods.annotations ::: List(tpe, rhs)
 
         case DefDef(mods, name, tparams, vparams, tpe, rhs) =>
           mods.annotations ::: tpe :: rhs :: vparams.flatten ::: tparams
@@ -408,113 +402,78 @@ abstract class TreeBrowsers {
         case TypeDef(mods, name, tparams, rhs) =>
           mods.annotations ::: rhs :: tparams // @M: was List(rhs, lobound)
 
-        case Import(expr, selectors) =>
-          List(expr)
+        case Import(expr, selectors) => List(expr)
 
-        case CaseDef(pat, guard, body) =>
-          List(pat, guard, body)
+        case CaseDef(pat, guard, body) => List(pat, guard, body)
 
-        case Template(parents, self, body) =>
-          parents ::: List(self) ::: body
+        case Template(parents, self, body) => parents ::: List(self) ::: body
 
-        case LabelDef(name, params, rhs) =>
-          params ::: List(rhs)
+        case LabelDef(name, params, rhs) => params ::: List(rhs)
 
-        case Block(stats, expr) =>
-          stats ::: List(expr)
+        case Block(stats, expr) => stats ::: List(expr)
 
-        case Alternative(trees) =>
-          trees
+        case Alternative(trees) => trees
 
-        case Bind(name, rhs) =>
-          List(rhs)
+        case Bind(name, rhs) => List(rhs)
 
-        case UnApply(fun, args) =>
-          fun :: args
+        case UnApply(fun, args) => fun :: args
 
-        case Match(selector, cases) =>
-          selector :: cases
+        case Match(selector, cases) => selector :: cases
 
-        case Function(vparams, body) =>
-          vparams ::: List(body)
+        case Function(vparams, body) => vparams ::: List(body)
 
-        case Assign(lhs, rhs) =>
-          List(lhs, rhs)
+        case Assign(lhs, rhs) => List(lhs, rhs)
 
-        case If(cond, thenp, elsep) =>
-          List(cond, thenp, elsep)
+        case If(cond, thenp, elsep) => List(cond, thenp, elsep)
 
-        case Return(expr) =>
-          List(expr)
+        case Return(expr) => List(expr)
 
-        case Throw(expr) =>
-          List(expr)
+        case Throw(expr) => List(expr)
 
-        case New(init) =>
-          List(init)
+        case New(init) => List(init)
 
-        case Typed(expr, tpe) =>
-          List(expr, tpe)
+        case Typed(expr, tpe) => List(expr, tpe)
 
-        case TypeApply(fun, args) =>
-          List(fun) ::: args
+        case TypeApply(fun, args) => List(fun) ::: args
 
-        case Apply(fun, args) =>
-          List(fun) ::: args
+        case Apply(fun, args) => List(fun) ::: args
 
-        case ApplyDynamic(qual, args) =>
-          List(qual) ::: args
+        case ApplyDynamic(qual, args) => List(qual) ::: args
 
-        case Super(qualif, mix) =>
-          List(qualif)
+        case Super(qualif, mix) => List(qualif)
 
-        case This(qualif) =>
-          Nil
+        case This(qualif) => Nil
 
-        case Select(qualif, selector) =>
-          List(qualif)
+        case Select(qualif, selector) => List(qualif)
 
-        case Ident(name) =>
-          Nil
+        case Ident(name) => Nil
 
-        case Literal(value) =>
-          Nil
+        case Literal(value) => Nil
 
-        case TypeTree() =>
-          Nil
+        case TypeTree() => Nil
 
-        case Annotated(annot, arg) =>
-          annot :: List(arg)
+        case Annotated(annot, arg) => annot :: List(arg)
 
-        case SingletonTypeTree(ref) =>
-          List(ref)
+        case SingletonTypeTree(ref) => List(ref)
 
-        case SelectFromTypeTree(qualif, selector) =>
-          List(qualif)
+        case SelectFromTypeTree(qualif, selector) => List(qualif)
 
-        case CompoundTypeTree(templ) =>
-          List(templ)
+        case CompoundTypeTree(templ) => List(templ)
 
-        case AppliedTypeTree(tpe, args) =>
-          tpe :: args
+        case AppliedTypeTree(tpe, args) => tpe :: args
 
-        case TypeBoundsTree(lo, hi) =>
-          List(lo, hi)
+        case TypeBoundsTree(lo, hi) => List(lo, hi)
 
-        case ExistentialTypeTree(tpt, whereClauses) =>
-          tpt :: whereClauses
+        case ExistentialTypeTree(tpt, whereClauses) => tpt :: whereClauses
 
         case Try(block, catches, finalizer) =>
           block :: catches ::: List(finalizer)
 
-        case ArrayValue(elemtpt, elems) =>
-          elemtpt :: elems
+        case ArrayValue(elemtpt, elems) => elemtpt :: elems
 
-        case EmptyTree =>
-          Nil
+        case EmptyTree => Nil
 
-        case Star(t) =>
-          List(t)
+        case Star(t) => List(t)
       }
 
     /** Return a textual representation of this t's symbol */
@@ -588,8 +547,7 @@ abstract class TreeBrowsers {
             "SingleType(" :/:
               toDocument(pre) :: ", " :/: sym.name.toString :: ")"))
 
-        case ConstantType(value) =>
-          "ConstantType(" + value + ")"
+        case ConstantType(value) => "ConstantType(" + value + ")"
 
         case TypeRef(pre, sym, args) =>
           Document.group(Document.nest(
@@ -659,8 +617,7 @@ abstract class TreeBrowsers {
               Document.group("(" :/: symsToDocument(tparams) :/: "), ") :/:
               toDocument(result) :: ")"))
 
-        case ImportType(expr) =>
-          "ImportType(" + expr.toString + ")"
+        case ImportType(expr) => "ImportType(" + expr.toString + ")"
 
         case SuperType(thistpe, supertpe) =>
           Document.group(Document.nest(
@@ -668,8 +625,7 @@ abstract class TreeBrowsers {
             "SuperType(" :/:
               toDocument(thistpe) :/: ", " :/:
               toDocument(supertpe) :: ")"))
-        case _ =>
-          sys.error("Unknown case: " + t.toString + ", " + t.getClass)
+        case _ => sys.error("Unknown case: " + t.toString + ", " + t.getClass)
       }
   }
 

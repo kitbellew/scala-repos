@@ -45,8 +45,7 @@ private[finagle] class DelayedReleaseService[-Req <: Request](
   override def apply(request: Req): Future[Response] = {
     counter.incr()
     service(request) transform {
-      case Return(r) if r.isChunked =>
-        Future.value(proxy(r))
+      case Return(r) if r.isChunked => Future.value(proxy(r))
       case t =>
         counter.decr()
         Future.const(t)

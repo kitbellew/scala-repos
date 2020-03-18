@@ -100,8 +100,7 @@ class FakePsiMethod(
 
   def getModifierList: PsiModifierList =
     navElement match {
-      case b: ScBindingPattern =>
-        b.nameContext match {
+      case b: ScBindingPattern => b.nameContext match {
           case v: ScVariable => v.getModifierList
           case v: ScValue    => v.getModifierList
           case _             => ScalaPsiUtil.getEmptyModifierList(getManager)

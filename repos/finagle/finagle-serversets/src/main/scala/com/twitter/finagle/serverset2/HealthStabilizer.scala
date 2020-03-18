@@ -48,8 +48,7 @@ private[serverset2] object HealthStabilizer {
           // The probation epoch has ended. If we entered probation > the probation duration then we are
           // now unhealthy.
           case (Probation(elapsed), Right(()))
-              if elapsed() >= probationEpoch.period =>
-            Unhealthy
+              if elapsed() >= probationEpoch.period => Unhealthy
 
           // any other change is ignored
           case (v, _) => v

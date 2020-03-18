@@ -229,8 +229,7 @@ object Eval extends EvalInstances {
     @tailrec
     private def loop[A](fa: Eval[A]): Eval[A] =
       fa match {
-        case call: Eval.Call[A] =>
-          loop(call.thunk())
+        case call: Eval.Call[A] => loop(call.thunk())
         case compute: Eval.Compute[A] =>
           new Eval.Compute[A] {
             type Start = compute.Start
@@ -273,17 +272,14 @@ object Eval extends EvalInstances {
       @tailrec
       def loop(curr: L, fs: List[C]): Any =
         curr match {
-          case c: Compute[_] =>
-            c.start() match {
+          case c: Compute[_] => c.start() match {
               case cc: Compute[_] =>
                 loop(
                   cc.start().asInstanceOf[L],
                   cc.run.asInstanceOf[C] :: c.run.asInstanceOf[C] :: fs)
-              case xx =>
-                loop(c.run(xx.value).asInstanceOf[L], fs)
+              case xx => loop(c.run(xx.value).asInstanceOf[L], fs)
             }
-          case x =>
-            fs match {
+          case x => fs match {
               case f :: fs => loop(f(x.value), fs)
               case Nil     => x.value
             }

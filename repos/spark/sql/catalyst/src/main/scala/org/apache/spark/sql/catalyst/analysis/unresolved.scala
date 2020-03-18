@@ -226,8 +226,7 @@ case class UnresolvedStar(target: Option[Seq[String]])
     if (attribute.isDefined) {
       // This target resolved to an attribute in child. It must be a struct. Expand it.
       attribute.get.dataType match {
-        case s: StructType =>
-          s.zipWithIndex.map {
+        case s: StructType => s.zipWithIndex.map {
             case (f, i) =>
               val extract = GetStructField(attribute.get, i)
               Alias(extract, f.name)()

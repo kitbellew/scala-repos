@@ -155,8 +155,7 @@ object DecisionTreeExample {
     format match {
       case "dense" =>
         MLUtils.loadLabeledPoints(sqlContext.sparkContext, path).toDF()
-      case "libsvm" =>
-        expectedNumFeatures match {
+      case "libsvm" => expectedNumFeatures match {
           case Some(numFeatures) =>
             sqlContext.read
               .option("numFeatures", numFeatures.toString)

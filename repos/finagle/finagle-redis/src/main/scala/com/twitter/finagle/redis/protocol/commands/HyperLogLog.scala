@@ -20,8 +20,7 @@ object PFAdd {
           ChannelBuffers.wrappedBuffer(head),
           tail map ChannelBuffers.wrappedBuffer)
 
-      case _ =>
-        throw ClientError("Invalid use of PFAdd")
+      case _ => throw ClientError("Invalid use of PFAdd")
     }
 }
 
@@ -55,7 +54,6 @@ object PFMerge {
           ChannelBuffers.wrappedBuffer(head),
           tail map ChannelBuffers.wrappedBuffer)
 
-      case _ =>
-        throw ClientError("Invalid use of PFMerge")
+      case _ => throw ClientError("Invalid use of PFMerge")
     }
 }

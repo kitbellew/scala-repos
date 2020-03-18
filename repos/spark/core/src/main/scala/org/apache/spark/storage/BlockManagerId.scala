@@ -92,8 +92,7 @@ class BlockManagerId private (
     that match {
       case id: BlockManagerId =>
         executorId == id.executorId && port == id.port && host == id.host
-      case _ =>
-        false
+      case _ => false
     }
 }
 

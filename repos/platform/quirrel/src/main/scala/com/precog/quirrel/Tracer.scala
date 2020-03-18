@@ -73,8 +73,7 @@ trait Tracer extends parser.AST with typer.Binder {
         parentIdx: Option[Int]): Trace =
       expr match {
 
-        case Let(_, _, _, _, right) =>
-          loop(sigma, trace, right, parentIdx)
+        case Let(_, _, _, _, right) => loop(sigma, trace, right, parentIdx)
 
         case Solve(_, constraints, child) =>
           foldThrough(trace, sigma, expr, parentIdx, constraints :+ child)
@@ -91,8 +90,7 @@ trait Tracer extends parser.AST with typer.Binder {
         case Relate(_, from, to, in) =>
           foldThrough(trace, sigma, expr, parentIdx, Vector(from, to, in))
 
-        case (_: TicVar) =>
-          addNode(trace, sigma, expr, parentIdx)
+        case (_: TicVar) => addNode(trace, sigma, expr, parentIdx)
 
         case expr @ Dispatch(_, name, actuals) => {
           expr.binding match {
@@ -112,8 +110,7 @@ trait Tracer extends parser.AST with typer.Binder {
             case FormalBinding(let) =>
               loop(sigma, trace, sigma((name, let)), parentIdx)
 
-            case _ =>
-              foldThrough(trace, sigma, expr, parentIdx, actuals)
+            case _ => foldThrough(trace, sigma, expr, parentIdx, actuals)
           }
         }
 
@@ -141,8 +138,7 @@ trait Tracer extends parser.AST with typer.Binder {
       }
 
       val result = newTargets flatMap {
-        case (idx, grph) =>
-          loop(stack :+ grph)(idx)
+        case (idx, grph) => loop(stack :+ grph)(idx)
       }
 
       if (result.isEmpty) stack else result.toList

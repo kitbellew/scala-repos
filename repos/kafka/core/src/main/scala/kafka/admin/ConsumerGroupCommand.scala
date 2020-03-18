@@ -151,8 +151,8 @@ object ConsumerGroupCommand {
           ownerOpt.getOrElse("none")))
       }
       getLogEndOffset(topic, partition) match {
-        case LogEndOffsetResult.LogEndOffset(logEndOffset) =>
-          print(Some(logEndOffset))
+        case LogEndOffsetResult.LogEndOffset(logEndOffset) => print(
+            Some(logEndOffset))
         case LogEndOffsetResult.Unknown => print(None)
         case LogEndOffsetResult.Ignore  =>
       }

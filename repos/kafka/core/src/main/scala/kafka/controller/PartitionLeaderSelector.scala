@@ -179,8 +179,7 @@ class ReassignedPartitionLeaderSelector(controllerContext: ControllerContext)
             currentLeaderAndIsr.isr,
             currentLeaderIsrZkPathVersion + 1),
           reassignedInSyncReplicas)
-      case None =>
-        reassignedInSyncReplicas.size match {
+      case None => reassignedInSyncReplicas.size match {
           case 0 =>
             throw new NoReplicaOnlineException(
               "List of reassigned replicas for partition " +

@@ -19,8 +19,7 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
 
   def apply(command: Command): Response = {
     command match {
-      case Get(queueName, timeout) =>
-        state match {
+      case Get(queueName, timeout) => state match {
           case NoTransaction() =>
             val wait = timeout.getOrElse(0.seconds)
             val item = queues
@@ -31,8 +30,7 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
           case OpenTransaction(txnQueueName, item) =>
             throw new InvalidStateTransition("Transaction", "get")
         }
-      case Open(queueName, timeout) =>
-        state match {
+      case Open(queueName, timeout) => state match {
           case NoTransaction() =>
             val wait = timeout.getOrElse(0.seconds)
             val item = queues
@@ -44,8 +42,7 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
           case OpenTransaction(txnQueueName, item) =>
             throw new InvalidStateTransition("Transaction", "get/open")
         }
-      case Close(queueName, timeout) =>
-        state match {
+      case Close(queueName, timeout) => state match {
           case NoTransaction() =>
             throw new InvalidStateTransition("Transaction", "get/close")
           case OpenTransaction(txnQueueName, _) =>
@@ -55,8 +52,7 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
             state = NoTransaction()
             Values(Seq.empty)
         }
-      case CloseAndOpen(queueName, timeout) =>
-        state match {
+      case CloseAndOpen(queueName, timeout) => state match {
           case NoTransaction() =>
             throw new InvalidStateTransition("Transaction", "get/close/open")
           case OpenTransaction(txnQueueName, _) =>
@@ -66,8 +62,7 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
             state = NoTransaction()
             apply(Open(queueName, timeout))
         }
-      case Abort(queueName, timeout) =>
-        state match {
+      case Abort(queueName, timeout) => state match {
           case NoTransaction() =>
             throw new InvalidStateTransition("Transaction", "get/abort")
           case OpenTransaction(txnQueueName, item) =>
@@ -98,18 +93,12 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
       case FlushAll() =>
         queues.invalidateAll()
         Deleted()
-      case Version() =>
-        NotFound()
-      case ShutDown() =>
-        NotFound()
-      case DumpConfig() =>
-        NotFound()
-      case Stats() =>
-        NotFound()
-      case DumpStats() =>
-        NotFound()
-      case Reload() =>
-        NotFound()
+      case Version()    => NotFound()
+      case ShutDown()   => NotFound()
+      case DumpConfig() => NotFound()
+      case Stats()      => NotFound()
+      case DumpStats()  => NotFound()
+      case Reload()     => NotFound()
     }
   }
 }

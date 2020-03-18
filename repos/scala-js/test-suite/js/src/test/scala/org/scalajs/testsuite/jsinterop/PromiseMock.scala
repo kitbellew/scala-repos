@@ -96,8 +96,7 @@ object PromiseMock {
     private def tryCatchAny[A](tryBody: => A)(catchBody: Any => A): A = {
       try { tryBody }
       catch {
-        case th: Throwable =>
-          catchBody(th match {
+        case th: Throwable => catchBody(th match {
             case js.JavaScriptException(e) => e
             case _                         => th
           })
@@ -215,11 +214,9 @@ object PromiseMock {
               fulfillReactions += doFulfilled _
               rejectReactions += doRejected _
 
-            case Fulfilled(value) =>
-              enqueue(() => doFulfilled(value))
+            case Fulfilled(value) => enqueue(() => doFulfilled(value))
 
-            case Rejected(reason) =>
-              enqueue(() => doRejected(reason))
+            case Rejected(reason) => enqueue(() => doRejected(reason))
           }
       })
     }

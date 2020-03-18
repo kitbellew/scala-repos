@@ -108,10 +108,7 @@ class OWLQN[K, T](maxIter: Int, m: Int, l1reg: K => Double, tolerance: Double)(
     space.zipMapValues.map(
       stepped,
       orthant,
-      {
-        case (v, ov) =>
-          v * I(math.signum(v) == math.signum(ov))
-      })
+      { case (v, ov) => v * I(math.signum(v) == math.signum(ov)) })
   }
 
   // Adds in the regularization stuff to the gradient
@@ -149,10 +146,7 @@ class OWLQN[K, T](maxIter: Int, m: Int, l1reg: K => Double, tolerance: Double)(
     val orth = space.zipMapValues.map(
       x,
       grad,
-      {
-        case (v, gv) =>
-          if (v != 0) math.signum(v) else math.signum(-gv)
-      })
+      { case (v, gv) => if (v != 0) math.signum(v) else math.signum(-gv) })
     orth
   }
 

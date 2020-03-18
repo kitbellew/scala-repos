@@ -79,13 +79,11 @@ private[spark] object JavaUtils {
 
             def remove() {
               prev match {
-                case Some(k) =>
-                  underlying match {
+                case Some(k) => underlying match {
                     case mm: mutable.Map[A, _] =>
                       mm.remove(k)
                       prev = None
-                    case _ =>
-                      throw new UnsupportedOperationException("remove")
+                    case _ => throw new UnsupportedOperationException("remove")
                   }
                 case _ =>
                   throw new IllegalStateException(

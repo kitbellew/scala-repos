@@ -111,12 +111,11 @@ object Xml {
     def toJValue(x: XElem): JValue =
       x match {
         case XValue(s) => JString(s)
-        case XLeaf((name, value), attrs) =>
-          (value, attrs) match {
+        case XLeaf((name, value), attrs) => (value, attrs) match {
             case (_, Nil)         => toJValue(value)
             case (XValue(""), xs) => JObject(mkFields(xs))
-            case (_, xs) =>
-              JObject(JField(name, toJValue(value)) :: mkFields(xs))
+            case (_, xs) => JObject(
+                JField(name, toJValue(value)) :: mkFields(xs))
           }
         case XNode(xs)     => JObject(mkFields(xs))
         case XArray(elems) => JArray(elems.map(toJValue))
@@ -124,8 +123,7 @@ object Xml {
 
     def mkFields(xs: List[(String, XElem)]) =
       xs.flatMap {
-        case (name, value) =>
-          (value, toJValue(value)) match {
+        case (name, value) => (value, toJValue(value)) match {
             // This special case is needed to flatten nested objects which resulted from
             // XML attributes. Flattening keeps transformation more predicatable.
             // <a><foo id="1">x</foo></a> -> {"a":{"foo":{"foo":"x","id":"1"}}} vs

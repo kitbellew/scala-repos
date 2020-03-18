@@ -212,8 +212,7 @@ abstract class UnCurry
         case Function(List(), expr) if isByNameRef(expr) =>
           noApply += expr
           expr
-        case _ =>
-          fun
+        case _ => fun
       }
 
     /**  Transform a function node (x_1,...,x_n) => body of type FunctionN[T_1, .., T_N, R] to
@@ -231,8 +230,7 @@ abstract class UnCurry
         case RefinedType(List(funTp), decls) =>
           debuglog(s"eliminate refinement from function type ${fun.tpe}")
           fun.setType(funTp)
-        case _ =>
-          ()
+        case _ => ()
       }
 
       deEta(fun) match {
@@ -403,8 +401,7 @@ abstract class UnCurry
             // a Function0. We can then remove the application and use the existing Function0.
             case Apply(Select(recv, nme.apply), Nil) if canUseDirectly(recv) =>
               recv
-            case _ =>
-              newFunction0(arg)
+            case _ => newFunction0(arg)
           }
         }
       }
@@ -421,8 +418,7 @@ abstract class UnCurry
             if (rhs == EmptyTree) rhs
             else Block(Nil, gen.mkZero(rhs.tpe)) setType rhs.tpe
           deriveDefDef(tree)(_ => rhs1) setSymbol tree.symbol setType tree.tpe
-        case _ =>
-          gen.mkZero(tree.tpe) setType tree.tpe
+        case _ => gen.mkZero(tree.tpe) setType tree.tpe
       }
     }
 
@@ -560,8 +556,9 @@ abstract class UnCurry
                      transformArgs(tree.pos, fn.symbol, args, formals)))
                }
 
-             case Assign(_: RefTree, _) =>
-               withNeedLift(needLift = true) { super.transform(tree) }
+             case Assign(_: RefTree, _) => withNeedLift(needLift = true) {
+                 super.transform(tree)
+               }
 
              case Assign(lhs, _)
                  if lhs.symbol.owner != currentMethod || lhs.symbol.hasFlag(
@@ -591,11 +588,11 @@ abstract class UnCurry
                  if (!inlineFunctionExpansion) && isLiftedLambdaBody(target) =>
                super.transform(fun)
 
-             case fun @ Function(_, _) =>
-               mainTransform(transformFunction(fun))
+             case fun @ Function(_, _) => mainTransform(transformFunction(fun))
 
-             case Template(_, _, _) =>
-               withInConstructorFlag(0) { super.transform(tree) }
+             case Template(_, _, _) => withInConstructorFlag(0) {
+                 super.transform(tree)
+               }
 
              case _ =>
                val tree1 = super.transform(tree)
@@ -632,12 +629,9 @@ abstract class UnCurry
 
         def isThrowable(pat: Tree): Boolean =
           pat match {
-            case Typed(Ident(nme.WILDCARD), tpt) =>
-              tpt.tpe =:= ThrowableTpe
-            case Bind(_, pat) =>
-              isThrowable(pat)
-            case _ =>
-              false
+            case Typed(Ident(nme.WILDCARD), tpt) => tpt.tpe =:= ThrowableTpe
+            case Bind(_, pat)                    => isThrowable(pat)
+            case _                               => false
           }
 
         tree match {
@@ -684,8 +678,7 @@ abstract class UnCurry
             val flatdd = copyDefDef(dd)(
               vparamss = newParamss,
               rhs = nonLocalReturnKeys get ddSym match {
-                case Some(k) =>
-                  atPos(newRhs.pos)(
+                case Some(k) => atPos(newRhs.pos)(
                     nonLocalReturnTry(literalRhsIfConst, k, ddSym))
                 case None => literalRhsIfConst
               }
@@ -703,15 +696,13 @@ abstract class UnCurry
           case Ident(name) =>
             assert(name != tpnme.WILDCARD_STAR, tree)
             applyUnary()
-          case Select(_, _) | TypeApply(_, _) =>
-            applyUnary()
+          case Select(_, _) | TypeApply(_, _) => applyUnary()
           case ret @ Return(expr) if isNonLocalReturn(ret) =>
             log("non-local return from %s to %s".format(
               currentOwner.enclMethod,
               ret.symbol))
             atPos(ret.pos)(nonLocalReturnThrow(expr, ret.symbol))
-          case TypeTree() =>
-            tree
+          case TypeTree() => tree
           case _ =>
             if (tree.isType) TypeTree(tree.tpe) setPos tree.pos else tree
         }
@@ -816,10 +807,8 @@ abstract class UnCurry
               // 2. the type needs to be normalized, since `gen.mkCast` checks this (no HK here, just aliases have
               //    to be expanded before handing the type to `gen.mkAttributedCast`, which calls `gen.mkCast`)
               val info0 = enteringUncurry(p.symbol.info) match {
-                case DesugaredParameterType(desugaredTpe) =>
-                  desugaredTpe
-                case tpe =>
-                  tpe
+                case DesugaredParameterType(desugaredTpe) => desugaredTpe
+                case tpe                                  => tpe
               }
               val info = info0.normalize
               val tempValName = unit freshTermName (p.name + "$")

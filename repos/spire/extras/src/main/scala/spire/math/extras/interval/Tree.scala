@@ -188,8 +188,7 @@ private[interval] object Tree {
               // same prefix. leaves have to be merged
               // todo: check if we can return b unchanged
               op(a0, a.left, b0, b.left) && op(am, a.right, bm, b.right)
-            case (a: Leaf, b: Leaf) =>
-              collision(a0, a, b0, b)
+            case (a: Leaf, b: Leaf) => collision(a0, a, b0, b)
             // $COVERAGE-OFF$
             case _ => unreachable
             // $COVERAGE-ON$
@@ -339,8 +338,7 @@ private[interval] object Tree {
               // same prefix. leaves have to be merged
               // todo: check if we can return b unchanged
               a.lr(op(a0, a.left, b0, b.left), op(am, a.right, bm, b.right))
-            case (a: Leaf, b: Leaf) =>
-              collision(a0, a, b0, b)
+            case (a: Leaf, b: Leaf) => collision(a0, a, b0, b)
             // $COVERAGE-OFF$
             case _ => unreachable
             // $COVERAGE-ON$
@@ -489,8 +487,7 @@ private[interval] object Tree {
           if (a.prefix == value) onLeaf(a0, a)
           else if (unsigned_<(a.prefix, value)) a0 ^ a.sign
           else a0
-        case _ =>
-          a0
+        case _ => a0
       }
   }
 

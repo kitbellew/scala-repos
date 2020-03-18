@@ -35,9 +35,8 @@ object ToSetAndBackToDistinct extends SimplificationType {
   def sameCollectionType(tp1: ScType, tp2: ScType) = {
     (tp1, tp2) match {
       case (ScParameterizedType(des1, _), ScParameterizedType(des2, _))
-          if des1.equiv(des2) =>
-        true
-      case _ => false
+          if des1.equiv(des2) => true
+      case _                  => false
     }
   }
 }

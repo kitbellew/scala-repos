@@ -71,8 +71,7 @@ trait FutureSupport extends AsyncSupport {
             withinAsyncContext(context) {
               try {
                 t map { result => renderResponse(result) } recover {
-                  case e: HaltException =>
-                    renderHaltException(e)
+                  case e: HaltException => renderHaltException(e)
                   case e =>
                     try { renderResponse(errorHandler(e)) }
                     catch {

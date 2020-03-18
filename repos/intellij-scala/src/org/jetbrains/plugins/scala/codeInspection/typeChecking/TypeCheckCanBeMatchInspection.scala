@@ -162,8 +162,7 @@ object TypeCheckToMatchUtil {
             definition match {
               //store first occurence of pattern definition and name
               case Some(oldDef)
-                  if oldDef.getTextOffset < patternDef.getTextOffset =>
-                true
+                  if oldDef.getTextOffset < patternDef.getTextOffset => true
               case _ =>
                 definedName = Some(bindings.head.getName)
                 definition = Some(patternDef)
@@ -424,9 +423,8 @@ object TypeCheckToMatchUtil {
       val patternVisitor = new ScalaRecursiveElementVisitor() {
         override def visitPattern(pat: ScPattern) {
           pat match {
-            case bp: ScBindingPattern if bp.name == name =>
-              primary += bp
-            case _ =>
+            case bp: ScBindingPattern if bp.name == name => primary += bp
+            case _                                       =>
           }
           super.visitPattern(pat)
         }
@@ -492,8 +490,7 @@ object TypeCheckToMatchUtil {
 
   def separateConditions(expr: ScExpression): List[ScExpression] = {
     expr match {
-      case parenth: ScParenthesisedExpr =>
-        parenth.expr match {
+      case parenth: ScParenthesisedExpr => parenth.expr match {
           case Some(infixExpr: ScInfixExpr)
               if infixExpr.operation.refName == "&&" =>
             separateConditions(infixExpr.lOp) ::: separateConditions(

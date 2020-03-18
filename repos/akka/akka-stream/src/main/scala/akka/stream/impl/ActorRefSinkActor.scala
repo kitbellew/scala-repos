@@ -34,16 +34,14 @@ private[akka] class ActorRefSinkActor(
   context.watch(ref)
 
   def receive = {
-    case OnNext(elem) ⇒
-      ref ! elem
+    case OnNext(elem) ⇒ ref ! elem
     case OnError(cause) ⇒
       ref ! Status.Failure(cause)
       context.stop(self)
     case OnComplete ⇒
       ref ! onCompleteMessage
       context.stop(self)
-    case Terminated(`ref`) ⇒
-      context.stop(self) // will cancel upstream
+    case Terminated(`ref`) ⇒ context.stop(self) // will cancel upstream
   }
 
 }

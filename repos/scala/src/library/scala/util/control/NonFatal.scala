@@ -37,9 +37,8 @@ object NonFatal {
     t match {
       // VirtualMachineError includes OutOfMemoryError and other fatal errors
       case _: VirtualMachineError | _: ThreadDeath | _: InterruptedException |
-          _: LinkageError | _: ControlThrowable =>
-        false
-      case _ => true
+          _: LinkageError | _: ControlThrowable => false
+      case _                                    => true
     }
 
   /**

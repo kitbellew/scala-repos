@@ -65,14 +65,14 @@ private[spark] class FileAppender(
           catch {
             // An InputStream can throw IOException during read if the stream is closed
             // asynchronously, so once appender has been flagged to stop these will be ignored
-            case _: IOException if markedForStop => // do nothing and proceed to stop appending
+            case _: IOException
+                if markedForStop => // do nothing and proceed to stop appending
           }
           if (n > 0) { appendToFile(buf, n) }
         }
       } { closeFile() }
     } catch {
-      case e: Exception =>
-        logError(s"Error writing stream to file $file", e)
+      case e: Exception => logError(s"Error writing stream to file $file", e)
     }
   }
 
@@ -167,12 +167,9 @@ private[spark] object FileAppender extends Logging {
     }
 
     rollingStrategy match {
-      case "" =>
-        new FileAppender(inputStream, file)
-      case "time" =>
-        createTimeBasedAppender()
-      case "size" =>
-        createSizeBasedAppender()
+      case ""     => new FileAppender(inputStream, file)
+      case "time" => createTimeBasedAppender()
+      case "size" => createSizeBasedAppender()
       case _ =>
         logWarning(
           s"Illegal strategy [$rollingStrategy] for rolling executor logs, " +

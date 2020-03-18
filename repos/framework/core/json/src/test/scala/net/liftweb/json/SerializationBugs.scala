@@ -146,8 +146,7 @@ object SerializationBugs extends Specification {
       private val singleOrVectorClass = classOf[SingleOrVector[Double]]
 
       def deserialize(implicit format: Formats) = {
-        case (TypeInfo(`singleOrVectorClass`, _), json) =>
-          json match {
+        case (TypeInfo(`singleOrVectorClass`, _), json) => json match {
             case JObject(List(JField("val", JDouble(x)))) => SingleValue(x)
             case JObject(List(JField("val", JArray(xs: List[_])))) =>
               VectorValue(

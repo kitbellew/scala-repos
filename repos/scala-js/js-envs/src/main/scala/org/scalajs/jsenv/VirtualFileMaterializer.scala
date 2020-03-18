@@ -33,8 +33,7 @@ final class VirtualFileMaterializer(singleDir: Boolean = false) {
 
   def materialize(vf: VirtualTextFile): File =
     vf match {
-      case vf: FileVirtualFile if !singleDir =>
-        vf.file
+      case vf: FileVirtualFile if !singleDir => vf.file
       case _ =>
         val trg = trgFile(vf.name)
         IO.copyTo(vf, WritableFileVirtualTextFile(trg))
@@ -43,8 +42,7 @@ final class VirtualFileMaterializer(singleDir: Boolean = false) {
 
   def materialize(vf: VirtualBinaryFile): File =
     vf match {
-      case vf: FileVirtualFile if !singleDir =>
-        vf.file
+      case vf: FileVirtualFile if !singleDir => vf.file
       case _ =>
         val trg = trgFile(vf.name)
         IO.copyTo(vf, WritableFileVirtualBinaryFile(trg))

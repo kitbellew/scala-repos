@@ -457,8 +457,7 @@ class AliasSet(var set: Object /*SmallBitSet | Array[Long]*/, var size: Int) {
 
   def +=(value: Int): Unit =
     this.set match {
-      case s: SmallBitSet =>
-        (size: @switch) match {
+      case s: SmallBitSet => (size: @switch) match {
           case 0 => s.a = value; size = 1
           case 1 => if (value != s.a) { s.b = value; size = 2 }
           case 2 => if (value != s.a && value != s.b) { s.c = value; size = 3 }
@@ -477,17 +476,14 @@ class AliasSet(var set: Object /*SmallBitSet | Array[Long]*/, var size: Int) {
               bsAdd(this, value)
             }
         }
-      case bits: Array[Long] =>
-        bsAdd(this, value)
+      case bits: Array[Long] => bsAdd(this, value)
     }
 
   def -=(value: Int): Unit =
     this.set match {
-      case s: SmallBitSet =>
-        (size: @switch) match {
+      case s: SmallBitSet => (size: @switch) match {
           case 0 =>
-          case 1 =>
-            if (value == s.a) { s.a = -1; size = 0 }
+          case 1 => if (value == s.a) { s.a = -1; size = 0 }
           case 2 =>
             if (value == s.a) { s.a = s.b; s.b = -1; size = 1 }
             else if (value == s.b) { s.b = -1; size = 1 }

@@ -119,8 +119,7 @@ case class IsNaN(child: Expression)
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val eval = child.gen(ctx)
     child.dataType match {
-      case DoubleType | FloatType =>
-        s"""
+      case DoubleType | FloatType => s"""
           ${eval.code}
           boolean ${ev.isNull} = false;
           ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};
@@ -162,8 +161,7 @@ case class NaNvl(left: Expression, right: Expression)
     val leftGen = left.gen(ctx)
     val rightGen = right.gen(ctx)
     left.dataType match {
-      case DoubleType | FloatType =>
-        s"""
+      case DoubleType | FloatType => s"""
           ${leftGen.code}
           boolean ${ev.isNull} = false;
           ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};
@@ -258,8 +256,7 @@ case class AtLeastNNonNulls(n: Int, children: Seq[Expression])
       .map { e =>
         val eval = e.gen(ctx)
         e.dataType match {
-          case DoubleType | FloatType =>
-            s"""
+          case DoubleType | FloatType => s"""
             if ($nonnull < $n) {
               ${eval.code}
               if (!${eval.isNull} && !Double.isNaN(${eval.value})) {
@@ -267,8 +264,7 @@ case class AtLeastNNonNulls(n: Int, children: Seq[Expression])
               }
             }
           """
-          case _ =>
-            s"""
+          case _                      => s"""
             if ($nonnull < $n) {
               ${eval.code}
               if (!${eval.isNull}) {

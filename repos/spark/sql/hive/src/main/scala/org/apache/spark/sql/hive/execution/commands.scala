@@ -237,8 +237,7 @@ private[hive] case class CreateMetastoreDataSourceAsSelect(
             case l @ LogicalRelation(
                   _: InsertableRelation | _: HadoopFsRelation,
                   _,
-                  _) =>
-              existingSchema = Some(l.schema)
+                  _) => existingSchema = Some(l.schema)
             case o =>
               throw new AnalysisException(
                 s"Saving data in ${o.toString} is not supported.")

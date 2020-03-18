@@ -64,8 +64,7 @@ private[persistence] class LeveldbJournal extends {
     case SubscribeTag(tag: String) ⇒
       addTagSubscriber(sender(), tag)
       context.watch(sender())
-    case Terminated(ref) ⇒
-      removeSubscriber(ref)
+    case Terminated(ref) ⇒ removeSubscriber(ref)
   }
 }
 

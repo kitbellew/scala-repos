@@ -9,8 +9,7 @@ class InitTest extends FunSuite {
 
   test("loadBuildProperties") {
     Init.loadBuildProperties match {
-      case None =>
-        fail("build.properties not found for finagle-core")
+      case None => fail("build.properties not found for finagle-core")
       case Some(p) =>
         val version = p.getProperty("version")
         assert(version != null)

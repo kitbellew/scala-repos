@@ -344,8 +344,7 @@ class SecurityServiceSpec
                 HttpStatus(NotFound, _),
                 _,
                 Some(JString("Unable to find API key not-gonna-find-it")),
-                _) =>
-            ok
+                _) => ok
         }
       }
     }
@@ -441,8 +440,7 @@ class SecurityServiceSpec
                 _) if elems.contains("error") =>
             elems("error") must beLike {
               case JString(
-                    "Unable to create API key with expired permission") =>
-                ok
+                    "Unable to create API key with expired permission") => ok
             }
         }
       }
@@ -512,8 +510,7 @@ class SecurityServiceSpec
                 HttpStatus(NotFound, _),
                 _,
                 Some(JString("Unable to find grant not-gonna-find-it")),
-                _) =>
-            ok
+                _) => ok
         }
       }
     }

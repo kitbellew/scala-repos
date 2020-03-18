@@ -308,8 +308,7 @@ object HttpEntity {
 
     override def toString = {
       val dataAsString = contentType match {
-        case _: Binary ⇒
-          data.toString()
+        case _: Binary ⇒ data.toString()
         case nb: NonBinary ⇒
           try {
             val maxBytes = 4096
@@ -320,10 +319,7 @@ object HttpEntity {
                 .dropRight(1)
               s"$truncatedString ... (${data.length} bytes total)"
             } else data.decodeString(nb.charset.value)
-          } catch {
-            case NonFatal(e) ⇒
-              data.toString()
-          }
+          } catch { case NonFatal(e) ⇒ data.toString() }
       }
 
       s"$productPrefix($contentType,$dataAsString)"

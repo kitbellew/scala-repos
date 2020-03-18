@@ -47,8 +47,7 @@ class Chopstick extends Actor with FSM[ChopstickState, TakenBy] {
   // It will refuse to be taken by other hakkers
   // But the owning hakker can put it back
   when(Taken) {
-    case Event(Take, currentState) =>
-      stay replying Busy(self)
+    case Event(Take, currentState) => stay replying Busy(self)
     case Event(Put, TakenBy(hakker)) if sender() == hakker =>
       goto(Available) using TakenBy(system.deadLetters)
   }
@@ -115,8 +114,7 @@ class FSMHakker(name: String, left: ActorRef, right: ActorRef)
       goto(WaitForOtherChopstick) using TakenChopsticks(Some(left), None)
     case Event(Taken(`right`), _) =>
       goto(WaitForOtherChopstick) using TakenChopsticks(None, Some(right))
-    case Event(Busy(_), _) =>
-      goto(FirstChopstickDenied)
+    case Event(Busy(_), _) => goto(FirstChopstickDenied)
   }
 
   // When a hakker is waiting for the last chopstick it can either obtain it
@@ -150,8 +148,7 @@ class FSMHakker(name: String, left: ActorRef, right: ActorRef)
     case Event(Taken(secondChopstick), _) =>
       secondChopstick ! Put
       startThinking(10.milliseconds)
-    case Event(Busy(chopstick), _) =>
-      startThinking(10.milliseconds)
+    case Event(Busy(chopstick), _) => startThinking(10.milliseconds)
   }
 
   // When a hakker is eating, he can decide to start to think,

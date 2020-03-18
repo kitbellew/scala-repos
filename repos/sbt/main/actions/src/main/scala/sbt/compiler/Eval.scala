@@ -330,9 +330,8 @@ final class Eval(
       tree match {
         case ValDef(_, n, actualTpe, _)
             if isTopLevelModule(tree.symbol.owner) && isAcceptableType(
-              actualTpe.tpe) =>
-          vals ::= nme.localToGetter(n).encoded
-        case _ => super.traverse(tree)
+              actualTpe.tpe) => vals ::= nme.localToGetter(n).encoded
+        case _               => super.traverse(tree)
       }
   }
   // inlined implemented of Symbol.isTopLevelModule that was removed in e5b050814deb2e7e1d6d05511d3a6cb6b013b549

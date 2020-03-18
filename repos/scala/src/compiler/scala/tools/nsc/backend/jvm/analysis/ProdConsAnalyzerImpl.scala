@@ -205,9 +205,8 @@ trait ProdConsAnalyzerImpl {
     isLoadOrStore(insn) || {
       (insn.getOpcode: @switch) match {
         case DUP | DUP_X1 | DUP_X2 | DUP2 | DUP2_X1 | DUP2_X2 | SWAP |
-            CHECKCAST =>
-          true
-        case _ => false
+            CHECKCAST => true
+        case _        => false
       }
     }
   }
@@ -267,8 +266,7 @@ trait ProdConsAnalyzerImpl {
             0
           ) // the current stack top is the source of both produced values
 
-        case DUP_X1 =>
-          dupX1Case
+        case DUP_X1 => dupX1Case
 
         case DUP_X2 =>
           if (frame.peekStack(1).getSize == 2) dupX1Case else dupX2Case
@@ -305,11 +303,9 @@ trait ProdConsAnalyzerImpl {
             }
           }
 
-        case SWAP =>
-          if (producedIndex(2) == 0) stackValue(0) else stackValue(1)
+        case SWAP => if (producedIndex(2) == 0) stackValue(0) else stackValue(1)
 
-        case CHECKCAST =>
-          stackValue(0)
+        case CHECKCAST => stackValue(0)
       }
   }
 
@@ -359,11 +355,9 @@ trait ProdConsAnalyzerImpl {
       if (isLoad(copyOp)) Set(top)
       else
         (copyOp.getOpcode: @switch) match {
-          case DUP =>
-            Set(top - 1, top)
+          case DUP => Set(top - 1, top)
 
-          case DUP_X1 =>
-            dupX1Case
+          case DUP_X1 => dupX1Case
 
           case DUP_X2 =>
             if (nextFrame.peekStack(1).getSize == 2) dupX1Case else dupX2Case
@@ -399,11 +393,9 @@ trait ProdConsAnalyzerImpl {
               }
             }
 
-          case SWAP =>
-            if (consumedIndex(2) == 0) Set(top) else Set(top - 1)
+          case SWAP => if (consumedIndex(2) == 0) Set(top) else Set(top - 1)
 
-          case CHECKCAST =>
-            Set(top)
+          case CHECKCAST => Set(top)
         }
     }
   }

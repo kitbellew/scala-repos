@@ -93,8 +93,7 @@ object Name {
     def show(name: Name) =
       name match {
         case Path(path) => path.show
-        case bound @ Bound(_) =>
-          bound.id match {
+        case bound @ Bound(_) => bound.id match {
             case id: com.twitter.finagle.Path => id.show
             case id                           => id.toString
           }
@@ -124,8 +123,7 @@ object Name {
   def fromGroup(g: Group[SocketAddress]): Name.Bound =
     g match {
       case NameGroup(name) => name
-      case group =>
-        Name.Bound(
+      case group => Name.Bound(
           {
             // Group doesn't support the abstraction of "not yet bound" so
             // this is a bit of a hack
@@ -181,8 +179,7 @@ object Name {
         case addrs if addrs.forall(_ == Addr.Neg) => Addr.Neg
         case addrs if addrs.forall({
               case Addr.Failed(_) => true; case _ => false
-            }) =>
-          Addr.Failed(new Exception)
+            }) => Addr.Failed(new Exception)
 
         case _ => Addr.Pending
       }

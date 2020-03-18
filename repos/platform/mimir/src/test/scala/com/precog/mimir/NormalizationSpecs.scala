@@ -72,24 +72,19 @@ trait NormalizationSpecs[M[+_]]
                 "mean")
 
               summary("count") must beLike {
-                case SDecimal(d) =>
-                  d.toDouble mustEqual (13)
+                case SDecimal(d) => d.toDouble mustEqual (13)
               }
               summary("mean") must beLike {
-                case SDecimal(d) =>
-                  d.toDouble mustEqual (-37940.51855769231)
+                case SDecimal(d) => d.toDouble mustEqual (-37940.51855769231)
               }
               summary("stdDev") must beLike {
-                case SDecimal(d) =>
-                  d.toDouble mustEqual (133416.18997644997)
+                case SDecimal(d) => d.toDouble mustEqual (133416.18997644997)
               }
               summary("min") must beLike {
-                case SDecimal(d) =>
-                  d.toDouble mustEqual (-500000)
+                case SDecimal(d) => d.toDouble mustEqual (-500000)
               }
               summary("max") must beLike {
-                case SDecimal(d) =>
-                  d.toDouble mustEqual (9999)
+                case SDecimal(d) => d.toDouble mustEqual (9999)
               }
           }
         }

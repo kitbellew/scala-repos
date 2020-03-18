@@ -391,10 +391,8 @@ abstract class UnixTime extends BinaryExpression with ExpectsInputTypes {
     if (t == null) { null }
     else {
       left.dataType match {
-        case DateType =>
-          DateTimeUtils.daysToMillis(t.asInstanceOf[Int]) / 1000L
-        case TimestampType =>
-          t.asInstanceOf[Long] / 1000000L
+        case DateType      => DateTimeUtils.daysToMillis(t.asInstanceOf[Int]) / 1000L
+        case TimestampType => t.asInstanceOf[Long] / 1000000L
         case StringType if right.foldable =>
           if (constFormat != null) {
             Try(

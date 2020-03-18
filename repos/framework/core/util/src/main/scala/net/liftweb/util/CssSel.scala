@@ -22,10 +22,10 @@ trait CssSel extends Function1[NodeSeq, NodeSeq] {
     (this, other) match {
       case (AggregatedCssBindFunc(a), AggregatedCssBindFunc(b)) =>
         AggregatedCssBindFunc(a ::: b)
-      case (AggregatedCssBindFunc(a), o: CssBind) =>
-        AggregatedCssBindFunc(a ::: List(o))
-      case (t: CssBind, AggregatedCssBindFunc(a)) =>
-        AggregatedCssBindFunc(t :: a)
+      case (AggregatedCssBindFunc(a), o: CssBind) => AggregatedCssBindFunc(
+          a ::: List(o))
+      case (t: CssBind, AggregatedCssBindFunc(a)) => AggregatedCssBindFunc(
+          t :: a)
       case (t: CssBind, o: CssBind) => AggregatedCssBindFunc(List(t, o))
     }
 
@@ -685,10 +685,7 @@ private class SelectorMap(binds: List[CssBind])
     selectThis match {
       case Full(_) => {
         try { run(in, true, 0) }
-        catch {
-          case RetryWithException(newElem) =>
-            run(newElem, false, 0)
-        }
+        catch { case RetryWithException(newElem) => run(newElem, false, 0) }
       }
 
       case _ => run(in, false, 0)

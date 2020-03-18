@@ -14,13 +14,12 @@ object Line {
     def walk(subs: Vector[(Lines, Int)]): Option[Int] =
       subs match {
         case Vector() => none
-        case (lines, depth) +: rest =>
-          lines match {
+        case (lines, depth) +: rest => lines match {
             case Nil                  => walk(rest)
             case Win(_) :: _          => depth.some
             case Retry(_) :: siblings => walk(rest :+ (siblings -> depth))
-            case Node(_, children) :: siblings =>
-              walk(rest :+ (siblings -> depth) :+ (children -> (depth + 1)))
+            case Node(_, children) :: siblings => walk(
+                rest :+ (siblings -> depth) :+ (children -> (depth + 1)))
           }
       }
     (1 + ~(walk(Vector(lines -> 1)))) / 2
@@ -42,8 +41,7 @@ object Line {
     def loop(paths: List[List[String]]): List[String] =
       paths match {
         case Nil => Nil
-        case path :: siblings =>
-          getIn(lines, path) match {
+        case path :: siblings => getIn(lines, path) match {
             case List(Win(m))   => path :+ m
             case List(Retry(_)) => loop(siblings)
             case ahead =>

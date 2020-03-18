@@ -67,8 +67,7 @@ class FixedPointCheck
           val (ax, ay) = (Rational(x, s.denom), Rational(y, s.denom))
           val az = g(ax, ay)
           val fz = Try(f(fx, fy, scale)) match {
-            case Success(fz) =>
-              BigInt(fz.long) shouldBe (az * s.denom).toBigInt
+            case Success(fz) => BigInt(fz.long) shouldBe (az * s.denom).toBigInt
             case _ =>
               (
                 az * s.denom < Long.MinValue || Long.MaxValue < az * s.denom
@@ -95,8 +94,7 @@ class FixedPointCheck
           } catch { case _: FixedPointOverflow => None }
 
         ofz match {
-          case Some(fz) =>
-            BigInt(fz.long) shouldBe (az * denom).toBigInt
+          case Some(fz) => BigInt(fz.long) shouldBe (az * denom).toBigInt
           case None =>
             (
               az * denom < Long.MinValue || Long.MaxValue < az * denom
@@ -144,8 +142,7 @@ class FixedPointCheck
           } catch { case _: FixedPointOverflow => None }
 
         ofz match {
-          case Some(fz) =>
-            BigInt(fz.long) shouldBe (az * denom).toBigInt
+          case Some(fz) => BigInt(fz.long) shouldBe (az * denom).toBigInt
           case None =>
             (
               az * denom < Long.MinValue || Long.MaxValue < az * denom
@@ -178,8 +175,7 @@ class FixedPointCheck
         } catch { case _: FixedPointOverflow => None }
 
       ofz match {
-        case Some(fz) =>
-          BigInt(fz.long) shouldBe (az * denom).toBigInt
+        case Some(fz) => BigInt(fz.long) shouldBe (az * denom).toBigInt
         case None =>
           (
             az * denom < Long.MinValue || Long.MaxValue < az * denom

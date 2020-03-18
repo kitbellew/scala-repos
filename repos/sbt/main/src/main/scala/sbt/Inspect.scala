@@ -50,8 +50,7 @@ object Inspect {
       case DependencyTree =>
         val basedir = new File(Project.session(s).current.build)
         Project.settingGraph(structure, basedir, sk).dependsAscii
-      case Uses =>
-        Project.showUses(Project.usedBy(structure, true, sk.key))
+      case Uses => Project.showUses(Project.usedBy(structure, true, sk.key))
       case Definitions =>
         Project.showDefinitions(
           sk.key,

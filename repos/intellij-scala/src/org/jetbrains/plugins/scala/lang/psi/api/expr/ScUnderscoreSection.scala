@@ -66,8 +66,7 @@ trait ScUnderscoreSection extends ScExpression {
             case expr: ScExpression     => Some(expr)
             case _                      => None
           }
-        case _ =>
-          expr match {
+        case _ => expr match {
             case x: ScUnderscoreSection => None
             case x: ScExpression        => Some(x)
             case _                      => None
@@ -96,8 +95,7 @@ object ScUnderScoreSectionUtil {
     expr match {
       case u: ScUnderscoreSection => true
       case t: ScTypedStmt         => t.expr.isInstanceOf[ScUnderscoreSection]
-      case p: ScParenthesisedExpr =>
-        p.expr match {
+      case p: ScParenthesisedExpr => p.expr match {
           case Some(expression) => isUnderscore(expression)
           case _                => false
         }
@@ -118,9 +116,8 @@ object ScUnderScoreSectionUtil {
           }
           val over = under.overExpr
           over match {
-            case Some(e) if expr == e =>
-              Seq(under)
-            case _ => Seq.empty
+            case Some(e) if expr == e => Seq(under)
+            case _                    => Seq.empty
           }
         case _ =>
           val res = new ListBuffer[ScUnderscoreSection]

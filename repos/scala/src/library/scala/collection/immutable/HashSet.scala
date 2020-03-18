@@ -527,14 +527,10 @@ object HashSet extends ImmutableSetFactory[HashSet] {
         offset0: Int): HashSet[A] = {
       val ks1 = if (negate) ks.filterNot(p) else ks.filter(p)
       ks1.size match {
-        case 0 =>
-          null
-        case 1 =>
-          new HashSet1(ks1.head, hash)
-        case x if x == ks.size =>
-          this
-        case _ =>
-          new HashSetCollision1(hash, ks1)
+        case 0                 => null
+        case 1                 => new HashSet1(ks1.head, hash)
+        case x if x == ks.size => this
+        case _                 => new HashSetCollision1(hash, ks1)
       }
     }
 
@@ -862,8 +858,7 @@ object HashSet extends ImmutableSetFactory[HashSet] {
           // then A and B will have the vast majority of nodes in common, and this eq check will allow not even looking
           // at these nodes!
           null
-        case that: HashSet1[A] =>
-          removed0(that.key, that.hash, level)
+        case that: HashSet1[A] => removed0(that.key, that.hash, level)
         case that: HashTrieSet[A] =>
           val a = this.elems
           var abm = this.bitmap

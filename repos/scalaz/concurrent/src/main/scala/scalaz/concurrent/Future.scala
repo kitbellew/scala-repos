@@ -357,27 +357,27 @@ object Future {
           }.toIndexedSeq
 
           fs.foreach {
-            case (ind, f, residual, listener, ref) =>
-              f.unsafePerformListen { a =>
-                ref.set(a)
-                val notifyWinner =
-                  // If we're the first to finish, invoke `cb`, passing residuals
-                  if (won.compareAndSet(false, true))
-                    cb((
-                      a,
-                      fs.collect { case (i, _, rf, _, _) if i != ind => rf }))
-                  else {
-                    Trampoline.done(
-                      ()
-                    ) // noop; another thread will have already invoked `cb` w/ our residual
-                  }
-                val notifyListener =
-                  if (listener.compareAndSet(null, finishedCallback))
-                    // noop; no listeners yet, any added after this will use result stored in `ref`
-                    Trampoline.done(())
-                  else // there is a registered listener, invoke it with the result
-                    listener.get.apply(a)
-                notifyWinner *> notifyListener
+            case (ind, f, residual, listener, ref) => f.unsafePerformListen {
+                a =>
+                  ref.set(a)
+                  val notifyWinner =
+                    // If we're the first to finish, invoke `cb`, passing residuals
+                    if (won.compareAndSet(false, true))
+                      cb((
+                        a,
+                        fs.collect { case (i, _, rf, _, _) if i != ind => rf }))
+                    else {
+                      Trampoline.done(
+                        ()
+                      ) // noop; another thread will have already invoked `cb` w/ our residual
+                    }
+                  val notifyListener =
+                    if (listener.compareAndSet(null, finishedCallback))
+                      // noop; no listeners yet, any added after this will use result stored in `ref`
+                      Trampoline.done(())
+                    else // there is a registered listener, invoke it with the result
+                      listener.get.apply(a)
+                  notifyWinner *> notifyListener
               }
           }
         }
@@ -393,8 +393,7 @@ object Future {
         fs match {
           case Seq()  => Future.now(R.zero)
           case Seq(f) => f.map(R.unit)
-          case other =>
-            Async { cb =>
+          case other => Async { cb =>
               val results = new ConcurrentLinkedQueue[M]
               val c = new AtomicInteger(fs.size)
 

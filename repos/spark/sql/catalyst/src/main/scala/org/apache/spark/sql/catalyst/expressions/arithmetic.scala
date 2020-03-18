@@ -39,8 +39,7 @@ case class UnaryMinus(child: Expression)
   override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     dataType match {
       case dt: DecimalType => defineCodeGen(ctx, ev, c => s"$c.unary_$$minus()")
-      case dt: NumericType =>
-        nullSafeCodeGen(
+      case dt: NumericType => nullSafeCodeGen(
           ctx,
           ev,
           eval => {
@@ -102,8 +101,7 @@ case class Abs(child: Expression)
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     dataType match {
-      case dt: DecimalType =>
-        defineCodeGen(ctx, ev, c => s"$c.abs()")
+      case dt: DecimalType => defineCodeGen(ctx, ev, c => s"$c.abs()")
       case dt: NumericType =>
         defineCodeGen(
           ctx,
@@ -499,8 +497,7 @@ case class Pmod(left: Expression, right: Expression) extends BinaryArithmetic {
               ${ev.value} = r;
             }
           """
-          case _ =>
-            s"""
+          case _ => s"""
             ${ctx.javaType(dataType)} r = $eval1 % $eval2;
             if (r < 0) {
               ${ev.value} = (r + $eval2) % $eval2;

@@ -98,8 +98,7 @@ object LeaderboardApi {
     import ChartData._
     def allPerfResults =
       perfResults.map(_._2) match {
-        case head :: tail =>
-          tail.foldLeft(head) {
+        case head :: tail => tail.foldLeft(head) {
             case (acc, res) =>
               PerfResult(
                 nb = acc.nb + res.nb,

@@ -37,8 +37,7 @@ trait ClassfileIndexer {
   // extracts all the classnames from a descriptor
   private def classesInDescriptor(desc: String): List[ClassName] =
     DescriptorParser.parse(desc) match {
-      case Descriptor(params, ret) =>
-        (ret :: params).map {
+      case Descriptor(params, ret) => (ret :: params).map {
           case c: ClassName       => c
           case a: ArrayDescriptor => a.reifier
         }
@@ -108,8 +107,7 @@ trait ClassfileIndexer {
         override def visitEnd(): Unit = {
           addRefs(internalRefs)
           region match {
-            case "<init>" | "<clinit>" =>
-              (clazz.source.line, firstLine) match {
+            case "<init>" | "<clinit>" => (clazz.source.line, firstLine) match {
                 case (_, None)                                            =>
                 case (Some(existing), Some(latest)) if existing <= latest =>
                 case _ =>

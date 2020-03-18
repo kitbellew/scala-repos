@@ -116,8 +116,7 @@ abstract class JournalSpec(config: Config)
       probe.expectMsgPF() {
         case WriteMessageSuccess(
               PersistentImpl(payload, `i`, `pid`, _, _, `sender`, `writerUuid`),
-              _) ⇒
-          payload should be(s"a-${i}")
+              _) ⇒ payload should be(s"a-${i}")
       }
     }
   }
@@ -292,8 +291,7 @@ abstract class JournalSpec(config: Config)
                   _,
                   Actor.noSender,
                   WriterUuid),
-                _) ⇒
-            payload should be(s"b-6")
+                _) ⇒ payload should be(s"b-6")
         }
         probe.expectMsgPF() {
           case WriteMessageRejected(
@@ -306,8 +304,7 @@ abstract class JournalSpec(config: Config)
                   Actor.noSender,
                   WriterUuid),
                 _,
-                _) ⇒
-            payload should be(notSerializableEvent)
+                _) ⇒ payload should be(notSerializableEvent)
         }
         probe.expectMsgPF() {
           case WriteMessageSuccess(
@@ -319,8 +316,7 @@ abstract class JournalSpec(config: Config)
                   _,
                   Actor.noSender,
                   WriterUuid),
-                _) ⇒
-            payload should be(s"b-8")
+                _) ⇒ payload should be(s"b-8")
         }
       }
     }

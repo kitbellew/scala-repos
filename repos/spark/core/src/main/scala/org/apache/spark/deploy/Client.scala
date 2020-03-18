@@ -156,8 +156,8 @@ private class ClientEndpoint(
           statusResponse.workerId,
           statusResponse.workerHostPort,
           statusResponse.state) match {
-          case (Some(id), Some(hostPort), Some(DriverState.RUNNING)) =>
-            logInfo(s"Driver running on $hostPort ($id)")
+          case (Some(id), Some(hostPort), Some(DriverState.RUNNING)) => logInfo(
+              s"Driver running on $hostPort ($id)")
           case _ =>
         }
         // Exception, if present

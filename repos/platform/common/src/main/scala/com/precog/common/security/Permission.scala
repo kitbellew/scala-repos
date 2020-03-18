@@ -169,8 +169,7 @@ object Permission {
       permission.path.isEqualOrParentOf(candidate.path) &&
       (permission.writtenBy match {
         case WrittenByAny => true
-        case WrittenByAccount(accountId) =>
-          candidate.writtenBy match {
+        case WrittenByAccount(accountId) => candidate.writtenBy match {
             case WrittenByAny          => false
             case WrittenByAccount(cid) => cid == accountId
           }
@@ -233,12 +232,15 @@ object Permission {
             }
           } getOrElse { pathV map { WritePermission(_: Path, WriteAsAny) } }
 
-        case "read" =>
-          writtenByPermission(obj, pathV) { ReadPermission.apply _ }
-        case "reduce" =>
-          writtenByPermission(obj, pathV) { ReducePermission.apply _ }
-        case "owner" | "delete" =>
-          writtenByPermission(obj, pathV) { DeletePermission.apply _ }
+        case "read" => writtenByPermission(obj, pathV) {
+            ReadPermission.apply _
+          }
+        case "reduce" => writtenByPermission(obj, pathV) {
+            ReducePermission.apply _
+          }
+        case "owner" | "delete" => writtenByPermission(obj, pathV) {
+            DeletePermission.apply _
+          }
         case other => failure(Invalid("Unrecognized permission type: " + other))
       }
     }
@@ -266,12 +268,15 @@ object Permission {
             } getOrElse { pathV map { WritePermission(_: Path, WriteAsAny) } }
           }
 
-        case "read" =>
-          writtenByPermission(obj, pathV) { ReadPermission.apply _ }
-        case "reduce" =>
-          writtenByPermission(obj, pathV) { ReducePermission.apply _ }
-        case "owner" | "delete" =>
-          writtenByPermission(obj, pathV) { DeletePermission.apply _ }
+        case "read" => writtenByPermission(obj, pathV) {
+            ReadPermission.apply _
+          }
+        case "reduce" => writtenByPermission(obj, pathV) {
+            ReducePermission.apply _
+          }
+        case "owner" | "delete" => writtenByPermission(obj, pathV) {
+            DeletePermission.apply _
+          }
         case other => failure(Invalid("Unrecognized permission type: " + other))
       }
     }

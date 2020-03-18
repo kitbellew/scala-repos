@@ -57,8 +57,7 @@ class VersionedSegmentFormatSpec
           case Success(_) =>
             val in = new InMemoryReadableByteChannel(out.toArray)
             format.reader.readSegment(in) must beLike {
-              case Success(segment1) =>
-                areEqual(segment0, segment1)
+              case Success(segment1) => areEqual(segment0, segment1)
             }
         }
       }

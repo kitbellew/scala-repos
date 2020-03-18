@@ -84,9 +84,8 @@ object AddBreakoutQuickFix {
     p.getType(TypingContext.empty) match {
       case Success(tpe, _)
           if tpe.canonicalText.startsWith(
-            "_root_.scala.collection.generic.CanBuildFrom") =>
-        true
-      case _ => false
+            "_root_.scala.collection.generic.CanBuildFrom") => true
+      case _                                                => false
     }
   }
 }

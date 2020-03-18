@@ -186,9 +186,8 @@ trait JdbcStatementBuilderComponent {
       currentUniqueFrom = from match {
         case Seq((s, _: TableNode)) if !containsSymbolInSubquery(s) => Some(s)
         case Seq((s, _))
-            if !alwaysAliasSubqueries && !containsSymbolInSubquery(s) =>
-          Some(s)
-        case _ => None
+            if !alwaysAliasSubqueries && !containsSymbolInSubquery(s) => Some(s)
+        case _                                                        => None
       }
       buildSelectClause(c)
       buildFromClause(from)
@@ -326,8 +325,7 @@ trait JdbcStatementBuilderComponent {
           b"\["
           buildComprehension(c)
           b"\]"
-        case n =>
-          expr(n, true)
+        case n => expr(n, true)
       }
 
     protected def buildFrom(
@@ -340,8 +338,7 @@ trait JdbcStatementBuilderComponent {
           case t: TableNode =>
             b += quoteTableName(t)
             addAlias
-          case j: Join =>
-            buildJoin(j)
+          case j: Join => buildJoin(j)
           case n =>
             expr(n, skipParens)
             addAlias
@@ -394,12 +391,10 @@ trait JdbcStatementBuilderComponent {
           b"\("
           b.sep(ch, ", ")(expr(_))
           b"\)"
-        case n: Apply =>
-          n match {
+        case n: Apply => n match {
             case Library.Not(Library.==(l, LiteralNode(null))) =>
               b"\($l is not null\)"
-            case Library.==(l, LiteralNode(null)) =>
-              b"\($l is null\)"
+            case Library.==(l, LiteralNode(null)) => b"\($l is null\)"
             case Library.==(left: ProductNode, right: ProductNode) =>
               b"\("
               if (supportsTuples) b"$left = $right"
@@ -431,13 +426,11 @@ trait JdbcStatementBuilderComponent {
               b"\($l${concatOperator.get}$r\)"
             case Library.User()
                 if !capabilities.contains(
-                  RelationalCapabilities.functionUser) =>
-              b += "''"
+                  RelationalCapabilities.functionUser) => b += "''"
             case Library.Database()
                 if !capabilities.contains(
-                  RelationalCapabilities.functionDatabase) =>
-              b += "''"
-            case Library.Pi() if !hasPiFunction => b += pi
+                  RelationalCapabilities.functionDatabase) => b += "''"
+            case Library.Pi() if !hasPiFunction            => b += pi
             case Library.Degrees(ch) if !hasRadDegConversion =>
               b"(180.0/!${Library.Pi.typed(columnTypes.bigDecimalJdbcType)}*$ch)"
             case Library.Radians(ch) if !hasRadDegConversion =>
@@ -559,8 +552,7 @@ trait JdbcStatementBuilderComponent {
               None,
               None,
               None,
-              None) =>
-          select match {
+              None) => select match {
             case f @ Select(Ref(struct), _) if struct == sym =>
               (sym, from, where, ConstArray(f.field))
             case ProductNode(ch) if ch.forall {
@@ -608,8 +600,8 @@ trait JdbcStatementBuilderComponent {
             fail(".take, .drop and .distinct are not supported for deleting")
           from match {
             case from: TableNode => (sym, from, where)
-            case from =>
-              fail("A single source table is required, found: " + from)
+            case from => fail(
+                "A single source table is required, found: " + from)
           }
         case o =>
           fail(

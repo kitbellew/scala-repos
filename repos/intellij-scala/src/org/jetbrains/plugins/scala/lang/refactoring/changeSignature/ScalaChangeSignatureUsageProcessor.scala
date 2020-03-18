@@ -82,9 +82,8 @@ class ScalaChangeSignatureUsageProcessor
 
         if (info.isParameterSetOrOrderChanged || info.isParameterNamesChanged) {
           methods.foreach {
-            case m: PsiMethod =>
-              findParameterUsages(jInfo, m, results)
-            case _ =>
+            case m: PsiMethod => findParameterUsages(jInfo, m, results)
+            case _            =>
           }
         }
 
@@ -204,8 +203,7 @@ class ScalaChangeSignatureUsageProcessor
           handleParametersUsage(changeInfo, paramInfo)
         case anonFunUsage: AnonFunUsageInfo =>
           handleAnonFunUsage(changeInfo, anonFunUsage)
-        case _ =>
-          processSimpleUsage(changeInfo, usageInfo)
+        case _ => processSimpleUsage(changeInfo, usageInfo)
       }
     }
 
@@ -284,8 +282,7 @@ class ScalaChangeSignatureUsageProcessor
       refElem match {
         case isAnonFunUsage(anonFunUsageInfo) => results += anonFunUsageInfo
         case (scRef: ScReferenceElement) childOf (_: ScImportSelector |
-            _: ScImportExpr) =>
-          results += ImportUsageInfo(scRef)
+            _: ScImportExpr) => results += ImportUsageInfo(scRef)
         case (refExpr: ScReferenceExpression) childOf (mc: ScMethodCall) =>
           results += MethodCallUsageInfo(refExpr, fullCall(mc))
         case ChildOf(infix @ ScInfixExpr(_, `refElem`, _)) =>

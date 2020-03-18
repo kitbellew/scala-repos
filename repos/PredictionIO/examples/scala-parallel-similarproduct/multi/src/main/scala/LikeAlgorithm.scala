@@ -43,10 +43,7 @@ class LikeAlgorithm(ap: ALSAlgorithmParams) extends ALSAlgorithm(ap) {
 
     // collect Item as Map and convert ID to Int index
     val items: Map[Int, Item] = data.items
-      .map {
-        case (id, item) =>
-          (itemStringIntMap(id), item)
-      }
+      .map { case (id, item) => (itemStringIntMap(id), item) }
       .collectAsMap
       .toMap
 

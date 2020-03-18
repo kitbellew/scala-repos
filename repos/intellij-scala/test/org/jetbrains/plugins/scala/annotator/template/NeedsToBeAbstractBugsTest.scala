@@ -34,9 +34,7 @@ class B extends A {
   def bar[A: M] = ()
 }
     """
-    assertMatches(messages(code)) {
-      case Nil =>
-    }
+    assertMatches(messages(code)) { case Nil => }
   }
 
   def testSCL4258(): Unit = {
@@ -48,9 +46,7 @@ class B extends A {
         |  def m(p: T forSome {type T}) { }
         |}
       """.stripMargin
-    assertMatches(messages(code)) {
-      case Nil =>
-    }
+    assertMatches(messages(code)) { case Nil => }
   }
 
   def testSCL9446(): Unit = {
@@ -69,9 +65,7 @@ class B extends A {
           |}
           |}
         """.stripMargin
-      assertMatches(messages(code)) {
-        case Nil =>
-      }
+      assertMatches(messages(code)) { case Nil => }
     } finally { extensionPoint.unregisterExtension(injector) }
   }
 }

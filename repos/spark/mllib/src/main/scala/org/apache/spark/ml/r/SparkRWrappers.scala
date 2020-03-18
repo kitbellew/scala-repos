@@ -95,15 +95,13 @@ private[r] object SparkRWrappers {
         if (m.getFitIntercept) { Array(m.intercept) ++ m.coefficients.toArray }
         else { m.coefficients.toArray }
       }
-      case m: KMeansModel =>
-        m.clusterCenters.flatMap(_.toArray)
+      case m: KMeansModel => m.clusterCenters.flatMap(_.toArray)
     }
   }
 
   def getModelDevianceResiduals(model: PipelineModel): Array[Double] = {
     model.stages.last match {
-      case m: LinearRegressionModel =>
-        m.summary.devianceResiduals
+      case m: LinearRegressionModel => m.summary.devianceResiduals
       case m: LogisticRegressionModel =>
         throw new UnsupportedOperationException(
           "No deviance residuals available for LogisticRegressionModel")
@@ -159,12 +157,9 @@ private[r] object SparkRWrappers {
 
   def getModelName(model: PipelineModel): String = {
     model.stages.last match {
-      case m: LinearRegressionModel =>
-        "LinearRegressionModel"
-      case m: LogisticRegressionModel =>
-        "LogisticRegressionModel"
-      case m: KMeansModel =>
-        "KMeansModel"
+      case m: LinearRegressionModel   => "LinearRegressionModel"
+      case m: LogisticRegressionModel => "LogisticRegressionModel"
+      case m: KMeansModel             => "KMeansModel"
     }
   }
 }

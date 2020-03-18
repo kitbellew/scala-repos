@@ -98,8 +98,7 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
   def find(f: BaseType => Boolean): Option[BaseType] =
     f(this) match {
       case true => Some(this)
-      case false =>
-        children.foldLeft(None: Option[BaseType]) { (l, r) =>
+      case false => children.foldLeft(None: Option[BaseType]) { (l, r) =>
           l.orElse(r.find(f))
         }
     }
@@ -199,8 +198,7 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
       case s: StructType =>
         s // Don't convert struct types to some other type of Seq[StructField]
       // Handle Seq[TreeNode] in TreeNode parameters.
-      case s: Seq[_] =>
-        s.map {
+      case s: Seq[_] => s.map {
           case arg: TreeNode[_] if containsChild(arg) =>
             val newChild = remainingNewChildren.remove(0)
             val oldChild = remainingOldChildren.remove(0)
@@ -330,8 +328,7 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
           .view
           .force // `mapValues` is lazy and we need to force it to materialize
       case d: DataType => d // Avoid unpacking Structs
-      case args: Traversable[_] =>
-        args.map {
+      case args: Traversable[_] => args.map {
           case arg: TreeNode[_] if containsChild(arg) =>
             val newChild = nextOperation(arg.asInstanceOf[BaseType], rule)
             if (!(newChild fastEquals arg)) {
@@ -794,8 +791,7 @@ object TreeNode {
             case (name, value) =>
               name -> parseFromJson(value, valueType, children, sc)
           }.toMap
-        case t if t <:< localTypeOf[RDD[_]] =>
-          new EmptyRDD[Any](sc)
+        case t if t <:< localTypeOf[RDD[_]] => new EmptyRDD[Any](sc)
         case _ if isScalaObject(value) =>
           val JString(clsName) = value \ "object"
           val cls = Utils.classForName(clsName)

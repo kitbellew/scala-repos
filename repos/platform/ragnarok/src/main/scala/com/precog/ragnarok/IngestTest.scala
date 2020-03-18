@@ -104,8 +104,7 @@ object IngestTest {
         run(config.dryRuns)
         val stats = run(config.runs)
         println(JObject(stats.toList collect {
-          case (path, Some(s)) =>
-            JField(path, s.toJson)
+          case (path, Some(s)) => JField(path, s.toJson)
         }))
 
       } finally { runner.shutdown() }
@@ -119,8 +118,7 @@ object IngestTest {
         errors.list foreach { msg => System.err.println("\t" + msg) }
         System.err.println()
 
-      case Success(config) =>
-        run(config)
+      case Success(config) => run(config)
     }
   }
 }

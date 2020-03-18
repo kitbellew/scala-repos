@@ -185,8 +185,8 @@ trait TypeKinds extends SubComponent {
       case SingleType(_, sym)    => primitiveOrRefType(sym)
       case ConstantType(_)       => toTypeKind(t.underlying)
       case TypeRef(_, sym, args) => primitiveOrClassType(sym, args)
-      case ClassInfoType(_, _, ArrayClass) =>
-        abort("ClassInfoType to ArrayClass!")
+      case ClassInfoType(_, _, ArrayClass) => abort(
+          "ClassInfoType to ArrayClass!")
       case ClassInfoType(_, _, sym) => primitiveOrRefType(sym)
 
       // !!! Iulian says types which make no sense after erasure should not reach here,

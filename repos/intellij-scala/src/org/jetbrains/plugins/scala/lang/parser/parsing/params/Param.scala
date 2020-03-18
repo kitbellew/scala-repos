@@ -33,8 +33,7 @@ object Param {
     modifiersMarker.done(ScalaElementTypes.MODIFIERS)
 
     builder.getTokenType match {
-      case ScalaTokenTypes.tIDENTIFIER =>
-        builder.advanceLexer() //Ate id
+      case ScalaTokenTypes.tIDENTIFIER => builder.advanceLexer() //Ate id
       case _ =>
         paramMarker.rollbackTo()
         return false

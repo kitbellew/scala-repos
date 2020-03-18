@@ -94,10 +94,9 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
               case JsonRegex(regex)       => regex
               case JsonUUID(uuid)         => uuid
               case JsonDateTime(dt)
-                  if (mf.toString == "org.joda.time.DateTime") =>
-                dt
-              case JsonDate(date) => date
-              case other          => other.values
+                  if (mf.toString == "org.joda.time.DateTime") => dt
+              case JsonDate(date)                              => date
+              case other                                       => other.values
             })
             .asInstanceOf[MyType]))
       case other => setBox(FieldHelpers.expectedA("JArray", other))
@@ -146,8 +145,7 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
     val dbl = new BasicDBList
 
     value.foreach {
-      case f =>
-        f.asInstanceOf[AnyRef] match {
+      case f => f.asInstanceOf[AnyRef] match {
           case x if primitive_?(x.getClass) => dbl.add(x)
           case x if mongotype_?(x.getClass) => dbl.add(x)
           case x if datetype_?(x.getClass)  => dbl.add(datetype2dbovalue(x))
@@ -194,8 +192,7 @@ class MongoJsonObjectListField[OwnerType <: BsonRecord[
   override def setFromJValue(jvalue: JValue) =
     jvalue match {
       case JNothing | JNull if optional_? => setBox(Empty)
-      case JArray(arr) =>
-        setBox(Full(arr.map(jv => {
+      case JArray(arr) => setBox(Full(arr.map(jv => {
           valueMeta.create(jv.asInstanceOf[JObject])(owner.meta.formats)
         })))
       case other => setBox(FieldHelpers.expectedA("JArray", other))

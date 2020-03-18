@@ -120,10 +120,7 @@ abstract class CreateTypeDefinitionQuickFix(
         anchor)
       val result = parent.addBefore(newTd, anchor)
       afterCreationWork(result.asInstanceOf[ScTypeDefinition])
-    } catch {
-      case e: IncorrectOperationException =>
-        LOG.error(e)
-    }
+    } catch { case e: IncorrectOperationException => LOG.error(e) }
   }
 
   private def createClassWithLevelChoosing(
@@ -173,8 +170,7 @@ abstract class CreateTypeDefinitionQuickFix(
       case file: PsiFile => createClassInDirectory(file.getContainingDirectory)
       case td: ScTypeDefinition if td.isTopLevel =>
         createClassIn(td.getParent, None)
-      case _ childOf (tb: ScTemplateBody) =>
-        createInnerClassIn(
+      case _ childOf (tb: ScTemplateBody) => createInnerClassIn(
           PsiTreeUtil.getParentOfType(tb, classOf[ScTemplateDefinition]))
       case _ =>
     }

@@ -27,9 +27,8 @@ object ShowPickled extends Names {
     def hasName =
       tag match {
         case TYPEsym | ALIASsym | CLASSsym | MODULEsym | VALsym | EXTref |
-            EXTMODCLASSref =>
-          true
-        case _ => false
+            EXTMODCLASSref => true
+        case _             => false
       }
     def readName =
       if (isName) new String(bytes, "UTF-8")
@@ -208,60 +207,39 @@ object ShowPickled extends Names {
         case EXTref | EXTMODCLASSref =>
           printNameRef()
           if (buf.readIndex < end) { printSymbolRef() }
-        case THIStpe =>
-          printSymbolRef()
-        case SINGLEtpe =>
-          printTypeRef(); printSymbolRef()
-        case CONSTANTtpe =>
-          printTypeRef(); printConstantRef()
+        case THIStpe     => printSymbolRef()
+        case SINGLEtpe   => printTypeRef(); printSymbolRef()
+        case CONSTANTtpe => printTypeRef(); printConstantRef()
         case TYPEREFtpe =>
           printTypeRef(); printSymbolRef(); buf.until(end, printTypeRef)
-        case TYPEBOUNDStpe =>
-          printTypeRef(); printTypeRef()
-        case REFINEDtpe =>
-          printSymbolRef(); buf.until(end, printTypeRef)
-        case CLASSINFOtpe =>
-          printSymbolRef(); buf.until(end, printTypeRef)
+        case TYPEBOUNDStpe => printTypeRef(); printTypeRef()
+        case REFINEDtpe    => printSymbolRef(); buf.until(end, printTypeRef)
+        case CLASSINFOtpe  => printSymbolRef(); buf.until(end, printTypeRef)
         case METHODtpe | IMPLICITMETHODtpe =>
           printTypeRef(); buf.until(end, printTypeRef)
-        case POLYtpe =>
-          printTypeRef(); buf.until(end, printSymbolRef)
+        case POLYtpe => printTypeRef(); buf.until(end, printSymbolRef)
         case LITERALboolean =>
           out.print(if (buf.readLong(len) == 0L) " false" else " true")
-        case LITERALbyte =>
-          out.print(" " + buf.readLong(len).toByte)
-        case LITERALshort =>
-          out.print(" " + buf.readLong(len).toShort)
-        case LITERALchar =>
-          out.print(" " + buf.readLong(len).toChar)
-        case LITERALint =>
-          out.print(" " + buf.readLong(len).toInt)
-        case LITERALlong =>
-          out.print(" " + buf.readLong(len))
+        case LITERALbyte  => out.print(" " + buf.readLong(len).toByte)
+        case LITERALshort => out.print(" " + buf.readLong(len).toShort)
+        case LITERALchar  => out.print(" " + buf.readLong(len).toChar)
+        case LITERALint   => out.print(" " + buf.readLong(len).toInt)
+        case LITERALlong  => out.print(" " + buf.readLong(len))
         case LITERALfloat =>
           out.print(" " + intBitsToFloat(buf.readLong(len).toInt))
         case LITERALdouble =>
           out.print(" " + longBitsToDouble(buf.readLong(len)))
-        case LITERALstring =>
-          printNameRef()
-        case LITERALenum =>
-          printSymbolRef()
-        case LITERALnull =>
-          out.print(" <null>")
-        case LITERALclass =>
-          printTypeRef()
-        case CHILDREN =>
-          printSymbolRef(); buf.until(end, printSymbolRef)
+        case LITERALstring => printNameRef()
+        case LITERALenum   => printSymbolRef()
+        case LITERALnull   => out.print(" <null>")
+        case LITERALclass  => printTypeRef()
+        case CHILDREN      => printSymbolRef(); buf.until(end, printSymbolRef)
         case SYMANNOT =>
           printSymbolRef(); printTypeRef(); buf.until(end, printAnnotArgRef)
-        case ANNOTATEDtpe =>
-          printTypeRef(); buf.until(end, printAnnotInfoRef)
-        case ANNOTINFO =>
-          printTypeRef(); buf.until(end, printAnnotArgRef)
-        case ANNOTARGARRAY =>
-          buf.until(end, printConstAnnotArgRef)
-        case EXISTENTIALtpe =>
-          printTypeRef(); buf.until(end, printSymbolRef)
+        case ANNOTATEDtpe   => printTypeRef(); buf.until(end, printAnnotInfoRef)
+        case ANNOTINFO      => printTypeRef(); buf.until(end, printAnnotArgRef)
+        case ANNOTARGARRAY  => buf.until(end, printConstAnnotArgRef)
+        case EXISTENTIALtpe => printTypeRef(); buf.until(end, printSymbolRef)
 
         case _ =>
       }

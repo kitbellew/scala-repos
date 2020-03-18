@@ -181,8 +181,7 @@ private[scalajs] final class ScalaJSClassEmitter(
       case OutputMode.ECMAScript51Global | OutputMode.ECMAScript51Isolated =>
         genES5Constructor(tree)
 
-      case OutputMode.ECMAScript6 =>
-        genES6Constructor(tree)
+      case OutputMode.ECMAScript6 => genES6Constructor(tree)
     }
   }
 
@@ -366,8 +365,7 @@ private[scalajs] final class ScalaJSClassEmitter(
     outputMode match {
       case OutputMode.ECMAScript51Global | OutputMode.ECMAScript51Isolated =>
         genPropertyES5(className, property)
-      case OutputMode.ECMAScript6 =>
-        genPropertyES6(className, property)
+      case OutputMode.ECMAScript6 => genPropertyES6(className, property)
     }
   }
 
@@ -386,9 +384,8 @@ private[scalajs] final class ScalaJSClassEmitter(
 
     // property name
     val name = property.name match {
-      case StringLiteral(value) =>
-        js.StringLiteral(value)
-      case id: Ident =>
+      case StringLiteral(value) => js.StringLiteral(value)
+      case id: Ident            =>
         // We need to work around the closure compiler. Call propertyName to
         // get a string representation of the optimized name
         genCallHelper(
@@ -570,8 +567,7 @@ private[scalajs] final class ScalaJSClassEmitter(
             js.Function(
               List(objParam),
               js.Return(className match {
-                case Definitions.ObjectClass =>
-                  obj
+                case Definitions.ObjectClass => obj
 
                 case _ =>
                   val throwError = {
@@ -851,8 +847,7 @@ private[scalajs] final class ScalaJSClassEmitter(
             moduleInstanceVar === js.Undefined(),
             js.Block(moduleInstanceVar := js.Null(), assignModule),
             js.Skip())
-        case CheckedBehavior.Fatal =>
-          js.If(
+        case CheckedBehavior.Fatal => js.If(
             moduleInstanceVar === js.Undefined(),
             { js.Block(moduleInstanceVar := js.Null(), assignModule) },
             js.If(
@@ -888,12 +883,9 @@ private[scalajs] final class ScalaJSClassEmitter(
     val exports = tree.exportedMembers map { member =>
       member.tree match {
         case MethodDef(false, StringLiteral("constructor"), _, _, _)
-            if tree.kind.isJSClass =>
-          js.Skip()(member.tree.pos)
-        case m: MethodDef =>
-          genMethod(tree.encodedName, m)
-        case p: PropertyDef =>
-          genProperty(tree.encodedName, p)
+            if tree.kind.isJSClass => js.Skip()(member.tree.pos)
+        case m: MethodDef          => genMethod(tree.encodedName, m)
+        case p: PropertyDef        => genProperty(tree.encodedName, p)
         case tree =>
           throw new AssertionError(
             "Illegal exportedMember " + tree.getClass.getName)
@@ -905,12 +897,9 @@ private[scalajs] final class ScalaJSClassEmitter(
 
   def genClassExports(tree: LinkedClass): js.Tree = {
     val exports = tree.classExports collect {
-      case e: ConstructorExportDef =>
-        genConstructorExportDef(tree, e)
-      case e: JSClassExportDef =>
-        genJSClassExportDef(tree, e)
-      case e: ModuleExportDef =>
-        genModuleExportDef(tree, e)
+      case e: ConstructorExportDef => genConstructorExportDef(tree, e)
+      case e: JSClassExportDef     => genJSClassExportDef(tree, e)
+      case e: ModuleExportDef      => genModuleExportDef(tree, e)
     }
 
     js.Block(exports)(tree.pos)

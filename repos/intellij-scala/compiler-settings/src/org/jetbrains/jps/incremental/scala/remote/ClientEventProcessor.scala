@@ -12,11 +12,9 @@ class ClientEventProcessor(client: Client) {
       case MessageEvent(kind, text, source, line, column) =>
         client.message(kind, text, source, line, column)
 
-      case ProgressEvent(text, done) =>
-        client.progress(text, done)
+      case ProgressEvent(text, done) => client.progress(text, done)
 
-      case DebugEvent(text) =>
-        client.debug(text)
+      case DebugEvent(text) => client.debug(text)
 
       case TraceEvent(message, lines) =>
         client.trace(new ServerException(message, lines))
@@ -24,17 +22,13 @@ class ClientEventProcessor(client: Client) {
       case GeneratedEvent(source, module, name) =>
         client.generated(source, module, name)
 
-      case DeletedEvent(module) =>
-        client.deleted(module)
+      case DeletedEvent(module) => client.deleted(module)
 
-      case SourceProcessedEvent(source) =>
-        client.processed(source)
+      case SourceProcessedEvent(source) => client.processed(source)
 
-      case CompilationEndEvent() =>
-        client.compilationEnd()
+      case CompilationEndEvent() => client.compilationEnd()
 
-      case WorksheetOutputEvent(text) =>
-        client.worksheetOutput(text)
+      case WorksheetOutputEvent(text) => client.worksheetOutput(text)
     }
   }
 }

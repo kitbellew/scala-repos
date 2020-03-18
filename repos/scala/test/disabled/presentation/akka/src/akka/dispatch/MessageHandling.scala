@@ -123,8 +123,7 @@ trait MessageDispatcher {
                 shutdownAction,
                 timeoutMs,
                 TimeUnit.MILLISECONDS)
-            case SCHEDULED =>
-              shutdownSchedule = RESCHEDULED
+            case SCHEDULED   => shutdownSchedule = RESCHEDULED
             case RESCHEDULED => //Already marked for reschedule
           }
         }
@@ -149,8 +148,7 @@ trait MessageDispatcher {
               shutdownAction,
               timeoutMs,
               TimeUnit.MILLISECONDS)
-          case SCHEDULED =>
-            shutdownSchedule = RESCHEDULED
+          case SCHEDULED   => shutdownSchedule = RESCHEDULED
           case RESCHEDULED => //Already marked for reschedule
         }
       }

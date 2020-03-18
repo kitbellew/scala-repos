@@ -53,9 +53,7 @@ class TransactionTest extends FunSuite with MockitoSugar with MustMatchers {
             c.query(sqlQuery).map { r3 => "final response object" }
           }
       }
-    } catch {
-      case e: Exception =>
-    }
+    } catch { case e: Exception => }
 
     service.requests must equal(
       List("START TRANSACTION", sqlQuery, "ROLLBACK").map(QueryRequest(_)))

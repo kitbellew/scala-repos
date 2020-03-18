@@ -30,8 +30,7 @@ abstract class LazyVals
 
     override def traverse(t: Tree) {
       if (!result) t match {
-        case v @ ValDef(_, _, _, _) if v.symbol.isLazy =>
-          result = true
+        case v @ ValDef(_, _, _, _) if v.symbol.isLazy => result = true
 
         case d @ DefDef(_, _, _, _, _, _)
             if d.symbol.isLazy && lazyUnit(d.symbol) =>
@@ -42,8 +41,7 @@ abstract class LazyVals
             ModuleDef(_, _, _) =>
         // Avoid adding bitmaps when they are fully overshadowed by those that are added inside loops
         case LabelDef(name, _, _) if nme.isLoopHeaderLabel(name) =>
-        case _ =>
-          super.traverse(t)
+        case _                                                   => super.traverse(t)
       }
     }
   }
@@ -64,8 +62,7 @@ abstract class LazyVals
               d2 @ DefDef(_, n2, _, _, _, _))
             if b.tpe == null && n1.endsWith(nme.LAZY_SLOW_SUFFIX) =>
           List(d1, d2)
-        case stat =>
-          List(stat)
+        case stat => List(stat)
       })
 
     /** Perform the following transformations:
@@ -100,8 +97,7 @@ abstract class LazyVals
           val Block(stats, expr) = block1
           treeCopy.Block(block1, flattenThickets(stats), expr)
 
-        case DefDef(_, _, _, _, _, rhs) =>
-          atOwner(tree.symbol) {
+        case DefDef(_, _, _, _, _, rhs) => atOwner(tree.symbol) {
             val (res, slowPathDef) =
               if (!sym.owner.isClass && sym.isLazy) {
                 val enclosingClassOrDummyOrMethod = {
@@ -163,8 +159,7 @@ abstract class LazyVals
             } else ddef1
           }
 
-        case Template(_, _, body) =>
-          atOwner(currentOwner) {
+        case Template(_, _, body) => atOwner(currentOwner) {
             // TODO: shady business... can this logic be encapsulated in LocalLazyValFinder?
             var added = false
             val stats = super.transformTrees(body) mapConserve {
@@ -356,8 +351,7 @@ abstract class LazyVals
       val (block, res) = tree match {
         case Block(List(assignment), res) if !lazyUnit(lazyVal) =>
           (mkBlock(assignment), res)
-        case rhs =>
-          (mkBlock(rhs), UNIT)
+        case rhs => (mkBlock(rhs), UNIT)
       }
 
       def cond = (bitmapRef GEN_& (mask, bitmapKind)) GEN_== (ZERO, bitmapKind)

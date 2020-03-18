@@ -124,8 +124,7 @@ object ExpressionEncoder {
       }
       .zipWithIndex
       .map {
-        case (expr, index) =>
-          expr.transformUp {
+        case (expr, index) => expr.transformUp {
             case BoundReference(0, t, _) =>
               Invoke(
                 BoundReference(0, ObjectType(cls), nullable = true),

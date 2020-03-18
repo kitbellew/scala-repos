@@ -55,8 +55,7 @@ private[spark] class ApplicationMaster(
   // so that user code run inside the AM also has access to them.
   if (args.propertiesFile != null) {
     Utils.getPropertiesFromFile(args.propertiesFile).foreach {
-      case (k, v) =>
-        sys.props(k) = v
+      case (k, v) => sys.props(k) = v
     }
   }
 
@@ -469,9 +468,7 @@ private[spark] class ApplicationMaster(
                   s"Sleeping for $sleepInterval.")
               allocatorLock.wait(sleepInterval)
             }
-          } catch {
-            case e: InterruptedException =>
-          }
+          } catch { case e: InterruptedException => }
         }
       }
     }
@@ -623,8 +620,7 @@ private[spark] class ApplicationMaster(
             ApplicationMaster.EXIT_SUCCESS)
           logDebug("Done running users class")
         } catch {
-          case e: InvocationTargetException =>
-            e.getCause match {
+          case e: InvocationTargetException => e.getCause match {
               case _: InterruptedException =>
               // Reporter thread can interrupt to stop user class
               case SparkUserAppException(exitCode) =>
@@ -676,8 +672,7 @@ private[spark] class ApplicationMaster(
       case RequestExecutors(
             requestedTotal,
             localityAwareTasks,
-            hostToLocalTaskCount) =>
-        Option(allocator) match {
+            hostToLocalTaskCount) => Option(allocator) match {
           case Some(a) =>
             if (a.requestTotalExecutorsWithPreferredLocalities(
                   requestedTotal,
@@ -696,14 +691,12 @@ private[spark] class ApplicationMaster(
           s"Driver requested to kill executor(s) ${executorIds.mkString(", ")}.")
         Option(allocator) match {
           case Some(a) => executorIds.foreach(a.killExecutor)
-          case None =>
-            logWarning(
+          case None => logWarning(
               "Container allocator is not ready to kill executors yet.")
         }
         context.reply(true)
 
-      case GetExecutorLossReason(eid) =>
-        Option(allocator) match {
+      case GetExecutorLossReason(eid) => Option(allocator) match {
           case Some(a) =>
             a.enqueueGetLossReasonRequest(eid, context)
             resetAllocatorInterval()

@@ -59,8 +59,7 @@ trait ColumnarTableModuleTestSupport[M[+_]]
         case jv #:: xs =>
           val refs = Slice.withIdsAndValues(jv, into, sliceIndex, sliceSize)
           buildColArrays(xs, refs, sliceIndex + 1)
-        case _ =>
-          (into, sliceIndex)
+        case _ => (into, sliceIndex)
       }
     }
 
@@ -139,14 +138,11 @@ trait ColumnarTableModuleTestSupport[M[+_]]
             val col = prioritized find { _ isDefinedAt i }
 
             val acc2 = col map {
-              case lc: LongColumn =>
-                acc + lc(i)
+              case lc: LongColumn => acc + lc(i)
 
-              case dc: DoubleColumn =>
-                acc + dc(i)
+              case dc: DoubleColumn => acc + dc(i)
 
-              case nc: NumColumn =>
-                acc + nc(i)
+              case nc: NumColumn => acc + nc(i)
             }
 
             acc2 foreach { arr(i) = _ }

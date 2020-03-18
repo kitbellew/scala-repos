@@ -73,10 +73,7 @@ class JValueResultSpec extends MutableScalatraSpec {
         Map("rum" -> new Bottle("rum"), "thing" -> NamedThing())
       }
 
-      error {
-        case t: Throwable =>
-          t.printStackTrace()
-      }
+      error { case t: Throwable => t.printStackTrace() }
     },
     "/*"
   )

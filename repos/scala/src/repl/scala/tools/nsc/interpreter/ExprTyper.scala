@@ -33,8 +33,7 @@ trait ExprTyper {
       val old = repl.definedSymbolList.toSet
 
       interpretSynthetic(code) match {
-        case IR.Success =>
-          repl.definedSymbolList filterNot old match {
+        case IR.Success => repl.definedSymbolList filterNot old match {
             case Nil        => NoSymbol
             case sym :: Nil => sym
             case syms       => NoSymbol.newOverloaded(NoPrefix, syms)

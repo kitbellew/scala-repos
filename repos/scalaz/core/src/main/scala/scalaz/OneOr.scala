@@ -7,106 +7,80 @@ final case class OneOr[F[_], A](run: F[A] \/ A) {
 
   def ap[B](f: OneOr[F, A => B])(implicit F: Apply[F]): OneOr[F, B] =
     OneOr(f.run match {
-      case -\/(g) =>
-        run match {
-          case -\/(h) =>
-            -\/(F.ap(h)(g))
-          case \/-(h) =>
-            -\/(F.map(g)(_(h)))
+      case -\/(g) => run match {
+          case -\/(h) => -\/(F.ap(h)(g))
+          case \/-(h) => -\/(F.map(g)(_(h)))
         }
-      case \/-(g) =>
-        run match {
-          case -\/(h) =>
-            -\/(F.map(h)(g))
-          case \/-(h) =>
-            \/-(g(h))
+      case \/-(g) => run match {
+          case -\/(h) => -\/(F.map(h)(g))
+          case \/-(h) => \/-(g(h))
         }
     })
 
   def cojoin(implicit F: Cobind[F]): OneOr[F, OneOr[F, A]] =
     OneOr(run match {
-      case \/-(_) =>
-        \/-(this)
-      case -\/(a) =>
-        -\/(F.extend(a)(t => OneOr(-\/(t))))
+      case \/-(_) => \/-(this)
+      case -\/(a) => -\/(F.extend(a)(t => OneOr(-\/(t))))
     })
 
   def cobind[B](f: OneOr[F, A] => B)(implicit F: Cobind[F]): OneOr[F, B] =
     OneOr(run match {
-      case \/-(_) =>
-        \/-(f(this))
-      case -\/(a) =>
-        -\/(F.cobind(a)(t => f(OneOr(-\/(t)))))
+      case \/-(_) => \/-(f(this))
+      case -\/(a) => -\/(F.cobind(a)(t => f(OneOr(-\/(t)))))
     })
 
   def copoint(implicit F: Comonad[F]): A = run valueOr F.copoint
 
   def foldMap[B](f: A => B)(implicit M: Monoid[B], F: Foldable[F]): B =
     run match {
-      case \/-(a) =>
-        f(a)
-      case -\/(a) =>
-        F.foldMap(a)(f)
+      case \/-(a) => f(a)
+      case -\/(a) => F.foldMap(a)(f)
     }
 
   def foldRight[B](z: => B)(f: (A, => B) => B)(implicit F: Foldable[F]): B =
     run match {
-      case \/-(a) =>
-        f(a, z)
-      case -\/(a) =>
-        F.foldRight(a, z)(f)
+      case \/-(a) => f(a, z)
+      case -\/(a) => F.foldRight(a, z)(f)
     }
 
   def foldLeft[B](z: => B)(f: (B, A) => B)(implicit F: Foldable[F]): B =
     run match {
-      case \/-(a) =>
-        f(z, a)
-      case -\/(a) =>
-        F.foldLeft(a, z)(f)
+      case \/-(a) => f(z, a)
+      case -\/(a) => F.foldLeft(a, z)(f)
     }
 
   def foldMap1[B](f: A => B)(implicit M: Semigroup[B], F: Foldable1[F]): B =
     run match {
-      case \/-(a) =>
-        f(a)
-      case -\/(a) =>
-        F.foldMap1(a)(f)
+      case \/-(a) => f(a)
+      case -\/(a) => F.foldMap1(a)(f)
     }
 
   def foldMapRight1[B](z: A => B)(f: (A, => B) => B)(implicit
       F: Foldable1[F]): B =
     run match {
-      case \/-(a) =>
-        z(a)
-      case -\/(a) =>
-        F.foldMapRight1(a)(z)(f)
+      case \/-(a) => z(a)
+      case -\/(a) => F.foldMapRight1(a)(z)(f)
     }
 
   def foldMapLeft1[B](z: A => B)(f: (B, A) => B)(implicit F: Foldable1[F]): B =
     run match {
-      case \/-(a) =>
-        z(a)
-      case -\/(a) =>
-        F.foldMapLeft1(a)(z)(f)
+      case \/-(a) => z(a)
+      case -\/(a) => F.foldMapLeft1(a)(z)(f)
     }
 
   def traverse[G[_], B](f: A => G[B])(implicit
       T: Traverse[F],
       F: Applicative[G]): G[OneOr[F, B]] =
     run match {
-      case \/-(a) =>
-        F.map(f(a))(t => OneOr(\/-(t)))
-      case -\/(a) =>
-        F.map(T.traverse(a)(f))(t => OneOr(-\/(t)))
+      case \/-(a) => F.map(f(a))(t => OneOr(\/-(t)))
+      case -\/(a) => F.map(T.traverse(a)(f))(t => OneOr(-\/(t)))
     }
 
   def traverse1[G[_], B](
       f: A => G[B])(implicit T: Traverse1[F], F: Apply[G]): G[OneOr[F, B]] =
     run match {
-      case \/-(a) =>
-        F.map(f(a))(t => OneOr(\/-(t)))
-      case -\/(a) =>
-        F.map(T.traverse1(a)(f))(t => OneOr(-\/(t)))
+      case \/-(a) => F.map(f(a))(t => OneOr(\/-(t)))
+      case -\/(a) => F.map(T.traverse1(a)(f))(t => OneOr(-\/(t)))
     }
 
 }
@@ -152,18 +126,14 @@ private sealed trait OneOrFoldable[F[_]] extends Foldable[OneOr[F, ?]] {
 
   override final def findLeft[A](fa: OneOr[F, A])(f: A => Boolean) =
     fa.run match {
-      case \/-(a) =>
-        if (f(a)) Some(a) else None
-      case -\/(a) =>
-        F.findLeft(a)(f)
+      case \/-(a) => if (f(a)) Some(a) else None
+      case -\/(a) => F.findLeft(a)(f)
     }
 
   override final def findRight[A](fa: OneOr[F, A])(f: A => Boolean) =
     fa.run match {
-      case \/-(a) =>
-        if (f(a)) Some(a) else None
-      case -\/(a) =>
-        F.findRight(a)(f)
+      case \/-(a) => if (f(a)) Some(a) else None
+      case -\/(a) => F.findRight(a)(f)
     }
 
   override final def foldMap[A, B](fa: OneOr[F, A])(f: A => B)(implicit

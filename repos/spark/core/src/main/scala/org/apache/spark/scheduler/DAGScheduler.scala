@@ -423,8 +423,7 @@ private[spark] class DAGScheduler(
           dep match {
             case shufDep: ShuffleDependency[_, _, _] =>
               parents += getShuffleMapStage(shufDep, firstJobId)
-            case _ =>
-              waitingForVisit.push(dep.rdd)
+            case _ => waitingForVisit.push(dep.rdd)
           }
         }
       }
@@ -1136,8 +1135,7 @@ private[spark] class DAGScheduler(
     val tasks: Seq[Task[_]] =
       try {
         stage match {
-          case stage: ShuffleMapStage =>
-            partitionsToCompute.map { id =>
+          case stage: ShuffleMapStage => partitionsToCompute.map { id =>
               val locs = taskIdToLocations(id)
               val part = stage.rdd.partitions(id)
               new ShuffleMapTask(
@@ -1541,8 +1539,7 @@ private[spark] class DAGScheduler(
         jobsThatUseStage.foreach { jobId =>
           handleJobCancellation(jobId, s"because Stage $stageId was cancelled")
         }
-      case None =>
-        logInfo("No active jobs to kill for Stage " + stageId)
+      case None => logInfo("No active jobs to kill for Stage " + stageId)
     }
     submitWaitingStages()
   }
@@ -1830,14 +1827,12 @@ private[scheduler] class DAGSchedulerEventProcessLoop(
       case StageCancelled(stageId) =>
         dagScheduler.handleStageCancellation(stageId)
 
-      case JobCancelled(jobId) =>
-        dagScheduler.handleJobCancellation(jobId)
+      case JobCancelled(jobId) => dagScheduler.handleJobCancellation(jobId)
 
       case JobGroupCancelled(groupId) =>
         dagScheduler.handleJobGroupCancelled(groupId)
 
-      case AllJobsCancelled =>
-        dagScheduler.doCancelAllJobs()
+      case AllJobsCancelled => dagScheduler.doCancelAllJobs()
 
       case ExecutorAdded(execId, host) =>
         dagScheduler.handleExecutorAdded(execId, host)
@@ -1857,8 +1852,7 @@ private[scheduler] class DAGSchedulerEventProcessLoop(
       case TaskSetFailed(taskSet, reason, exception) =>
         dagScheduler.handleTaskSetFailed(taskSet, reason, exception)
 
-      case ResubmitFailedStages =>
-        dagScheduler.resubmitFailedStages()
+      case ResubmitFailedStages => dagScheduler.resubmitFailedStages()
     }
 
   override def onError(e: Throwable): Unit = {

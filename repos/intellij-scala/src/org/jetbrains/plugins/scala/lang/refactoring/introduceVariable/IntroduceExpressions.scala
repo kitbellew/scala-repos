@@ -224,9 +224,7 @@ trait IntroduceExpressions {
 
       if (ScalaRefactoringUtil.isInplaceAvailable(editor)) runInplace()
       else runWithDialog()
-    } catch {
-      case _: IntroduceException =>
-    }
+    } catch { case _: IntroduceException => }
   }
 
   //returns smart pointer to ScDeclaredElementsHolder or ScEnumerator
@@ -249,12 +247,11 @@ trait IntroduceExpressions {
       val result = prev match {
         case forSt: ScForStatement if forSt.body.orNull == parExpr => None
         case forSt: ScForStatement                                 => Some(forSt)
-        case _: ScEnumerator | _: ScGenerator =>
-          Option(prev.getParent.getParent.asInstanceOf[ScForStatement])
+        case _: ScEnumerator | _: ScGenerator => Option(
+            prev.getParent.getParent.asInstanceOf[ScForStatement])
         case guard: ScGuard if guard.getParent.isInstanceOf[ScEnumerators] =>
           Option(prev.getParent.getParent.asInstanceOf[ScForStatement])
-        case _ =>
-          parExpr match {
+        case _ => parExpr match {
             case forSt: ScForStatement =>
               Some(
                 forSt
@@ -303,8 +300,7 @@ trait IntroduceExpressions {
     object inExtendsBlock {
       def unapply(e: PsiElement): Option[ScExtendsBlock] = {
         e match {
-          case extBl: ScExtendsBlock =>
-            Some(extBl)
+          case extBl: ScExtendsBlock => Some(extBl)
           case elem
               if PsiTreeUtil.getParentOfType(
                 elem,
@@ -340,9 +336,8 @@ trait IntroduceExpressions {
                parent)) { parent = parent.getParent }
       val insideExpression = parent match {
         case null | _: ScBlock | _: ScTemplateBody | _: ScEarlyDefinitions |
-            _: PsiFile =>
-          false
-        case _ => true
+            _: PsiFile => false
+        case _         => true
       }
       oneLineSelected && !insideExpression
     }
@@ -379,12 +374,10 @@ trait IntroduceExpressions {
         ScalaRefactoringUtil.findParentExpr(file, firstRange) match {
           case _ childOf (
                 (block: ScBlock) childOf ((_) childOf (call: ScMethodCall))
-              ) if isFunExpr && block.statements.size == 1 =>
-            Seq(call)
+              ) if isFunExpr && block.statements.size == 1 => Seq(call)
           case _ childOf ((block: ScBlock) childOf (infix: ScInfixExpr))
-              if isFunExpr && block.statements.size == 1 =>
-            Seq(infix)
-          case expr => Seq(expr)
+              if isFunExpr && block.statements.size == 1 => Seq(infix)
+          case expr                                      => Seq(expr)
         }
       else
         replacedOccurences.toSeq.map(

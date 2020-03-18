@@ -71,8 +71,7 @@ object ScalaMoveUtil {
     var fileWasDeleted: Boolean = false
     def deleteClass(aClass: PsiClass) = {
       aClass.getContainingFile match {
-        case file: ScalaFile =>
-          file.typeDefinitions match {
+        case file: ScalaFile => file.typeDefinitions match {
             case Seq(`aClass`)
                 if !file.isScriptFile() && !file.isWorksheetFile =>
               file.delete()

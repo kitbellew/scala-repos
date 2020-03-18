@@ -170,8 +170,7 @@ sealed abstract class IterateeT[E, F[_], A] {
           step(x, in) flatMap {
             case (a, xx) =>
               step(y, in) flatMap {
-                case (b, yy) =>
-                  (a, b) match {
+                case (b, yy) => (a, b) match {
                     case (Some((a, e)), Some((b, ee))) =>
                       done((a, b), if (e.isEl) e else ee)
                     case _ => cont(loop(xx, yy))

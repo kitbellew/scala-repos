@@ -46,13 +46,11 @@ private class FutureInstance(implicit ec: ExecutionContext)
     }
 
     fs foreach {
-      case (fa, i) =>
-        fa.onComplete { t => attemptComplete(t.map(_ -> i)) }
+      case (fa, i) => fa.onComplete { t => attemptComplete(t.map(_ -> i)) }
     }
 
     result.future.map {
-      case (a, i) =>
-        (a, fs.collect { case (fa, j) if j != i => fa })
+      case (a, i) => (a, fs.collect { case (fa, j) if j != i => fa })
     }
   }
 

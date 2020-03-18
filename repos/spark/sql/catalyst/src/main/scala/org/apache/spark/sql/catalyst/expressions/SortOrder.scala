@@ -82,12 +82,9 @@ case class SortPrefix(child: SortOrder) extends UnaryExpression {
     val DoublePrefixCmp = classOf[DoublePrefixComparator].getName
 
     val (nullValue: Long, prefixCode: String) = child.child.dataType match {
-      case BooleanType =>
-        (Long.MinValue, s"$input ? 1L : 0L")
-      case _: IntegralType =>
-        (Long.MinValue, s"(long) $input")
-      case DateType | TimestampType =>
-        (Long.MinValue, s"(long) $input")
+      case BooleanType              => (Long.MinValue, s"$input ? 1L : 0L")
+      case _: IntegralType          => (Long.MinValue, s"(long) $input")
+      case DateType | TimestampType => (Long.MinValue, s"(long) $input")
       case FloatType | DoubleType =>
         (
           DoublePrefixComparator.computePrefix(Double.NegativeInfinity),

@@ -72,8 +72,7 @@ trait CodingDirectives {
             effectiveDecoder
               .decode(request)
               .mapEntity(StreamUtils.mapEntityError {
-                case NonFatal(e) ⇒
-                  IllegalRequestException(
+                case NonFatal(e) ⇒ IllegalRequestException(
                     StatusCodes.BadRequest,
                     ErrorInfo(
                       "The request's encoding is corrupt",

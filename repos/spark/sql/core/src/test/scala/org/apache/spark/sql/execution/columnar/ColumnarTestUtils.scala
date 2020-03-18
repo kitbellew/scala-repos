@@ -103,8 +103,7 @@ object ColumnarTestUtils {
   def makeRandomRow(columnTypes: Seq[ColumnType[_]]): InternalRow = {
     val row = new GenericMutableRow(columnTypes.length)
     makeRandomValues(columnTypes).zipWithIndex.foreach {
-      case (value, index) =>
-        row(index) = value
+      case (value, index) => row(index) = value
     }
     row
   }

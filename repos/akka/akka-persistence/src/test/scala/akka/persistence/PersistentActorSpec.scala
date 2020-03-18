@@ -104,8 +104,7 @@ object PersistentActorSpec {
     }
 
     val receiveCommand: Receive = commonBehavior orElse {
-      case Cmd(data) ⇒
-        persist(Evt(s"${data}-0")) { event ⇒
+      case Cmd(data) ⇒ persist(Evt(s"${data}-0")) { event ⇒
           updateState(event)
           context.become(newBehavior)
         }
@@ -124,8 +123,7 @@ object PersistentActorSpec {
     }
 
     val receiveCommand: Receive = commonBehavior orElse {
-      case Cmd(data) ⇒
-        persist(Evt(s"${data}-0")) { event ⇒
+      case Cmd(data) ⇒ persist(Evt(s"${data}-0")) { event ⇒
           updateState(event)
           context.become(newBehavior)
         }
@@ -354,8 +352,7 @@ object PersistentActorSpec {
     var counter = 0
 
     val receiveCommand: Receive = commonBehavior orElse {
-      case Cmd(data) ⇒
-        persistAsync(Evt(data)) { evt ⇒
+      case Cmd(data) ⇒ persistAsync(Evt(data)) { evt ⇒
           if (data != evt.data)
             sender() ! s"Expected [$data] bot got [${evt.data}]"
           if (evt.data == "done") sender() ! "done"
@@ -448,8 +445,7 @@ object PersistentActorSpec {
       case Cmd(data) ⇒
         sender() ! data
         persist(data)(_ ⇒ ())
-      case s: String ⇒
-        sender() ! s
+      case s: String ⇒ sender() ! s
     }
   }
 
@@ -880,8 +876,7 @@ abstract class PersistentActorSpec(config: Config)
       val probes = Vector.fill(10)(TestProbe())
 
       (probes zip commands) foreach {
-        case (p, c) ⇒
-          persistentActor.tell(c, p.ref)
+        case (p, c) ⇒ persistentActor.tell(c, p.ref)
       }
 
       val ackClass = classOf[String]

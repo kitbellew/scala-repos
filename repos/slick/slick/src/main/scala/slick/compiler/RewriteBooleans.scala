@@ -31,8 +31,8 @@ class RewriteBooleans extends Phase {
   def rewrite(n: Node): Node =
     n match {
       // These boolean operators accept and produce real booleans
-      case Apply(sym @ (Library.And | Library.Or | Library.Not), ch) =>
-        toFake(Apply(sym, ch.map(n => toReal(n)))(n.nodeType).infer())
+      case Apply(sym @ (Library.And | Library.Or | Library.Not), ch) => toFake(
+          Apply(sym, ch.map(n => toReal(n)))(n.nodeType).infer())
       // All other boolean-typed operators produce real booleans but accept fake ones
       case Apply(sym, ch) :@ tpe if isBooleanLike(tpe) =>
         toFake(Apply(sym, ch)(n.nodeType).infer())
@@ -41,8 +41,7 @@ class RewriteBooleans extends Phase {
         n.copy(
           where = where.map(toReal),
           having = having.map(toReal)) :@ n.nodeType
-      case n @ Join(_, _, _, _, _, on) =>
-        n.copy(on = toReal(on)) :@ n.nodeType
+      case n @ Join(_, _, _, _, _, on) => n.copy(on = toReal(on)) :@ n.nodeType
       case cond @ IfThenElse(_) =>
         cond.mapConditionClauses(toReal) :@ cond.nodeType
       case n => n

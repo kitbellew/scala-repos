@@ -435,8 +435,7 @@ abstract class MixinNodes {
                 if (!lin.isEmpty) lin.tail else lin,
                 ScSubstitutor.empty,
                 ScSubstitutor.empty)
-            case _ =>
-              (Seq.empty, ScSubstitutor.empty, ScSubstitutor.empty)
+            case _ => (Seq.empty, ScSubstitutor.empty, ScSubstitutor.empty)
           }
     }
     val iter = superTypes.iterator
@@ -489,9 +488,8 @@ abstract class MixinNodes {
           lower.getOrElse(superType)
         case _ => superType
       }) match {
-        case c: ScCompoundType =>
-          processRefinement(c, map, place)
-        case _ =>
+        case c: ScCompoundType => processRefinement(c, map, place)
+        case _                 =>
       }
     }
     map.setSupersMap(superTypesBuff.toList)
@@ -654,8 +652,7 @@ object MixinNodes {
       def updateTp(tp: ScType): ScType = {
         tp.isAliasType match {
           case Some(AliasType(_, _, Success(upper, _))) => updateTp(upper)
-          case _ =>
-            tp match {
+          case _ => tp match {
               case ex: ScExistentialType    => ex.skolem
               case tpt: ScTypeParameterType => tpt.upper.v
               case _                        => tp

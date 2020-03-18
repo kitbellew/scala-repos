@@ -99,8 +99,7 @@ object Timing {
           System.err.println("%s took %.2fms" format (s, t / m))
           StreamT.Yield(a, timeElem(tail))
 
-        case None =>
-          StreamT.Done
+        case None => StreamT.Done
       })
     }
 

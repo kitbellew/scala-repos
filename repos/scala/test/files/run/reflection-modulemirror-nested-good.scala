@@ -9,10 +9,7 @@ class Foo {
     val sym = cm.moduleSymbol(classTag.runtimeClass)
     val cls = cm.reflectModule(sym)
     try { cls.instance }
-    catch {
-      case ex: Throwable =>
-        println(ex.getMessage)
-    }
+    catch { case ex: Throwable => println(ex.getMessage) }
   }
 }
 

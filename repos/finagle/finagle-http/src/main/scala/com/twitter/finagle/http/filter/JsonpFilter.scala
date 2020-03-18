@@ -17,10 +17,8 @@ class JsonpFilter[Req <: Request] extends SimpleFilter[Req, Response] {
 
   def apply(request: Req, service: Service[Req, Response]): Future[Response] = {
     getCallback(request) match {
-      case Some(callback) =>
-        addCallback(callback, request, service)
-      case None =>
-        service(request)
+      case Some(callback) => addCallback(callback, request, service)
+      case None           => service(request)
     }
   }
 

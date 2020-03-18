@@ -117,10 +117,7 @@ package scala.collection.immutable.redblacktree {
       height(t) <= (2 * (32 - Integer.numberOfLeadingZeros(count(t) + 2)) - 2)
 
     def setup(invariant: Tree[String, Int] => Boolean) =
-      forAll(genInput) {
-        case (tree, parm, newTree) =>
-          invariant(newTree)
-      }
+      forAll(genInput) { case (tree, parm, newTree) => invariant(newTree) }
 
     property("root is black") = setup(rootIsBlack)
     property("all leaves are black") = setup(areAllLeavesBlack)
@@ -144,8 +141,7 @@ package scala.collection.immutable.redblacktree {
     def generateKey(tree: Tree[String, Int], parm: ModifyParm): String =
       nodeAt(tree, parm) match {
         case Some((key, _)) => key.init.mkString + "MN"
-        case None =>
-          nodeAt(tree, parm - 1) match {
+        case None => nodeAt(tree, parm - 1) match {
             case Some((key, _)) => key.init.mkString + "RN"
             case None           => "N"
           }
@@ -175,8 +171,7 @@ package scala.collection.immutable.redblacktree {
     property("update modifies values") = forAll(genInput) {
       case (tree, parm, newTree) =>
         nodeAt(tree, parm) forall {
-          case (key, _) =>
-            iterator(newTree) contains (key, newValue)
+          case (key, _) => iterator(newTree) contains (key, newValue)
         }
     }
   }
@@ -198,8 +193,7 @@ package scala.collection.immutable.redblacktree {
     property("delete removes elements") = forAll(genInput) {
       case (tree, parm, newTree) =>
         nodeAt(tree, parm) forall {
-          case (key, _) =>
-            !treeContains(newTree, key)
+          case (key, _) => !treeContains(newTree, key)
         }
     }
   }

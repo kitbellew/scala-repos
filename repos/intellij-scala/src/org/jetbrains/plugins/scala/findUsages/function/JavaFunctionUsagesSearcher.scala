@@ -44,13 +44,11 @@ class JavaFunctionUsagesSearcher
                     refElement.resolve match {
                       case f: ScFunctionWrapper
                           if f.function == method && !consumer.process(
-                            refElement) =>
-                        return false
+                            refElement) => return false
                       case t: StaticPsiMethodWrapper
                           if t.getNavigationElement == method && !consumer
-                            .process(refElement) =>
-                        return false
-                      case _ =>
+                            .process(refElement) => return false
+                      case _                     =>
                     }
                   case _ =>
                 }

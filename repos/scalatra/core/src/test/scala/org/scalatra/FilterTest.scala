@@ -19,9 +19,8 @@ class FilterTestServlet extends ScalatraServlet {
   after() {
     afterCount += 1
     params.get("after") match {
-      case Some(x) =>
-        response.getWriter.write(x)
-      case None =>
+      case Some(x) => response.getWriter.write(x)
+      case None    =>
     }
   }
 

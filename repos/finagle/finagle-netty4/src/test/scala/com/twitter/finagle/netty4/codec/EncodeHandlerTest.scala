@@ -24,10 +24,8 @@ class EncodeHandlerTest extends FunSuite with MockitoSugar {
           msg: scala.Any,
           promise: ChannelPromise): Unit = {
         msg match {
-          case s: ByteBuf =>
-            messagesSeen.append(s)
-          case _ =>
-            fail("expected ByteBuf message")
+          case s: ByteBuf => messagesSeen.append(s)
+          case _          => fail("expected ByteBuf message")
         }
         super.write(ctx, msg, promise)
       }

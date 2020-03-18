@@ -128,8 +128,7 @@ class FlatClassPathResolverTest {
           cp: ClassPath[AbstractFile]): ClassPath[AbstractFile] = {
         packageNameParts match {
           case Nil => cp
-          case h :: t =>
-            cp.packages.find(_.name == h) match {
+          case h :: t => cp.packages.find(_.name == h) match {
               case Some(nestedCp) => traverseToPackage(t, nestedCp)
               case _ =>
                 throw new Exception(

@@ -83,8 +83,7 @@ private[orc] object OrcFilters extends Logging {
       value match {
         // These are types recognized by the `SearchArgumentImpl.BuilderImpl.boxLiteral()` method.
         case _: String | _: Long | _: Double | _: Byte | _: Short | _: Integer |
-            _: Float =>
-          true
+            _: Float => true
         case _: DateWritable | _: HiveDecimal | _: HiveChar | _: HiveVarchar =>
           true
         case _ => false
@@ -106,16 +105,14 @@ private[orc] object OrcFilters extends Logging {
           rhs <- buildSearchArgument(right, lhs)
         } yield rhs.end()
 
-      case Or(left, right) =>
-        for {
+      case Or(left, right) => for {
           _ <- buildSearchArgument(left, newBuilder)
           _ <- buildSearchArgument(right, newBuilder)
           lhs <- buildSearchArgument(left, builder.startOr())
           rhs <- buildSearchArgument(right, lhs)
         } yield rhs.end()
 
-      case Not(child) =>
-        for {
+      case Not(child) => for {
           _ <- buildSearchArgument(child, newBuilder)
           negate <- buildSearchArgument(child, builder.startNot())
         } yield negate.end()
@@ -142,11 +139,10 @@ private[orc] object OrcFilters extends Logging {
       case GreaterThanOrEqual(attribute, value) if isSearchableLiteral(value) =>
         Some(builder.startNot().lessThan(attribute, value).end())
 
-      case IsNull(attribute) =>
-        Some(builder.startAnd().isNull(attribute).end())
+      case IsNull(attribute) => Some(builder.startAnd().isNull(attribute).end())
 
-      case IsNotNull(attribute) =>
-        Some(builder.startNot().isNull(attribute).end())
+      case IsNotNull(attribute) => Some(
+          builder.startNot().isNull(attribute).end())
 
       case In(attribute, values) if values.forall(isSearchableLiteral) =>
         Some(

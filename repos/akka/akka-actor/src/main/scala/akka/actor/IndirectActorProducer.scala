@@ -52,8 +52,7 @@ private[akka] object IndirectActorProducer {
           new TypedCreatorFunctionConsumer(get1stArg, get2ndArg)
         case CreatorFunctionConsumerClass ⇒
           new CreatorFunctionConsumer(get1stArg)
-        case CreatorConsumerClass ⇒
-          new CreatorConsumer(get1stArg, get2ndArg)
+        case CreatorConsumerClass ⇒ new CreatorConsumer(get1stArg, get2ndArg)
         case _ ⇒
           Reflect.instantiate(clazz, args).asInstanceOf[IndirectActorProducer]
       }

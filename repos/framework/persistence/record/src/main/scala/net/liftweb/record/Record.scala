@@ -139,9 +139,8 @@ trait Record[MyType <: Record[MyType]] extends FieldContainer {
 
   override def equals(other: Any): Boolean = {
     other match {
-      case that: Record[MyType] =>
-        that.fields.corresponds(this.fields) { (a, b) =>
-          a.name == b.name && a.valueBox == b.valueBox
+      case that: Record[MyType] => that.fields.corresponds(this.fields) {
+          (a, b) => a.name == b.name && a.valueBox == b.valueBox
         }
       case _ => false
     }

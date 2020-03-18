@@ -48,8 +48,7 @@ private[spark] class PythonPartitioner(
     other match {
       case h: PythonPartitioner =>
         h.numPartitions == numPartitions && h.pyPartitionFunctionId == pyPartitionFunctionId
-      case _ =>
-        false
+      case _ => false
     }
 
   override def hashCode: Int =

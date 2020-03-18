@@ -38,8 +38,7 @@ object Resolve {
         case Select(ref) =>
           val r = index resolveRef ref
           (Some(r), index.projectFor(r))
-        case Global | This =>
-          (None, index.rootProject(index.root))
+        case Global | This => (None, index.rootProject(index.root))
       }
       val task = scope.task.toOption
       val keyIndex = index.keyIndex

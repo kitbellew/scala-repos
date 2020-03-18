@@ -100,8 +100,7 @@ abstract class Delambdafy
     override def transform(tree: Tree): Tree =
       tree match {
         // the main thing we care about is lambdas
-        case fun @ Function(_, _) =>
-          transformFunction(fun) match {
+        case fun @ Function(_, _) => transformFunction(fun) match {
             case DelambdafyAnonClass(lambdaClassDef, newExpr) =>
               // a lambda becomes a new class, an instantiation expression
               val pkg = lambdaClassDef.symbol.owner
@@ -494,8 +493,7 @@ abstract class Delambdafy
             createBoxingBridgeMethod(
               functionParamTypes,
               functionResultType) match {
-              case EmptyTree =>
-                target
+              case EmptyTree => target
               case bridge =>
                 boxingBridgeMethods += bridge
                 bridge.symbol
@@ -615,12 +613,9 @@ abstract class Delambdafy
 
     override def traverse(tree: Tree) = {
       tree match {
-        case Function(args, _) =>
-          args foreach { arg => declared += arg.symbol }
-        case ValDef(_, _, _, _) =>
-          declared += tree.symbol
-        case _: Bind =>
-          declared += tree.symbol
+        case Function(args, _)  => args foreach { arg => declared += arg.symbol }
+        case ValDef(_, _, _, _) => declared += tree.symbol
+        case _: Bind            => declared += tree.symbol
         case Ident(_) =>
           val sym = tree.symbol
           if ((
@@ -670,9 +665,8 @@ abstract class Delambdafy
     */
   private def targetMethod(fun: Function): Symbol =
     fun match {
-      case Function(_, Apply(target, _)) =>
-        target.symbol
-      case _ =>
+      case Function(_, Apply(target, _)) => target.symbol
+      case _                             =>
         // any other shape of Function is unexpected at this point
         abort(s"could not understand function with tree $fun")
     }
@@ -707,8 +701,7 @@ abstract class Delambdafy
             debuglog(s"$currentMethod directly refers to 'this'")
             thisReferringMethods add currentMethod
           }
-        case _ =>
-          super.traverse(tree)
+        case _ => super.traverse(tree)
       }
   }
 

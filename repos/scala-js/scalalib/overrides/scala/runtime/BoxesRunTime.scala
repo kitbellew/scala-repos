@@ -27,22 +27,19 @@ object BoxesRunTime {
     y match {
       case yn: java.lang.Number    => equalsNumNum(xn, yn)
       case yc: java.lang.Character => equalsNumChar(xn, yc)
-      case _ =>
-        if (xn eq null) y eq null else xn.equals(y)
+      case _                       => if (xn eq null) y eq null else xn.equals(y)
     }
   }
 
   def equalsNumNum(xn: java.lang.Number, yn: java.lang.Number): Boolean = {
     (xn: Any) match {
-      case xn: Double =>
-        (yn: Any) match {
+      case xn: Double => (yn: Any) match {
           case yn: Double      => xn == yn
           case yn: Long        => xn == yn
           case yn: ScalaNumber => yn.equals(xn) // xn is not a ScalaNumber
           case _               => false // xn.equals(yn) must be false here
         }
-      case xn: Long =>
-        (yn: Any) match {
+      case xn: Long => (yn: Any) match {
           case yn: Long        => xn == yn
           case yn: Double      => xn == yn
           case yn: ScalaNumber => yn.equals(xn) // xn is not a ScalaNumber
@@ -70,8 +67,7 @@ object BoxesRunTime {
     (xn: Any) match {
       case xn: Double => xn == yc.charValue()
       case xn: Long   => xn == yc.charValue()
-      case _ =>
-        if (xn eq null) yc eq null else xn.equals(yc)
+      case _          => if (xn eq null) yc eq null else xn.equals(yc)
     }
   }
 

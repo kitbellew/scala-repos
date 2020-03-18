@@ -446,8 +446,7 @@ private[transport] class ProtocolStateActor(
         stay()
       }
 
-    case Event(DisassociateUnderlying(_), _) ⇒
-      stop()
+    case Event(DisassociateUnderlying(_), _) ⇒ stop()
 
     case Event(HandshakeTimer, OutboundUnassociated(_, statusPromise, _)) ⇒
       val errMsg =
@@ -462,8 +461,7 @@ private[transport] class ProtocolStateActor(
 
   // Timeout of this state is handled by the HandshakeTimer
   when(WaitHandshake) {
-    case Event(Disassociated(info), _) ⇒
-      stop(FSM.Failure(info))
+    case Event(Disassociated(info), _) ⇒ stop(FSM.Failure(info))
 
     case Event(
           InboundPayload(p),
@@ -552,13 +550,10 @@ private[transport] class ProtocolStateActor(
   }
 
   when(Open) {
-    case Event(Disassociated(info), _) ⇒
-      stop(FSM.Failure(info))
+    case Event(Disassociated(info), _) ⇒ stop(FSM.Failure(info))
 
-    case Event(InboundPayload(p), _) ⇒
-      decodePdu(p) match {
-        case Disassociate(info) ⇒
-          stop(FSM.Failure(info))
+    case Event(InboundPayload(p), _) ⇒ decodePdu(p) match {
+        case Disassociate(info) ⇒ stop(FSM.Failure(info))
 
         case Heartbeat ⇒
           failureDetector.heartbeat()
@@ -667,8 +662,7 @@ private[transport] class ProtocolStateActor(
       statusPromise.tryFailure(reason match {
         case FSM.Failure(TimeoutReason(errorMessage)) ⇒
           new AkkaProtocolException(errorMessage)
-        case FSM.Failure(info: DisassociateInfo) ⇒
-          disassociateException(info)
+        case FSM.Failure(info: DisassociateInfo) ⇒ disassociateException(info)
         case FSM.Failure(ForbiddenUidReason) ⇒
           InvalidAssociationException(
             "The remote system has a UID that has been quarantined. Association aborted.")
@@ -722,8 +716,7 @@ private[transport] class ProtocolStateActor(
     reason match {
       case FSM.Failure(_: DisassociateInfo) ⇒ // no logging
       case FSM.Failure(ForbiddenUidReason) ⇒ // no logging
-      case FSM.Failure(TimeoutReason(errorMessage)) ⇒
-        log.info(errorMessage)
+      case FSM.Failure(TimeoutReason(errorMessage)) ⇒ log.info(errorMessage)
       case other ⇒ super.logTermination(reason)
     }
 

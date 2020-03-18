@@ -381,8 +381,7 @@ trait FSM[S, D] extends ListenerManagement {
    * unhandled event handler
    */
   private val handleEventDefault: StateFunction = {
-    case Event(value, stateData) =>
-      stay
+    case Event(value, stateData) => stay
   }
   private var handleEvent: StateFunction = handleEventDefault
 
@@ -427,8 +426,7 @@ trait FSM[S, D] extends ListenerManagement {
         case e: ActorInitializationException =>
           EventHandler.warning(this, "trying to register not running listener")
       }
-    case UnsubscribeTransitionCallBack(actorRef) =>
-      removeListener(actorRef)
+    case UnsubscribeTransitionCallBack(actorRef) => removeListener(actorRef)
     case value => {
       if (timeoutFuture.isDefined) {
         timeoutFuture.get.cancel(true)

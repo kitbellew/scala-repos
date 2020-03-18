@@ -17,24 +17,20 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
 
   def apply(command: Command): Response = {
     command match {
-      case Set(key, flags, expiry, value) =>
-        map.lock(key) { data =>
+      case Set(key, flags, expiry, value) => map.lock(key) { data =>
           data(key) = Entry(value, expiry)
           Stored()
         }
-      case Add(key, flags, expiry, value) =>
-        map.lock(key) { data =>
+      case Add(key, flags, expiry, value) => map.lock(key) { data =>
           val existing = data.get(key)
           existing match {
-            case Some(entry) if entry.valid =>
-              NotStored()
+            case Some(entry) if entry.valid => NotStored()
             case _ =>
               data(key) = Entry(value, expiry)
               Stored()
           }
         }
-      case Replace(key, flags, expiry, value) =>
-        map.lock(key) { data =>
+      case Replace(key, flags, expiry, value) => map.lock(key) { data =>
           val existing = data.get(key)
           existing match {
             case Some(entry) if entry.valid =>
@@ -43,12 +39,10 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
             case Some(_) =>
               data.remove(key) // expired
               NotStored()
-            case _ =>
-              NotStored()
+            case _ => NotStored()
           }
         }
-      case Append(key, flags, expiry, value: Buf) =>
-        map.lock(key) { data =>
+      case Append(key, flags, expiry, value: Buf) => map.lock(key) { data =>
           val existing = data.get(key)
           existing match {
             case Some(entry) if entry.valid =>
@@ -57,12 +51,10 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
             case Some(_) =>
               data.remove(key) // expired
               NotStored()
-            case _ =>
-              NotStored()
+            case _ => NotStored()
           }
         }
-      case Cas(key, flags, expiry, value, casUnique) =>
-        map.lock(key) { data =>
+      case Cas(key, flags, expiry, value, casUnique) => map.lock(key) { data =>
           val existing = data.get(key)
           existing match {
             case Some(entry) if entry.valid =>
@@ -71,12 +63,10 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
                 data(key) = Entry(value, expiry)
                 Stored()
               } else { NotStored() }
-            case _ =>
-              NotStored()
+            case _ => NotStored()
           }
         }
-      case Prepend(key, flags, expiry, value) =>
-        map.lock(key) { data =>
+      case Prepend(key, flags, expiry, value) => map.lock(key) { data =>
           val existing = data.get(key)
           existing match {
             case Some(entry) if entry.valid =>
@@ -85,8 +75,7 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
             case Some(_) =>
               data.remove(key) // expired
               NotStored()
-            case _ =>
-              NotStored()
+            case _ => NotStored()
           }
         }
       case Get(keys) =>
@@ -98,14 +87,11 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
             } map { entry => Value(key, entry.value) }
           }
         })
-      case Gets(keys) =>
-        getByKeys(keys)
-      case Delete(key) =>
-        map.lock(key) { data =>
+      case Gets(keys) => getByKeys(keys)
+      case Delete(key) => map.lock(key) { data =>
           if (data.remove(key).isDefined) Deleted() else NotFound()
         }
-      case Incr(key, delta) =>
-        map.lock(key) { data =>
+      case Incr(key, delta) => map.lock(key) { data =>
           val existing = data.get(key)
           existing match {
             case Some(entry) if entry.valid =>
@@ -126,14 +112,13 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
             case Some(_) =>
               data.remove(key) // expired
               NotFound()
-            case _ =>
-              NotFound()
+            case _ => NotFound()
           }
         }
-      case Decr(key, value) =>
-        map.lock(key) { data => apply(Incr(key, -value)) }
-      case Quit() =>
-        NoOp()
+      case Decr(key, value) => map.lock(key) { data =>
+          apply(Incr(key, -value))
+        }
+      case Quit() => NoOp()
     }
   }
 

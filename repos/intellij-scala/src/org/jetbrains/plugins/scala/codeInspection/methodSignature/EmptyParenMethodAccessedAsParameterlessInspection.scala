@@ -41,8 +41,7 @@ class EmptyParenMethodAccessedAsParameterlessInspection
     case e: ScReferenceExpression
         if e.isValid && IntentionAvailabilityChecker.checkInspection(this, e) =>
       e.getParent match {
-        case gc: ScGenericCall =>
-          ScalaPsiUtil.findCall(gc) match {
+        case gc: ScGenericCall => ScalaPsiUtil.findCall(gc) match {
             case None    => check(e, holder, gc.getType(TypingContext.empty))
             case Some(_) =>
           }

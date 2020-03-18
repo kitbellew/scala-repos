@@ -43,10 +43,8 @@ object TypePattern {
             }
             builder.restoreNewlinesState
             builder.getTokenType match {
-              case ScalaTokenTypes.tFUNTYPE =>
-                builder.advanceLexer() //Ate =>
-              case _ =>
-                builder error ScalaBundle.message("fun.sign.expected")
+              case ScalaTokenTypes.tFUNTYPE => builder.advanceLexer() //Ate =>
+              case _                        => builder error ScalaBundle.message("fun.sign.expected")
             }
             if (!Type.parse(builder, star = false, isPattern = true)) {
               builder error ScalaBundle.message("wrong.type")

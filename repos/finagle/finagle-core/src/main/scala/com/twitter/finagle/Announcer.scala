@@ -86,14 +86,12 @@ object Announcer {
 
   def announce(addr: InetSocketAddress, forum: String): Future[Announcement] = {
     val announcement = forum.split("!", 2) match {
-      case Array(scheme, name) =>
-        announcers.find(_.scheme == scheme) match {
+      case Array(scheme, name) => announcers.find(_.scheme == scheme) match {
           case Some(announcer) => announcer.announce(addr, name)
           case None            => Future.exception(new AnnouncerNotFoundException(scheme))
         }
 
-      case _ =>
-        Future.exception(new AnnouncerForumInvalid(forum))
+      case _ => Future.exception(new AnnouncerForumInvalid(forum))
     }
 
     announcement map { ann =>

@@ -79,8 +79,7 @@ trait EnumNameTypedField[EnumType <: Enumeration]
   def setFromJStringName(jvalue: JValue): Box[EnumType#Value] =
     jvalue match {
       case JNothing | JNull if optional_? => setBox(Empty)
-      case JString(s) =>
-        setBox(
+      case JString(s) => setBox(
           enum.values.find(_.toString == s) ?~ ("Unknown value \"" + s + "\""))
       case other => setBox(FieldHelpers.expectedA("JString", other))
     }

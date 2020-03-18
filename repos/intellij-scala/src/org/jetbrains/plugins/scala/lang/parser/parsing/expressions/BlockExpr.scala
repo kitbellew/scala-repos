@@ -42,8 +42,7 @@ object BlockExpr {
               backMarker.rollbackTo()
               CaseClauses parse builder
           }
-        case _ =>
-          Block.parse(builder)
+        case _ => Block.parse(builder)
       }
     }
     ParserUtils.parseLoopUntilRBrace(builder, loopFunction)

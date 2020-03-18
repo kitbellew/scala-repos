@@ -350,10 +350,8 @@ class ShardServiceSpec extends TestShardService {
     jobManager.findJob(jobId) flatMap {
       case Some(Job(_, _, _, _, _, NotStarted | Started(_, _))) =>
         waitForJobCompletion(jobId)
-      case Some(_) =>
-        jobManager.getResult(jobId)
-      case None =>
-        Future(Left("The job doesn't even exist!!!"))
+      case Some(_) => jobManager.getResult(jobId)
+      case None    => Future(Left("The job doesn't even exist!!!"))
     }
   }
 
@@ -415,8 +413,7 @@ class ShardServiceSpec extends TestShardService {
                 "An apiKey query parameter is required to access this URL"),
               _,
               _,
-              _) =>
-          ok
+              _) => ok
       }
     }
     "reject query when API key not found" in {
@@ -520,8 +517,7 @@ class ShardServiceSpec extends TestShardService {
                 "An apiKey query parameter is required to access this URL"),
               _,
               _,
-              _) =>
-          ok
+              _) => ok
       }
     }
     "reject browse when API key not found" in {
@@ -567,8 +563,7 @@ class ShardServiceSpec extends TestShardService {
                 "An apiKey query parameter is required to access this URL"),
               _,
               _,
-              _) =>
-          ok
+              _) => ok
       }
     }
     "reject metadata when API key not found" in {

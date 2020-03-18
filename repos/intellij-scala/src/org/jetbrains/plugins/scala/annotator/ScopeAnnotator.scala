@@ -56,8 +56,7 @@ trait ScopeAnnotator {
       }
     }
     element match {
-      case f: ScForStatement =>
-        f.enumerators.foreach {
+      case f: ScForStatement => f.enumerators.foreach {
           case enumerator =>
             val elements = new ArrayBuffer[PsiElement]()
             enumerator.children.foreach {

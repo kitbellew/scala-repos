@@ -30,8 +30,7 @@ object Test extends App {
               val value = lazyValue
               maybeValue = Some(value)
               value
-            case Some(value) =>
-              value
+            case Some(value) => value
           }
 
         override def toString() =

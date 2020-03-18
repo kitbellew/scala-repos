@@ -446,8 +446,7 @@ trait RestHelper extends LiftRules.DispatchPF {
     */
   protected implicit lazy val convertAutoJsonXmlAble
       : PartialFunction[(JsonXmlSelect, AutoJsonXmlAble, Req), LiftResponse] = {
-    case (JsonSelect, AutoJsonXmlAble(obj), _) =>
-      Extraction.decompose(obj)
+    case (JsonSelect, AutoJsonXmlAble(obj), _) => Extraction.decompose(obj)
     case (XmlSelect, AutoJsonXmlAble(obj), _) =>
       Xml.toXml(Extraction.decompose(obj)).toList match {
         case x :: _ => x
@@ -606,8 +605,7 @@ trait RestHelper extends LiftRules.DispatchPF {
           Nil,
           code))
 
-      case Failure(msg, _, _) =>
-        Full(NotFoundResponse(msg))
+      case Failure(msg, _, _) => Full(NotFoundResponse(msg))
 
       case _ => Empty
     }
@@ -642,8 +640,7 @@ trait RestHelper extends LiftRules.DispatchPF {
             Nil,
             code))
 
-        case Failure(msg, _, _) =>
-          Full(NotFoundResponse(msg))
+        case Failure(msg, _, _) => Full(NotFoundResponse(msg))
 
         case Full(v) => Full(c(v))
         case _       => Empty
@@ -723,10 +720,9 @@ trait RestHelper extends LiftRules.DispatchPF {
       f :: lst.filterNot(_.name == f.name)
 
     original match {
-      case JObject(fields) =>
-        toMerge match {
-          case JObject(otherFields) =>
-            JObject(otherFields.foldLeft(fields)(replace(_, _)))
+      case JObject(fields) => toMerge match {
+          case JObject(otherFields) => JObject(
+              otherFields.foldLeft(fields)(replace(_, _)))
           case _ => original
         }
 

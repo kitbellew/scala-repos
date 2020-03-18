@@ -240,8 +240,7 @@ class Counter(key: String, initialValue: Long) extends Actor {
         count += n
         storeCount()
 
-      case GetCurrentCount =>
-        sender() ! CurrentCount(key, count)
+      case GetCurrentCount => sender() ! CurrentCount(key, count)
 
     }
 

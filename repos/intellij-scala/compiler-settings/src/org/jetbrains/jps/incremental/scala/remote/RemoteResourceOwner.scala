@@ -40,8 +40,7 @@ trait RemoteResourceOwner {
 
     while (!client.isCanceled) {
       Chunk.readFrom(input) match {
-        case Chunk(NGConstants.CHUNKTYPE_EXIT, code) =>
-          return
+        case Chunk(NGConstants.CHUNKTYPE_EXIT, code) => return
         case Chunk(NGConstants.CHUNKTYPE_STDOUT, data) =>
           try {
             val event = Event.fromBytes(Base64Converter.decode(data))

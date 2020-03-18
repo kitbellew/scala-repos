@@ -450,8 +450,7 @@ private[akka] class PersistentShard(
       snd: ActorRef): Unit = {
     val name = URLEncoder.encode(id, "utf-8")
     context.child(name) match {
-      case Some(actor) ⇒
-        actor.tell(payload, snd)
+      case Some(actor) ⇒ actor.tell(payload, snd)
 
       case None ⇒
         //Note; we only do this if remembering, otherwise the buffer is an overhead

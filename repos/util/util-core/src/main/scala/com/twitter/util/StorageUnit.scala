@@ -85,10 +85,8 @@ class StorageUnit(val bytes: Long) extends Ordered[StorageUnit] {
 
   override def equals(other: Any) = {
     other match {
-      case other: StorageUnit =>
-        inBytes == other.inBytes
-      case _ =>
-        false
+      case other: StorageUnit => inBytes == other.inBytes
+      case _                  => false
     }
   }
 

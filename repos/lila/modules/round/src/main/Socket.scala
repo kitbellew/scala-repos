@@ -158,8 +158,7 @@ private[round] final class Socket(
     case Nil                  =>
     case eventList: EventList => notify(eventList.events)
 
-    case lila.chat.actorApi.ChatLine(chatId, line) =>
-      notify(List(line match {
+    case lila.chat.actorApi.ChatLine(chatId, line) => notify(List(line match {
         case l: lila.chat.UserLine   => Event.UserMessage(l, chatId endsWith "/w")
         case l: lila.chat.PlayerLine => Event.PlayerMessage(l)
       }))
@@ -182,8 +181,9 @@ private[round] final class Socket(
         _ push makeMessage("resync")
       }
 
-    case round.TournamentStanding(id) =>
-      owners.foreach { _ push makeMessage("tournamentStanding", id) }
+    case round.TournamentStanding(id) => owners.foreach {
+        _ push makeMessage("tournamentStanding", id)
+      }
 
     case NotifyCrowd =>
       delayedCrowdNotification = false

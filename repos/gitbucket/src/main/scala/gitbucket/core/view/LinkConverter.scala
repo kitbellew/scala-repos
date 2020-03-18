@@ -21,8 +21,7 @@ trait LinkConverter {
         s"""<a href="${context.path}/${userName}/${repositoryName}/pull/${issueId}">Pull #${issueId}</a>"""
       case Some(_) =>
         s"""<a href="${context.path}/${userName}/${repositoryName}/issues/${issueId}">Issue #${issueId}</a>"""
-      case None =>
-        s"Unknown #${issueId}"
+      case None => s"Unknown #${issueId}"
     }
   }
 
@@ -70,8 +69,7 @@ trait LinkConverter {
             Some(s"""<a href="${context.path}/${m.group(2)}/${m.group(
               3)}/issues/${m.group(4)}">${m.group(2)}/${m.group(3)}#${m.group(
               4)}</a>""")
-          case None =>
-            Some(s"""${m.group(2)}/${m.group(3)}#${m.group(4)}""")
+          case None => Some(s"""${m.group(2)}/${m.group(3)}#${m.group(4)}""")
         }
       }
       // convert username@SHA to link
@@ -97,8 +95,7 @@ trait LinkConverter {
             Some(s"""<a href="${context.path}/${m.group(
               2)}/${repository.name}/issues/${m.group(3)}">${m.group(2)}#${m
               .group(3)}</a>""")
-          case None =>
-            Some(s"""${m.group(2)}#${m.group(3)}""")
+          case None => Some(s"""${m.group(2)}#${m.group(3)}""")
         }
       }
       // convert issue id to link
@@ -114,8 +111,7 @@ trait LinkConverter {
             Some(
               s"""<a href="${context.path}/${repository.owner}/${repository.name}/issues/${m
                 .group(3)}">${prefix}${m.group(3)}</a>""")
-          case None =>
-            Some(s"""${m.group(2)}${m.group(3)}""")
+          case None => Some(s"""${m.group(2)}${m.group(3)}""")
         }
       }
       // convert @username to link

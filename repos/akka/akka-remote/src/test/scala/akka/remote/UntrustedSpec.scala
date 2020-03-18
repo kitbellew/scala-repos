@@ -120,8 +120,8 @@ akka.loglevel = DEBUG
           Props(new Actor {
             import Logging._
             def receive = {
-              case d @ Debug(_, _, msg: String) if msg contains "dropping" ⇒
-                logProbe.ref ! d
+              case d @ Debug(_, _, msg: String)
+                  if msg contains "dropping" ⇒ logProbe.ref ! d
               case _ ⇒
             }
           }).withDeploy(Deploy.local),

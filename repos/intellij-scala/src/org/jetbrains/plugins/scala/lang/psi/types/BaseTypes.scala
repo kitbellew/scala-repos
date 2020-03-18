@@ -87,8 +87,7 @@ object BaseTypes {
         BaseTypes.get(
           s.subst(ta.aliasedType.getOrElse(return Seq.empty)),
           visitedAliases = visitedAliases + ta)
-      case p: ScParameterizedType =>
-        ScType.extractClass(p.designator) match {
+      case p: ScParameterizedType => ScType.extractClass(p.designator) match {
           case Some(td: ScTypeDefinition) =>
             reduce(td.superTypes.flatMap { tp =>
               if (!notAll)

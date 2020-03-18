@@ -129,8 +129,7 @@ class ConsumerBroadcast(
 
       broadcaster = Some(
         context.actorOf(BroadcastGroup(routeePaths).props(), "registrarRouter"))
-    case reg: Any ⇒
-      broadcaster.foreach(_.forward(reg))
+    case reg: Any ⇒ broadcaster.foreach(_.forward(reg))
   }
 }
 
@@ -169,8 +168,7 @@ class Registrar(
       if (activations.size == number * 2) {
         Future.sequence(activations.toList) map activationsPromise.success
       }
-    case reg: DeRegisterConsumersAndProducers ⇒
-      actorRefs.foreach { aref ⇒
+    case reg: DeRegisterConsumersAndProducers ⇒ actorRefs.foreach { aref ⇒
         context.stop(aref)
         val result = camel.deactivationFutureFor(aref)
         result.onFailure {

@@ -104,8 +104,7 @@ abstract class PathMatcher[L](implicit val ev: Tuple[L])
                 if (count >= min) Matched(remaining, lift(extractions))
                 else Unmatched
               separator(remaining) match {
-                case Matched(remaining2, _) ⇒
-                  rec(remaining2, count + 1) match {
+                case Matched(remaining2, _) ⇒ rec(remaining2, count + 1) match {
                     case Matched(`remaining2`, _) ⇒
                       done1 // we made no progress, so "go back" to before the separator
                     case Matched(rest, result) ⇒

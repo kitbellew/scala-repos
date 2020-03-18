@@ -99,14 +99,12 @@ class TaskReplaceActor(
           _,
           `versionString`,
           _,
-          _) =>
-      handleStartedTask(taskId)
+          _) => handleStartedTask(taskId)
   }
 
   def healthCheckingBehavior: Receive = {
     case HealthStatusChanged(`appId`, taskId, `version`, true, _, _)
-        if !healthy(taskId) =>
-      handleStartedTask(taskId)
+        if !healthy(taskId) => handleStartedTask(taskId)
   }
 
   def commonBehavior: Receive = {
@@ -146,8 +144,7 @@ class TaskReplaceActor(
       reconcileNewTasks()
       checkFinished()
 
-    case RetryKills =>
-      retryKills()
+    case RetryKills => retryKills()
 
     case x: Any => log.debug(s"Received $x")
   }
@@ -180,8 +177,7 @@ class TaskReplaceActor(
         case Some(newTaskId: Task.Id) =>
           log.info(
             s"Killing old $nextOldTask because $newTaskId became reachable")
-        case _ =>
-          log.info(s"Killing old $nextOldTask")
+        case _ => log.info(s"Killing old $nextOldTask")
       }
 
       outstandingKills += nextOldTask

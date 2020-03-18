@@ -434,8 +434,9 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     assertResult(false, "Incorrect cast detected\n" + analyzedPlan) {
       var hasCast = false
       analyzedPlan.collect {
-        case p: Project =>
-          p.transformExpressionsUp { case c: Cast => hasCast = true; c }
+        case p: Project => p.transformExpressionsUp {
+            case c: Cast => hasCast = true; c
+          }
       }
       hasCast
     }

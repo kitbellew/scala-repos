@@ -47,8 +47,7 @@ class FusingSpec extends AkkaSpec {
       if (Debug) println(extractName(curr, "unknown"))
       curr match {
         case CopiedModule(_, attributes, copyOf)
-            if (attributes and copyOf.attributes).contains(to) ⇒
-          ()
+            if (attributes and copyOf.attributes).contains(to) ⇒ ()
         case other if other.attributes.contains(to) ⇒ ()
         case _ ⇒
           val outs = curr.inPorts.map(ups)

@@ -21,10 +21,8 @@ class JavaAccessorMethodCalledAsEmptyParenInspection
       "Java accessor method called as empty-paren") {
 
   def actionFor(holder: ProblemsHolder) = {
-    case e: ScReferenceExpression =>
-      e.getParent match {
-        case call: ScMethodCall =>
-          call.getParent match {
+    case e: ScReferenceExpression => e.getParent match {
+        case call: ScMethodCall => call.getParent match {
             case callParent: ScMethodCall => // do nothing
             case _ =>
               if (call.argumentExpressions.isEmpty) {

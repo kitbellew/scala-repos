@@ -258,26 +258,21 @@ private[twitter] class ServerDispatcher(
         }
 
       // Dispatch when !isAccepting
-      case d: Message.Tdispatch =>
-        write(Message.RdispatchNack(d.tag, Nil))
-      case r: Message.Treq =>
-        write(Message.RreqNack(r.tag))
+      case d: Message.Tdispatch => write(Message.RdispatchNack(d.tag, Nil))
+      case r: Message.Treq      => write(Message.RreqNack(r.tag))
 
-      case _: Message.Tping =>
-        service(m).respond {
+      case _: Message.Tping => service(m).respond {
           case Return(rep) => write(rep)
           case Throw(exc)  => write(Message.Rerr(m.tag, exc.toString))
         }
 
-      case Message.Tdiscarded(tag, why) =>
-        tracker.get(tag) match {
+      case Message.Tdiscarded(tag, why) => tracker.get(tag) match {
           case Some(reply) =>
             reply.raise(new ClientDiscardedRequestException(why))
           case None =>
         }
 
-      case Message.Rdrain(1) if state.get == State.Draining =>
-        tracker.drain()
+      case Message.Rdrain(1) if state.get == State.Draining => tracker.drain()
 
       case m: Message =>
         val rerr = Message.Rerr(m.tag, s"Unexpected mux message type ${m.typ}")
@@ -296,8 +291,9 @@ private[twitter] class ServerDispatcher(
       Contexts.local.let(RemoteInfo.Upstream.AddressCtx, trans.remoteAddress) {
         trans.peerCertificate match {
           case None => loop()
-          case Some(cert) =>
-            Contexts.local.let(Transport.peerCertCtx, cert) { loop() }
+          case Some(cert) => Contexts.local.let(Transport.peerCertCtx, cert) {
+              loop()
+            }
         }
       }
     }
@@ -315,8 +311,7 @@ private[twitter] class ServerDispatcher(
     lessor.unregister(this)
 
     state.get match {
-      case State.Open =>
-        statsReceiver.counter("clienthangup").incr()
+      case State.Open => statsReceiver.counter("clienthangup").incr()
       case (State.Draining | State.Closed) =>
         statsReceiver.counter("serverhangup").incr()
     }
@@ -350,10 +345,8 @@ private[twitter] class ServerDispatcher(
       case Return(_) =>
         statsReceiver.counter("drained").incr()
         Future.Done
-      case Throw(_: ChannelClosedException) =>
-        Future.Done
-      case Throw(_) =>
-        hangup(deadline)
+      case Throw(_: ChannelClosedException) => Future.Done
+      case Throw(_)                         => hangup(deadline)
     }
   }
 

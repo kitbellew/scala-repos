@@ -205,8 +205,7 @@ private[ml] object RandomForest extends Logging {
     if (nodeIdCache.nonEmpty) {
       try { nodeIdCache.get.deleteAllCheckpoints() }
       catch {
-        case e: IOException =>
-          logWarning(
+        case e: IOException => logWarning(
             s"delete all checkpoints failed. Error reason: ${e.getMessage}")
       }
     }
@@ -523,8 +522,7 @@ private[ml] object RandomForest extends Logging {
     // array of nodes to train indexed by node index in group
     val nodes = new Array[LearningNode](numNodes)
     nodesForGroup.foreach {
-      case (treeIndex, nodesForTree) =>
-        nodesForTree.foreach { node =>
+      case (treeIndex, nodesForTree) => nodesForTree.foreach { node =>
           nodes(treeToNodeToIndexInfo(treeIndex)(node.id).nodeIndexInGroup) =
             node
         }
@@ -608,8 +606,7 @@ private[ml] object RandomForest extends Logging {
       } else { null }
     // Iterate over all nodes in this group.
     nodesForGroup.foreach {
-      case (treeIndex, nodesForTree) =>
-        nodesForTree.foreach { node =>
+      case (treeIndex, nodesForTree) => nodesForTree.foreach { node =>
           val nodeIndex = node.id
           val nodeInfo = treeToNodeToIndexInfo(treeIndex)(nodeIndex)
           val aggNodeIndex = nodeInfo.nodeIndexInGroup
@@ -1090,8 +1087,7 @@ private[ml] object RandomForest extends Logging {
       // get count for each distinct value
       val (valueCountMap, numSamples) = featureSamples.foldLeft(
         (Map.empty[Double, Int], 0)) {
-        case ((m, cnt), x) =>
-          (m + ((x, m.getOrElse(x, 0) + 1)), cnt + 1)
+        case ((m, cnt), x) => (m + ((x, m.getOrElse(x, 0) + 1)), cnt + 1)
       }
       // sort distinct values
       val valueCounts = valueCountMap.toSeq.sortBy(_._1).toArray

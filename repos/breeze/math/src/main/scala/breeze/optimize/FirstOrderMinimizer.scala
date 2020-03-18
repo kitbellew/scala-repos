@@ -135,8 +135,7 @@ abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
         case Some(converged) =>
           logger.info(s"Converged because ${converged.reason}")
           true
-        case None =>
-          false
+        case None => false
       }
     }
   }
@@ -328,15 +327,13 @@ object FirstOrderMinimizer {
       case s: State[T, _, _]
           if (norm(s.adjustedGradient) <= math.max(
             tolerance * (if (relative) s.adjustedValue else 1.0),
-            1e-8)) =>
-        GradientConverged
+            1e-8)) => GradientConverged
     }
   }
 
   def searchFailed[T]: ConvergenceCheck[T] =
     ConvergenceCheck.fromPartialFunction {
-      case s: State[_, _, _] if (s.searchFailed) =>
-        SearchFailed
+      case s: State[_, _, _] if (s.searchFailed) => SearchFailed
     }
 
   /**

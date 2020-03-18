@@ -1126,8 +1126,7 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         expected.checkContains(actual)
         actual.checkContains(expected)
       } catch {
-        case cause: Throwable =>
-          fail(s"""Expected clipped schema:
+        case cause: Throwable => fail(s"""Expected clipped schema:
              |$expected
              |Actual clipped schema:
              |$actual

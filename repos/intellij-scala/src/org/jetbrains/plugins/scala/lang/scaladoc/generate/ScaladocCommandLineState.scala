@@ -139,8 +139,7 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
           acc.clear()
         }
         (flag, acc)
-      case ((flag, acc), '\"') =>
-        (!flag, acc)
+      case ((flag, acc), '\"') => (!flag, acc)
       case ((flag, acc), d) =>
         acc.append(d)
         (flag, acc)
@@ -235,10 +234,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
     var needFilter = false
 
     scope.getScopeType match {
-      case AnalysisScope.PROJECT =>
-        modulesNeeded ++= allModules
-      case AnalysisScope.MODULE =>
-        modules.find(scope.containsModule) match {
+      case AnalysisScope.PROJECT => modulesNeeded ++= allModules
+      case AnalysisScope.MODULE => modules.find(scope.containsModule) match {
           case Some(a) => modulesNeeded += a
           case None    =>
         }

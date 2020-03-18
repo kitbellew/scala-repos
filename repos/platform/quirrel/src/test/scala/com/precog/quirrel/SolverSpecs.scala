@@ -152,8 +152,7 @@ object SolverSpecs
                 Add(
                   _,
                   Add(_, NumLit(_, "1"), NumLit(_, "2")),
-                  NumLit(_, "1")))) =>
-          ok
+                  NumLit(_, "1")))) => ok
         case Some(
               Div(
                 _,
@@ -161,8 +160,7 @@ object SolverSpecs
                 Add(
                   _,
                   Add(_, NumLit(_, "2"), NumLit(_, "1")),
-                  NumLit(_, "1")))) =>
-          ok
+                  NumLit(_, "1")))) => ok
         case Some(
               Div(_, Div(_, someFunction, NumLit(_, "2")), NumLit(_, "2"))) =>
           ok
@@ -180,8 +178,7 @@ object SolverSpecs
                 Add(
                   _,
                   Add(_, NumLit(_, "1"), NumLit(_, "2")),
-                  NumLit(_, "1")))) =>
-          ok
+                  NumLit(_, "1")))) => ok
         case Some(
               Div(
                 _,
@@ -189,8 +186,7 @@ object SolverSpecs
                 Add(
                   _,
                   Add(_, NumLit(_, "2"), NumLit(_, "1")),
-                  NumLit(_, "1")))) =>
-          ok
+                  NumLit(_, "1")))) => ok
         case Some(
               Div(_, Div(_, someFunction, NumLit(_, "2")), NumLit(_, "2"))) =>
           ok
@@ -208,8 +204,7 @@ object SolverSpecs
                 Add(
                   _,
                   Add(_, NumLit(_, "1"), NumLit(_, "2")),
-                  NumLit(_, "1")))) =>
-          ok
+                  NumLit(_, "1")))) => ok
         case Some(
               Div(
                 _,
@@ -217,8 +212,7 @@ object SolverSpecs
                 Add(
                   _,
                   Add(_, NumLit(_, "2"), NumLit(_, "1")),
-                  NumLit(_, "1")))) =>
-          ok
+                  NumLit(_, "1")))) => ok
         case Some(
               Div(_, Div(_, someFunction, NumLit(_, "2")), NumLit(_, "2"))) =>
           ok
@@ -244,8 +238,7 @@ object SolverSpecs
                 Add(
                   _,
                   Add(_, NumLit(_, "1"), NumLit(_, "2")),
-                  NumLit(_, "1")))) =>
-          ok
+                  NumLit(_, "1")))) => ok
         case Some(
               Div(
                 _,
@@ -253,8 +246,7 @@ object SolverSpecs
                 Add(
                   _,
                   Add(_, NumLit(_, "2"), NumLit(_, "1")),
-                  NumLit(_, "1")))) =>
-          ok
+                  NumLit(_, "1")))) => ok
       }
 
       solve("('a + 'a) + 'a * 2", 'a) must beLike {
@@ -272,8 +264,7 @@ object SolverSpecs
                 Add(
                   _,
                   Add(_, NumLit(_, "1"), NumLit(_, "2")),
-                  NumLit(_, "1")))) =>
-          ok
+                  NumLit(_, "1")))) => ok
         case Some(
               Div(
                 _,
@@ -281,8 +272,7 @@ object SolverSpecs
                 Add(
                   _,
                   Add(_, NumLit(_, "2"), NumLit(_, "1")),
-                  NumLit(_, "1")))) =>
-          ok
+                  NumLit(_, "1")))) => ok
       }
     }
 
@@ -295,8 +285,7 @@ object SolverSpecs
               Div(
                 _,
                 Mul(_, someFunction, NumLit(_, "2")),
-                Add(_, NumLit(_, "2"), NumLit(_, "1")))) =>
-          ok
+                Add(_, NumLit(_, "2"), NumLit(_, "1")))) => ok
       }
 
       solve("'a + 'a / 2", 'a) must beLike {
@@ -307,8 +296,7 @@ object SolverSpecs
               Div(
                 _,
                 Mul(_, someFunction, NumLit(_, "2")),
-                Add(_, NumLit(_, "2"), NumLit(_, "1")))) =>
-          ok
+                Add(_, NumLit(_, "2"), NumLit(_, "1")))) => ok
       }
     }
 
@@ -338,26 +326,22 @@ object SolverSpecs
               Div(
                 _,
                 Mul(_, someFunction, Mul(_, NumLit(_, "2"), NumLit(_, "3"))),
-                Add(_, NumLit(_, "3"), NumLit(_, "2")))) =>
-          ok
+                Add(_, NumLit(_, "3"), NumLit(_, "2")))) => ok
         case Some(
               Div(
                 _,
                 Mul(_, someFunction, Mul(_, NumLit(_, "3"), NumLit(_, "2"))),
-                Add(_, NumLit(_, "2"), NumLit(_, "3")))) =>
-          ok
+                Add(_, NumLit(_, "2"), NumLit(_, "3")))) => ok
         case Some(
               Div(
                 _,
                 Mul(_, Mul(_, someFunction, NumLit(_, "2")), NumLit(_, "3")),
-                Add(_, NumLit(_, "2"), NumLit(_, "3")))) =>
-          ok
+                Add(_, NumLit(_, "2"), NumLit(_, "3")))) => ok
         case Some(
               Div(
                 _,
                 Mul(_, Mul(_, someFunction, NumLit(_, "3")), NumLit(_, "2")),
-                Add(_, NumLit(_, "3"), NumLit(_, "2")))) =>
-          ok
+                Add(_, NumLit(_, "3"), NumLit(_, "2")))) => ok
       }
 
       solve("'a / 3 + 'a / 2", 'a) must beLike {
@@ -365,26 +349,22 @@ object SolverSpecs
               Div(
                 _,
                 Mul(_, someFunction, Mul(_, NumLit(_, "2"), NumLit(_, "3"))),
-                Add(_, NumLit(_, "3"), NumLit(_, "2")))) =>
-          ok
+                Add(_, NumLit(_, "3"), NumLit(_, "2")))) => ok
         case Some(
               Div(
                 _,
                 Mul(_, someFunction, Mul(_, NumLit(_, "3"), NumLit(_, "2"))),
-                Add(_, NumLit(_, "2"), NumLit(_, "3")))) =>
-          ok
+                Add(_, NumLit(_, "2"), NumLit(_, "3")))) => ok
         case Some(
               Div(
                 _,
                 Mul(_, Mul(_, someFunction, NumLit(_, "2")), NumLit(_, "3")),
-                Add(_, NumLit(_, "2"), NumLit(_, "3")))) =>
-          ok
+                Add(_, NumLit(_, "2"), NumLit(_, "3")))) => ok
         case Some(
               Div(
                 _,
                 Mul(_, Mul(_, someFunction, NumLit(_, "3")), NumLit(_, "2")),
-                Add(_, NumLit(_, "3"), NumLit(_, "2")))) =>
-          ok
+                Add(_, NumLit(_, "3"), NumLit(_, "2")))) => ok
       }
     }
 
@@ -397,8 +377,7 @@ object SolverSpecs
                 Add(
                   _,
                   Mul(_, NumLit(_, "3"), NumLit(_, "3")),
-                  Neg(_, NumLit(_, "2"))))) =>
-          ok
+                  Neg(_, NumLit(_, "2"))))) => ok
         case Some(
               Div(
                 _,
@@ -409,8 +388,7 @@ object SolverSpecs
                 Add(
                   _,
                   Mul(_, NumLit(_, "3"), Neg(_, NumLit(_, "3"))),
-                  NumLit(_, "2")))) =>
-          ok
+                  NumLit(_, "2")))) => ok
         case Some(
               Div(
                 _,
@@ -421,8 +399,7 @@ object SolverSpecs
                 Add(
                   _,
                   Mul(_, Neg(_, NumLit(_, "3")), NumLit(_, "3")),
-                  NumLit(_, "2")))) =>
-          ok
+                  NumLit(_, "2")))) => ok
         case Some(
               Div(
                 _,
@@ -430,8 +407,7 @@ object SolverSpecs
                 Sub(
                   _,
                   Mul(_, NumLit(_, "3"), NumLit(_, "3")),
-                  NumLit(_, "2")))) =>
-          ok
+                  NumLit(_, "2")))) => ok
         case Some(
               Div(
                 _,
@@ -439,8 +415,7 @@ object SolverSpecs
                 Add(
                   _,
                   Neg(_, NumLit(_, "2")),
-                  Mul(_, NumLit(_, "3"), NumLit(_, "3"))))) =>
-          ok
+                  Mul(_, NumLit(_, "3"), NumLit(_, "3"))))) => ok
         case Some(
               Div(
                 _,
@@ -451,8 +426,7 @@ object SolverSpecs
                 Add(
                   _,
                   NumLit(_, "2"),
-                  Mul(_, NumLit(_, "3"), Neg(_, NumLit(_, "3")))))) =>
-          ok
+                  Mul(_, NumLit(_, "3"), Neg(_, NumLit(_, "3")))))) => ok
       }
 
       solve("'a / 3 - ('a * 3) / 2", 'a) must beLike {
@@ -463,8 +437,7 @@ object SolverSpecs
                 Sub(
                   _,
                   NumLit(_, "2"),
-                  Mul(_, NumLit(_, "3"), NumLit(_, "3"))))) =>
-          ok
+                  Mul(_, NumLit(_, "3"), NumLit(_, "3"))))) => ok
         case Some(
               Div(
                 _,
@@ -472,8 +445,7 @@ object SolverSpecs
                 Sub(
                   _,
                   NumLit(_, "2"),
-                  Mul(_, NumLit(_, "3"), NumLit(_, "3"))))) =>
-          ok
+                  Mul(_, NumLit(_, "3"), NumLit(_, "3"))))) => ok
         case Some(
               Div(
                 _,
@@ -481,8 +453,7 @@ object SolverSpecs
                 Add(
                   _,
                   Mul(_, NumLit(_, "3"), Neg(_, NumLit(_, "3"))),
-                  NumLit(_, "2")))) =>
-          ok
+                  NumLit(_, "2")))) => ok
         case Some(
               Div(
                 _,
@@ -493,8 +464,7 @@ object SolverSpecs
                 Add(
                   _,
                   Mul(_, NumLit(_, "3"), NumLit(_, "3")),
-                  Neg(_, NumLit(_, "2"))))) =>
-          ok
+                  Neg(_, NumLit(_, "2"))))) => ok
         case Some(
               Div(
                 _,
@@ -502,8 +472,7 @@ object SolverSpecs
                 Sub(
                   _,
                   NumLit(_, "2"),
-                  Mul(_, NumLit(_, "3"), NumLit(_, "3"))))) =>
-          ok
+                  Mul(_, NumLit(_, "3"), NumLit(_, "3"))))) => ok
         case Some(
               Div(
                 _,
@@ -511,24 +480,21 @@ object SolverSpecs
                 Add(
                   _,
                   Neg(_, Mul(_, NumLit(_, "3"), NumLit(_, "3"))),
-                  NumLit(_, "2")))) =>
-          ok
+                  NumLit(_, "2")))) => ok
       }
     }
 
     "solve self multiplication of self dividend" in {
       solve("('a / 'a) * 'a", 'a) must beLike {
         case Some(
-              Dispatch(LineStream(), Identifier(Vector(), "x"), Vector())) =>
-          ok
-        case Some(Div(_, someFunction, NumLit(_, "1"))) => ok
+              Dispatch(LineStream(), Identifier(Vector(), "x"), Vector())) => ok
+        case Some(Div(_, someFunction, NumLit(_, "1")))                    => ok
       }
 
       solve("'a * ('a / 'a)", 'a) must beLike {
         case Some(
-              Dispatch(LineStream(), Identifier(Vector(), "x"), Vector())) =>
-          ok
-        case Some(Div(_, someFunction, NumLit(_, "1"))) => ok
+              Dispatch(LineStream(), Identifier(Vector(), "x"), Vector())) => ok
+        case Some(Div(_, someFunction, NumLit(_, "1")))                    => ok
       }
     }
 
@@ -595,8 +561,7 @@ object SolverSpecs
               Div(
                 _,
                 Mul(_, Add(_, NumLit(_, "0"), NumLit(_, "0")), NumLit(_, "3")),
-                NumLit(_, "2"))) =>
-          ok
+                NumLit(_, "2"))) => ok
         case Some(
               Div(
                 _,
@@ -604,8 +569,7 @@ object SolverSpecs
                   _,
                   Neg(_, Sub(_, NumLit(_, "0"), NumLit(_, "0"))),
                   NumLit(_, "3")),
-                NumLit(_, "2"))) =>
-          ok
+                NumLit(_, "2"))) => ok
       }
     }
 
@@ -618,8 +582,7 @@ object SolverSpecs
               Div(
                 _,
                 Mul(_, Add(_, NumLit(_, "0"), NumLit(_, "0")), NumLit(_, "3")),
-                NumLit(_, "2"))) =>
-          ok
+                NumLit(_, "2"))) => ok
         case Some(
               Div(
                 _,
@@ -627,8 +590,7 @@ object SolverSpecs
                   _,
                   Neg(_, Sub(_, NumLit(_, "0"), NumLit(_, "0"))),
                   NumLit(_, "3")),
-                NumLit(_, "2"))) =>
-          ok
+                NumLit(_, "2"))) => ok
       }
     }
   }

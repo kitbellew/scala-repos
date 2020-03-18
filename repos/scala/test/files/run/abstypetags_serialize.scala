@@ -20,10 +20,7 @@ object Test extends App {
       fin.close()
 
       println(retag)
-    } catch {
-      case ex: Exception =>
-        println(ex)
-    }
+    } catch { case ex: Exception => println(ex) }
 
   def qwe[T, U[_]] = {
     test(implicitly[WeakTypeTag[T]])

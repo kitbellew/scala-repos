@@ -36,10 +36,8 @@ object TypeParamClause {
       }
     }
     builder.getTokenType match {
-      case ScalaTokenTypes.tRSQBRACKET =>
-        builder.advanceLexer //Ate ]
-      case _ =>
-        builder error ScalaBundle.message("rsqbracket.expected")
+      case ScalaTokenTypes.tRSQBRACKET => builder.advanceLexer //Ate ]
+      case _                           => builder error ScalaBundle.message("rsqbracket.expected")
     }
     builder.restoreNewlinesState
     typeMarker.done(ScalaElementTypes.TYPE_PARAM_CLAUSE)

@@ -101,12 +101,11 @@ package scala.collection.immutable {
         case m: HashMap.HashTrieMap[_, _] =>
           println(prefix + m.getClass.getSimpleName + " " + m.size)
           m.elems.foreach(child => printStructure(child, prefix + "  "))
-        case m: HashMap.HashMapCollision1[_, _] =>
-          println(prefix + m.getClass.getSimpleName + " " + m.kvs.size)
-        case m: HashMap.HashMap1[_, _] =>
-          println(prefix + m.getClass.getSimpleName + " " + m.head)
-        case _ =>
-          println(prefix + "empty")
+        case m: HashMap.HashMapCollision1[_, _] => println(
+            prefix + m.getClass.getSimpleName + " " + m.kvs.size)
+        case m: HashMap.HashMap1[_, _] => println(
+            prefix + m.getClass.getSimpleName + " " + m.head)
+        case _ => println(prefix + "empty")
       }
     }
 
@@ -118,10 +117,9 @@ package scala.collection.immutable {
               .elems(0)
               .isInstanceOf[HashMap.HashTrieMap[_, _]]))
           m.elems.foreach(validate _)
-        case m: HashMap.HashMapCollision1[_, _] =>
-          require(m.kvs.size > 1)
-        case m: HashMap.HashMap1[_, _] =>
-        case _                         =>
+        case m: HashMap.HashMapCollision1[_, _] => require(m.kvs.size > 1)
+        case m: HashMap.HashMap1[_, _]          =>
+        case _                                  =>
       }
     }
   }

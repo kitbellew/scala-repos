@@ -256,10 +256,8 @@ object CrossValidator extends MLReadable[CrossValidator] {
       val uidToInstance: Map[String, Params] = CrossValidatorReader.getUidMap(
         instance)
       instance.getEstimatorParamMaps.foreach {
-        case pMap: ParamMap =>
-          pMap.toSeq.foreach {
-            case ParamPair(p, v) =>
-              require(
+        case pMap: ParamMap => pMap.toSeq.foreach {
+            case ParamPair(p, v) => require(
                 uidToInstance.contains(p.parent),
                 s"CrossValidator save requires all Params in" +
                   s" estimatorParamMaps to apply to this CrossValidator, its Estimator, or its" +
@@ -278,10 +276,8 @@ object CrossValidator extends MLReadable[CrossValidator] {
 
       val estimatorParamMapsJson = compact(
         render(instance.getEstimatorParamMaps.map {
-          case paramMap =>
-            paramMap.toSeq.map {
-              case ParamPair(p, v) =>
-                Map(
+          case paramMap => paramMap.toSeq.map {
+              case ParamPair(p, v) => Map(
                   "parent" -> p.parent,
                   "name" -> p.name,
                   "value" -> p.jsonEncode(v))

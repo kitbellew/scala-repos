@@ -143,9 +143,7 @@ class DynamicConfigChangeTest extends KafkaServerTestHarness {
         Json.encode(jsonMap))
       fail(
         "Should have thrown an Exception while parsing incorrect notification " + jsonMap)
-    } catch {
-      case t: Throwable =>
-    }
+    } catch { case t: Throwable => }
     // Version is provided. EntityType is incorrect
     try {
       val jsonMap = Map(
@@ -156,9 +154,7 @@ class DynamicConfigChangeTest extends KafkaServerTestHarness {
         Json.encode(jsonMap))
       fail(
         "Should have thrown an Exception while parsing incorrect notification " + jsonMap)
-    } catch {
-      case t: Throwable =>
-    }
+    } catch { case t: Throwable => }
 
     // EntityName isn't provided
     try {
@@ -167,9 +163,7 @@ class DynamicConfigChangeTest extends KafkaServerTestHarness {
         Json.encode(jsonMap))
       fail(
         "Should have thrown an Exception while parsing incorrect notification " + jsonMap)
-    } catch {
-      case t: Throwable =>
-    }
+    } catch { case t: Throwable => }
 
     // Everything is provided
     val jsonMap = Map(

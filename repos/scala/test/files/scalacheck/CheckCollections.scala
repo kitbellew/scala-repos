@@ -14,8 +14,7 @@ object Test extends Properties("reflect.internal.util.Collections") {
     }
 
   val testfun: (String, Int) => String = {
-    case (x, y) =>
-      x.toLowerCase + y.toString
+    case (x, y) => x.toLowerCase + y.toString
   }
   val testid: (String, Int) => String = { case (x, y) => x }
 

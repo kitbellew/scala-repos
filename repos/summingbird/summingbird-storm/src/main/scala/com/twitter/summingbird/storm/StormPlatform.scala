@@ -233,8 +233,7 @@ abstract class Storm(
         p match {
           case Source(_) =>
             spout // The source is still in the members list so drop it
-          case OptionMappedProducer(_, op) =>
-            spout.flatMap {
+          case OptionMappedProducer(_, op) => spout.flatMap {
               case (time, t) => op.apply(t).map { x => (time, x) }
             }
           case NamedProducer(_, _)      => spout

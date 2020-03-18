@@ -28,8 +28,7 @@ class Decoder(storageCommands: collection.Set[ChannelBuffer])
       channel: Channel,
       buffer: ChannelBuffer): Decoding = {
     state match {
-      case AwaitingCommand() =>
-        decodeLine(buffer, needsData) { tokens =>
+      case AwaitingCommand() => decodeLine(buffer, needsData) { tokens =>
           Tokens(tokens.map { ChannelBufferBuf.Owned(_) })
         }
       case AwaitingData(tokens, bytesNeeded) =>

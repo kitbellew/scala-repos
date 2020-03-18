@@ -137,8 +137,7 @@ private[util] class BatchExecutor[In, Out](
 
   def executeBatch(batch: Seq[(In, Promise[Out])]) {
     val uncancelled = batch filter {
-      case (in, p) =>
-        p.isInterrupted match {
+      case (in, p) => p.isInterrupted match {
           case Some(_cause) =>
             p.setException(new CancellationException)
             false
@@ -155,10 +154,7 @@ private[util] class BatchExecutor[In, Out](
 
     f(ins) respond {
       case Return(outs) =>
-        (outs zip promises) foreach {
-          case (out, p) =>
-            p() = Return(out)
-        }
+        (outs zip promises) foreach { case (out, p) => p() = Return(out) }
 
       case Throw(e) =>
         val t = Throw(e)

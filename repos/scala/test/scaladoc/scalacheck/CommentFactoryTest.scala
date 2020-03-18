@@ -49,10 +49,8 @@ object Test extends Properties("CommentFactory") {
 
   def parse(src: String, dst: Inline): Boolean = {
     factory.parseComment(src) match {
-      case Some(inline) =>
-        inline == dst
-      case _ =>
-        false
+      case Some(inline) => inline == dst
+      case _            => false
     }
   }
 
@@ -160,8 +158,7 @@ object Test extends Properties("CommentFactory") {
                               HtmlTag("<code>org.easymock.EasyMock</code>"),
                               Text(")"))),
                           Text(".")))),
-                    Text("\n")))))) =>
-        true
+                    Text("\n")))))) => true
       case other => {
         println(other)
         false

@@ -66,8 +66,7 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
       : Option[ScalaResolveResult] = {
     mostSpecificGeneric(
       applicable.map {
-        case (r, subst) =>
-          r.innerResolveResult match {
+        case (r, subst) => r.innerResolveResult match {
             case Some(rr) =>
               new InnerScalaResolveResult(
                 rr.element,
@@ -310,8 +309,7 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
         if (!conformance._1) return false
 
         t2 match {
-          case ScTypePolymorphicType(_, typeParams) =>
-            u.getSubstitutor match {
+          case ScTypePolymorphicType(_, typeParams) => u.getSubstitutor match {
               case Some(uSubst) =>
                 def hasRecursiveTypeParameters(typez: ScType): Boolean = {
                   var hasRecursiveTypeParameters = false
@@ -512,9 +510,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
     res match {
       case ScMethodType(retType, _, true) if implicitCase => retType
       case ScTypePolymorphicType(ScMethodType(retType, _, true), typeParameters)
-          if implicitCase =>
-        ScTypePolymorphicType(retType, typeParameters)
-      case tp => tp
+          if implicitCase => ScTypePolymorphicType(retType, typeParameters)
+      case tp             => tp
     }
   }
 }

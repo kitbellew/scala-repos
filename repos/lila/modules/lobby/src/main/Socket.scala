@@ -41,8 +41,7 @@ private[lobby] final class Socket(
 
   def receiveSpecific = {
 
-    case PingVersion(uid, v) =>
-      Future {
+    case PingVersion(uid, v) => Future {
         ping(uid)
         withMember(uid) { m =>
           history.since(v).fold(resync(m))(_ foreach sendMessage(m))
@@ -55,8 +54,8 @@ private[lobby] final class Socket(
       addMember(uid, member)
       sender ! Connected(enumerator, member)
 
-    case ReloadTournaments(html) =>
-      notifyAllAsync(makeMessage("tournaments", html))
+    case ReloadTournaments(html) => notifyAllAsync(
+        makeMessage("tournaments", html))
 
     case ReloadSimuls(html) => notifyAllAsync(makeMessage("simuls", html))
 
@@ -86,8 +85,8 @@ private[lobby] final class Socket(
 
     case HookIds(ids) => notifyVersion("hli", ids mkString ",", Messadata())
 
-    case lila.hub.actorApi.StreamsOnAir(html) =>
-      notifyAllAsync(makeMessage("streams", html))
+    case lila.hub.actorApi.StreamsOnAir(html) => notifyAllAsync(
+        makeMessage("streams", html))
 
     case NbMembers(nb) => pong = pong + ("d" -> JsNumber(nb))
     case lila.hub.actorApi.round.NbRounds(nb) =>

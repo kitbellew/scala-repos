@@ -23,8 +23,7 @@ private[thrift] class ThriftProcessorHandler(
         process(input, output)
         Channels.write(ctx.getChannel, output)
 
-      case x =>
-        super.messageReceived(ctx, e)
+      case x => super.messageReceived(ctx, e)
     }
   }
 }

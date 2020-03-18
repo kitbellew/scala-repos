@@ -26,8 +26,7 @@ class ContinueOnErrorStep(wrapped: TaskStatusUpdateStep)
     val maybeProcessed: Option[Future[_]] = Option(
       wrapped.processUpdate(timestamp, task, mesosStatus))
     maybeProcessed match {
-      case Some(processed) =>
-        processed.recover {
+      case Some(processed) => processed.recover {
           case NonFatal(e) =>
             log.error(
               "while executing step {} for [{}], continue with other steps",

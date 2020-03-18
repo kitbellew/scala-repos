@@ -160,8 +160,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
     using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
       git =>
         JGitUtil.getCommitLog(git, branchName, page, 30, path) match {
-          case Right((logs, hasNext)) =>
-            html.commits(
+          case Right((logs, hasNext)) => html.commits(
               if (path.isEmpty) Nil else path.split("/").toList,
               branchName,
               repository,
@@ -418,8 +417,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
             JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(id))) {
             revCommit =>
               JGitUtil.getDiffs(git, id) match {
-                case (diffs, oldCommitId) =>
-                  html.commit(
+                case (diffs, oldCommitId) => html.commit(
                     id,
                     new JGitUtil.CommitInfo(revCommit),
                     JGitUtil.getBranchesOfCommit(git, revCommit.getName),

@@ -473,8 +473,7 @@ trait WSRequest {
   def get[A](consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(implicit
       ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
     getStream().flatMap {
-      case (response, enumerator) =>
-        enumerator(consumer(response))
+      case (response, enumerator) => enumerator(consumer(response))
     }
   }
 
@@ -517,8 +516,7 @@ trait WSRequest {
       wrt: Writeable[T],
       ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
     withMethod("PATCH").withBody(body).streamWithEnumerator().flatMap {
-      case (response, enumerator) =>
-        enumerator(consumer(response))
+      case (response, enumerator) => enumerator(consumer(response))
     }
   }
 
@@ -553,8 +551,7 @@ trait WSRequest {
       wrt: Writeable[T],
       ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
     withMethod("POST").withBody(body).streamWithEnumerator().flatMap {
-      case (response, enumerator) =>
-        enumerator(consumer(response))
+      case (response, enumerator) => enumerator(consumer(response))
     }
   }
 
@@ -589,8 +586,7 @@ trait WSRequest {
       wrt: Writeable[T],
       ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
     withMethod("PUT").withBody(body).streamWithEnumerator().flatMap {
-      case (response, enumerator) =>
-        enumerator(consumer(response))
+      case (response, enumerator) => enumerator(consumer(response))
     }
   }
 

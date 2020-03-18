@@ -201,8 +201,7 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
 
             treeCopy.PackageDef(tree: Tree, tree.pid, newStats.toList)
 
-          case _ =>
-            super.transform(tree)
+          case _ => super.transform(tree)
         }
 
       def mkBootstrapperClass(

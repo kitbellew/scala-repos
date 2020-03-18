@@ -56,8 +56,7 @@ object MapTest extends SpecLite {
 
   "minViewWithKey" ! forAll { a: Int ==>> Int =>
     a.minViewWithKey match {
-      case None =>
-        a.size must_=== 0
+      case None => a.size must_=== 0
       case Some(b) =>
         structurallySound(b._2)
         a.findMin must_=== Some(b._1)
@@ -68,8 +67,7 @@ object MapTest extends SpecLite {
 
   "maxViewWithKey" ! forAll { a: Int ==>> Int =>
     a.maxViewWithKey match {
-      case None =>
-        a.size must_=== 0
+      case None => a.size must_=== 0
       case Some(b) =>
         structurallySound(b._2)
         a.findMax must_=== Some(b._1)

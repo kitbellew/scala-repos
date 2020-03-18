@@ -81,10 +81,8 @@ private[annotator] object ModifierChecker {
         case am: ScAccessModifier => //todo: check private with final or sealed combination.
           if (am.isPrivate) { checkDublicates(am, "private") }
           else if (am.isProtected) { checkDublicates(am, "protected") }
-        case _ =>
-          modifier.getText match {
-            case "lazy" =>
-              owner match {
+        case _ => modifier.getText match {
+            case "lazy" => owner match {
                 case _: ScPatternDefinition =>
                   checkDublicates(modifierPsi, "lazy")
                 case _: ScParameter =>
@@ -107,8 +105,7 @@ private[annotator] object ModifierChecker {
                     holder,
                     new RemoveModifierQuickFix(owner, "lazy"))
               }
-            case "final" =>
-              owner match {
+            case "final" => owner match {
                 case _: ScDeclaration =>
                   proccessError(
                     ScalaBundle.message("final.modifier.not.with.declarations"),
@@ -137,10 +134,9 @@ private[annotator] object ModifierChecker {
                   val redundant = (e.containingClass, e) match {
                     case (obj: ScObject, valMember: ScPatternDefinition)
                         if valMember.typeElement.isEmpty &&
-                          valMember.pList.allPatternsSimple =>
-                      false // SCL-899
-                    case (cls, _) if cls.hasFinalModifier => true
-                    case _                                => false
+                          valMember.pList.allPatternsSimple => false // SCL-899
+                    case (cls, _) if cls.hasFinalModifier   => true
+                    case _                                  => false
                   }
                   if (redundant) {
                     if (checkDublicates(modifierPsi, "final")) {
@@ -172,8 +168,7 @@ private[annotator] object ModifierChecker {
                     holder,
                     new RemoveModifierQuickFix(owner, "final"))
               }
-            case "sealed" =>
-              owner match {
+            case "sealed" => owner match {
                 case _: ScClass | _: ScTrait | _: ScClassParameter =>
                   checkDublicates(modifierPsi, "sealed")
                 case e: ScMember if e.getParent.isInstanceOf[ScTemplateBody] =>
@@ -185,8 +180,7 @@ private[annotator] object ModifierChecker {
                     holder,
                     new RemoveModifierQuickFix(owner, "sealed"))
               }
-            case "abstract" =>
-              owner match {
+            case "abstract" => owner match {
                 case _: ScClass => checkDublicates(modifierPsi, "abstract")
                 case _: ScTrait =>
                   if (checkDublicates(modifierPsi, "abstract")) {
@@ -217,8 +211,7 @@ private[annotator] object ModifierChecker {
                     holder,
                     new RemoveModifierQuickFix(owner, "abstract"))
               }
-            case "override" =>
-              owner match {
+            case "override" => owner match {
                 case _: ScTypeDefinition =>
                   proccessError(
                     ScalaBundle.message(
@@ -239,15 +232,13 @@ private[annotator] object ModifierChecker {
                     holder,
                     new RemoveModifierQuickFix(owner, "override"))
               }
-            case "implicit" =>
-              owner match {
+            case "implicit" => owner match {
                 case c @ (_: ScClass | _: ScObject) =>
                   val onTopLevel = c.getContext match {
                     case file: ScalaFile
-                        if !file.isScriptFile() && !file.isWorksheetFile =>
-                      true
-                    case p: ScPackaging => true
-                    case _              => false
+                        if !file.isScriptFile() && !file.isWorksheetFile => true
+                    case p: ScPackaging                                  => true
+                    case _                                               => false
                   }
                   if (onTopLevel) {
                     proccessError(

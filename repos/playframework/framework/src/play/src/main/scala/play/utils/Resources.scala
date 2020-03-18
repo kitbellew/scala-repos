@@ -58,8 +58,7 @@ object Resources {
     connection match {
       case jar: JarURLConnection =>
         if (!jar.getUseCaches) { jar.getJarFile.close() }
-      case other =>
-        other.getInputStream.close()
+      case other => other.getInputStream.close()
     }
   }
 

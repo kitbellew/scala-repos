@@ -52,8 +52,7 @@ case class TestFramework(implClassNames: String*) {
             log.debug("Framework implementation '" + head + "' not present.");
             createFramework(loader, log, tail)
         }
-      case Nil =>
-        None
+      case Nil => None
     }
   }
 

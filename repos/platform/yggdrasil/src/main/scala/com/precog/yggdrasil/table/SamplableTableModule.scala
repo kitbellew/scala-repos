@@ -116,8 +116,7 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
 
             Traverse[List].sequence(nextStates) flatMap { build(_, tail) }
 
-          case None =>
-            M.point {
+          case None => M.point {
               states map {
                 case SampleState(inserter, length, _) =>
                   val len = length min sampleSize
@@ -183,8 +182,7 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
     }
 
     private def colOpsFor: ((ColumnRef, Column)) => ColumnOps = {
-      case (ref, col) =>
-        (col, getOrCreateCol(ref)) match {
+      case (ref, col) => (col, getOrCreateCol(ref)) match {
           case (src: BoolColumn, dest: ArrayBoolColumn) =>
             new ColumnOps(src, dest) {
               def unsafeInsert(srcRow: Int, destRow: Int) =

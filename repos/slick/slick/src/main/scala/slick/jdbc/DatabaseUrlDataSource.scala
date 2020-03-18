@@ -43,11 +43,9 @@ class DatabaseUrlDataSource extends DriverDataSource(null) {
           s"jdbc:mysql://$host/${dbname + addDefaultPropertiesIfNeeded}") -> Some(
           username -> password)
 
-      case Some(url) =>
-        Some(url) -> None
+      case Some(url) => Some(url) -> None
 
-      case None =>
-        None -> None
+      case None => None -> None
     }
   }
 

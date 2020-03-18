@@ -4,14 +4,10 @@
 object test {
   trait Step[F[_]] {
     // crash: typeConstructor inapplicable for <none>
-    this match {
-      case S1() =>
-    }
+    this match { case S1() => }
   }
   case class S1[F[_]]() extends Step[F]
 
   // okay
-  (null: Step[Option]) match {
-    case S1() =>
-  }
+  (null: Step[Option]) match { case S1() => }
 }

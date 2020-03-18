@@ -48,8 +48,7 @@ object Decompiler {
             val parts =
               (bytesElem.elementValue match {
                 case ConstValueIndex(index) => Seq(constantWrapped(index))
-                case ArrayValue(seq) =>
-                  seq.collect {
+                case ArrayValue(seq) => seq.collect {
                     case ConstValueIndex(index) => constantWrapped(index)
                   }
               }).collect { case x: StringBytesPair => x.bytes }
@@ -107,9 +106,8 @@ object Decompiler {
           val sBytes: Array[Byte] = c match {
             case s: String => s.getBytes(UTF8)
             case scala.tools.scalap.scalax.rules.scalasig
-                  .StringBytesPair(s: String, bytes: Array[Byte]) =>
-              bytes
-            case _ => Array.empty
+                  .StringBytesPair(s: String, bytes: Array[Byte]) => bytes
+            case _                                                => Array.empty
           }
           new String(sBytes, UTF8)
         case None => "-no-source-"

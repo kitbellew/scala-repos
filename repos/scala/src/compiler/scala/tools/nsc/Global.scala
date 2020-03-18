@@ -892,12 +892,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
             e.origin match {
               case Some(opath) =>
                 AbstractFile.getDirectory(opath).canonicalPath == canonical
-              case None =>
-                false
+              case None => false
             }
           cp.entries find matchesCanonical match {
-            case Some(oldEntry) =>
-              List(oldEntry -> cp.context.newClassPath(dir))
+            case Some(oldEntry) => List(
+                oldEntry -> cp.context.newClassPath(dir))
             case None =>
               error(
                 s"Error adding entry to classpath. During invalidation, no entry named $path in classpath $classPath")

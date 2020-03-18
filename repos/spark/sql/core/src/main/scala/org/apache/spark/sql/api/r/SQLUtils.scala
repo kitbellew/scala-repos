@@ -200,8 +200,7 @@ private[r] object SQLUtils {
         SerDe.writeObject(dos, v.schema.fieldNames)
         SerDe.writeObject(dos, v.values)
         true
-      case _ =>
-        false
+      case _ => false
     }
   }
 }

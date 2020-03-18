@@ -118,12 +118,10 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
     if (call == null || args == null) return
     val index = args.invocationCount - 1
     call.deepestInvokedExpr match {
-      case ref: ScReferenceExpression =>
-        ref.qualifier match {
+      case ref: ScReferenceExpression => ref.qualifier match {
           case Some(s: ScSuperReference) =>
-            val function = PsiTreeUtil.getContextOfType(
-              ref,
-              classOf[ScFunction])
+            val function = PsiTreeUtil
+              .getContextOfType(ref, classOf[ScFunction])
             if (function != null && function.name == ref.refName) {
               val variants = ref.getSimpleVariants(
                 implicits = false,

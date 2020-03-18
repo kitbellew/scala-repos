@@ -52,9 +52,8 @@ class IntroduceTypeAliasData {
       false)
 
     element match {
-      case typeAlias: ScTypeAlias =>
-        typeAlias
-      case _ => null
+      case typeAlias: ScTypeAlias => typeAlias
+      case _                      => null
     }
   }
 }

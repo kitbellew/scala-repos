@@ -54,15 +54,13 @@ class TCPConnectionActor(
     case Received(data: ByteString) =>
       seen = seen ++ data
       attemptProcess()
-    case PeerClosed =>
-      handlePeerClosed()
+    case PeerClosed => handlePeerClosed()
   }
 
   def readyToSend: Receive = {
-    case outgoing: EnsimeEvent =>
-      sendMessage(RpcResponseEnvelope(None, outgoing))
-    case outgoing: RpcResponseEnvelope =>
-      sendMessage(outgoing)
+    case outgoing: EnsimeEvent => sendMessage(
+        RpcResponseEnvelope(None, outgoing))
+    case outgoing: RpcResponseEnvelope => sendMessage(outgoing)
   }
 
   def awaitingAck: Receive = {
@@ -70,12 +68,9 @@ class TCPConnectionActor(
       // we only stash outgoing messages, so this will cause them to be queued for sending
       unstashAll()
       context.become(idle, discardOld = true)
-    case outgoing: EnsimeEvent =>
-      stash()
-    case outgoing: RpcResponseEnvelope =>
-      stash()
-    case CommandFailed(Write(_, _)) =>
-      connection ! ResumeWriting
+    case outgoing: EnsimeEvent         => stash()
+    case outgoing: RpcResponseEnvelope => stash()
+    case CommandFailed(Write(_, _))    => connection ! ResumeWriting
   }
 
   def sendMessage(envelope: RpcResponseEnvelope): Unit = {

@@ -235,8 +235,7 @@ class LogisticRegressionSuite
       input: Seq[LabeledPoint],
       expectedAcc: Double = 0.83) {
     val numOffPredictions = predictions.zip(input).count {
-      case (prediction, expected) =>
-        prediction != expected.label
+      case (prediction, expected) => prediction != expected.label
     }
     // At least 83% of the predictions should be on.
     (

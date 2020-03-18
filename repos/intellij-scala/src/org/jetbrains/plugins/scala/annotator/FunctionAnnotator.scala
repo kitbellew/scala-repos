@@ -150,10 +150,8 @@ trait FunctionAnnotator {
             if (explicitReturn) usage.asInstanceOf[ScReturnStmt].expr else None
           val expr = returnExpression.getOrElse(usage) match {
             case b: ScBlockExpr => b.getRBrace.map(_.getPsi).getOrElse(b)
-            case b: ScBlock =>
-              b.getParent match {
-                case t: ScTryBlock =>
-                  t.getRBrace match {
+            case b: ScBlock => b.getParent match {
+                case t: ScTryBlock => t.getRBrace match {
                     case Some(brace) => brace.getPsi
                     case _           => b
                   }
@@ -170,8 +168,7 @@ trait FunctionAnnotator {
 
   private def typeOf(element: PsiElement): TypeResult[ScType] =
     element match {
-      case r: ScReturnStmt =>
-        r.expr match {
+      case r: ScReturnStmt => r.expr match {
           case Some(e) => e.getTypeAfterImplicitConversion().tr
           case None    => Success(UnitType, None)
         }

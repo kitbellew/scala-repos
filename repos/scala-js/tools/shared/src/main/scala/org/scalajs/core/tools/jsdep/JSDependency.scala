@@ -58,8 +58,7 @@ final class JSDependency(
           this.dependencies == that.dependencies &&
           this.commonJSName == that.commonJSName &&
           this.minifiedResourceName == that.minifiedResourceName
-      case _ =>
-        false
+      case _ => false
     }
 
   override def hashCode(): Int = {

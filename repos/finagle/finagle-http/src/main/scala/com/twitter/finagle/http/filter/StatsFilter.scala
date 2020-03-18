@@ -29,9 +29,8 @@ class StatsFilter[REQUEST <: Request](stats: StatsReceiver)
     val elapsed = Stopwatch.start()
     val future = service(request)
     future respond {
-      case Return(response) =>
-        count(elapsed(), response)
-      case Throw(_) =>
+      case Return(response) => count(elapsed(), response)
+      case Throw(_)         =>
         // Treat exceptions as empty 500 errors
         val response = Response(request.version, Status.InternalServerError)
         count(elapsed(), response)

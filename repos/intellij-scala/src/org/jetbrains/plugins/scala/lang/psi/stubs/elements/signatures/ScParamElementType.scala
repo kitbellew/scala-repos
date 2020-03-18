@@ -63,8 +63,7 @@ abstract class ScParamElementType[Param <: ScParameter](debugName: String)
     dataStream.writeBoolean(stub.isVar)
     dataStream.writeBoolean(stub.isCallByNameParameter)
     stub.getDefaultExprText match {
-      case None =>
-        dataStream.writeBoolean(false)
+      case None => dataStream.writeBoolean(false)
       case Some(str) =>
         dataStream.writeBoolean(true)
         dataStream.writeName(str)

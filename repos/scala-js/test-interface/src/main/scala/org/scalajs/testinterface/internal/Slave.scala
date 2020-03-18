@@ -32,19 +32,16 @@ final class Slave(
     def jsonArg = js.JSON.parse(strArg)
     allowSendRunnerMessage {
       cmd match {
-        case "newRunner" =>
-          reply(newRunner())
-        case "execute" =>
+        case "newRunner" => reply(newRunner())
+        case "execute"   =>
           // No reply here. execute is async
           execute(jsonArg)
-        case "stopSlave" =>
-          reply(stopSlave())
+        case "stopSlave" => reply(stopSlave())
         case "msg" =>
           val res = incomingRunnerMessage(strArg)
           // Only reply if something failed
           if (res.isFailure) reply(res)
-        case cmd =>
-          throw new IllegalArgumentException(s"Unknown command: $cmd")
+        case cmd => throw new IllegalArgumentException(s"Unknown command: $cmd")
       }
     }
   }

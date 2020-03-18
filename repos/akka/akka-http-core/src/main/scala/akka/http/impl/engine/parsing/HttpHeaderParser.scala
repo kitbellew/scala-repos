@@ -225,8 +225,7 @@ private[engine] final class HttpHeaderParser private (
     else
       node >>> 8 match {
         case 0 ⇒ parseAndInsertHeader()
-        case msb ⇒
-          node & 0xFF match {
+        case msb ⇒ node & 0xFF match {
             case 0 ⇒ // leaf node
               resultHeader = values(msb - 1).asInstanceOf[HttpHeader]
               cursor
@@ -407,10 +406,8 @@ private[engine] final class HttpHeaderParser private (
       val char = escape((node & 0xFF).toChar)
       node >>> 8 match {
         case 0 ⇒ recurseAndPrefixLines(nodeIx + 1, "  ", char + "-", "  ")
-        case msb ⇒
-          node & 0xFF match {
-            case 0 ⇒
-              values(msb - 1) match {
+        case msb ⇒ node & 0xFF match {
+            case 0 ⇒ values(msb - 1) match {
                 case ValueBranch(_, valueParser, branchRootNodeIx, _) ⇒
                   val pad = " " * (valueParser.headerName.length + 3)
                   recurseAndPrefixLines(
@@ -459,8 +456,8 @@ private[engine] final class HttpHeaderParser private (
         case 0 ⇒ build(nodeIx + 1)
         case msb if (node & 0xFF) == 0 ⇒
           values(msb - 1) match {
-            case ValueBranch(_, parser, _, count) ⇒
-              Map(parser.headerName -> count)
+            case ValueBranch(_, parser, _, count) ⇒ Map(
+                parser.headerName -> count)
             case _ ⇒ Map.empty
           }
         case msb ⇒

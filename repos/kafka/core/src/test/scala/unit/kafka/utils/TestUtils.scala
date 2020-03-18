@@ -233,10 +233,7 @@ object TestUtils extends Logging {
       protocolAndPorts += SecurityProtocol.SASL_SSL -> saslSslPort
 
     val listeners = protocolAndPorts
-      .map {
-        case (protocol, port) =>
-          s"${protocol.name}://localhost:$port"
-      }
+      .map { case (protocol, port) => s"${protocol.name}://localhost:$port" }
       .mkString(",")
 
     val props = new Properties
@@ -1386,10 +1383,7 @@ object TestUtils extends Logging {
         if (future.isCancelled) failWithTimeout()
         else
           try future.get()
-          catch {
-            case e: Exception =>
-              exceptions += e
-          }
+          catch { case e: Exception => exceptions += e }
       }
     } catch {
       case ie: InterruptedException => failWithTimeout()

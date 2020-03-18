@@ -65,8 +65,7 @@ private[streams] class SubscriberIteratee[T](subscriber: Subscriber[T])
       case NotSubscribed =>
         state = awaitDemand(promise, folder, pec)
         subscriber.onSubscribe(this)
-      case NoDemand =>
-        state = awaitDemand(promise, folder, pec)
+      case NoDemand => state = awaitDemand(promise, folder, pec)
       case AwaitingDemand(_, _) =>
         throw new IllegalStateException(
           "fold invoked while already waiting for demand")
@@ -74,8 +73,7 @@ private[streams] class SubscriberIteratee[T](subscriber: Subscriber[T])
         if (n == 1) { state = NoDemand }
         else { state = Demand(n - 1) }
         demand(promise, folder, pec)
-      case Cancelled =>
-        cancelled(promise, folder, pec)
+      case Cancelled => cancelled(promise, folder, pec)
     }
 
     promise.future
@@ -102,8 +100,7 @@ private[streams] class SubscriberIteratee[T](subscriber: Subscriber[T])
         case Input.El(t) =>
           subscriber.onNext(t)
           self
-        case Input.Empty =>
-          self
+        case Input.Empty => self
       }))
     }(ec)
   }
@@ -120,21 +117,18 @@ private[streams] class SubscriberIteratee[T](subscriber: Subscriber[T])
       case AwaitingDemand(_, cancelled) =>
         cancelled()
         state = Cancelled
-      case _ =>
-        state = Cancelled
+      case _ => state = Cancelled
     }
 
   def request(n: Long) =
     exclusive {
-      case NoDemand =>
-        state = Demand(n)
+      case NoDemand => state = Demand(n)
       case AwaitingDemand(demand, _) =>
         demand()
         if (n == 1) { state = NoDemand }
         else { state = Demand(n - 1) }
-      case Demand(old) =>
-        state = Demand(old + n)
-      case Cancelled =>
+      case Demand(old) => state = Demand(old + n)
+      case Cancelled   =>
       // nop, 3.6 of reactive streams spec
       case NotSubscribed =>
         throw new IllegalStateException(

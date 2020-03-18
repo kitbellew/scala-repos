@@ -83,8 +83,7 @@ object Printers {
             }
           }
 
-        case _ =>
-          printStat(tree)
+        case _ => printStat(tree)
       }
       undent(); println(); print('}')
     }
@@ -102,8 +101,7 @@ object Printers {
 
     def printTree(tree: Tree, isStat: Boolean): Unit = {
       tree match {
-        case EmptyTree =>
-          print("<empty>")
+        case EmptyTree => print("<empty>")
 
         // Comments
 
@@ -151,8 +149,7 @@ object Printers {
 
         // Control flow constructs
 
-        case Skip() =>
-          print("/*<skip>*/")
+        case Skip() => print("/*<skip>*/")
 
         case tree: Block =>
           if (isStat) printBlock(tree) else printRow(tree.stats, '(', ')')
@@ -277,8 +274,7 @@ object Printers {
           println()
           print('}')
 
-        case Debugger() =>
-          print("debugger")
+        case Debugger() => print("debugger")
 
         // Expressions
 
@@ -307,8 +303,7 @@ object Printers {
               print("(")
               print(qualifier)
               print(")")
-            case _ =>
-              print(qualifier)
+            case _ => print(qualifier)
           }
           print(".")
           print(item)
@@ -384,8 +379,7 @@ object Printers {
           print(rhs)
           print(')')
 
-        case ArrayConstr(items) =>
-          printRow(items, '[', ']')
+        case ArrayConstr(items) => printRow(items, '[', ']')
 
         case ObjectConstr(Nil) =>
           if (isStat)
@@ -417,14 +411,11 @@ object Printers {
 
         // Literals
 
-        case Undefined() =>
-          print("(void 0)")
+        case Undefined() => print("(void 0)")
 
-        case Null() =>
-          print("null")
+        case Null() => print("null")
 
-        case BooleanLiteral(value) =>
-          print(if (value) "true" else "false")
+        case BooleanLiteral(value) => print(if (value) "true" else "false")
 
         case IntLiteral(value) =>
           if (value >= 0) { print(value.toString) }
@@ -450,11 +441,9 @@ object Printers {
 
         // Atomic expressions
 
-        case VarRef(ident) =>
-          print(ident)
+        case VarRef(ident) => print(ident)
 
-        case This() =>
-          print("this")
+        case This() => print("this")
 
         case Function(args, body) =>
           print("(function")
@@ -514,11 +503,9 @@ object Printers {
           print(") ")
           printBlock(body)
 
-        case Super() =>
-          print("super")
+        case Super() => print("super")
 
-        case _ =>
-          print(s"<error, elem of class ${tree.getClass}>")
+        case _ => print(s"<error, elem of class ${tree.getClass}>")
       }
     }
 

@@ -282,8 +282,7 @@ class JobServiceSpec extends TestJobService {
 
       st.validated[JobState] must beLike {
         case Success(
-              Cancelled("Because I said so.", _, Started(_, NotStarted))) =>
-          ok
+              Cancelled("Because I said so.", _, Started(_, NotStarted))) => ok
       }
     }
 
@@ -330,8 +329,7 @@ class JobServiceSpec extends TestJobService {
         case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
           obj.validated[JobState] must beLike {
             case Success(
-                  Aborted("Yabba dabba doo!", _, Started(_, NotStarted))) =>
-              ok
+                  Aborted("Yabba dabba doo!", _, Started(_, NotStarted))) => ok
           }
       }
     }
@@ -349,8 +347,7 @@ class JobServiceSpec extends TestJobService {
                   Aborted(
                     "Yabba dabba doo!",
                     _,
-                    Cancelled(_, _, Started(_, NotStarted)))) =>
-              ok
+                    Cancelled(_, _, Started(_, NotStarted)))) => ok
           }
       }
     }

@@ -134,10 +134,7 @@ class FuturePoolTest extends FunSuite with Eventually {
       try {
         started.setDone()
         while (true) { Thread.sleep(Long.MaxValue) }
-      } catch {
-        case _: InterruptedException =>
-          interrupted.setDone()
-      }
+      } catch { case _: InterruptedException => interrupted.setDone() }
     }
 
     Await.result(started)

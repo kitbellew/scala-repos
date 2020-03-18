@@ -251,8 +251,7 @@ private[spark] object ReliableCheckpointRDD extends Logging {
       }
       logDebug(s"Written partitioner to $partitionerFilePath")
     } catch {
-      case NonFatal(e) =>
-        logWarning(
+      case NonFatal(e) => logWarning(
           s"Error writing partitioner $partitioner to $checkpointDirPath")
     }
   }

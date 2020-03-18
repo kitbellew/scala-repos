@@ -216,8 +216,7 @@ case class DefaultOptimalSizeExploringResizer(
     val currentSize = currentRoutees.length
 
     val messagesInRoutees = currentRoutees map {
-      case ActorRefRoutee(a: ActorRefWithCell) ⇒
-        a.underlying match {
+      case ActorRefRoutee(a: ActorRefWithCell) ⇒ a.underlying match {
           case cell: ActorCell ⇒
             cell.mailbox.numberOfMessages + (if (cell.currentMessage != null) 1
                                              else 0)

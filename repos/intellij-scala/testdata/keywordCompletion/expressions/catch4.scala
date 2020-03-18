@@ -1,7 +1,5 @@
 class a {
-  try {} catch {
-    case _ =>
-  }
+  try {} catch { case _ => }
 
   /*caret*/
 }

@@ -169,8 +169,7 @@ private[akka] class RepointableActorRef(
             case Some(crs: ChildRestartStats)
                 if uid == ActorCell.undefinedUid || uid == crs.uid ⇒
               crs.child.asInstanceOf[InternalActorRef].getChild(name)
-            case _ ⇒
-              lookup match {
+            case _ ⇒ lookup match {
                 case ac: ActorCell ⇒ ac.getFunctionRefOrNobody(childName, uid)
                 case _ ⇒ Nobody
               }

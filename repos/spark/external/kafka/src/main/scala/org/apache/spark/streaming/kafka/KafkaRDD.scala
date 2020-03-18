@@ -263,8 +263,7 @@ private[kafka] object KafkaRDD {
       messageHandler: MessageAndMetadata[K, V] => R)
       : KafkaRDD[K, V, U, T, R] = {
     val leaders = untilOffsets.map {
-      case (tp, lo) =>
-        tp -> (lo.host, lo.port)
+      case (tp, lo) => tp -> (lo.host, lo.port)
     }.toMap
 
     val offsetRanges = fromOffsets.map {

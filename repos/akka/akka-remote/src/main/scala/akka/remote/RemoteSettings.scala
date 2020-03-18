@@ -32,8 +32,7 @@ final class RemoteSettings(val config: Config) {
   val RemoteLifecycleEventsLogLevel: LogLevel = getString(
     "akka.remote.log-remote-lifecycle-events").toLowerCase(Locale.ROOT) match {
     case "on" ⇒ Logging.DebugLevel
-    case other ⇒
-      Logging.levelFor(other) match {
+    case other ⇒ Logging.levelFor(other) match {
         case Some(level) ⇒ level
         case None ⇒
           throw new ConfigurationException(

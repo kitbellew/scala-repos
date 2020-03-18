@@ -73,8 +73,7 @@ object TreeShakerSpecs
           case Import(
                 LineStream(),
                 SpecificImport(Vector("std")),
-                NumLit(LineStream(), "12")) =>
-            ok
+                NumLit(LineStream(), "12")) => ok
         }
       }
 
@@ -89,8 +88,7 @@ object TreeShakerSpecs
           case Assert(
                 LineStream(),
                 NumLit(LineStream(), "42"),
-                NumLit(LineStream(), "12")) =>
-            ok
+                NumLit(LineStream(), "12")) => ok
         }
       }
 
@@ -107,8 +105,7 @@ object TreeShakerSpecs
                 LineStream(),
                 NumLit(LineStream(), "1"),
                 NumLit(LineStream(), "2"),
-                NumLit(LineStream(), "3")) =>
-            ok
+                NumLit(LineStream(), "3")) => ok
         }
       }
 
@@ -160,8 +157,7 @@ object TreeShakerSpecs
                 LineStream(),
                 Vector(
                   ("a", NumLit(LineStream(), "1")),
-                  ("b", NumLit(LineStream(), "2")))) =>
-            ok
+                  ("b", NumLit(LineStream(), "2")))) => ok
         }
       }
 
@@ -178,8 +174,7 @@ object TreeShakerSpecs
                 LineStream(),
                 Vector(
                   ("a", NullLit(LineStream())),
-                  ("b", StrLit(LineStream(), "foo")))) =>
-            ok
+                  ("b", StrLit(LineStream(), "foo")))) => ok
         }
       }
 
@@ -240,8 +235,7 @@ object TreeShakerSpecs
           case Deref(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
 
@@ -272,8 +266,7 @@ object TreeShakerSpecs
           case Where(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
       "with" >> {
@@ -287,8 +280,7 @@ object TreeShakerSpecs
           case With(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
       "union" >> {
@@ -302,8 +294,7 @@ object TreeShakerSpecs
           case Union(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
       "intersect" >> {
@@ -317,8 +308,7 @@ object TreeShakerSpecs
           case Intersect(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
       "difference" >> {
@@ -332,8 +322,7 @@ object TreeShakerSpecs
           case Difference(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
 
@@ -348,8 +337,7 @@ object TreeShakerSpecs
           case Add(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
 
@@ -364,8 +352,7 @@ object TreeShakerSpecs
           case Sub(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
 
@@ -380,8 +367,7 @@ object TreeShakerSpecs
           case Mul(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
 
@@ -396,8 +382,7 @@ object TreeShakerSpecs
           case Div(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
 
@@ -412,8 +397,7 @@ object TreeShakerSpecs
           case Lt(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
 
@@ -428,8 +412,7 @@ object TreeShakerSpecs
           case LtEq(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
 
@@ -444,8 +427,7 @@ object TreeShakerSpecs
           case Gt(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
 
@@ -460,8 +442,7 @@ object TreeShakerSpecs
           case GtEq(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
 
@@ -476,8 +457,7 @@ object TreeShakerSpecs
           case Eq(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
 
@@ -492,8 +472,7 @@ object TreeShakerSpecs
           case NotEq(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
 
@@ -508,8 +487,7 @@ object TreeShakerSpecs
           case And(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
 
@@ -524,8 +502,7 @@ object TreeShakerSpecs
           case Or(
                 LineStream(),
                 NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
+                NumLit(LineStream(), "2")) => ok
         }
       }
 
@@ -586,8 +563,7 @@ object TreeShakerSpecs
               Identifier(Vector(), "a"),
               Vector(),
               NumLit(LineStream(), "42"),
-              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector())) =>
-          ok
+              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector())) => ok
       }
 
       result.errors must beEmpty
@@ -613,8 +589,7 @@ object TreeShakerSpecs
               Add(
                 LineStream(),
                 TicVar(LineStream(), "'a"),
-                NumLit(LineStream(), "42"))) =>
-          ok
+                NumLit(LineStream(), "42"))) => ok
       }
     }
 
@@ -692,8 +667,7 @@ object TreeShakerSpecs
         case Import(
               LineStream(),
               SpecificImport(Vector()),
-              NumLit(LineStream(), "24")) =>
-          ok
+              NumLit(LineStream(), "24")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -788,8 +762,7 @@ object TreeShakerSpecs
         case Assert(
               LineStream(),
               BoolLit(LineStream(), true),
-              NumLit(LineStream(), "24")) =>
-          ok
+              NumLit(LineStream(), "24")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -971,8 +944,7 @@ object TreeShakerSpecs
               LineStream(),
               NumLit(LineStream(), "24"),
               NumLit(LineStream(), "25"),
-              NumLit(LineStream(), "26")) =>
-          ok
+              NumLit(LineStream(), "26")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -1004,8 +976,7 @@ object TreeShakerSpecs
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
                   NumLit(LineStream(), "24"),
-                  NumLit(LineStream(), "25"))) =>
-            ok
+                  NumLit(LineStream(), "25"))) => ok
         }
 
         result.errors must beEmpty
@@ -1036,8 +1007,7 @@ object TreeShakerSpecs
                   LineStream(),
                   NumLit(LineStream(), "24"),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "25"))) =>
-            ok
+                  NumLit(LineStream(), "25"))) => ok
         }
 
         result.errors must beEmpty
@@ -1071,8 +1041,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -1231,8 +1200,7 @@ object TreeShakerSpecs
       result must beLike {
         case ObjectDef(
               LineStream(),
-              Vector(("foo", NumLit(LineStream(), "24")))) =>
-          ok
+              Vector(("foo", NumLit(LineStream(), "24")))) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -1268,8 +1236,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))))) =>
-          ok
+                    Vector()))))) => ok
       }
 
       result.errors must beEmpty
@@ -1359,8 +1326,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector())))) =>
-          ok
+                    Vector())))) => ok
       }
 
       result.errors must beEmpty
@@ -1446,8 +1412,7 @@ object TreeShakerSpecs
               Descent(
                 LineStream(),
                 Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                "foo")) =>
-          ok
+                "foo")) => ok
       }
 
       result.errors must beEmpty
@@ -1535,8 +1500,7 @@ object TreeShakerSpecs
               MetaDescent(
                 LineStream(),
                 Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                "foo")) =>
-          ok
+                "foo")) => ok
       }
 
       result.errors must beEmpty
@@ -1604,8 +1568,7 @@ object TreeShakerSpecs
         case Deref(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -1635,8 +1598,7 @@ object TreeShakerSpecs
                 Deref(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -1668,8 +1630,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -1736,8 +1697,7 @@ object TreeShakerSpecs
         case Dispatch(
               LineStream(),
               Identifier(Vector(), "count"),
-              Vector(NumLit(LineStream(), "24"))) =>
-          ok
+              Vector(NumLit(LineStream(), "24"))) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -1770,8 +1730,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector())))) =>
-          ok
+                    Vector())))) => ok
       }
 
       result.errors must beEmpty
@@ -1837,8 +1796,7 @@ object TreeShakerSpecs
         case Where(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -1868,8 +1826,7 @@ object TreeShakerSpecs
                 Where(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -1901,8 +1858,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -1968,8 +1924,7 @@ object TreeShakerSpecs
         case Add(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -1999,8 +1954,7 @@ object TreeShakerSpecs
                 Add(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -2032,8 +1986,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -2099,8 +2052,7 @@ object TreeShakerSpecs
         case Sub(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -2130,8 +2082,7 @@ object TreeShakerSpecs
                 Sub(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -2163,8 +2114,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -2230,8 +2180,7 @@ object TreeShakerSpecs
         case Mul(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -2261,8 +2210,7 @@ object TreeShakerSpecs
                 Mul(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -2294,8 +2242,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -2361,8 +2308,7 @@ object TreeShakerSpecs
         case Div(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -2392,8 +2338,7 @@ object TreeShakerSpecs
                 Div(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -2425,8 +2370,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -2492,8 +2436,7 @@ object TreeShakerSpecs
         case Mod(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -2523,8 +2466,7 @@ object TreeShakerSpecs
                 Mod(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -2556,8 +2498,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -2623,8 +2564,7 @@ object TreeShakerSpecs
         case Pow(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -2654,8 +2594,7 @@ object TreeShakerSpecs
                 Pow(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -2687,8 +2626,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -2754,8 +2692,7 @@ object TreeShakerSpecs
         case Lt(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -2785,8 +2722,7 @@ object TreeShakerSpecs
                 Lt(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -2818,8 +2754,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -2885,8 +2820,7 @@ object TreeShakerSpecs
         case LtEq(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -2916,8 +2850,7 @@ object TreeShakerSpecs
                 LtEq(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -2949,8 +2882,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -3016,8 +2948,7 @@ object TreeShakerSpecs
         case Gt(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -3047,8 +2978,7 @@ object TreeShakerSpecs
                 Gt(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -3080,8 +3010,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -3147,8 +3076,7 @@ object TreeShakerSpecs
         case GtEq(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -3178,8 +3106,7 @@ object TreeShakerSpecs
                 GtEq(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -3211,8 +3138,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -3278,8 +3204,7 @@ object TreeShakerSpecs
         case Eq(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -3309,8 +3234,7 @@ object TreeShakerSpecs
                 Eq(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -3342,8 +3266,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -3409,8 +3332,7 @@ object TreeShakerSpecs
         case NotEq(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -3440,8 +3362,7 @@ object TreeShakerSpecs
                 NotEq(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -3473,8 +3394,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -3540,8 +3460,7 @@ object TreeShakerSpecs
         case And(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -3571,8 +3490,7 @@ object TreeShakerSpecs
                 And(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -3604,8 +3522,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty
@@ -3671,8 +3588,7 @@ object TreeShakerSpecs
         case Or(
               LineStream(),
               NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
+              NumLit(LineStream(), "25")) => ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -3702,8 +3618,7 @@ object TreeShakerSpecs
                 Or(
                   LineStream(),
                   Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
+                  NumLit(LineStream(), "24"))) => ok
         }
 
         result.errors must beEmpty
@@ -3735,8 +3650,7 @@ object TreeShakerSpecs
                   Dispatch(
                     LineStream(),
                     Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
+                    Vector()))) => ok
         }
 
         result.errors must beEmpty

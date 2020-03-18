@@ -16,10 +16,7 @@ object TestInlineHandlersNoInline {
     try {
       if (nextInt % 2 == 0) throw new IllegalArgumentException("something")
       result = 1
-    } catch {
-      case e: StackOverflowError =>
-        println("Stack overflow")
-    }
+    } catch { case e: StackOverflowError => println("Stack overflow") }
 
     result
   }
@@ -36,8 +33,7 @@ object TestInlineHandlersSimpleInline {
       if (nextInt % 2 == 0) throw new IllegalArgumentException("something")
       result = 1
     } catch {
-      case e: IllegalArgumentException =>
-        println("IllegalArgumentException")
+      case e: IllegalArgumentException => println("IllegalArgumentException")
     }
 
     result
@@ -54,10 +50,7 @@ object TestInlineHandlersSubclassInline {
     try {
       if (nextInt % 2 == 0) throw new IllegalArgumentException("something")
       result = 1
-    } catch {
-      case e: RuntimeException =>
-        println("RuntimeException")
-    }
+    } catch { case e: RuntimeException => println("RuntimeException") }
 
     result
   }
@@ -186,10 +179,7 @@ object TestInlineHandlersSingleCopy {
 
       if (nextInt % 3 == 2) throw new MyException("something else")
       result = 1
-    } catch {
-      case MyException(message) =>
-        println(message)
-    }
+    } catch { case MyException(message) => println(message) }
 
     result
   }
@@ -253,12 +243,10 @@ object TestInlineHandlersPreciseness {
         else new StackOverflowError("odd")
       throw exception
     } catch {
-      case e: IllegalArgumentException =>
-        println("Correct, IllegalArgumentException")
-      case e: StackOverflowError =>
-        println("Correct, StackOverflowException")
-      case t: Throwable =>
-        println("WROOOONG, not Throwable!")
+      case e: IllegalArgumentException => println(
+          "Correct, IllegalArgumentException")
+      case e: StackOverflowError => println("Correct, StackOverflowException")
+      case t: Throwable          => println("WROOOONG, not Throwable!")
     }
   }
 }

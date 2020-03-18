@@ -440,10 +440,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       df,
       testData
         .collect()
-        .map {
-          case Row(key: Int, value: String) =>
-            Row(key, value, key + 1)
-        }
+        .map { case Row(key: Int, value: String) => Row(key, value, key + 1) }
         .toSeq)
     assert(df.schema.map(_.name) === Seq("key", "value", "newCol"))
   }
@@ -514,8 +511,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
                 name: String,
                 age: Int,
                 idToDrop: Int,
-                salary: Double) =>
-            Row(id, name, age, salary)
+                salary: Double) => Row(id, name, age, salary)
         }
         .toSeq)
     assert(df.schema.map(_.name) === Seq("id", "name", "age", "salary"))
@@ -531,10 +527,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       df,
       testData
         .collect()
-        .map {
-          case Row(key: Int, value: String) =>
-            Row(key, value, key + 1)
-        }
+        .map { case Row(key: Int, value: String) => Row(key, value, key + 1) }
         .toSeq)
     assert(df.schema.map(_.name) === Seq("key", "valueRenamed", "newCol"))
   }

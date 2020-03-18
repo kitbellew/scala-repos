@@ -22,14 +22,12 @@ object Youtube {
 
   private def parseSeconds(text: String) =
     text match {
-      case HourMinSecRegex(hourS, minS, secS) =>
-        for {
+      case HourMinSecRegex(hourS, minS, secS) => for {
           hour <- parseIntOption(hourS)
           min <- parseIntOption(minS)
           sec <- parseIntOption(secS)
         } yield 3600 * hour + 60 * min + sec
-      case MinSecRegex(minS, secS) =>
-        for {
+      case MinSecRegex(minS, secS) => for {
           min <- parseIntOption(minS)
           sec <- parseIntOption(secS)
         } yield 60 * min + sec

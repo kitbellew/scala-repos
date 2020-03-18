@@ -99,8 +99,7 @@ class CustomReceiver(host: String, port: Int)
     } catch {
       case e: java.net.ConnectException =>
         restart("Error connecting to " + host + ":" + port, e)
-      case t: Throwable =>
-        restart("Error receiving data", t)
+      case t: Throwable => restart("Error receiving data", t)
     }
   }
 }

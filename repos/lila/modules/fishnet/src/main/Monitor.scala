@@ -47,8 +47,9 @@ private final class Monitor(
       100)
     def avgOf(f: JsonApi.Request.Evaluation => Option[Int]): Option[Int] = {
       val (sum, nb) = metaMovesSample.foldLeft(0 -> 0) {
-        case ((sum, nb), move) =>
-          f(move).fold(sum -> nb) { v => (sum + v, nb + 1) }
+        case ((sum, nb), move) => f(move).fold(sum -> nb) { v =>
+            (sum + v, nb + 1)
+          }
       }
       (nb > 0) option (sum / nb)
     }

@@ -567,8 +567,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
               !(sym.isDeferred &&
                 (newSyms exists (nsym =>
                   nsym.name == sym.name && (nsym.tpe matches sym.tpe))))
-            case _ =>
-              true
+            case _ => true
           }
         if (newDefs.isEmpty) stats
         else newDefs ::: (stats filter isNotDuplicate)
@@ -592,8 +591,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
 
             copyDefDef(stat)(rhs = enteringMixin(
               transform(localTyper.typed(body, pt))))
-          case _ =>
-            stat
+          case _ => stat
         }
 
       /*
@@ -665,8 +663,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
         val bitmapTree = (This(clazz) DOT bitmapSym)
         def lhs = bitmapTree GEN_& (mask, kind)
         kind match {
-          case BooleanClass =>
-            if (equalToZero) NOT(bitmapTree) else bitmapTree
+          case BooleanClass => if (equalToZero) NOT(bitmapTree) else bitmapTree
           case _ =>
             if (equalToZero) lhs GEN_== (ZERO, kind)
             else lhs GEN_!= (ZERO, kind)
@@ -921,9 +918,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
                 stat :: checkedGetter(lhs)
               // remove initialization for default values
               case Apply(lhs @ Select(Ident(self), _), EmptyTree.asList)
-                  if lhs.symbol.isSetter =>
-                Nil
-              case stat => List(stat)
+                  if lhs.symbol.isSetter => Nil
+              case stat                  => List(stat)
             },
             exprOwner
           )
@@ -968,9 +964,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
         assert(getter.isGetter)
         val readValue = getter.tpe match {
           // A field "final val f = const" in a trait generates a getter with a ConstantType.
-          case MethodType(Nil, ConstantType(c)) =>
-            Literal(c)
-          case _ =>
+          case MethodType(Nil, ConstantType(c)) => Literal(c)
+          case _                                =>
             // if it is a mixed-in lazy value, complete the accessor
             if (getter.isLazy) {
               val isUnit = isUnitGetter(getter)
@@ -1145,8 +1140,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
 
           typedPos(tree.pos)((qual DOT setter)(rhs))
 
-        case _ =>
-          tree
+        case _ => tree
       }
     }
 

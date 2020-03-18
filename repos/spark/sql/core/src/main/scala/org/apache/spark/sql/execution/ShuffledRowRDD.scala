@@ -86,8 +86,7 @@ class CoalescedPartitioner(
         c.parent == parent && Arrays.equals(
           c.partitionStartIndices,
           partitionStartIndices)
-      case _ =>
-        false
+      case _ => false
     }
 
   override def hashCode(): Int =

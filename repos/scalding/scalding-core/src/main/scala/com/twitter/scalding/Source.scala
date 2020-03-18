@@ -306,8 +306,7 @@ trait BaseNullSource extends Source {
       mode: Mode): Tap[_, _, _] = {
     readOrWrite match {
       case Read => throw new Exception("not supported, reading from null")
-      case Write =>
-        mode match {
+      case Write => mode match {
           case Hdfs(_, _) =>
             new NullTap[
               JobConf,

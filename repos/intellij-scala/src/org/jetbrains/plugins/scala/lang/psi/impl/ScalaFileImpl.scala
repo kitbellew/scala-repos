@@ -202,8 +202,7 @@ class ScalaFileImpl(
         n.getPsi match {
           case _: ScPackaging => return false
           case _: ScValue | _: ScVariable | _: ScFunction | _: ScExpression |
-              _: ScTypeAlias =>
-            return true
+              _: ScTypeAlias => return true
           case _ =>
             if (n.getElementType == ScalaTokenTypes.tSH_COMMENT) return true
         }
@@ -394,8 +393,7 @@ class ScalaFileImpl(
       for (definition <- typeDefinitions) {
         arrayBuffer += definition
         definition match {
-          case o: ScObject =>
-            o.fakeCompanionClass match {
+          case o: ScObject => o.fakeCompanionClass match {
               case Some(clazz) => arrayBuffer += clazz
               case _           =>
             }
@@ -405,8 +403,7 @@ class ScalaFileImpl(
               case Some(m) => arrayBuffer += m
               case _       =>
             }
-          case c: ScClass =>
-            c.fakeCompanionModule match {
+          case c: ScClass => c.fakeCompanionModule match {
               case Some(m) => arrayBuffer += m
               case _       =>
             }

@@ -131,8 +131,7 @@ private[akka] class ActorClassificationUnsubscriber(
       atSeq = nextSeq
       unstashAll()
 
-    case reg: Register ⇒
-      stash()
+    case reg: Register ⇒ stash()
 
     case Unregister(actor, seq) if seq == nextSeq ⇒
       if (debug)
@@ -144,8 +143,7 @@ private[akka] class ActorClassificationUnsubscriber(
       atSeq = nextSeq
       unstashAll()
 
-    case unreg: Unregister ⇒
-      stash()
+    case unreg: Unregister ⇒ stash()
 
     case Terminated(actor) ⇒
       if (debug)

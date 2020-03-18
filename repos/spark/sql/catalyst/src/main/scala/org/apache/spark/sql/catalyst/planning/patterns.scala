@@ -81,8 +81,7 @@ object PhysicalOperation extends PredicateHelper {
           other,
           aliases)
 
-      case other =>
-        (None, Nil, other, Map.empty)
+      case other => (None, Nil, other, Map.empty)
     }
 
   private def collectAliases(
@@ -213,11 +212,10 @@ object ExtractFiltersAndInnerJoins extends PredicateHelper {
 
   def unapply(plan: LogicalPlan): Option[(Seq[LogicalPlan], Seq[Expression])] =
     plan match {
-      case f @ Filter(filterCondition, j @ Join(_, _, Inner, _)) =>
-        Some(flattenJoin(f))
-      case j @ Join(_, _, Inner, _) =>
-        Some(flattenJoin(j))
-      case _ => None
+      case f @ Filter(filterCondition, j @ Join(_, _, Inner, _)) => Some(
+          flattenJoin(f))
+      case j @ Join(_, _, Inner, _) => Some(flattenJoin(j))
+      case _                        => None
     }
 }
 
@@ -227,8 +225,8 @@ object ExtractFiltersAndInnerJoins extends PredicateHelper {
 object Unions {
   def unapply(plan: LogicalPlan): Option[Seq[LogicalPlan]] =
     plan match {
-      case u: Union =>
-        Some(collectUnionChildren(mutable.Stack(u), Seq.empty[LogicalPlan]))
+      case u: Union => Some(
+          collectUnionChildren(mutable.Stack(u), Seq.empty[LogicalPlan]))
       case _ => None
     }
 

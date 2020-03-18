@@ -220,8 +220,7 @@ object DecisionTreeRunner {
         }
         (examples, classIndexMap, numClasses)
       }
-      case Regression =>
-        (origExamples, null, 0)
+      case Regression => (origExamples, null, 0)
       case _ =>
         throw new IllegalArgumentException("Algo ${params.algo} not supported.")
     }
@@ -247,8 +246,7 @@ object DecisionTreeRunner {
             }
             Array(examples, testExamples)
           }
-          case Regression =>
-            Array(examples, origTestExamples)
+          case Regression => Array(examples, origTestExamples)
         }
       } else {
         // Split input into training, test.

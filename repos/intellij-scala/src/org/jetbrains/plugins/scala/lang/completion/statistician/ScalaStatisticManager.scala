@@ -33,14 +33,12 @@ object ScalaStatisticManager {
       case c: ScClass     => s"class#${c.qualifiedName}"
       case t: ScTrait     => s"trait#${t.qualifiedName}"
       case t: ScTypeAlias => s"typeAlias#${t.name}"
-      case v: ScBindingPattern =>
-        v.nameContext match {
+      case v: ScBindingPattern => v.nameContext match {
           case _: ScValue    => s"value#${v.name}"
           case _: ScVariable => s"variable${v.name}"
           case _             => return None
         }
-      case f: ScFieldId =>
-        f.nameContext match {
+      case f: ScFieldId => f.nameContext match {
           case _: ScValue    => s"value#${f.name}"
           case _: ScVariable => s"variable#${f.name}"
           case _             => return None

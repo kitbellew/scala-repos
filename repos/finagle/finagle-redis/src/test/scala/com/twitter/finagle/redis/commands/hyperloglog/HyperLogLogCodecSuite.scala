@@ -37,8 +37,7 @@ final class HyperLogLogCodecSuite extends RedisRequestTest {
 
   test("Correctly encode PFCOUNT with one key", CodecTest) {
     unwrap(codec(wrap("PFCOUNT foo\r\n"))) {
-      case PFCount(List(key)) =>
-        assert(CBToString(key) == "foo")
+      case PFCount(List(key)) => assert(CBToString(key) == "foo")
     }
   }
 

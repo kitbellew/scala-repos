@@ -49,8 +49,7 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
       val ctr = ct.readRoot(abort = true)
 
       prev match {
-        case null =>
-          m
+        case null => m
         case fn: FailedNode[_, _] => // try to commit to previous value
           if (CAS(m, fn.prev)) fn.prev
           else GCAS_Complete( /*READ*/ mainnode, ct)
@@ -201,8 +200,7 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                   rec_insertif(k, v, hc, cond, lev, parent, startgen, ct)
                 else null
               }
-            case sn: SNode[K, V] =>
-              cond match {
+            case sn: SNode[K, V] => cond match {
                 case null =>
                   if (sn.hc == hc && equal(sn.k, k, ct)) {
                     if (GCAS(
@@ -279,18 +277,15 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
           case null =>
             val optv = ln.get(k)
             if (insertln()) optv else null
-          case INode.KEY_ABSENT =>
-            ln.get(k) match {
+          case INode.KEY_ABSENT => ln.get(k) match {
               case None => if (insertln()) None else null
               case optv => optv
             }
-          case INode.KEY_PRESENT =>
-            ln.get(k) match {
+          case INode.KEY_PRESENT => ln.get(k) match {
               case Some(v0) => if (insertln()) Some(v0) else null
               case None     => None
             }
-          case otherv =>
-            ln.get(k) match {
+          case otherv => ln.get(k) match {
               case Some(v0) if v0 == otherv =>
                 if (insertln()) Some(otherv.asInstanceOf[V]) else null
               case _ => None
@@ -673,8 +668,7 @@ private[collection] final class CNode[K, V](
           val inodemain = in.gcasRead(ct)
           assert(inodemain ne null)
           tmparray(i) = resurrect(in, inodemain)
-        case sn: SNode[K, V] =>
-          tmparray(i) = sn
+        case sn: SNode[K, V] => tmparray(i) = sn
       }
       i += 1
     }
@@ -689,8 +683,7 @@ private[collection] final class CNode[K, V](
   private def collectElems: Seq[(K, V)] =
     array flatMap {
       case sn: SNode[K, V] => Some(sn.kvPair)
-      case in: INode[K, V] =>
-        in.mainnode match {
+      case in: INode[K, V] => in.mainnode match {
           case tn: TNode[K, V] => Some(tn.kvPair)
           case ln: LNode[K, V] => ln.listmap.toList
           case cn: CNode[K, V] => cn.collectElems
@@ -1141,13 +1134,11 @@ private[collection] class TrieMapIterator[K, V](
         stack(depth) = cn.array
         stackpos(depth) = -1
         advance()
-      case tn: TNode[K, V] =>
-        current = tn
+      case tn: TNode[K, V] => current = tn
       case ln: LNode[K, V] =>
         subiter = ln.listmap.iterator
         checkSubiter()
-      case null =>
-        current = null
+      case null => current = null
     }
 
   private def checkSubiter() =
@@ -1169,10 +1160,8 @@ private[collection] class TrieMapIterator[K, V](
       if (npos < stack(depth).length) {
         stackpos(depth) = npos
         stack(depth)(npos) match {
-          case sn: SNode[K, V] =>
-            current = sn
-          case in: INode[K, V] =>
-            readin(in)
+          case sn: SNode[K, V] => current = sn
+          case in: INode[K, V] => readin(in)
         }
       } else {
         depth -= 1

@@ -88,8 +88,7 @@ final class JsonView(
         .sheet(info.tour, info.user.id, pairings)
       tpr <- performance(info.tour, info.player, pairings)
     } yield info match {
-      case PlayerInfoExt(tour, user, player, povs) =>
-        Json.obj(
+      case PlayerInfoExt(tour, user, player, povs) => Json.obj(
           "player" -> Json
             .obj(
               "id" -> user.id,

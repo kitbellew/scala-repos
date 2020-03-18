@@ -875,8 +875,7 @@ class ParquetPartitionDiscoverySuite
         paths: Seq[String]): String = {
       val conflictingColNameLists = colNameLists.zipWithIndex
         .map {
-          case (list, index) =>
-            s"\tPartition column name list #$index: $list"
+          case (list, index) => s"\tPartition column name list #$index: $list"
         }
         .mkString("\n", "\n", "\n")
 

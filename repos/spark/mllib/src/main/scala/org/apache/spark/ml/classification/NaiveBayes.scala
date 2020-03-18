@@ -188,11 +188,9 @@ class NaiveBayesModel private[ml] (
 
   override protected def predictRaw(features: Vector): Vector = {
     $(modelType) match {
-      case Multinomial =>
-        multinomialCalculation(features)
-      case Bernoulli =>
-        bernoulliCalculation(features)
-      case _ =>
+      case Multinomial => multinomialCalculation(features)
+      case Bernoulli   => bernoulliCalculation(features)
+      case _           =>
         // This should never happen.
         throw new UnknownError(s"Invalid modelType: ${$(modelType)}.")
     }

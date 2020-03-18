@@ -181,9 +181,8 @@ private[changeSignature] object isAnonFunUsage {
       case ChildOf(und: ScUnderscoreSection) => Some(AnonFunUsageInfo(und, ref))
       case Both(ResolvesTo(m: PsiMethod), ChildOf(elem))
           if m.getParameterList.getParametersCount > 0 && !elem
-            .isInstanceOf[MethodInvocation] =>
-        Some(AnonFunUsageInfo(ref, ref))
-      case _ => None
+            .isInstanceOf[MethodInvocation] => Some(AnonFunUsageInfo(ref, ref))
+      case _                                => None
     }
   }
 }
@@ -216,17 +215,15 @@ private[changeSignature] object UsageUtil {
   def scalaUsage(usage: UsageInfo): Boolean =
     usage match {
       case ScalaNamedElementUsageInfo(_) | _: ParameterUsageInfo |
-          _: MethodUsageInfo | _: AnonFunUsageInfo | _: ImportUsageInfo =>
-        true
-      case _ => false
+          _: MethodUsageInfo | _: AnonFunUsageInfo | _: ImportUsageInfo => true
+      case _                                                            => false
     }
 
   def substitutor(usage: ScalaNamedElementUsageInfo): ScSubstitutor =
     usage match {
       case ScalaNamedElementUsageInfo(funUsage: FunUsageInfo) =>
         funUsage.namedElement match {
-          case fun: ScFunction =>
-            fun.superMethodAndSubstitutor match {
+          case fun: ScFunction => fun.superMethodAndSubstitutor match {
               case Some((_, subst)) => subst
               case _                => ScSubstitutor.empty
             }

@@ -140,8 +140,7 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](implicit
       case TdbClass(o) =>
         _tdb = o
         true
-      case _ =>
-        false
+      case _ => false
     }
   }
   lazy val tdb: TDB = _tdb

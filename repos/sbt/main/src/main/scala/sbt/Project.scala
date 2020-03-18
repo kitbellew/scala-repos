@@ -816,8 +816,7 @@ object Project extends ProjectExtra {
     type Rel = Relation[ScopedKey[_], ScopedKey[_]]
     val cMap = Def.flattenLocals(Def.compiled(settings, actual))
     ((Relation.empty: Rel) /: cMap) {
-      case (r, (key, value)) =>
-        r + (key, value.dependencies)
+      case (r, (key, value)) => r + (key, value.dependencies)
     }
   }
 
@@ -887,8 +886,7 @@ object Project extends ProjectExtra {
     s.copy(attributes = s.attributes.put(ProjectReturn, pr))
   def loadAction(s: State, action: LoadAction.Value) =
     action match {
-      case Return =>
-        projectReturn(s) match {
+      case Return => projectReturn(s) match {
           case current :: returnTo :: rest =>
             (setProjectReturn(s, returnTo :: rest), returnTo)
           case _ => sys.error("Not currently in a plugin definition")

@@ -28,8 +28,7 @@ class EnumSerializer[E <: Enumeration: ClassTag](enum: E)
 
   def deserialize(implicit
       format: Formats): PartialFunction[(TypeInfo, JValue), E#Value] = {
-    case (TypeInfo(EnumerationClass, _), json) =>
-      json match {
+    case (TypeInfo(EnumerationClass, _), json) => json match {
         case JInt(value) if (value <= enum.maxId) => enum(value.toInt)
         case value =>
           throw new MappingException(
@@ -51,8 +50,7 @@ class EnumNameSerializer[E <: Enumeration: ClassTag](enum: E)
 
   def deserialize(implicit
       format: Formats): PartialFunction[(TypeInfo, JValue), E#Value] = {
-    case (TypeInfo(EnumerationClass, _), json) =>
-      json match {
+    case (TypeInfo(EnumerationClass, _), json) => json match {
         case JString(value) if (enum.values.exists(_.toString == value)) =>
           enum.withName(value)
         case value =>

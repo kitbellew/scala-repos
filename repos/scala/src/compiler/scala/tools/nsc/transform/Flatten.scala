@@ -102,8 +102,7 @@ abstract class Flatten extends InfoTransform {
         case PolyType(tparams, restp) =>
           val restp1 = apply(restp)
           if (restp1 eq restp) tp else PolyType(tparams, restp1)
-        case _ =>
-          mapOver(tp)
+        case _ => mapOver(tp)
       }
   }
 
@@ -143,8 +142,7 @@ abstract class Flatten extends InfoTransform {
             if (tree.symbol.sourceModule.isStaticModule)
               removeSymbolInCurrentScope(tree.symbol.sourceModule)
             EmptyTree
-          case _ =>
-            super.transform(tree)
+          case _ => super.transform(tree)
         }
       }
 
@@ -162,8 +160,7 @@ abstract class Flatten extends InfoTransform {
                 ) // need to execute the qualifier but refer directly to the lifted module.
             }
           }
-        case _ =>
-          tree
+        case _ => tree
       }
       tree1 setType flattened(tree1.tpe)
     }

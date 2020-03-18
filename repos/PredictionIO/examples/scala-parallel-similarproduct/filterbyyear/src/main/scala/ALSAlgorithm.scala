@@ -73,10 +73,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
     // collect Item as Map and convert ID to Int index
     val items: Map[Int, Item] = data.items
-      .map {
-        case (id, item) =>
-          (itemStringIntMap(id), item)
-      }
+      .map { case (id, item) => (itemStringIntMap(id), item) }
       .collectAsMap
       .toMap
 
@@ -169,8 +166,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       }
 
     val filteredScore = indexScores.view.filter {
-      case (i, v) =>
-        isCandidateItem(
+      case (i, v) => isCandidateItem(
           i = i,
           items = model.items,
           categories = query.categories,

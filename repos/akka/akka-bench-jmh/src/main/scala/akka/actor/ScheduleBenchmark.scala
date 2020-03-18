@@ -74,10 +74,7 @@ class ScheduleBenchmark {
       val idx = aIdx.getAndIncrement
       if (idx <= to) op(idx)
     }
-    promise.future.onComplete {
-      case _ ⇒
-        tryWithNext.cancel()
-    }
+    promise.future.onComplete { case _ ⇒ tryWithNext.cancel() }
     Await.result(promise.future, within)
   }
 
@@ -89,10 +86,7 @@ class ScheduleBenchmark {
           (interv + interval, scheduler.scheduleOnce(interv) { op(idx) } :: c)
       }
       ._2
-    promise.future.onComplete {
-      case _ ⇒
-        tryWithNext.foreach(_.cancel())
-    }
+    promise.future.onComplete { case _ ⇒ tryWithNext.foreach(_.cancel()) }
     Await.result(promise.future, within)
   }
 }

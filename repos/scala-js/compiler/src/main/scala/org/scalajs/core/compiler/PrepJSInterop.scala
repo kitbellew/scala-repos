@@ -146,8 +146,7 @@ abstract class PrepJSInterop
             super.transform(tree)
 
           // Handle js.Anys
-          case idef: ImplDef if isJSAny(idef) =>
-            transformJSAny(idef)
+          case idef: ImplDef if isJSAny(idef) => transformJSAny(idef)
 
           /* In native JS objects, only js.Any stuff is allowed. However, synthetic
            * companion objects need to be allowed as they get generated, when a
@@ -156,8 +155,7 @@ abstract class PrepJSInterop
            */
           case modDef: ModuleDef
               if (enclosingOwner is OwnerKind.JSNativeMod) &&
-                modDef.symbol.isSynthetic =>
-            super.transform(tree)
+                modDef.symbol.isSynthetic => super.transform(tree)
 
           // In native JS objects, only js.Any stuff is allowed
           case idef: ImplDef if enclosingOwner is OwnerKind.JSNativeMod =>
@@ -413,8 +411,7 @@ abstract class PrepJSInterop
 
     private def postTransform(tree: Tree) =
       tree match {
-        case _ if !shouldPrepareExports =>
-          tree
+        case _ if !shouldPrepareExports => tree
 
         case Template(parents, self, body) =>
           val clsSym = tree.symbol.owner
@@ -980,12 +977,10 @@ abstract class PrepJSInterop
     object NoName {
       def unapply(t: Tree): Option[Option[Tree]] =
         t match {
-          case sel: Select if sel.symbol == noArg =>
-            Some(None)
+          case sel: Select if sel.symbol == noArg => Some(None)
           case Apply(meth, List(param)) if meth.symbol == intArg =>
             Some(Some(param))
-          case _ =>
-            None
+          case _ => None
         }
     }
 

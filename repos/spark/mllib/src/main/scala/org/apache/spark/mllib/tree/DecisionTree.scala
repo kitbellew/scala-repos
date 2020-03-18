@@ -667,8 +667,7 @@ object DecisionTree extends Serializable with Logging {
     // array of nodes to train indexed by node index in group
     val nodes = new Array[Node](numNodes)
     nodesForGroup.foreach {
-      case (treeIndex, nodesForTree) =>
-        nodesForTree.foreach { node =>
+      case (treeIndex, nodesForTree) => nodesForTree.foreach { node =>
           nodes(treeToNodeToIndexInfo(treeIndex)(node.id).nodeIndexInGroup) =
             node
         }
@@ -751,8 +750,7 @@ object DecisionTree extends Serializable with Logging {
 
     // Iterate over all nodes in this group.
     nodesForGroup.foreach {
-      case (treeIndex, nodesForTree) =>
-        nodesForTree.foreach { node =>
+      case (treeIndex, nodesForTree) => nodesForTree.foreach { node =>
           val nodeIndex = node.id
           val nodeInfo = treeToNodeToIndexInfo(treeIndex)(nodeIndex)
           val aggNodeIndex = nodeInfo.nodeIndexInGroup
@@ -1297,8 +1295,7 @@ object DecisionTree extends Serializable with Logging {
       // get count for each distinct value
       val (valueCountMap, numSamples) = featureSamples.foldLeft(
         (Map.empty[Double, Int], 0)) {
-        case ((m, cnt), x) =>
-          (m + ((x, m.getOrElse(x, 0) + 1)), cnt + 1)
+        case ((m, cnt), x) => (m + ((x, m.getOrElse(x, 0) + 1)), cnt + 1)
       }
       // sort distinct values
       val valueCounts = valueCountMap.toSeq.sortBy(_._1).toArray

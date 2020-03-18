@@ -28,12 +28,13 @@ trait FlashCookieSpec
   def appWithRedirect =
     GuiceApplicationBuilder()
       .routes {
-        case ("GET", "/flash") =>
-          Action { Redirect("/landing").flashing("success" -> "found") }
-        case ("GET", "/set-cookie") =>
-          Action { Ok.withCookies(Cookie("some-cookie", "some-value")) }
-        case ("GET", "/landing") =>
-          Action { Ok("ok") }
+        case ("GET", "/flash") => Action {
+            Redirect("/landing").flashing("success" -> "found")
+          }
+        case ("GET", "/set-cookie") => Action {
+            Ok.withCookies(Cookie("some-cookie", "some-value"))
+          }
+        case ("GET", "/landing") => Action { Ok("ok") }
       }
       .build()
 
@@ -52,10 +53,7 @@ trait FlashCookieSpec
         ws.url("/flash").withFollowRedirects(follow = false).get())
       response.status must equalTo(SEE_OTHER)
       val flashCookie = readFlashCookie(response)
-      flashCookie must beSome.like {
-        case cookie =>
-          cookie.maxAge must beNone
-      }
+      flashCookie must beSome.like { case cookie => cookie.maxAge must beNone }
     }
 
     "be removed after a redirect" in withClientAndServer { ws =>
@@ -83,8 +81,7 @@ trait FlashCookieSpec
           case cookie => cookie.value must beNone
         }
         response2.cookie("some-cookie") must beSome.like {
-          case cookie =>
-            cookie.value must beSome("some-value")
+          case cookie => cookie.value must beSome("some-value")
         }
 
     }

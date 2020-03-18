@@ -136,8 +136,7 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
   /** Get all the keys and states whose updated time is older than the give threshold time */
   override def getByTime(threshUpdatedTime: Long): Iterator[(K, S, Long)] = {
     val oldStates = parentStateMap.getByTime(threshUpdatedTime).filter {
-      case (key, value, _) =>
-        !deltaMap.contains(key)
+      case (key, value, _) => !deltaMap.contains(key)
     }
 
     val updatedStates = deltaMap.iterator
@@ -146,8 +145,7 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
           !stateInfo.deleted && stateInfo.updateTime < threshUpdatedTime
       }
       .map {
-        case (key, stateInfo) =>
-          (key, stateInfo.data, stateInfo.updateTime)
+        case (key, stateInfo) => (key, stateInfo.data, stateInfo.updateTime)
       }
     oldStates ++ updatedStates
   }
@@ -156,13 +154,11 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
   override def getAll(): Iterator[(K, S, Long)] = {
 
     val oldStates = parentStateMap.getAll().filter {
-      case (key, _, _) =>
-        !deltaMap.contains(key)
+      case (key, _, _) => !deltaMap.contains(key)
     }
 
     val updatedStates = deltaMap.iterator.filter { !_._2.deleted }.map {
-      case (key, stateInfo) =>
-        (key, stateInfo.data, stateInfo.updateTime)
+      case (key, stateInfo) => (key, stateInfo.data, stateInfo.updateTime)
     }
     oldStates ++ updatedStates
   }

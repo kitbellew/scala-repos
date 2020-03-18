@@ -138,8 +138,7 @@ trait ScReferenceElement
     }
     element match {
       case isWrapper(named) => return isReferenceTo(named, resolved)
-      case td: ScTypeDefinition =>
-        resolved match {
+      case td: ScTypeDefinition => resolved match {
           case method: PsiMethod if method.isConstructor =>
             if (ScEquivalenceUtil.smartEquivalence(td, method.containingClass))
               return true
@@ -176,8 +175,7 @@ trait ScReferenceElement
             }
           case _ =>
         }
-      case c: PsiClass =>
-        resolved match {
+      case c: PsiClass => resolved match {
           case method: PsiMethod if method.isConstructor =>
             if (c == method.containingClass) return true
           case _ =>
@@ -185,8 +183,7 @@ trait ScReferenceElement
       case _: ScTypeAliasDefinition
           if resolved.isInstanceOf[ScPrimaryConstructor] =>
         this.bind() match {
-          case Some(r: ScalaResolveResult) =>
-            r.parentElement match {
+          case Some(r: ScalaResolveResult) => r.parentElement match {
               case Some(ta: ScTypeAliasDefinition)
                   if ScEquivalenceUtil.smartEquivalence(ta, element) =>
                 return true
@@ -215,10 +212,8 @@ trait ScReferenceElement
     (resolved, element) match {
       case (typeAlias: ScTypeAliasDefinition, cls: PsiClass) =>
         typeAlias.isExactAliasFor(cls)
-      case (cons: ScPrimaryConstructor, cls: PsiClass) =>
-        this.bind() match {
-          case Some(r: ScalaResolveResult) =>
-            r.parentElement match {
+      case (cons: ScPrimaryConstructor, cls: PsiClass) => this.bind() match {
+          case Some(r: ScalaResolveResult) => r.parentElement match {
               case Some(ta: ScTypeAliasDefinition) => ta.isExactAliasFor(cls)
               case _                               => false
             }
@@ -372,8 +367,7 @@ trait ScReferenceElement
             ref = this,
             project = getProject)
           val imported = importHolder.getAllImportUsed.exists {
-            case ImportExprUsed(expr) =>
-              expr.reference.exists { ref =>
+            case ImportExprUsed(expr) => expr.reference.exists { ref =>
                 ref
                   .multiResolve(false)
                   .exists(rr =>

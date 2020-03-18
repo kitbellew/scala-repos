@@ -208,10 +208,8 @@ trait ShardQueryExecutorPlatform[M[+_]]
           val sortKey = InnerArrayConcat(opts.sortOn map { cpath =>
             WrapArray(
               cpath.nodes.foldLeft(constants.SourceValue.Single: TransSpec1) {
-                case (inner, f @ CPathField(_)) =>
-                  DerefObjectStatic(inner, f)
-                case (inner, i @ CPathIndex(_)) =>
-                  DerefArrayStatic(inner, i)
+                case (inner, f @ CPathField(_)) => DerefObjectStatic(inner, f)
+                case (inner, i @ CPathIndex(_)) => DerefArrayStatic(inner, i)
               })
           }: _*)
 
@@ -220,8 +218,7 @@ trait ShardQueryExecutorPlatform[M[+_]]
 
       def page(table: N[Table]): N[Table] =
         opts.page map {
-          case (offset, limit) =>
-            table map { _.takeRange(offset, limit) }
+          case (offset, limit) => table map { _.takeRange(offset, limit) }
         } getOrElse table
 
       page(sort(table map (_.compact(constants.SourceValue.Single))))

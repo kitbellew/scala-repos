@@ -126,8 +126,7 @@ private[kinesis] class KinesisTestUtils extends Logging {
   def deleteStream(): Unit = {
     try { if (streamCreated) { kinesisClient.deleteStream(streamName) } }
     catch {
-      case e: Exception =>
-        logWarning(s"Could not delete stream $streamName")
+      case e: Exception => logWarning(s"Could not delete stream $streamName")
     }
   }
 
@@ -137,8 +136,8 @@ private[kinesis] class KinesisTestUtils extends Logging {
       table.delete()
       table.waitForDelete()
     } catch {
-      case e: Exception =>
-        logWarning(s"Could not delete DynamoDB table $tableName")
+      case e: Exception => logWarning(
+          s"Could not delete DynamoDB table $tableName")
     }
   }
 
@@ -151,10 +150,7 @@ private[kinesis] class KinesisTestUtils extends Logging {
         .describeStream(describeStreamRequest)
         .getStreamDescription()
       Some(desc)
-    } catch {
-      case rnfe: ResourceNotFoundException =>
-        None
-    }
+    } catch { case rnfe: ResourceNotFoundException => None }
   }
 
   private def findNonExistentStreamName(): String = {

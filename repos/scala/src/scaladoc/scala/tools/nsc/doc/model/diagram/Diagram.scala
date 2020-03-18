@@ -60,8 +60,7 @@ sealed abstract class Node {
   /** shortcut to get a DocTemplateEntity */
   def doctpl: Option[DocTemplateEntity] =
     tpl match {
-      case Some(tpl) =>
-        tpl match {
+      case Some(tpl) => tpl match {
           case d: DocTemplateEntity => Some(d)
           case _                    => None
         }

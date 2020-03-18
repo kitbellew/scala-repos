@@ -86,11 +86,9 @@ class FutureTest extends SpecLite {
           case i :: is0 =>
             promises(i).complete(scala.util.Try(xs(i)))
             Nondeterminism[Future].chooseAny(fs).get.flatMap {
-              case (x, fs0) =>
-                loop(is0, fs0, acc :+ x)
+              case (x, fs0) => loop(is0, fs0, acc :+ x)
             }
-          case Nil =>
-            Future(acc)
+          case Nil => Future(acc)
         }
 
       val sorted = xs.zipWithIndex.sorted
@@ -105,8 +103,7 @@ class FutureTest extends SpecLite {
       val promises = Vector.fill(xs.size)(Promise[Int]())
       val f = Nondeterminism[Future].gather(promises.map(_.future))
       (promises zip xs).reverseIterator.foreach {
-        case (p, x) =>
-          p.complete(scala.util.Try(x))
+        case (p, x) => p.complete(scala.util.Try(x))
       }
       Await.result(f, duration) must_== xs
     }

@@ -48,8 +48,7 @@ class ScFieldIdImpl private (
 
   override def isStable =
     getContext match {
-      case l: ScIdList =>
-        l.getContext match {
+      case l: ScIdList => l.getContext match {
           case _: ScVariable => false
           case _             => true
         }
@@ -58,8 +57,7 @@ class ScFieldIdImpl private (
 
   override def delete() {
     getContext match {
-      case id: ScIdList if id.fieldIds == Seq(this) =>
-        id.getContext.delete()
+      case id: ScIdList if id.fieldIds == Seq(this) => id.getContext.delete()
       case _ =>
         throw new UnsupportedOperationException(
           "Cannot delete on id in a list of field ides.")

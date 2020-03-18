@@ -49,8 +49,7 @@ object HttpDtab {
     b64Decode(b64path) match {
       case Throw(e: IllegalArgumentException) => Throw(decodingFailure(b64path))
       case Throw(e)                           => Throw(e)
-      case Return(pathStr) =>
-        Try(Path.read(pathStr)).rescue {
+      case Return(pathStr) => Try(Path.read(pathStr)).rescue {
           case iae: IllegalArgumentException => Throw(pathFailure(pathStr, iae))
         }
     }
@@ -59,8 +58,7 @@ object HttpDtab {
     b64Decode(b64name) match {
       case Throw(e: IllegalArgumentException) => Throw(decodingFailure(b64name))
       case Throw(e)                           => Throw(e)
-      case Return(nameStr) =>
-        Try(NameTree.read(nameStr)).rescue {
+      case Return(nameStr) => Try(NameTree.read(nameStr)).rescue {
           case iae: IllegalArgumentException => Throw(nameFailure(nameStr, iae))
         }
     }
@@ -195,8 +193,7 @@ object HttpDtab {
 
       dentries(i) = tryDentry match {
         case Return(dentry) => dentry
-        case Throw(e) =>
-          return Throw(e)
+        case Throw(e)       => return Throw(e)
       }
 
       i += 1

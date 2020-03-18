@@ -30,8 +30,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     val nums = StringToChannelBuffer("nums")
 
     unwrap(codec(wrap("ZADD nums 3.14159 pi\r\n"))) {
-      case ZAdd(nums, members) =>
-        unwrap(members) {
+      case ZAdd(nums, members) => unwrap(members) {
           case ZMember(3.14159, value) =>
             assert(BytesToString(value.array) == "pi")
         }
@@ -42,8 +41,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     val nums = StringToChannelBuffer("nums")
 
     unwrap(codec(wrap("ZADD nums 3.14159 pi 2.71828 e\r\n"))) {
-      case ZAdd(nums, members) =>
-        members.toList match {
+      case ZAdd(nums, members) => members.toList match {
           case pi :: e :: Nil =>
             unwrap(List(pi)) {
               case ZMember(3.14159, value) =>
@@ -64,8 +62,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
 
   test("Correctly encode ZCARD") {
     unwrap(codec(wrap("ZCARD foo\r\n"))) {
-      case ZCard(key) =>
-        assert(BytesToString(key.array) == "foo")
+      case ZCard(key) => assert(BytesToString(key.array) == "foo")
     }
   }
 
@@ -96,10 +93,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
         ZInterval.exclusive(1),
         ZInterval(3))
     ).foreach {
-      case (s, v) =>
-        unwrap(codec(wrap("ZCOUNT %s\r\n".format(s)))) {
-          case c: Command =>
-            assert(c == v)
+      case (s, v) => unwrap(codec(wrap("ZCOUNT %s\r\n".format(s)))) {
+          case c: Command => assert(c == v)
         }
     }
   }
@@ -546,8 +541,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
   test("Correctly encode ZSCORE") {
     val myset = StringToChannelBuffer("myset")
     unwrap(codec(wrap("ZSCORE myset one\r\n"))) {
-      case ZScore(myset, one) =>
-        assert(BytesToString(one.array) == "one")
+      case ZScore(myset, one) => assert(BytesToString(one.array) == "one")
     }
   }
 }

@@ -513,8 +513,11 @@ abstract class ShardCoordinator(
   var regionTerminationInProgress = Set.empty[ActorRef]
 
   import context.dispatcher
-  val rebalanceTask = context.system.scheduler
-    .schedule(rebalanceInterval, rebalanceInterval, self, RebalanceTick)
+  val rebalanceTask = context.system.scheduler.schedule(
+    rebalanceInterval,
+    rebalanceInterval,
+    self,
+    RebalanceTick)
 
   cluster.subscribe(
     self,
@@ -569,8 +572,7 @@ abstract class ShardCoordinator(
           }
         }
 
-      case GetShardHome(shard) ⇒
-        if (!rebalanceInProgress.contains(shard)) {
+      case GetShardHome(shard) ⇒ if (!rebalanceInProgress.contains(shard)) {
           state.shards.get(shard) match {
             case Some(ref) ⇒
               if (regionTerminationInProgress(ref))
@@ -615,28 +617,24 @@ abstract class ShardCoordinator(
       case AllocateShardResult(shard, Some(region), getShardHomeSender) ⇒
         continueGetShardHome(shard, region, getShardHomeSender)
 
-      case ShardStarted(shard) ⇒
-        unAckedHostShards.get(shard) match {
+      case ShardStarted(shard) ⇒ unAckedHostShards.get(shard) match {
           case Some(cancel) ⇒
             cancel.cancel()
             unAckedHostShards = unAckedHostShards - shard
           case _ ⇒
         }
 
-      case ResendShardHost(shard, region) ⇒
-        state.shards.get(shard) match {
+      case ResendShardHost(shard, region) ⇒ state.shards.get(shard) match {
           case Some(`region`) ⇒ sendHostShardMsg(shard, region)
           case _ ⇒ //Reallocated to another region
         }
 
-      case RebalanceTick ⇒
-        if (state.regions.nonEmpty) {
+      case RebalanceTick ⇒ if (state.regions.nonEmpty) {
           val shardsFuture = allocationStrategy.rebalance(
             state.regions,
             rebalanceInProgress)
           shardsFuture.value match {
-            case Some(Success(shards)) ⇒
-              continueRebalance(shards)
+            case Some(Success(shards)) ⇒ continueRebalance(shards)
             case _ ⇒
               // continue when future is completed
               shardsFuture
@@ -646,8 +644,7 @@ abstract class ShardCoordinator(
           }
         }
 
-      case RebalanceResult(shards) ⇒
-        continueRebalance(shards)
+      case RebalanceResult(shards) ⇒ continueRebalance(shards)
 
       case RebalanceDone(shard, ok) ⇒
         rebalanceInProgress -= shard
@@ -737,8 +734,7 @@ abstract class ShardCoordinator(
         regionProxyTerminated(ref)
       }
 
-    case DelayedShardRegionTerminated(ref) ⇒
-      regionTerminated(ref)
+    case DelayedShardRegionTerminated(ref) ⇒ regionTerminated(ref)
   }
 
   def update[E <: DomainEvent](evt: E)(f: E ⇒ Unit): Unit
@@ -891,10 +887,8 @@ class PersistentShardCoordinator(
     case evt: DomainEvent ⇒
       log.debug("receiveRecover {}", evt)
       evt match {
-        case ShardRegionRegistered(region) ⇒
-          state = state.updated(evt)
-        case ShardRegionProxyRegistered(proxy) ⇒
-          state = state.updated(evt)
+        case ShardRegionRegistered(region) ⇒ state = state.updated(evt)
+        case ShardRegionProxyRegistered(proxy) ⇒ state = state.updated(evt)
         case ShardRegionTerminated(region) ⇒
           if (state.regions.contains(region)) state = state.updated(evt)
           else {
@@ -907,10 +901,8 @@ class PersistentShardCoordinator(
           }
         case ShardRegionProxyTerminated(proxy) ⇒
           if (state.regionProxies.contains(proxy)) state = state.updated(evt)
-        case ShardHomeAllocated(shard, region) ⇒
-          state = state.updated(evt)
-        case _: ShardHomeDeallocated ⇒
-          state = state.updated(evt)
+        case ShardHomeAllocated(shard, region) ⇒ state = state.updated(evt)
+        case _: ShardHomeDeallocated ⇒ state = state.updated(evt)
       }
 
     case SnapshotOffer(_, st: State) ⇒

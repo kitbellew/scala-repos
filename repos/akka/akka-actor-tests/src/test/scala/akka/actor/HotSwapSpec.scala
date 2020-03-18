@@ -69,8 +69,9 @@ class HotSwapSpec extends AkkaSpec with ImplicitSender {
       val a = system.actorOf(Props(new Actor {
         def receive = {
           case "init" ⇒ sender() ! "init"
-          case "swap" ⇒
-            context.become({ case x: String ⇒ context.sender() ! x })
+          case "swap" ⇒ context.become({
+              case x: String ⇒ context.sender() ! x
+            })
         }
       }))
 
@@ -85,8 +86,7 @@ class HotSwapSpec extends AkkaSpec with ImplicitSender {
       val a = system.actorOf(Props(new Actor {
         def receive = {
           case "init" ⇒ sender() ! "init"
-          case "swap" ⇒
-            context.become({
+          case "swap" ⇒ context.become({
               case "swapped" ⇒ sender() ! "swapped"
               case "revert" ⇒ context.unbecome()
             })

@@ -96,14 +96,14 @@ private[akkahttp] class ModelConversion(
     */
   private def convertRequestHeaders(request: HttpRequest): Headers = {
     val entityHeaders: Seq[(String, String)] = request.entity match {
-      case HttpEntity.Strict(contentType, _) =>
-        Seq((CONTENT_TYPE, contentType.value))
+      case HttpEntity.Strict(contentType, _) => Seq(
+          (CONTENT_TYPE, contentType.value))
       case HttpEntity.Default(contentType, contentLength, _) =>
         Seq(
           (CONTENT_TYPE, contentType.value),
           (CONTENT_LENGTH, contentLength.toString))
-      case HttpEntity.Chunked(contentType, _) =>
-        Seq((CONTENT_TYPE, contentType.value))
+      case HttpEntity.Chunked(contentType, _) => Seq(
+          (CONTENT_TYPE, contentType.value))
     }
     val normalHeaders: Seq[(String, String)] = request.headers
       .filter(_.isNot(`Raw-Request-URI`.lowercaseName))
@@ -117,12 +117,9 @@ private[akkahttp] class ModelConversion(
   private def convertRequestBody(request: HttpRequest)(implicit
       fm: Materializer): Option[Source[ByteString, Any]] = {
     request.entity match {
-      case HttpEntity.Strict(_, data) if data.isEmpty =>
-        None
-      case HttpEntity.Strict(_, data) =>
-        Some(Source.single(data))
-      case HttpEntity.Default(_, 0, _) =>
-        None
+      case HttpEntity.Strict(_, data) if data.isEmpty           => None
+      case HttpEntity.Strict(_, data)                           => Some(Source.single(data))
+      case HttpEntity.Default(_, 0, _)                          => None
       case HttpEntity.Default(contentType, contentLength, pubr) =>
         // FIXME: should do something with the content-length?
         Some(pubr)
@@ -186,8 +183,7 @@ private[akkahttp] class ModelConversion(
 
       case PlayHttpEntity.Chunked(data, _) =>
         val akkaChunks = data.map {
-          case HttpChunk.Chunk(chunk) =>
-            HttpEntity.Chunk(chunk)
+          case HttpChunk.Chunk(chunk) => HttpEntity.Chunk(chunk)
           case HttpChunk.LastChunk(trailers) if trailers.headers.isEmpty =>
             HttpEntity.LastChunk
           case HttpChunk.LastChunk(trailers) =>
@@ -201,11 +197,9 @@ private[akkahttp] class ModelConversion(
       headers: Iterable[(String, String)]): immutable.Seq[HttpHeader] = {
     headers
       .map {
-        case (name, value) =>
-          HttpHeader.parse(name, value) match {
+        case (name, value) => HttpHeader.parse(name, value) match {
             case HttpHeader.ParsingResult
-                  .Ok(header, errors /* errors are ignored if Ok */ ) =>
-              header
+                  .Ok(header, errors /* errors are ignored if Ok */ ) => header
             case HttpHeader.ParsingResult.Error(error) =>
               sys.error(s"Error parsing header: $error")
           }
@@ -238,8 +232,7 @@ private[akkahttp] class ModelConversion(
     convertedHeaders.foldLeft(emptyHeaders) {
       case (accum, te: `Transfer-Encoding`) =>
         accum.copy(transferEncoding = Some(te.encodings))
-      case (accum, miscHeader) =>
-        accum.copy(misc = accum.misc :+ miscHeader)
+      case (accum, miscHeader) => accum.copy(misc = accum.misc :+ miscHeader)
     }
   }
 

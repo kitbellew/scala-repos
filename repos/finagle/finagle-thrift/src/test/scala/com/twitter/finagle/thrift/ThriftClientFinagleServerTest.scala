@@ -28,10 +28,8 @@ class ThriftClientFinagleServerTest
     def multiply(a: Int, b: Int) = Future { a / b }
     def complex_return(someString: String) =
       someString match {
-        case "throwAnException" =>
-          throw new Exception("msg")
-        case _ =>
-          Future { new SomeStruct(123, someString) }
+        case "throwAnException" => throw new Exception("msg")
+        case _                  => Future { new SomeStruct(123, someString) }
       }
     def someway() = {
       somewayPromise() = Return.Unit

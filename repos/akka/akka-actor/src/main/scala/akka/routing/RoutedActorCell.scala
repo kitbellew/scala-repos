@@ -100,8 +100,7 @@ private[akka] class RoutedActorCell(
 
   private def stopIfChild(routee: Routee): Unit =
     routee match {
-      case ActorRefRoutee(ref) ⇒
-        child(ref.path.name) match {
+      case ActorRefRoutee(ref) ⇒ child(ref.path.name) match {
           case Some(`ref`) ⇒
             // The reason for the delay is to give concurrent
             // messages a chance to be placed in mailbox before sending PoisonPill,
@@ -182,10 +181,8 @@ private[akka] class RouterActor extends Actor {
         name = "routingLogicController"))
 
   def receive = {
-    case GetRoutees ⇒
-      sender() ! Routees(cell.router.routees)
-    case AddRoutee(routee) ⇒
-      cell.addRoutee(routee)
+    case GetRoutees ⇒ sender() ! Routees(cell.router.routees)
+    case AddRoutee(routee) ⇒ cell.addRoutee(routee)
     case RemoveRoutee(routee) ⇒
       cell.removeRoutee(routee, stopChild = true)
       stopIfAllRouteesRemoved()

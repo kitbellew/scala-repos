@@ -97,8 +97,7 @@ abstract class Taggers {
           if (tagModule.isTopLevel) Ident(tagModule)
           else Select(prefix, tagModule.name)
         Select(ref, coreTags(coreTpe))
-      case _ =>
-        translatingReificationErrors(materializer)
+      case _ => translatingReificationErrors(materializer)
     }
     try c.typecheck(result)
     catch { case terr @ TypecheckException(pos, msg) => failTag(result, terr) }

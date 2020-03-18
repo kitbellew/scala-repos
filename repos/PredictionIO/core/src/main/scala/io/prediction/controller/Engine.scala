@@ -226,8 +226,7 @@ class Engine[TD, EI, PD, Q, P, A](
         val pd = preparator.prepareBase(sc, td)
 
         val models = algorithms.zip(persistedModels).map {
-          case (algo, m) =>
-            m match {
+          case (algo, m) => m match {
               case Unit => algo.trainBase(sc, pd)
               case _    => m
             }
@@ -396,8 +395,7 @@ class Engine[TD, EI, PD, Q, P, A](
       } map { jv =>
         val algorithmsParamsJson = jv._2
         algorithmsParamsJson match {
-          case JArray(s) =>
-            s.map { algorithmParamsJValue =>
+          case JArray(s) => s.map { algorithmParamsJValue =>
               val eap = algorithmParamsJValue
                 .extract[CreateWorkflow.AlgorithmParams]
               (

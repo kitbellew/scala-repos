@@ -86,10 +86,8 @@ object Main {
 
       if (!hasErrors)
         worksheetFactory.getRunner(out, standalone).loadAndRun(args, client)
-    } catch {
-      case e: Throwable =>
-        client.trace(e)
-    } finally { System.setOut(oldOut) }
+    } catch { case e: Throwable => client.trace(e) }
+    finally { System.setOut(oldOut) }
   }
 
   private def cancelShutdown() = {

@@ -149,8 +149,7 @@ class ZookeeperSystemCoordination(
           this.newState = ProducerState(ps.lastSequenceId + blockSize)
           toNodeData(newState.serialize)
 
-        case Failure(_) =>
-          cur
+        case Failure(_) => cur
       }
     }
   }
@@ -167,8 +166,7 @@ class ZookeeperSystemCoordination(
         // that the start start of the block is derived by subtraction
         IdSequenceBlock(producerId, next - blockSize + 1, next)
 
-      case None =>
-        sys.error("Unable to get new producer sequence block")
+      case None => sys.error("Unable to get new producer sequence block")
     }
   }
 

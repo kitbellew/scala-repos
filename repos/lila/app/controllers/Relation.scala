@@ -20,8 +20,7 @@ object Relation extends LilaController {
     (ctx.userId ?? { env.api.fetchRelation(_, userId) }) zip
       (ctx.isAuth ?? { Env.pref.api followable userId }) zip
       (ctx.userId ?? { env.api.fetchBlocks(userId, _) }) flatMap {
-      case ((relation, followable), blocked) =>
-        negotiate(
+      case ((relation, followable), blocked) => negotiate(
           html = fuccess(Ok(mini.fold(
             html.relation.mini(
               userId,

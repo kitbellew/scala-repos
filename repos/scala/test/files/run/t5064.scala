@@ -14,8 +14,8 @@ object Test extends CompilerTest {
     for (ClassDef(_, _, _, Template(_, _, stats)) <- unit.body; stat <- stats;
          t <- stat) {
       t match {
-        case _: Select | _: Apply | _: This =>
-          println("%-15s %s".format(t.pos.show, t))
+        case _: Select | _: Apply | _: This => println(
+            "%-15s %s".format(t.pos.show, t))
         case _ =>
       }
     }

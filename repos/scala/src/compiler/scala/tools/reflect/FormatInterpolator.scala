@@ -116,8 +116,9 @@ abstract class FormatInterpolator {
             val suggest = {
               val r = "([0-7]{1,3}).*".r
               (s0 drop e.index + 1) match {
-                case r(n) =>
-                  altOf { (0 /: n) { case (a, o) => (8 * a) + (o - '0') } }
+                case r(n) => altOf {
+                    (0 /: n) { case (a, o) => (8 * a) + (o - '0') }
+                  }
                 case _ => ""
               }
             }
@@ -328,18 +329,13 @@ abstract class FormatInterpolator {
       }
       def cv(cc: Char) =
         cc match {
-          case 'b' | 'B' | 'h' | 'H' | 's' | 'S' =>
-            new GeneralXn(m, p, n)
-          case 'c' | 'C' =>
-            new CharacterXn(m, p, n)
-          case 'd' | 'o' | 'x' | 'X' =>
-            new IntegralXn(m, p, n)
+          case 'b' | 'B' | 'h' | 'H' | 's' | 'S' => new GeneralXn(m, p, n)
+          case 'c' | 'C'                         => new CharacterXn(m, p, n)
+          case 'd' | 'o' | 'x' | 'X'             => new IntegralXn(m, p, n)
           case 'e' | 'E' | 'f' | 'g' | 'G' | 'a' | 'A' =>
             new FloatingPointXn(m, p, n)
-          case 't' | 'T' =>
-            new DateTimeXn(m, p, n)
-          case '%' | 'n' =>
-            new LiteralXn(m, p, n)
+          case 't' | 'T' => new DateTimeXn(m, p, n)
+          case '%' | 'n' => new LiteralXn(m, p, n)
           case _ =>
             badCC(s"illegal conversion character '$cc'")
             null

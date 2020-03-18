@@ -372,8 +372,7 @@ private[spark] final class ShuffleBlockFetcherIterator(
             result.blockId,
             new BufferReleasingInputStream(buf.createInputStream(), this))
         } catch {
-          case NonFatal(t) =>
-            throwFetchFailedException(blockId, address, t)
+          case NonFatal(t) => throwFetchFailedException(blockId, address, t)
         }
     }
   }

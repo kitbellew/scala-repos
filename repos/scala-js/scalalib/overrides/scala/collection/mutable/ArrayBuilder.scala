@@ -163,8 +163,7 @@ object ArrayBuilder {
           Array.copy(xs.array, 0, elems, this.size, xs.length)
           size += xs.length
           this
-        case _ =>
-          super.++=(xs)
+        case _ => super.++=(xs)
       }
 
     def clear() { size = 0 }
@@ -227,8 +226,7 @@ object ArrayBuilder {
           Array.copy(xs.array, 0, elems, this.size, xs.length)
           size += xs.length
           this
-        case _ =>
-          super.++=(xs)
+        case _ => super.++=(xs)
       }
 
     def clear() { size = 0 }
@@ -291,8 +289,7 @@ object ArrayBuilder {
           Array.copy(xs.array, 0, elems, this.size, xs.length)
           size += xs.length
           this
-        case _ =>
-          super.++=(xs)
+        case _ => super.++=(xs)
       }
 
     def clear() { size = 0 }
@@ -355,8 +352,7 @@ object ArrayBuilder {
           Array.copy(xs.array, 0, elems, this.size, xs.length)
           size += xs.length
           this
-        case _ =>
-          super.++=(xs)
+        case _ => super.++=(xs)
       }
 
     def clear() { size = 0 }
@@ -419,8 +415,7 @@ object ArrayBuilder {
           Array.copy(xs.array, 0, elems, this.size, xs.length)
           size += xs.length
           this
-        case _ =>
-          super.++=(xs)
+        case _ => super.++=(xs)
       }
 
     def clear() { size = 0 }
@@ -483,8 +478,7 @@ object ArrayBuilder {
           Array.copy(xs.array, 0, elems, this.size, xs.length)
           size += xs.length
           this
-        case _ =>
-          super.++=(xs)
+        case _ => super.++=(xs)
       }
 
     def clear() { size = 0 }
@@ -547,8 +541,7 @@ object ArrayBuilder {
           Array.copy(xs.array, 0, elems, this.size, xs.length)
           size += xs.length
           this
-        case _ =>
-          super.++=(xs)
+        case _ => super.++=(xs)
       }
 
     def clear() { size = 0 }
@@ -611,8 +604,7 @@ object ArrayBuilder {
           Array.copy(xs.array, 0, elems, this.size, xs.length)
           size += xs.length
           this
-        case _ =>
-          super.++=(xs)
+        case _ => super.++=(xs)
       }
 
     def clear() { size = 0 }
@@ -672,8 +664,7 @@ object ArrayBuilder {
           Array.copy(xs.array, 0, elems, this.size, xs.length)
           size += xs.length
           this
-        case _ =>
-          super.++=(xs)
+        case _ => super.++=(xs)
       }
 
     def clear() { size = 0 }
@@ -736,8 +727,7 @@ object ArrayBuilder {
           Array.copy(xs.array, 0, elems, this.size, xs.length)
           size += xs.length
           this
-        case _ =>
-          super.++=(xs)
+        case _ => super.++=(xs)
       }
 
     def clear() { size = 0 }

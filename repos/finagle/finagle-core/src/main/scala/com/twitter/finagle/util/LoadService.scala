@@ -147,9 +147,7 @@ private object ClassPath {
       }
     } finally {
       try jarFile.close()
-      catch {
-        case _: IOException =>
-      }
+      catch { case _: IOException => }
     }
   }
 

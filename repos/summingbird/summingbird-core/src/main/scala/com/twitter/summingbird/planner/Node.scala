@@ -161,8 +161,7 @@ case class Dag[P <: Platform[P]](
 
   def toStringWithPrefix(prefix: String): String = {
     prefix + "Dag\n" + nodes.foldLeft("") {
-      case (str, node) =>
-        str + node.toStringWithPrefix(prefix + "\t") + "\n"
+      case (str, node) => str + node.toStringWithPrefix(prefix + "\t") + "\n"
     }
   }
 

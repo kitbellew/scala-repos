@@ -140,10 +140,8 @@ trait App extends Closable with CloseAwaitably {
   final def main(args: Array[String]): Unit = {
     try { nonExitingMain(args) }
     catch {
-      case FlagUsageError(reason) =>
-        exitOnError(reason)
-      case FlagParseException(reason, _) =>
-        exitOnError(reason)
+      case FlagUsageError(reason)        => exitOnError(reason)
+      case FlagParseException(reason, _) => exitOnError(reason)
       case e: Throwable =>
         e.printStackTrace()
         exitOnError("Exception thrown in main on startup")
@@ -156,12 +154,9 @@ trait App extends Closable with CloseAwaitably {
     for (f <- inits) f()
 
     flag.parseArgs(args, allowUndefinedFlags) match {
-      case Flags.Ok(remainder) =>
-        _args = remainder.toArray
-      case Flags.Help(usage) =>
-        throw FlagUsageError(usage)
-      case Flags.Error(reason) =>
-        throw FlagParseException(reason)
+      case Flags.Ok(remainder) => _args = remainder.toArray
+      case Flags.Help(usage)   => throw FlagUsageError(usage)
+      case Flags.Error(reason) => throw FlagParseException(reason)
     }
 
     for (f <- premains) f()

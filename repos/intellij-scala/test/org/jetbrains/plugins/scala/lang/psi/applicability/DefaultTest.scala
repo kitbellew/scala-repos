@@ -8,33 +8,17 @@ import org.jetbrains.plugins.scala.lang.psi.types._
   */
 class DefaultTest extends ApplicabilityTestBase {
   def testFine() {
-    assertProblems("(a: A = null)", "()") {
-      case Nil =>
-    }
-    assertProblems("(a: A = null)", "(A)") {
-      case Nil =>
-    }
-    assertProblems("(a: A = null, b: B = null)", "()") {
-      case Nil =>
-    }
-    assertProblems("(a: A = null, b: B = null)", "(A)") {
-      case Nil =>
-    }
-    assertProblems("(a: A = null, b: B = null)", "(A, B)") {
-      case Nil =>
-    }
+    assertProblems("(a: A = null)", "()") { case Nil                  => }
+    assertProblems("(a: A = null)", "(A)") { case Nil                 => }
+    assertProblems("(a: A = null, b: B = null)", "()") { case Nil     => }
+    assertProblems("(a: A = null, b: B = null)", "(A)") { case Nil    => }
+    assertProblems("(a: A = null, b: B = null)", "(A, B)") { case Nil => }
   }
 
   def testMix() {
-    assertProblems("(a: A, b: B = null)", "(A)") {
-      case Nil =>
-    }
-    assertProblems("(a: A, b: B = null)", "(A, B)") {
-      case Nil =>
-    }
-    assertProblems("(a: A = null, b: B)", "(A, B)") {
-      case Nil =>
-    }
+    assertProblems("(a: A, b: B = null)", "(A)") { case Nil    => }
+    assertProblems("(a: A, b: B = null)", "(A, B)") { case Nil => }
+    assertProblems("(a: A = null, b: B)", "(A, B)") { case Nil => }
   }
 
   def testTooManyArguments() {
@@ -55,9 +39,7 @@ class DefaultTest extends ApplicabilityTestBase {
       case MissedParametersClause(_) :: Nil =>
     }
     // This is allowed.
-    assertProblemsConstructor("", "(p: A = null)", "") {
-      case Nil =>
-    }
+    assertProblemsConstructor("", "(p: A = null)", "") { case Nil => }
   }
 
   def testMissedParameter() {

@@ -31,10 +31,8 @@ trait ListInstances extends ListInstances0 {
       @tailrec
       def loop(a: List[A], x: Option[A]): Option[A] =
         a match {
-          case h :: t =>
-            loop(t, if (f(h)) Some(h) else x)
-          case Nil =>
-            x
+          case h :: t => loop(t, if (f(h)) Some(h) else x)
+          case Nil    => x
         }
       loop(fa, None)
     }
@@ -56,10 +54,8 @@ trait ListInstances extends ListInstances0 {
       @annotation.tailrec
       def loop(aa: List[A], bb: List[B], accum: List[C]): List[C] =
         (aa, bb) match {
-          case (Nil, _) =>
-            accum reverse_::: bb.map(b => f(\&/.That(b)))
-          case (_, Nil) =>
-            accum reverse_::: aa.map(a => f(\&/.This(a)))
+          case (Nil, _) => accum reverse_::: bb.map(b => f(\&/.That(b)))
+          case (_, Nil) => accum reverse_::: aa.map(a => f(\&/.This(a)))
           case (ah :: at, bh :: bt) =>
             loop(at, bt, f(\&/.Both(ah, bh)) :: accum)
         }
@@ -138,11 +134,9 @@ trait ListInstances extends ListInstances0 {
           case (\/-(b) :: tail) :: rest =>
             bs += b
             go(tail :: rest)
-          case (-\/(a0) :: tail) :: rest =>
-            go(f(a0) :: tail :: rest)
-          case Nil :: rest =>
-            go(rest)
-          case Nil =>
+          case (-\/(a0) :: tail) :: rest => go(f(a0) :: tail :: rest)
+          case Nil :: rest               => go(rest)
+          case Nil                       =>
         }
       go(List(f(a)))
       bs.result
@@ -266,8 +260,7 @@ trait ListFunctions {
       F: Applicative[M]): M[(List[A], List[A])] =
     as match {
       case Nil => F.point(Nil: List[A], Nil: List[A])
-      case h :: t =>
-        F.ap(partitionM(t)(p))(F.map(p(h))(b => {
+      case h :: t => F.ap(partitionM(t)(p))(F.map(p(h))(b => {
           case (x, y) => if (b) (h :: x, y) else (x, h :: y)
         }))
     }
@@ -406,8 +399,7 @@ private trait ListOrder[A] extends Order[List[A]] with ListEqual[A] {
       case (Nil, Nil)    => EQ
       case (Nil, _ :: _) => LT
       case (_ :: _, Nil) => GT
-      case (a :: as, b :: bs) =>
-        Order[A].order(a, b) match {
+      case (a :: as, b :: bs) => Order[A].order(a, b) match {
           case EQ => order(as, bs)
           case x  => x
         }

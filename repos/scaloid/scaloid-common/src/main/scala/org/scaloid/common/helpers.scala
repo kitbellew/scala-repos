@@ -220,16 +220,14 @@ trait PreferenceHelpers {
   @inline
   def preferenceVar[T](key: String, defaultVal: T): PreferenceVar[T] =
     defaultVal match {
-      case v: String =>
-        new PreferenceVar[String](key, v) {
+      case v: String => new PreferenceVar[String](key, v) {
           override def apply(value: String)(implicit
               pref: SharedPreferences): String = pref.getString(key, value)
 
           def put(value: String, editor: SharedPreferences.Editor): Unit =
             editor.putString(key, value)
         }.asInstanceOf[PreferenceVar[T]]
-      case v: Set[String] =>
-        new PreferenceVar[Set[String]](key, v) {
+      case v: Set[String] => new PreferenceVar[Set[String]](key, v) {
           import scala.collection.JavaConversions._
           import scala.collection.JavaConverters._
           override def apply(value: Set[String])(implicit
@@ -239,32 +237,28 @@ trait PreferenceHelpers {
           def put(value: Set[String], editor: SharedPreferences.Editor): Unit =
             editor.putStringSet(key, value)
         }.asInstanceOf[PreferenceVar[T]]
-      case v: Int =>
-        new PreferenceVar[Int](key, v) {
+      case v: Int => new PreferenceVar[Int](key, v) {
           override def apply(value: Int)(implicit
               pref: SharedPreferences): Int = pref.getInt(key, value)
 
           def put(value: Int, editor: SharedPreferences.Editor): Unit =
             editor.putInt(key, value)
         }.asInstanceOf[PreferenceVar[T]]
-      case v: Long =>
-        new PreferenceVar[Long](key, v) {
+      case v: Long => new PreferenceVar[Long](key, v) {
           override def apply(value: Long)(implicit
               pref: SharedPreferences): Long = pref.getLong(key, value)
 
           def put(value: Long, editor: SharedPreferences.Editor): Unit =
             editor.putLong(key, value)
         }.asInstanceOf[PreferenceVar[T]]
-      case v: Float =>
-        new PreferenceVar[Float](key, v) {
+      case v: Float => new PreferenceVar[Float](key, v) {
           override def apply(value: Float)(implicit
               pref: SharedPreferences): Float = pref.getFloat(key, value)
 
           def put(value: Float, editor: SharedPreferences.Editor): Unit =
             editor.putFloat(key, value)
         }.asInstanceOf[PreferenceVar[T]]
-      case v: Boolean =>
-        new PreferenceVar[Boolean](key, v) {
+      case v: Boolean => new PreferenceVar[Boolean](key, v) {
           override def apply(value: Boolean)(implicit
               pref: SharedPreferences): Boolean = pref.getBoolean(key, value)
 

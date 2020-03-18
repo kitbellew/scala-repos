@@ -187,8 +187,7 @@ class ScalaPatternParameterInfoHandler
             if fun.parameters.headOption.exists(_.name == "x$0") =>
           val companionClass: Option[ScClass] = Option(
             fun.containingClass) match {
-            case Some(x: ScObject) =>
-              ScalaPsiUtil.getCompanionModule(x) match {
+            case Some(x: ScObject) => ScalaPsiUtil.getCompanionModule(x) match {
                 case Some(x: ScClass) => Some(x)
                 case _                => None
               }
@@ -196,8 +195,7 @@ class ScalaPatternParameterInfoHandler
           }
 
           companionClass match {
-            case Some(cls) =>
-              ScalaPsiUtil.nthConstructorParam(cls, o) match {
+            case Some(cls) => ScalaPsiUtil.nthConstructorParam(cls, o) match {
                 case Some(param) =>
                   if (param.isRepeatedParameter) {
                     paramTypeText // Not handled yet.
@@ -220,8 +218,7 @@ class ScalaPatternParameterInfoHandler
             case Some(param) => param.getName + ": " + paramTypeText
             case None        => paramTypeText
           }
-        case _ =>
-          paramTypeText
+        case _ => paramTypeText
       }
     } else paramTypeText
   }
@@ -257,8 +254,7 @@ class ScalaPatternParameterInfoHandler
       getArgumentListClass)
     if (args != null) {
       context match {
-        case context: CreateParameterInfoContext =>
-          args.getParent match {
+        case context: CreateParameterInfoContext => args.getParent match {
             case constr: ScConstructorPattern => {
               val ref: ScStableCodeReferenceElement = constr.ref
               val res: ArrayBuffer[Object] = new ArrayBuffer[Object]
@@ -295,9 +291,8 @@ class ScalaPatternParameterInfoHandler
                               case Some(tp) =>
                                 val t = Conformance.conforms(tp, funType)
                                 if (t) {
-                                  val undefSubst = Conformance.undefinedSubst(
-                                    tp,
-                                    funType)
+                                  val undefSubst = Conformance
+                                    .undefinedSubst(tp, funType)
                                   undefSubst.getSubstitutor match {
                                     case Some(newSubst) =>
                                       newSubst.followed(substitutor)

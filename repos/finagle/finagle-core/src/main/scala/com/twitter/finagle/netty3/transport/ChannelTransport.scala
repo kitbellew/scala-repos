@@ -80,11 +80,10 @@ class ChannelTransport[In, Out](ch: Channel)
 
       case e: ChannelStateEvent
           if e.getState == ChannelState.CONNECTED
-            && e.getValue == java.lang.Boolean.TRUE =>
-        need(0)
+            && e.getValue == java.lang.Boolean.TRUE => need(0)
 
-      case e: ExceptionEvent =>
-        fail(ChannelException(e.getCause, ch.getRemoteAddress))
+      case e: ExceptionEvent => fail(
+          ChannelException(e.getCause, ch.getRemoteAddress))
 
       case _ => // drop.
     }

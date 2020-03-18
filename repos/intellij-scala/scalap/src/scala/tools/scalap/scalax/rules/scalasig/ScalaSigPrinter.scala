@@ -105,8 +105,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         case c: ClassSymbol if !refinementClass(c) && !c.isModule =>
           indent()
           printClass(level, c)
-        case m: MethodSymbol =>
-          printMethod(level, m, indent)
+        case m: MethodSymbol => printMethod(level, m, indent)
         case a: AliasSymbol =>
           indent()
           printAlias(level, a)
@@ -176,8 +175,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   def printModifiers(symbol: Symbol) {
     lazy val privateWithin: Option[String] = {
       symbol match {
-        case sym: SymbolInfoSymbol =>
-          sym.symbolInfo.privateWithin match {
+        case sym: SymbolInfoSymbol => sym.symbolInfo.privateWithin match {
             case Some(t: Symbol) => Some("[" + processName(t.name) + "]")
             case _               => None
           }
@@ -439,8 +437,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     print("type ")
     print(processName(a.name))
     val tp = a.infoType match {
-      case PolyType(typeRef, symbols) =>
-        printType(PolyTypeWithCons(typeRef, symbols, " = "))
+      case PolyType(typeRef, symbols) => printType(
+          PolyTypeWithCons(typeRef, symbols, " = "))
       case tp => printType(tp, " = ")
     }
     print("\n")
@@ -451,8 +449,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     print("type ")
     print(processName(t.name))
     t.infoType match {
-      case PolyType(typeRef, symbols) =>
-        printType(PolyTypeWithCons(typeRef, symbols, ""))
+      case PolyType(typeRef, symbols) => printType(
+          PolyTypeWithCons(typeRef, symbols, ""))
       case _ => printType(t.infoType)
     }
     print("\n")
@@ -485,9 +483,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
       case s: String =>
         if (s.contains("\n") || s.contains("\r")) { "\"\"\"" + s + "\"\"\"" }
         else "\"" + StringEscapeUtils.escapeJava(s) + "\""
-      case arr: Array[_] =>
-        arr.map(valueToString).mkString("Array(", ", ", ")")
-      case _ => value.toString
+      case arr: Array[_] => arr.map(valueToString).mkString("Array(", ", ", ")")
+      case _             => value.toString
     }
 
   implicit object _tf extends TypeFlags(false)
@@ -515,8 +512,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
       case ThisType(symbol) => sep + processName(symbol.name) + ".this.type"
       case SingleType(ThisType(thisSymbol: ClassSymbol), symbol) =>
         val thisSymbolName: String = thisSymbol.name match {
-          case "package" =>
-            thisSymbol.symbolInfo.owner match {
+          case "package" => thisSymbol.symbolInfo.owner match {
               case ex: ExternalSymbol => processName(ex.name)
               case _                  => "this"
             }
@@ -564,8 +560,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
           typeArgs)
       case TypeRefType(prefix, symbol, typeArgs) =>
         sep + (symbol.path match {
-          case "scala.<repeated>" =>
-            flags match {
+          case "scala.<repeated>" => flags match {
               case TypeFlags(true) => toString(typeArgs.head) + "*"
               case _               => "scala.Seq" + typeArgString(typeArgs)
             }
@@ -575,8 +570,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
                 self: Option[Type],
                 parent: Symbol): Boolean = {
               self match {
-                case Some(tp) =>
-                  tp match {
+                case Some(tp) => tp match {
                     case ThisType(symbol)          => symbol == parent
                     case SingleType(_, symbol)     => symbol == parent
                     case c: ConstantType           => false
@@ -627,16 +621,14 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
               case (ThisType(packSymbol), _, _) if !packSymbol.isType =>
                 processName(packSymbol.path.replace("<root>", "_root_")) + "."
               case (ThisType(classSymbol: ClassSymbol), _, _)
-                  if refinementClass(classSymbol) =>
-                ""
+                  if refinementClass(classSymbol) => ""
               case (
                     ThisType(typeSymbol: ClassSymbol),
                     ExternalSymbol(_, Some(parent), _),
                     _)
                   if typeSymbol.path != parent.path && checkContainsSelf(
                     typeSymbol.selfType,
-                    parent) =>
-                processName(typeSymbol.name) + ".this."
+                    parent) => processName(typeSymbol.name) + ".this."
               case (ThisType(typeSymbol), ExternalSymbol(_, Some(parent), _), _)
                   if typeSymbol.path != parent.path =>
                 processName(typeSymbol.name) + ".super[" + processName(
@@ -651,8 +643,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
             val typeBounds =
               if (name == "_") {
                 symbol match {
-                  case ts: TypeSymbol =>
-                    ts.infoType match {
+                  case ts: TypeSymbol => ts.infoType match {
                       case t: TypeBoundsType => toString(t)
                       case _                 => ""
                     }
@@ -691,8 +682,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
           sep) + " })#λ"
       case PolyTypeWithCons(typeRef, symbols, cons) =>
         typeParamString(symbols) + cons + toString(typeRef, sep)
-      case AnnotatedType(typeRef, attribTreeRefs) =>
-        toString(typeRef, sep)
+      case AnnotatedType(typeRef, attribTreeRefs) => toString(typeRef, sep)
       case AnnotatedWithSelfType(typeRef, symbol, attribTreeRefs) =>
         toString(typeRef, sep)
       //case DeBruijnIndexType(typeLevel, typeIndex) =>
@@ -831,9 +821,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         def isOperatorPart(c: Char): Boolean =
           (c: @switch) match {
             case '~' | '!' | '@' | '#' | '%' | '^' | '*' | '+' | '-' | '<' |
-                '>' | '?' | ':' | '=' | '&' | '|' | '/' | '\\' =>
-              true
-            case c => isSpecial(c)
+                '>' | '?' | ':' | '=' | '&' | '|' | '/' | '\\' => true
+            case c                                             => isSpecial(c)
           }
 
         if (id.isEmpty) return false

@@ -303,8 +303,7 @@ object Build extends sbt.Build {
               "repo.scala-js.org",
               s"/home/scalajsrepo/www/repo/$snapshotsOrReleases")(
               Resolver.ivyStylePatterns) as (user, pass))
-        case _ =>
-          None
+        case _ => None
       }
     })
 
@@ -1040,11 +1039,9 @@ object Build extends sbt.Build {
                 baseArgs :+ "source-maps"
               } else { baseArgs }
 
-            case _: PhantomJSEnv =>
-              Seq("phantomjs")
+            case _: PhantomJSEnv => Seq("phantomjs")
 
-            case env: RetryingComJSEnv =>
-              envTagsFor(env.baseEnv)
+            case env: RetryingComJSEnv => envTagsFor(env.baseEnv)
 
             case _ =>
               throw new AssertionError(
@@ -1138,8 +1135,7 @@ object Build extends sbt.Build {
       scalaJSSemantics ~= (_.withRuntimeClassName(_.fullName match {
         case "org.scalajs.testsuite.compiler.ReflectionTest$RenamedTestClass" =>
           "renamed.test.Class"
-        case fullName =>
-          fullName
+        case fullName => fullName
       })),
       /* Generate a scala source file that throws exceptions in
        * various places (while attaching the source line to the

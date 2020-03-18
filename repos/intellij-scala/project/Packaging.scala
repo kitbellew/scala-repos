@@ -66,10 +66,8 @@ object Packaging {
       entry: PackageEntry,
       resolvedLibraries: Map[ModuleID, File]): (File, String) =
     entry match {
-      case Directory(source, destination) =>
-        source -> destination
-      case Artifact(source, destination) =>
-        source -> destination
+      case Directory(source, destination) => source -> destination
+      case Artifact(source, destination)  => source -> destination
       case MergedArtifact(srcs, destination) =>
         mergeIntoTemporaryJar(srcs: _*) -> destination
       case Library(libraryId, destination) =>

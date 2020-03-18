@@ -62,8 +62,7 @@ private[sql] object InferSchema {
             case _: JsonParseException if shouldHandleCorruptRecord =>
               Some(StructType(
                 Seq(StructField(columnNameOfCorruptRecords, StringType))))
-            case _: JsonParseException =>
-              None
+            case _: JsonParseException => None
           }
         }
       }
@@ -132,8 +131,7 @@ private[sql] object InferSchema {
         ArrayType(elementType)
 
       case (VALUE_NUMBER_INT | VALUE_NUMBER_FLOAT)
-          if configOptions.primitivesAsString =>
-        StringType
+          if configOptions.primitivesAsString => StringType
 
       case (VALUE_TRUE | VALUE_FALSE) if configOptions.primitivesAsString =>
         StringType
@@ -164,10 +162,9 @@ private[sql] object InferSchema {
     */
   private def canonicalizeType(tpe: DataType): Option[DataType] =
     tpe match {
-      case at @ ArrayType(elementType, _) =>
-        for { canonicalType <- canonicalizeType(elementType) } yield {
-          at.copy(canonicalType)
-        }
+      case at @ ArrayType(elementType, _) => for {
+          canonicalType <- canonicalizeType(elementType)
+        } yield { at.copy(canonicalType) }
 
       case StructType(fields) =>
         val canonicalFields: Array[StructField] = for {

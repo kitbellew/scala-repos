@@ -12,8 +12,7 @@ object Crash {
   def crash(updates: List[StateUpdate[_]]) {
     updates match {
       case Nil =>
-      case u :: us =>
-        u match {
+      case u :: us => u match {
           //Line below seems to be the crashing line
           case StateUpdate(key, newValue) if (key == IntegerUpdateType) =>
             println("Requires a statement to induce the crash")

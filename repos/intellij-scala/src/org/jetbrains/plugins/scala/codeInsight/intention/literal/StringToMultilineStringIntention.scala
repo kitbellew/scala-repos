@@ -76,8 +76,7 @@ class StringToMultilineStringIntention extends PsiElementBaseIntentionAction {
           literal.getManager)
         val replaced = interpolated.replace(newLiteral)
         addMarginsAndFormatMLString(replaced, document)
-      case _ =>
-        literal.getValue match {
+      case _ => literal.getValue match {
           case s: String =>
             val newString = ScalaPsiElementFactory.createExpressionFromText(
               "\"\"\"" + s.replace("\r", "") + "\"\"\"",
@@ -115,8 +114,7 @@ class StringToMultilineStringIntention extends PsiElementBaseIntentionAction {
           case WithStrippedMargin(expr, marginChar) =>
             toReplace = expr
             StripMarginParser.parse(literal).getOrElse(Nil)
-          case _ =>
-            literal.getValue match {
+          case _ => literal.getValue match {
               case s: String => List(Text(s))
               case _         => Nil
             }

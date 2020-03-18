@@ -67,15 +67,13 @@ object Chart {
     def series =
       clusters
         .foldLeft(Map.empty[String, Serie]) {
-          case (acc, cluster) =>
-            cluster.insight match {
+          case (acc, cluster) => cluster.insight match {
               case Insight.Single(point) =>
                 val key = metric.name
                 acc.updated(
                   key,
                   acc.get(key) match {
-                    case None =>
-                      Serie(
+                    case None => Serie(
                         name = metric.name,
                         dataType = metric.dataType.name,
                         stack = none,
@@ -83,15 +81,13 @@ object Chart {
                     case Some(s) => s.copy(data = point.y :: s.data)
                   }
                 )
-              case Insight.Stacked(points) =>
-                points.foldLeft(acc) {
+              case Insight.Stacked(points) => points.foldLeft(acc) {
                   case (acc, (metricValueName, point)) =>
                     val key = s"${metric.name}/${metricValueName.name}"
                     acc.updated(
                       key,
                       acc.get(key) match {
-                        case None =>
-                          Serie(
+                        case None => Serie(
                             name = metricValueName.name,
                             dataType = metric.dataType.name,
                             stack = metric.name.some,

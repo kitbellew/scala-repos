@@ -1360,10 +1360,8 @@ abstract class RDD[T: ClassTag](
     withScope {
       val n = this.partitions.length.toLong
       this.mapPartitionsWithIndex {
-        case (k, iter) =>
-          iter.zipWithIndex.map {
-            case (item, i) =>
-              (item, i * n + k)
+        case (k, iter) => iter.zipWithIndex.map {
+            case (item, i) => (item, i * n + k)
           }
       }
     }

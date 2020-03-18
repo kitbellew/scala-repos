@@ -44,8 +44,7 @@ object PrintStringParser extends StringParser {
             Seq(literal: ScLiteral, args @ _*))
           if literal.isString && isPrintStreamPrintfMethod(
             owner.qualifiedName,
-            f.getName) =>
-        (literal, args)
+            f.getName) => (literal, args)
     }
 
   private def isPrintStreamPrintfMethod(holder: String, method: String) =

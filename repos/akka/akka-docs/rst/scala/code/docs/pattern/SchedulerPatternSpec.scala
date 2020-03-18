@@ -32,8 +32,7 @@ object SchedulerPatternSpec {
         // do something useful here
         //#schedule-constructor
         target ! "tick"
-      case "restart" =>
-        throw new ArithmeticException
+      case "restart" => throw new ArithmeticException
       //#schedule-constructor
     }
   }
@@ -61,8 +60,7 @@ object SchedulerPatternSpec {
         // do something useful here
         //#schedule-receive
         target ! "tick"
-      case "restart" =>
-        throw new ArithmeticException
+      case "restart" => throw new ArithmeticException
       //#schedule-receive
     }
   }

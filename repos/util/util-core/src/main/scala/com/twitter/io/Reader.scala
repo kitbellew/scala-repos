@@ -144,14 +144,11 @@ object Reader {
       def close(deadline: Time): Future[Unit] =
         synchronized {
           state match {
-            case Failing(t) =>
-              Future.exception(t)
+            case Failing(t) => Future.exception(t)
 
-            case Eof =>
-              Future.Done
+            case Eof => Future.Done
 
-            case Closing(p) =>
-              p
+            case Closing(p) => p
 
             case Idle =>
               val reof = new Promise[Unit]()
@@ -176,8 +173,7 @@ object Reader {
       def write(buf: Buf): Future[Unit] =
         synchronized {
           state match {
-            case Failing(exc) =>
-              Future.exception(exc)
+            case Failing(exc) => Future.exception(exc)
 
             case Eof | Closing(_) =>
               Future.exception(new IllegalStateException("write after close"))
@@ -208,16 +204,14 @@ object Reader {
       def read(n: Int): Future[Option[Buf]] =
         synchronized {
           state match {
-            case Failing(exc) =>
-              Future.exception(exc)
+            case Failing(exc) => Future.exception(exc)
 
             case Closing(reof) =>
               state = Eof
               reof.setDone()
               Future.None
 
-            case Eof =>
-              Future.None
+            case Eof => Future.None
 
             case Idle =>
               val p = new Promise[Option[Buf]]
@@ -255,8 +249,7 @@ object Reader {
           oldState match {
             case Eof | Failing(_) =>
             // do not update state to failing
-            case Idle =>
-              state = Failing(cause)
+            case Idle => state = Failing(cause)
             case Closing(reof) =>
               state = Failing(cause)
               reof.setException(cause)

@@ -110,9 +110,8 @@ object Templates {
         case Null => None
         case p: PrefixedAttribute
             if (p.pre == "l" || p.pre == "lift") &&
-              (p.key == "content_id") =>
-          Some(p)
-        case n => df(n.next)
+              (p.key == "content_id") => Some(p)
+        case n                        => df(n.next)
       }
 
     in.flatMap {
@@ -193,8 +192,7 @@ object Templates {
         val last = places.last
 
         findInViews(places, part, last, LiftRules.viewDispatch.toList) match {
-          case Full(lv) =>
-            Full(lv)
+          case Full(lv) => Full(lv)
 
           case _ =>
             val pls = places.mkString("/", "/", "")

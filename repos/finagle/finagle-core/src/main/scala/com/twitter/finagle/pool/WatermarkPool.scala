@@ -112,10 +112,8 @@ class WatermarkPool[Req, Rep](
     if (!isOpen) return Future.exception(new ServiceClosedException)
     thePool.synchronized {
       dequeue() match {
-        case Some(service) =>
-          return Future.value(service)
-        case None if numServices < highWatermark =>
-          numServices += 1
+        case Some(service)                       => return Future.value(service)
+        case None if numServices < highWatermark => numServices += 1
         case None if waiters.size >= maxWaiters =>
           tooManyWaiters.incr()
           return WatermarkPool.TooManyWaiters

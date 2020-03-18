@@ -28,10 +28,8 @@ class Chopstick extends Actor {
   //It will refuse to be taken by other hakkers
   //But the owning hakker can put it back
   def takenBy(hakker: ActorRef): Receive = {
-    case Take(otherHakker) =>
-      otherHakker ! Busy(self)
-    case Put(`hakker`) =>
-      become(available)
+    case Take(otherHakker) => otherHakker ! Busy(self)
+    case Put(`hakker`)     => become(available)
   }
 
   //When a Chopstick is available, it can be taken by a hakker
@@ -66,12 +64,9 @@ class Hakker(name: String, left: ActorRef, right: ActorRef) extends Actor {
   //If the hakkers first attempt at grabbing a chopstick fails,
   //it starts to wait for the response of the other grab
   def hungry: Receive = {
-    case Taken(`left`) =>
-      become(waiting_for(right, left))
-    case Taken(`right`) =>
-      become(waiting_for(left, right))
-    case Busy(chopstick) =>
-      become(denied_a_chopstick)
+    case Taken(`left`)   => become(waiting_for(right, left))
+    case Taken(`right`)  => become(waiting_for(left, right))
+    case Busy(chopstick) => become(denied_a_chopstick)
   }
 
   //When a hakker is waiting for the last chopstick it can either obtain it
@@ -100,8 +95,7 @@ class Hakker(name: String, left: ActorRef, right: ActorRef) extends Actor {
     case Taken(chopstick) =>
       chopstick ! Put(self)
       startThinking(10.milliseconds)
-    case Busy(chopstick) =>
-      startThinking(10.milliseconds)
+    case Busy(chopstick) => startThinking(10.milliseconds)
   }
 
   //When a hakker is eating, he can decide to start to think,

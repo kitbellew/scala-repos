@@ -18,14 +18,10 @@ sealed trait Op[+A] {
   @tailrec
   final def resume(gen: Generator): Either[() => Op[A], A] =
     this match {
-      case Const(a) =>
-        Right(a)
-      case More(k) =>
-        Left(k)
-      case Next(f) =>
-        Right(f(gen))
-      case FlatMap(a, f) =>
-        a match {
+      case Const(a) => Right(a)
+      case More(k)  => Left(k)
+      case Next(f)  => Right(f(gen))
+      case FlatMap(a, f) => a match {
           case Const(x) => f(x).resume(gen)
           case More(k)  => Left(() => FlatMap(k(), f))
           case Next(g)  => f(g(gen)).resume(gen)

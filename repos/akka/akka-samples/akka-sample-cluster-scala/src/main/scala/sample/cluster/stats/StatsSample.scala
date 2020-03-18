@@ -82,10 +82,8 @@ class StatsSampleClient(servicePath: String) extends Actor {
       val service = context.actorSelection(
         RootActorPath(address) / servicePathElements)
       service ! StatsJob("this is the text that will be analyzed")
-    case result: StatsResult =>
-      println(result)
-    case failed: JobFailed =>
-      println(failed)
+    case result: StatsResult => println(result)
+    case failed: JobFailed   => println(failed)
     case state: CurrentClusterState =>
       nodes = state.members.collect {
         case m if m.hasRole("compute") && m.status == MemberStatus.Up =>

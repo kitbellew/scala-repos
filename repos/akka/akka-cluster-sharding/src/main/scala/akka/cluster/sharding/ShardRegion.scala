@@ -585,21 +585,18 @@ class ShardRegion(
 
   def receiveQuery(query: ShardRegionQuery): Unit =
     query match {
-      case GetCurrentRegions ⇒
-        coordinator match {
+      case GetCurrentRegions ⇒ coordinator match {
           case Some(c) ⇒ c.forward(GetCurrentRegions)
           case None ⇒ sender() ! CurrentRegions(Set.empty)
         }
 
-      case GetShardRegionState ⇒
-        replyToRegionStateQuery(sender())
+      case GetShardRegionState ⇒ replyToRegionStateQuery(sender())
 
-      case GetShardRegionStats ⇒
-        replyToRegionStatsQuery(sender())
+      case GetShardRegionStats ⇒ replyToRegionStatsQuery(sender())
 
       case msg: GetClusterShardingStats ⇒
-        coordinator
-          .fold(sender ! ClusterShardingStats(Map.empty))(_ forward msg)
+        coordinator.fold(sender ! ClusterShardingStats(Map.empty))(
+          _ forward msg)
 
       case _ ⇒ unhandled(query)
     }
@@ -689,8 +686,7 @@ class ShardRegion(
 
   def requestShardBufferHomes(): Unit = {
     shardBuffers.foreach {
-      case (shard, buf) ⇒
-        coordinator.foreach { c ⇒
+      case (shard, buf) ⇒ coordinator.foreach { c ⇒
           val logMsg =
             "Retry request for shard [{}] homes from coordinator at [{}]. [{}] buffered messages."
           if (retryCount >= 5) log.warning(logMsg, shard, c, buf.size)
@@ -751,10 +747,8 @@ class ShardRegion(
 
   def deliverMessage(msg: Any, snd: ActorRef): Unit =
     msg match {
-      case RestartShard(shardId) ⇒
-        regionByShard.get(shardId) match {
-          case Some(ref) ⇒
-            if (ref == self) getShard(shardId)
+      case RestartShard(shardId) ⇒ regionByShard.get(shardId) match {
+          case Some(ref) ⇒ if (ref == self) getShard(shardId)
           case None ⇒
             if (!shardBuffers.contains(shardId)) {
               log.debug("Request shard [{}] home", shardId)
@@ -773,14 +767,12 @@ class ShardRegion(
         regionByShard.get(shardId) match {
           case Some(ref) if ref == self ⇒
             getShard(shardId) match {
-              case Some(shard) ⇒
-                shardBuffers.get(shardId) match {
+              case Some(shard) ⇒ shardBuffers.get(shardId) match {
                   case Some(buf) ⇒
                     // Since now messages to a shard is buffered then those messages must be in right order
                     bufferMessage(shardId, msg, snd)
                     deliverBufferedMessages(shardId, shard)
-                  case None ⇒
-                    shard.tell(msg, snd)
+                  case None ⇒ shard.tell(msg, snd)
                 }
               case None ⇒ bufferMessage(shardId, msg, snd)
             }
@@ -827,8 +819,7 @@ class ShardRegion(
             shards = shards.updated(id, shard)
             startingShards += id
             None
-          case Some(props) ⇒
-            None
+          case Some(props) ⇒ None
           case None ⇒
             throw new IllegalStateException(
               "Shard must not be allocated to a proxy only ShardRegion")

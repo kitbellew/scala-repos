@@ -257,8 +257,7 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
           }
           these.isEmpty && those.isEmpty
         }
-      case _ =>
-        super.sameElements(that)
+      case _ => super.sameElements(that)
     }
 
   override /*SeqLike*/

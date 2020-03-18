@@ -32,57 +32,31 @@ class RepeatedTest extends ApplicabilityTestBase {
   }
 
   def testValidDefinition() {
-    assertProblems("(a: A*)(b: B)", "(A)(B)") {
-      case Nil =>
-    }
+    assertProblems("(a: A*)(b: B)", "(A)(B)") { case Nil => }
   }
 
   def testFineSingle() {
-    assertProblems("(a: A*)", "()") {
-      case Nil =>
-    }
-    assertProblems("(a: A*)", "(A)") {
-      case Nil =>
-    }
-    assertProblems("(a: A*)", "(A, A)") {
-      case Nil =>
-    }
+    assertProblems("(a: A*)", "()") { case Nil     => }
+    assertProblems("(a: A*)", "(A)") { case Nil    => }
+    assertProblems("(a: A*)", "(A, A)") { case Nil => }
   }
 
   def testFineSecond() {
-    assertProblems("(a: A, b: B*)", "(A)") {
-      case Nil =>
-    }
-    assertProblems("(a: A, b: B*)", "(A, B)") {
-      case Nil =>
-    }
-    assertProblems("(a: A, b: B*)", "(A, B, B)") {
-      case Nil =>
-    }
+    assertProblems("(a: A, b: B*)", "(A)") { case Nil       => }
+    assertProblems("(a: A, b: B*)", "(A, B)") { case Nil    => }
+    assertProblems("(a: A, b: B*)", "(A, B, B)") { case Nil => }
   }
 
   def testFineSecondSameType() {
-    assertProblems("(a: A, b: A*)", "(A)") {
-      case Nil =>
-    }
-    assertProblems("(a: A, b: A*)", "(A, A)") {
-      case Nil =>
-    }
-    assertProblems("(a: A, b: A*)", "(A, A, A)") {
-      case Nil =>
-    }
+    assertProblems("(a: A, b: A*)", "(A)") { case Nil       => }
+    assertProblems("(a: A, b: A*)", "(A, A)") { case Nil    => }
+    assertProblems("(a: A, b: A*)", "(A, A, A)") { case Nil => }
   }
 
   def testFineThird() {
-    assertProblems("(a: A, b: B, c: C*)", "(A, B)") {
-      case Nil =>
-    }
-    assertProblems("(a: A, b: B, c: C*)", "(A, B, C)") {
-      case Nil =>
-    }
-    assertProblems("(a: A, b: B, c: C*)", "(A, B, C, C)") {
-      case Nil =>
-    }
+    assertProblems("(a: A, b: B, c: C*)", "(A, B)") { case Nil       => }
+    assertProblems("(a: A, b: B, c: C*)", "(A, B, C)") { case Nil    => }
+    assertProblems("(a: A, b: B, c: C*)", "(A, B, C, C)") { case Nil => }
   }
 
   /*def testDoesNotTakeParameters {
@@ -95,9 +69,7 @@ class RepeatedTest extends ApplicabilityTestBase {
     assertProblemsFunction("", "(a: A*)", "") {
       case MissedParametersClause(_) :: Nil =>
     }
-    assertProblemsConstructor("", "(a: A*)", "") {
-      case Nil =>
-    }
+    assertProblemsConstructor("", "(a: A*)", "") { case Nil => }
   }
 
   def testTypeMismatch() {
@@ -123,12 +95,8 @@ class RepeatedTest extends ApplicabilityTestBase {
   }
 
   def testExpansionToRepeated() {
-    assertProblems("(a: A*)", "(Seq(A): _*)") {
-      case Nil =>
-    }
-    assertProblems("(a: A, b: B*)", "(a, Seq(B): _*)") {
-      case Nil =>
-    }
+    assertProblems("(a: A*)", "(Seq(A): _*)") { case Nil          => }
+    assertProblems("(a: A, b: B*)", "(a, Seq(B): _*)") { case Nil => }
   }
 
   def testExpansionToSingular() {
@@ -166,9 +134,7 @@ class RepeatedTest extends ApplicabilityTestBase {
   }
 
   def testSeqToSeq() {
-    assertProblems("(a: Seq[A])", "(Seq(A))") {
-      case Nil =>
-    }
+    assertProblems("(a: Seq[A])", "(Seq(A))") { case Nil => }
   }
 
   def testSinglularToSeq() {

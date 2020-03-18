@@ -32,10 +32,7 @@ class ForeignCompiler {
     try {
       val command = new CompilerCommand(args.toList, settings)
       new Global(command.settings, reporter)
-    } catch {
-      case ex @ FatalError(msg) =>
-        throw new Exception(msg, ex)
-    }
+    } catch { case ex @ FatalError(msg) => throw new Exception(msg, ex) }
   }
 
   def compile(files: Array[File]): Int = {

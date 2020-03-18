@@ -26,8 +26,7 @@ class NotifyRateLimiterStepImpl @Inject() (
       case TASK_ERROR | TASK_FAILED | TASK_FINISHED | TASK_LOST =>
         notifyRateLimiter(status, task)
 
-      case _ =>
-        Future.successful(())
+      case _ => Future.successful(())
     }
   }
 

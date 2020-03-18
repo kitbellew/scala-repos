@@ -121,8 +121,7 @@ trait JsObj extends JsExp {
           them match {
             case Nil             => me.isEmpty
             case _ if me.isEmpty => false
-            case (k, v) :: xs =>
-              me.get(k) match {
+            case (k, v) :: xs => me.get(k) match {
                 case None                => false
                 case Some(mv) if mv != v => false
                 case _                   => test(me - k, xs)

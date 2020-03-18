@@ -102,8 +102,7 @@ class WeightedPageRankFromMatrixSpec extends WordSpec with Matchers {
       actual: Array[Double],
       variance: Double) {
     actual.zipWithIndex.foreach {
-      case (value, i) =>
-        value shouldBe (expected(i)) +- variance
+      case (value, i) => value shouldBe (expected(i)) +- variance
     }
   }
 
@@ -111,8 +110,7 @@ class WeightedPageRankFromMatrixSpec extends WordSpec with Matchers {
       expected: Array[Double],
       actual: Array[Double]) {
     actual.zipWithIndex.foreach {
-      case (value, i) =>
-        value shouldBe (expected(i))
+      case (value, i) => value shouldBe (expected(i))
     }
   }
 }

@@ -176,8 +176,7 @@ private[streaming] object WriteAheadLogUtils extends Logging {
       conf: SparkConf): WriteAheadLog = {
     try { cls.getConstructor(classOf[SparkConf]).newInstance(conf) }
     catch {
-      case nsme: NoSuchMethodException =>
-        cls.getConstructor().newInstance()
+      case nsme: NoSuchMethodException => cls.getConstructor().newInstance()
     }
   }
 }

@@ -109,8 +109,7 @@ class LAFuture[T](val scheduler: LAScheduler) {
     val ret = new LAFuture[A](scheduler)
     onComplete(v =>
       v match {
-        case Full(v) =>
-          Box.tryo(f(v)) match {
+        case Full(v) => Box.tryo(f(v)) match {
             case Full(successfullyComputedFuture) =>
               successfullyComputedFuture.onComplete(v2 => ret.complete(v2))
             case e: EmptyBox => ret.complete(e)
@@ -328,8 +327,7 @@ object LAFuture {
       var gotCnt = 0
 
       future.toList.zipWithIndex.foreach {
-        case (f, idx) =>
-          f.foreach { v =>
+        case (f, idx) => f.foreach { v =>
             sync.synchronized {
               vals.insert(idx, Full(v))
               gotCnt += 1
@@ -361,8 +359,7 @@ object LAFuture {
       var gotCnt = 0
 
       future.toList.zipWithIndex.foreach {
-        case (f, idx) =>
-          f.foreach { vb =>
+        case (f, idx) => f.foreach { vb =>
             sync.synchronized {
               vb match {
                 case Full(v) => {

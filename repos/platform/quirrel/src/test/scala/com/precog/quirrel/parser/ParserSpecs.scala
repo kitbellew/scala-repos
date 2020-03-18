@@ -62,8 +62,7 @@ object ParserSpecs
               Identifier(Vector(), "x"),
               Vector("a"),
               NumLit(_, "1"),
-              NumLit(_, "2")) =>
-          ok
+              NumLit(_, "2")) => ok
       }
     }
 
@@ -86,8 +85,7 @@ object ParserSpecs
               Identifier(Vector(), "x"),
               Vector("a", "b", "c"),
               NumLit(_, "1"),
-              NumLit(_, "2")) =>
-          ok
+              NumLit(_, "2")) => ok
       }
     }
 
@@ -98,8 +96,7 @@ object ParserSpecs
               Identifier(Vector(), "x"),
               Vector(),
               NumLit(_, "1"),
-              NumLit(_, "2")) =>
-          ok
+              NumLit(_, "2")) => ok
       }
     }
 
@@ -120,8 +117,7 @@ object ParserSpecs
         case Import(
               _,
               SpecificImport(Vector("std", "math", "alissa")),
-              NumLit(_, "42")) =>
-          ok
+              NumLit(_, "42")) => ok
       }
     }
 
@@ -134,8 +130,7 @@ object ParserSpecs
         case Import(
               _,
               WildcardImport(Vector("std", "math", "alissa")),
-              NumLit(_, "42")) =>
-          ok
+              NumLit(_, "42")) => ok
       }
     }
 
@@ -159,8 +154,7 @@ object ParserSpecs
               _,
               _,
               Import(_, WildcardImport(Vector("std", "time")), _),
-              _) =>
-          ok
+              _) => ok
       }
     }
 
@@ -192,8 +186,7 @@ object ParserSpecs
                 NumLit(_, "12")),
               ArrayDef(
                 _,
-                Vector(Dispatch(_, Identifier(Vector(), "a"), Vector())))) =>
-          ok
+                Vector(Dispatch(_, Identifier(Vector(), "a"), Vector())))) => ok
       }
     }
 
@@ -206,8 +199,7 @@ object ParserSpecs
         case Solve(
               _,
               Vector(TicVar(_, "'a")),
-              Add(_, TicVar(_, "'a"), NumLit(_, "42"))) =>
-          ok
+              Add(_, TicVar(_, "'a"), NumLit(_, "42"))) => ok
       }
     }
 
@@ -217,8 +209,7 @@ object ParserSpecs
           case Solve(
                 _,
                 Vector(TicVar(_, "'a"), TicVar(_, "'b")),
-                Add(_, TicVar(_, "'a"), TicVar(_, "'b"))) =>
-            ok
+                Add(_, TicVar(_, "'a"), TicVar(_, "'b"))) => ok
         }
       }
 
@@ -227,8 +218,7 @@ object ParserSpecs
           case Solve(
                 _,
                 Vector(TicVar(_, "'a"), TicVar(_, "'b")),
-                Union(_, TicVar(_, "'a"), TicVar(_, "'b"))) =>
-            ok
+                Union(_, TicVar(_, "'a"), TicVar(_, "'b"))) => ok
         }
       }
 
@@ -237,8 +227,7 @@ object ParserSpecs
           case Solve(
                 _,
                 Vector(TicVar(_, "'a"), TicVar(_, "'b")),
-                Difference(_, TicVar(_, "'a"), TicVar(_, "'b"))) =>
-            ok
+                Difference(_, TicVar(_, "'a"), TicVar(_, "'b"))) => ok
         }
       }
 
@@ -251,8 +240,7 @@ object ParserSpecs
                 And(
                   _,
                   Paren(_, Where(_, TicVar(_, "'a"), BoolLit(_, true))),
-                  Paren(_, Where(_, TicVar(_, "'b"), BoolLit(_, false))))) =>
-            ok
+                  Paren(_, Where(_, TicVar(_, "'b"), BoolLit(_, false))))) => ok
         }
       }
     }
@@ -266,8 +254,7 @@ object ParserSpecs
                   _,
                   TicVar(_, "'a"),
                   Add(_, NumLit(_, "12"), BoolLit(_, true)))),
-              NumLit(_, "1")) =>
-          ok
+              NumLit(_, "1")) => ok
       }
     }
 
@@ -281,8 +268,7 @@ object ParserSpecs
                   TicVar(_, "'a"),
                   Add(_, NumLit(_, "12"), BoolLit(_, true))),
                 TicVar(_, "'b")),
-              NumLit(_, "1")) =>
-          ok
+              NumLit(_, "1")) => ok
       }
     }
 
@@ -291,8 +277,7 @@ object ParserSpecs
         case Solve(
               _,
               Vector(Solve(_, Vector(TicVar(_, "'a")), NumLit(_, "1"))),
-              NumLit(_, "2")) =>
-          ok
+              NumLit(_, "2")) => ok
       }
     }
 
@@ -305,8 +290,7 @@ object ParserSpecs
                   _,
                   Vector(TicVar(_, "'a"), TicVar(_, "'b")),
                   NumLit(_, "1"))),
-              NumLit(_, "2")) =>
-          ok
+              NumLit(_, "2")) => ok
       }
     }
 
@@ -320,8 +304,7 @@ object ParserSpecs
                 Identifier(Vector(), "foo"),
                 Vector("b"),
                 Add(_, NumLit(_, "1"), TicVar(_, "'a")),
-                Dispatch(_, Identifier(Vector(), "foo"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "foo"), Vector()))) => ok
       }
     }
 
@@ -337,8 +320,7 @@ object ParserSpecs
                   _,
                   Vector(TicVar(_, "'b")),
                   Add(_, NumLit(_, "10"), TicVar(_, "'b")))),
-              Dispatch(_, Identifier(Vector(), "foo"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "foo"), Vector())) => ok
       }
     }
 
@@ -354,8 +336,7 @@ object ParserSpecs
                   _,
                   Vector(TicVar(_, "'b")),
                   Add(_, TicVar(_, "'a"), TicVar(_, "'b")))),
-              Dispatch(_, Identifier(Vector(), "foo"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "foo"), Vector())) => ok
       }
     }
 
@@ -366,8 +347,7 @@ object ParserSpecs
               Identifier(Vector(), "foo"),
               Vector(),
               Solve(_, Vector(TicVar(_, "'b")), TicVar(_, "'b")),
-              Dispatch(_, Identifier(Vector(), "foo"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "foo"), Vector())) => ok
       }
     }
 
@@ -390,8 +370,7 @@ object ParserSpecs
                 Add(
                   _,
                   Dispatch(_, Identifier(Vector(), "foo"), Vector()),
-                  TicVar(_, "'a")))) =>
-          ok
+                  TicVar(_, "'a")))) => ok
       }
     }
 
@@ -424,8 +403,7 @@ object ParserSpecs
                 Identifier(Vector(), "foo"),
                 Vector(),
                 PathLit("/foo"),
-                Dispatch(_, Identifier(Vector(), "foo"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "foo"), Vector()))) => ok
       }
     }
 
@@ -625,8 +603,7 @@ object ParserSpecs
                 ("a", NumLit(_, "1")),
                 ("b", NumLit(_, "2")),
                 ("cafe", NumLit(_, "3")),
-                ("star_BUckS", NumLit(_, "4")))) =>
-          ok
+                ("star_BUckS", NumLit(_, "4")))) => ok
       }
 
       parseSingle(
@@ -637,8 +614,7 @@ object ParserSpecs
                 ("a", NumLit(_, "1")),
                 ("b", NumLit(_, "2")),
                 ("cafe", NumLit(_, "3")),
-                ("star_BUckS", NumLit(_, "4")))) =>
-          ok
+                ("star_BUckS", NumLit(_, "4")))) => ok
       }
     }
 
@@ -651,8 +627,7 @@ object ParserSpecs
                 ("a", NumLit(_, "1")),
                 ("b", NumLit(_, "2")),
                 ("cafe", ObjectDef(_, Vector(("foo", NullLit(_))))),
-                ("star_BUckS", NullLit(_)))) =>
-          ok
+                ("star_BUckS", NullLit(_)))) => ok
       }
 
       parseSingle(
@@ -663,8 +638,7 @@ object ParserSpecs
                 ("a", NumLit(_, "1")),
                 ("b", NumLit(_, "2")),
                 ("cafe", ObjectDef(_, Vector(("foo", NullLit(_))))),
-                ("star_BUckS", NullLit(_)))) =>
-          ok
+                ("star_BUckS", NullLit(_)))) => ok
       }
     }
 
@@ -688,8 +662,7 @@ object ParserSpecs
               _,
               Vector(
                 ("$see! what I can do___", NumLit(_, "1")),
-                ("test ` ing \\ with $%^&*!@#$ me!", NumLit(_, "2")))) =>
-          ok
+                ("test ` ing \\ with $%^&*!@#$ me!", NumLit(_, "2")))) => ok
       }
     }
 
@@ -700,8 +673,7 @@ object ParserSpecs
               _,
               Vector(
                 ("$see! what I can do___", NumLit(_, "1")),
-                ("test \" ing \\ with $%^&*!@#$ me!", NumLit(_, "2")))) =>
-          ok
+                ("test \" ing \\ with $%^&*!@#$ me!", NumLit(_, "2")))) => ok
       }
     }
 
@@ -731,8 +703,7 @@ object ParserSpecs
       parseSingle("[1, 2, 3]") must beLike {
         case ArrayDef(
               _,
-              Vector(NumLit(_, "1"), NumLit(_, "2"), NumLit(_, "3"))) =>
-          ok
+              Vector(NumLit(_, "1"), NumLit(_, "2"), NumLit(_, "3"))) => ok
       }
     }
 
@@ -788,8 +759,7 @@ object ParserSpecs
         case MetaDescent(
               _,
               NumLit(_, "1"),
-              "test ` ing \\ with $%^&*!@#$ me!") =>
-          ok
+              "test ` ing \\ with $%^&*!@#$ me!") => ok
       }
     }
 
@@ -801,8 +771,7 @@ object ParserSpecs
         case Deref(
               _,
               Dispatch(_, Identifier(Vector(), "x"), Vector()),
-              Dispatch(_, Identifier(Vector(), "y"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "y"), Vector())) => ok
       }
     }
 
@@ -834,8 +803,7 @@ object ParserSpecs
         case Dispatch(
               _,
               Identifier(Vector("a", "b", "c"), "d"),
-              Vector(NumLit(_, "1"))) =>
-          ok
+              Vector(NumLit(_, "1"))) => ok
       }
     }
 
@@ -872,8 +840,7 @@ object ParserSpecs
         case Dispatch(
               _,
               Identifier(Vector(), "x"),
-              Vector(NumLit(_, "1"), NumLit(_, "2"), NumLit(_, "3"))) =>
-          ok
+              Vector(NumLit(_, "1"), NumLit(_, "2"), NumLit(_, "3"))) => ok
       }
     }
 
@@ -882,8 +849,7 @@ object ParserSpecs
         case Dispatch(
               _,
               Identifier(Vector("x", "y", "z"), "quirky"),
-              Vector(NumLit(_, "1"), NumLit(_, "2"), NumLit(_, "3"))) =>
-          ok
+              Vector(NumLit(_, "1"), NumLit(_, "2"), NumLit(_, "3"))) => ok
       }
     }
 
@@ -1226,43 +1192,37 @@ object ParserSpecs
         case Mul(
               _,
               Comp(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "b"), Vector())) => ok
       }
       parseSingle("neg a * b") must beLike {
         case Mul(
               _,
               Neg(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "b"), Vector())) => ok
       }
       parseSingle("!a / b") must beLike {
         case Div(
               _,
               Comp(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "b"), Vector())) => ok
       }
       parseSingle("neg a / b") must beLike {
         case Div(
               _,
               Neg(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "b"), Vector())) => ok
       }
       parseSingle("!a % b") must beLike {
         case Mod(
               _,
               Comp(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "b"), Vector())) => ok
       }
       parseSingle("neg a % b") must beLike {
         case Mod(
               _,
               Neg(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "b"), Vector())) => ok
       }
     }
 
@@ -1274,8 +1234,7 @@ object ParserSpecs
               Mul(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a - b * c") must beLike {
         case Sub(
@@ -1284,8 +1243,7 @@ object ParserSpecs
               Mul(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a * b + c") must beLike {
         case Add(
@@ -1294,8 +1252,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a * b - c") must beLike {
         case Sub(
@@ -1304,8 +1261,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
 
       parseSingle("a + b / c") must beLike {
@@ -1315,8 +1271,7 @@ object ParserSpecs
               Div(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a - b / c") must beLike {
         case Sub(
@@ -1325,8 +1280,7 @@ object ParserSpecs
               Div(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a / b + c") must beLike {
         case Add(
@@ -1335,8 +1289,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a / b - c") must beLike {
         case Sub(
@@ -1345,8 +1298,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
 
       parseSingle("a + b % c") must beLike {
@@ -1356,8 +1308,7 @@ object ParserSpecs
               Mod(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a - b % c") must beLike {
         case Sub(
@@ -1366,8 +1317,7 @@ object ParserSpecs
               Mod(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a % b + c") must beLike {
         case Add(
@@ -1376,8 +1326,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a % b - c") must beLike {
         case Sub(
@@ -1386,8 +1335,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -1451,8 +1399,7 @@ object ParserSpecs
               Add(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a <= b + c") must beLike {
         case LtEq(
@@ -1461,8 +1408,7 @@ object ParserSpecs
               Add(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a + b < c") must beLike {
         case Lt(
@@ -1471,8 +1417,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a + b <= c") must beLike {
         case LtEq(
@@ -1481,8 +1426,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
 
       parseSingle("a < b - c") must beLike {
@@ -1492,8 +1436,7 @@ object ParserSpecs
               Sub(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a <= b - c") must beLike {
         case LtEq(
@@ -1502,8 +1445,7 @@ object ParserSpecs
               Sub(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a - b < c") must beLike {
         case Lt(
@@ -1512,8 +1454,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a - b <= c") must beLike {
         case LtEq(
@@ -1522,8 +1463,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
 
       parseSingle("a > b + c") must beLike {
@@ -1533,8 +1473,7 @@ object ParserSpecs
               Add(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a >= b + c") must beLike {
         case GtEq(
@@ -1543,8 +1482,7 @@ object ParserSpecs
               Add(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a + b > c") must beLike {
         case Gt(
@@ -1553,8 +1491,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a + b >= c") must beLike {
         case GtEq(
@@ -1563,8 +1500,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
 
       parseSingle("a > b - c") must beLike {
@@ -1574,8 +1510,7 @@ object ParserSpecs
               Sub(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a >= b - c") must beLike {
         case GtEq(
@@ -1584,8 +1519,7 @@ object ParserSpecs
               Sub(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a - b > c") must beLike {
         case Gt(
@@ -1594,8 +1528,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a - b >= c") must beLike {
         case GtEq(
@@ -1604,8 +1537,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -1645,8 +1577,7 @@ object ParserSpecs
               Lt(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a != b < c") must beLike {
         case NotEq(
@@ -1655,8 +1586,7 @@ object ParserSpecs
               Lt(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a < b = c") must beLike {
         case Eq(
@@ -1665,8 +1595,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a < b != c") must beLike {
         case NotEq(
@@ -1675,8 +1604,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
 
       parseSingle("a = b <= c") must beLike {
@@ -1686,8 +1614,7 @@ object ParserSpecs
               LtEq(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a != b <= c") must beLike {
         case NotEq(
@@ -1696,8 +1623,7 @@ object ParserSpecs
               LtEq(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a <= b = c") must beLike {
         case Eq(
@@ -1706,8 +1632,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a <= b != c") must beLike {
         case NotEq(
@@ -1716,8 +1641,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
 
       parseSingle("a = b > c") must beLike {
@@ -1727,8 +1651,7 @@ object ParserSpecs
               Gt(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a != b > c") must beLike {
         case NotEq(
@@ -1737,8 +1660,7 @@ object ParserSpecs
               Gt(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a > b = c") must beLike {
         case Eq(
@@ -1747,8 +1669,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a > b != c") must beLike {
         case NotEq(
@@ -1757,8 +1678,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
 
       parseSingle("a = b >= c") must beLike {
@@ -1768,8 +1688,7 @@ object ParserSpecs
               GtEq(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a != b >= c") must beLike {
         case NotEq(
@@ -1778,8 +1697,7 @@ object ParserSpecs
               GtEq(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a >= b = c") must beLike {
         case Eq(
@@ -1788,8 +1706,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a >= b != c") must beLike {
         case NotEq(
@@ -1798,8 +1715,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -1822,8 +1738,7 @@ object ParserSpecs
               Eq(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a | b = c") must beLike {
         case Or(
@@ -1832,8 +1747,7 @@ object ParserSpecs
               Eq(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a = b & c") must beLike {
         case And(
@@ -1842,8 +1756,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a = b | c") must beLike {
         case Or(
@@ -1852,8 +1765,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
 
       parseSingle("a & b != c") must beLike {
@@ -1863,8 +1775,7 @@ object ParserSpecs
               NotEq(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a | b != c") must beLike {
         case Or(
@@ -1873,8 +1784,7 @@ object ParserSpecs
               NotEq(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a != b & c") must beLike {
         case And(
@@ -1883,8 +1793,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a != b | c") must beLike {
         case Or(
@@ -1893,8 +1802,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -1915,8 +1823,7 @@ object ParserSpecs
               And(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a intersect b & c") must beLike {
         case Intersect(
@@ -1925,8 +1832,7 @@ object ParserSpecs
               And(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a difference b & c") must beLike {
         case Difference(
@@ -1935,8 +1841,7 @@ object ParserSpecs
               And(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a & b union c") must beLike {
         case Union(
@@ -1945,8 +1850,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a & b intersect c") must beLike {
         case Intersect(
@@ -1955,8 +1859,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a & b difference c") must beLike {
         case Difference(
@@ -1965,8 +1868,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
 
       parseSingle("a union b | c") must beLike {
@@ -1976,8 +1878,7 @@ object ParserSpecs
               Or(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a intersect b | c") must beLike {
         case Intersect(
@@ -1986,8 +1887,7 @@ object ParserSpecs
               Or(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a difference b | c") must beLike {
         case Difference(
@@ -1996,8 +1896,7 @@ object ParserSpecs
               Or(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a | b union c") must beLike {
         case Union(
@@ -2006,8 +1905,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a | b intersect c") must beLike {
         case Intersect(
@@ -2016,8 +1914,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a | b difference c") must beLike {
         case Difference(
@@ -2026,8 +1923,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -2036,30 +1932,26 @@ object ParserSpecs
         case Intersect(
               _,
               Union(_, NumLit(_, "1"), NumLit(_, "2")),
-              NumLit(_, "3")) =>
-          ok
+              NumLit(_, "3")) => ok
       }
       parseSingle("1 intersect 2 union 3") must beLike {
         case Union(
               _,
               Intersect(_, NumLit(_, "1"), NumLit(_, "2")),
-              NumLit(_, "3")) =>
-          ok
+              NumLit(_, "3")) => ok
       }
 
       parseSingle("1 union 2 difference 3") must beLike {
         case Difference(
               _,
               Union(_, NumLit(_, "1"), NumLit(_, "2")),
-              NumLit(_, "3")) =>
-          ok
+              NumLit(_, "3")) => ok
       }
       parseSingle("1 difference 2 union 3") must beLike {
         case Union(
               _,
               Difference(_, NumLit(_, "1"), NumLit(_, "2")),
-              NumLit(_, "3")) =>
-          ok
+              NumLit(_, "3")) => ok
       }
     }
 
@@ -2071,8 +1963,7 @@ object ParserSpecs
               Union(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a with b intersect c") must beLike {
         case With(
@@ -2081,8 +1972,7 @@ object ParserSpecs
               Intersect(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a with b difference c") must beLike {
         case With(
@@ -2091,8 +1981,7 @@ object ParserSpecs
               Difference(
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) => ok
       }
       parseSingle("a union b with c") must beLike {
         case With(
@@ -2101,8 +1990,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a intersect b with c") must beLike {
         case With(
@@ -2111,8 +1999,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
       parseSingle("a difference b with c") must beLike {
         case With(
@@ -2121,8 +2008,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -2133,8 +2019,7 @@ object ParserSpecs
               With(
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
-                Dispatch(_, Identifier(Vector(), "b"), Vector()))) =>
-          ok
+                Dispatch(_, Identifier(Vector(), "b"), Vector()))) => ok
       }
     }
 
@@ -2143,8 +2028,7 @@ object ParserSpecs
         case Where(
               _,
               New(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "b"), Vector())) => ok
       }
     }
 
@@ -2157,8 +2041,7 @@ object ParserSpecs
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
               Dispatch(_, Identifier(Vector(), "c"), Vector()),
-              Dispatch(_, Identifier(Vector(), "d"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "d"), Vector())) => ok
       }
       parseSingle("a ~ b where c d") must beLike {
         case Relate(
@@ -2168,8 +2051,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
                 Dispatch(_, Identifier(Vector(), "c"), Vector())),
-              Dispatch(_, Identifier(Vector(), "d"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "d"), Vector())) => ok
       }
     }
 
@@ -2180,8 +2062,7 @@ object ParserSpecs
               Identifier(Vector(), "a"),
               Vector(),
               NumLit(_, "1"),
-              Where(_, NumLit(_, "2"), NumLit(_, "3"))) =>
-          ok
+              Where(_, NumLit(_, "2"), NumLit(_, "3"))) => ok
       }
     }
 
@@ -2190,8 +2071,7 @@ object ParserSpecs
         case Assert(
               _,
               NumLit(_, "1"),
-              Where(_, NumLit(_, "2"), NumLit(_, "3"))) =>
-          ok
+              Where(_, NumLit(_, "2"), NumLit(_, "3"))) => ok
       }
     }
 
@@ -2200,8 +2080,7 @@ object ParserSpecs
         case Solve(
               _,
               Vector(TicVar(_, "'a")),
-              Where(_, NumLit(_, "2"), NumLit(_, "3"))) =>
-          ok
+              Where(_, NumLit(_, "2"), NumLit(_, "3"))) => ok
       }
     }
 
@@ -2210,8 +2089,7 @@ object ParserSpecs
         case Import(
               _,
               SpecificImport(Vector("a")),
-              Where(_, NumLit(_, "2"), NumLit(_, "3"))) =>
-          ok
+              Where(_, NumLit(_, "2"), NumLit(_, "3"))) => ok
       }
     }
   }
@@ -2227,8 +2105,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector()),
-                NumLit(_, "42"))) =>
-          ok
+                NumLit(_, "42"))) => ok
       }
     }
 
@@ -2240,8 +2117,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -2253,8 +2129,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -2266,8 +2141,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -2279,8 +2153,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -2292,8 +2165,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -2305,8 +2177,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -2318,8 +2189,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -2331,8 +2201,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -2344,8 +2213,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -2357,8 +2225,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -2370,8 +2237,7 @@ object ParserSpecs
                 _,
                 Dispatch(_, Identifier(Vector(), "a"), Vector()),
                 Dispatch(_, Identifier(Vector(), "b"), Vector())),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) => ok
       }
     }
 
@@ -2382,8 +2248,7 @@ object ParserSpecs
               Identifier(Vector(), "a"),
               _,
               Add(_, Add(_, NumLit(_, "1"), NumLit(_, "2")), NumLit(_, "3")),
-              NumLit(_, "4")) =>
-          ok
+              NumLit(_, "4")) => ok
       }
     }
 
@@ -2517,8 +2382,7 @@ object ParserSpecs
               Identifier(Vector(), "a"),
               Vector(),
               NumLit(_, "1"),
-              Paren(_, NumLit(_, "2"))) =>
-          ok
+              Paren(_, NumLit(_, "2"))) => ok
       }
     }
 
@@ -2534,8 +2398,7 @@ object ParserSpecs
                 Identifier(Vector(), "c"),
                 Vector(),
                 NumLit(_, "2"),
-                NumLit(_, "3"))) =>
-          ok
+                NumLit(_, "3"))) => ok
       }
     }
 
@@ -2551,8 +2414,7 @@ object ParserSpecs
                 Identifier(Vector(), "c"),
                 Vector("d"),
                 NumLit(_, "2"),
-                NumLit(_, "3"))) =>
-          ok
+                NumLit(_, "3"))) => ok
       }
     }
 
@@ -2581,8 +2443,7 @@ object ParserSpecs
                   Vector(),
                   PathLit("/g"),
                   Dispatch(_, Identifier(Vector(), "d"), Vector()))),
-              Dispatch(_, Identifier(Vector(), "e"), Vector())) =>
-          ok
+              Dispatch(_, Identifier(Vector(), "e"), Vector())) => ok
       }
     }
 
@@ -2693,8 +2554,7 @@ object ParserSpecs
                 Vector(),
                 Dispatch(_, Identifier(Vector(), "c"), Vector()),
                 Paren(_, Dispatch(_, Identifier(Vector(), "d"), Vector()))),
-              Paren(_, Dispatch(_, Identifier(Vector(), "e"), Vector()))) =>
-          ok
+              Paren(_, Dispatch(_, Identifier(Vector(), "e"), Vector()))) => ok
       }
     }
 
@@ -2723,8 +2583,7 @@ object ParserSpecs
                     _,
                     Identifier(Vector(), "f"),
                     Vector(NumLit(_, "1"))),
-                  NumLit(_, "2")))) =>
-          ok
+                  NumLit(_, "2")))) => ok
       }
     }
 
@@ -2735,8 +2594,7 @@ object ParserSpecs
                 _,
                 Vector(
                   ("user", StrLit(_, "daniel")),
-                  ("last", StrLit(_, "spiewak")))) =>
-            ok
+                  ("last", StrLit(_, "spiewak")))) => ok
         }
       }
 
@@ -2758,8 +2616,7 @@ object ParserSpecs
                 Dispatch(_, Identifier(Vector(), "c"), Vector())),
               ArrayDef(
                 _,
-                Vector(Dispatch(_, Identifier(Vector(), "d"), Vector())))) =>
-          ok
+                Vector(Dispatch(_, Identifier(Vector(), "d"), Vector())))) => ok
       }
     }
 
@@ -2774,8 +2631,7 @@ object ParserSpecs
                 Identifier(Vector(), "a"),
                 Vector(),
                 Dispatch(_, Identifier(Vector(), "c"), Vector()),
-                Deref(_, Paren(_, NumLit(_, "42")), NumLit(_, "1"))) =>
-            ok
+                Deref(_, Paren(_, NumLit(_, "42")), NumLit(_, "1"))) => ok
         }
 
         forest.last must beLike {
@@ -2784,8 +2640,7 @@ object ParserSpecs
                 Identifier(Vector(), "a"),
                 Vector(),
                 Dispatch(_, Identifier(Vector(), "c"), Vector(NumLit(_, "42"))),
-                ArrayDef(_, Vector(NumLit(_, "1")))) =>
-            ok
+                ArrayDef(_, Vector(NumLit(_, "1")))) => ok
         }
       } or {
         forest.head must beLike {
@@ -2794,8 +2649,7 @@ object ParserSpecs
                 Identifier(Vector(), "a"),
                 Vector(),
                 Dispatch(_, Identifier(Vector(), "c"), Vector(NumLit(_, "42"))),
-                ArrayDef(_, Vector(NumLit(_, "1")))) =>
-            ok
+                ArrayDef(_, Vector(NumLit(_, "1")))) => ok
         }
 
         forest.last must beLike {
@@ -2804,8 +2658,7 @@ object ParserSpecs
                 Identifier(Vector(), "a"),
                 Vector(),
                 Dispatch(_, Identifier(Vector(), "c"), Vector()),
-                Deref(_, Paren(_, NumLit(_, "42")), NumLit(_, "1"))) =>
-            ok
+                Deref(_, Paren(_, NumLit(_, "42")), NumLit(_, "1"))) => ok
         }
       }
     }
@@ -2846,8 +2699,7 @@ object ParserSpecs
                 Dispatch(
                   _,
                   Identifier(Vector("std", "fs"), "expandPath"),
-                  Vector(StrLit(_, str))))) =>
-          Some(str)
+                  Vector(StrLit(_, str))))) => Some(str)
 
         case _ => None
       }
@@ -2863,8 +2715,7 @@ object ParserSpecs
                 Dispatch(
                   _,
                   Identifier(Vector("std", "fs"), "expandPath"),
-                  Vector(StrLit(_, str))))) =>
-          Some(str)
+                  Vector(StrLit(_, str))))) => Some(str)
 
         case _ => None
       }

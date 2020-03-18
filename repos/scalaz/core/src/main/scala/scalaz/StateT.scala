@@ -268,8 +268,7 @@ private trait StateTBindRec[S, F[_]]
   def tailrecM[A, B](f: A => StateT[F, S, A \/ B])(a: A): StateT[F, S, B] = {
     def go(t: (S, A)): F[(S, A) \/ (S, B)] = {
       F.map(f(t._2)(t._1)) {
-        case (s, m) =>
-          m match {
+        case (s, m) => m match {
             case -\/(a0) => -\/((s, a0))
             case \/-(b)  => \/-((s, b))
           }

@@ -145,9 +145,7 @@ private[sql] trait SQLTestUtils
       // If the test failed part way, we don't want to mask the failure by failing to remove
       // temp tables that never got created.
       try tableNames.foreach(sqlContext.dropTempTable)
-      catch {
-        case _: NoSuchTableException =>
-      }
+      catch { case _: NoSuchTableException => }
     }
   }
 

@@ -7,30 +7,18 @@ import com.twitter.scalding.typed.CumulativeSum._
 class AddRankingWithCumulativeSum(args: Args) extends Job(args) {
   TypedPipe
     .from(TypedTsv[(String, Double)]("input1"))
-    .map {
-      case (gender, height) =>
-        (gender, (height, 1L))
-    }
+    .map { case (gender, height) => (gender, (height, 1L)) }
     .cumulativeSum
-    .map {
-      case (gender, (height, rank)) =>
-        (gender, height, rank)
-    }
+    .map { case (gender, (height, rank)) => (gender, height, rank) }
     .write(TypedTsv("result1"))
 }
 
 class AddRankingWithPartitionedCumulativeSum(args: Args) extends Job(args) {
   TypedPipe
     .from(TypedTsv[(String, Double)]("input1"))
-    .map {
-      case (gender, height) =>
-        (gender, (height, 1L))
-    }
+    .map { case (gender, height) => (gender, (height, 1L)) }
     .cumulativeSum { h => (h / 100).floor.toLong }
-    .map {
-      case (gender, (height, rank)) =>
-        (gender, height, rank)
-    }
+    .map { case (gender, (height, rank)) => (gender, height, rank) }
     .write(TypedTsv("result1"))
 }
 

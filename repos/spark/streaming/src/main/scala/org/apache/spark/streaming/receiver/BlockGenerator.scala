@@ -263,10 +263,9 @@ private[streaming] class BlockGenerator(
         blocksForPushing.put(newBlock) // put is blocking when queue is full
       }
     } catch {
-      case ie: InterruptedException =>
-        logInfo("Block updating timer thread was interrupted")
-      case e: Exception =>
-        reportError("Error in block updating thread", e)
+      case ie: InterruptedException => logInfo(
+          "Block updating timer thread was interrupted")
+      case e: Exception => reportError("Error in block updating thread", e)
     }
   }
 
@@ -296,10 +295,9 @@ private[streaming] class BlockGenerator(
       }
       logInfo("Stopped block pushing thread")
     } catch {
-      case ie: InterruptedException =>
-        logInfo("Block pushing thread was interrupted")
-      case e: Exception =>
-        reportError("Error in block pushing thread", e)
+      case ie: InterruptedException => logInfo(
+          "Block pushing thread was interrupted")
+      case e: Exception => reportError("Error in block pushing thread", e)
     }
   }
 

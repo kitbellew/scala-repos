@@ -221,12 +221,10 @@ object AnnotatorHighlighter {
         annotation.setTextAttributes(DefaultHighlighter.TYPE_ALIAS)
       case c: ScClass if referenceIsToCompanionObjectOfClass(refElement) =>
         annotation.setTextAttributes(DefaultHighlighter.OBJECT)
-      case _: ScClass =>
-        annotation.setTextAttributes(DefaultHighlighter.CLASS)
+      case _: ScClass => annotation.setTextAttributes(DefaultHighlighter.CLASS)
       case _: ScObject =>
         annotation.setTextAttributes(DefaultHighlighter.OBJECT)
-      case _: ScTrait =>
-        annotation.setTextAttributes(DefaultHighlighter.TRAIT)
+      case _: ScTrait => annotation.setTextAttributes(DefaultHighlighter.TRAIT)
       case x: PsiClass if x.isInterface =>
         annotation.setTextAttributes(DefaultHighlighter.TRAIT)
       case x: PsiClass
@@ -248,8 +246,7 @@ object AnnotatorHighlighter {
               })
 
             getParentByStub(parent) match {
-              case _: ScTemplateBody | _: ScEarlyDefinitions =>
-                r match {
+              case _: ScTemplateBody | _: ScEarlyDefinitions => r match {
                   case mod: ScModifierListOwner
                       if mod.hasModifierProperty("lazy") =>
                     annotation.setTextAttributes(DefaultHighlighter.LAZY)
@@ -262,8 +259,7 @@ object AnnotatorHighlighter {
                     annotation.setTextAttributes(DefaultHighlighter.VARIABLES)
                   case _ =>
                 }
-              case _ =>
-                r match {
+              case _ => r match {
                   case mod: ScModifierListOwner
                       if mod.hasModifierProperty("lazy") =>
                     annotation.setTextAttributes(DefaultHighlighter.LOCAL_LAZY)
@@ -371,8 +367,7 @@ object AnnotatorHighlighter {
           case _: ScTrait =>
             val annotation = holder.createInfoAnnotation(element, null)
             annotation.setTextAttributes(DefaultHighlighter.TRAIT)
-          case x: ScBindingPattern =>
-            x.nameContext match {
+          case x: ScBindingPattern => x.nameContext match {
               case r @ (_: ScValue | _: ScVariable) =>
                 getParentByStub(r) match {
                   case _: ScTemplateBody | _: ScEarlyDefinitions =>

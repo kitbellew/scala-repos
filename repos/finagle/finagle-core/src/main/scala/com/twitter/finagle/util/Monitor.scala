@@ -28,8 +28,7 @@ private[util] class DefaultMonitor(log: Logger) extends Monitor {
         // outweighs the bad in this case.
         logThrowable(exc, Level.TRACE)
         true
-      case _ =>
-        RootMonitor.handle(exc)
+      case _ => RootMonitor.handle(exc)
     }
   }
 

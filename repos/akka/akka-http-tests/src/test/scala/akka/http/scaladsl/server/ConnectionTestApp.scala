@@ -77,8 +77,7 @@ object ConnectionTestApp {
         println(s"$id: OK (${httpRes.status.intValue})")
         httpRes.entity.dataBytes.runWith(Sink.ignore)
 
-      case Failure(ex) ⇒
-        println(s"$id: $ex")
+      case Failure(ex) ⇒ println(s"$id: $ex")
     }
   }
 

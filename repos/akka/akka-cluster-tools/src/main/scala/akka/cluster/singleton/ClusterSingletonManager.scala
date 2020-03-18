@@ -323,12 +323,10 @@ object ClusterSingletonManager {
         case MemberUp(m) ⇒ add(m)
         case mEvent: MemberEvent
             if (mEvent.isInstanceOf[MemberExited] || mEvent
-              .isInstanceOf[MemberRemoved]) ⇒
-          remove(mEvent.member)
+              .isInstanceOf[MemberRemoved]) ⇒ remove(mEvent.member)
         case GetNext if changes.isEmpty ⇒
           context.become(deliverNext, discardOld = false)
-        case GetNext ⇒
-          sendFirstChange()
+        case GetNext ⇒ sendFirstChange()
       }
 
       // the buffer was empty when GetNext was received, deliver next event immediately
@@ -692,8 +690,7 @@ class ClusterSingletonManager(
       gotoHandingOver(singleton, singletonTerminated, Some(sender()))
 
     case Event(Terminated(ref), d @ OldestData(singleton, _))
-        if ref == singleton ⇒
-      stay using d.copy(singletonTerminated = true)
+        if ref == singleton ⇒ stay using d.copy(singletonTerminated = true)
   }
 
   when(WasOldest) {
@@ -731,8 +728,7 @@ class ClusterSingletonManager(
       gotoHandingOver(singleton, singletonTerminated, None)
 
     case Event(Terminated(ref), d @ WasOldestData(singleton, _, _))
-        if ref == singleton ⇒
-      stay using d.copy(singletonTerminated = true)
+        if ref == singleton ⇒ stay using d.copy(singletonTerminated = true)
 
   }
 
@@ -750,8 +746,7 @@ class ClusterSingletonManager(
 
   when(HandingOver) {
     case (Event(Terminated(ref), HandingOverData(singleton, handOverTo)))
-        if ref == singleton ⇒
-      handOverDone(handOverTo)
+        if ref == singleton ⇒ handOverDone(handOverTo)
 
     case Event(HandOverToMe, d @ HandingOverData(singleton, handOverTo))
         if handOverTo == Some(sender()) ⇒

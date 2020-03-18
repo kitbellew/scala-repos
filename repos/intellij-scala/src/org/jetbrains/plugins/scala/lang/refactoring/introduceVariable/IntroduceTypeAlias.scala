@@ -130,8 +130,7 @@ trait IntroduceTypeAlias {
                     simpleType,
                     classOf[ScParameterizedTypeElement])
                 } else { simpleType }
-              case typeElement: ScTypeElement =>
-                typeElement
+              case typeElement: ScTypeElement => typeElement
             }
           } else { typeElement }
 
@@ -142,10 +141,8 @@ trait IntroduceTypeAlias {
               mainScope)
             currentDataObject.possibleScopes(mainScopeIdx) = newScope
             newScope
-          case simpleScope: SimpleScopeItem =>
-            mainScope
-          case packageScope: PackageScopeItem =>
-            mainScope
+          case simpleScope: SimpleScopeItem   => mainScope
+          case packageScope: PackageScopeItem => mainScope
         }
 
         val dialog = getDialogForTypes(
@@ -214,15 +211,13 @@ trait IntroduceTypeAlias {
 
                 val namedElement: ScNamedElement =
                   computable._1.getElement match {
-                    case typeAlias: ScTypeAliasDefinition =>
-                      typeAlias
-                    case _ => null
+                    case typeAlias: ScTypeAliasDefinition => typeAlias
+                    case _                                => null
                   }
 
                 val mtypeElement = computable._2.getElement match {
-                  case typeElement: ScTypeElement =>
-                    typeElement
-                  case _ => null
+                  case typeElement: ScTypeElement => typeElement
+                  case _                          => null
                 }
 
                 if (mtypeElement != null && mtypeElement.isValid) {
@@ -298,9 +293,7 @@ trait IntroduceTypeAlias {
 
       if (ScalaRefactoringUtil.isInplaceAvailable(editor)) runInplace()
       else runWithDialog(fromInplace = false, null)
-    } catch {
-      case _: IntroduceException =>
-    }
+    } catch { case _: IntroduceException => }
   }
 
   private def runRefactoringForTypeInside(
@@ -350,18 +343,15 @@ trait IntroduceTypeAlias {
     editor.putUserData(ScalaIntroduceVariableHandler.REVERT_INFO, revertInfo)
 
     val parent = scope match {
-      case simpleScope: SimpleScopeItem =>
-        simpleScope.fileEncloser
-      case packageScope: PackageScopeItem =>
-        packageScope.fileEncloser match {
+      case simpleScope: SimpleScopeItem => simpleScope.fileEncloser
+      case packageScope: PackageScopeItem => packageScope.fileEncloser match {
           case suggestedDirectory: PsiDirectory =>
             createAndGetPackageObjectBody(
               typeElement,
               suggestedDirectory,
               packageScope.needDirectoryCreating,
               scope.getName)
-          case _ =>
-            packageScope.fileEncloser
+          case _ => packageScope.fileEncloser
         }
     }
 
@@ -386,9 +376,8 @@ trait IntroduceTypeAlias {
 
     val className =
       PsiTreeUtil.getParentOfType(parent, classOf[ScObject]) match {
-        case objectType: ScObject =>
-          objectType.name
-        case _ => ""
+        case objectType: ScObject => objectType.name
+        case _                    => ""
       }
 
     replaceTypeElements(
@@ -641,10 +630,8 @@ trait IntroduceTypeAlias {
 
     // Add occurrences highlighting
     val occurrences = mainScope match {
-      case simpleScope: SimpleScopeItem =>
-        simpleScope.usualOccurrences
-      case packageScope: PackageScopeItem =>
-        Array[ScTypeElement]()
+      case simpleScope: SimpleScopeItem   => simpleScope.usualOccurrences
+      case packageScope: PackageScopeItem => Array[ScTypeElement]()
     }
 
     if (occurrences.length > 1)

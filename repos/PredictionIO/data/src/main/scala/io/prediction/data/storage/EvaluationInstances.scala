@@ -90,8 +90,7 @@ class EvaluationInstanceSerializer
           case JObject(fields) =>
             implicit val formats = DefaultFormats
             fields.foldLeft(EvaluationInstance()) {
-              case (i, field) =>
-                field match {
+              case (i, field) => field match {
                   case JField("id", JString(id)) => i.copy(id = id)
                   case JField("status", JString(status)) =>
                     i.copy(status = status)

@@ -851,8 +851,7 @@ object LocalOptImpls {
             iterator.remove()
           } else prev = label
 
-        case instruction =>
-          if (instruction.getOpcode >= 0) prev = null
+        case instruction => if (instruction.getOpcode >= 0) prev = null
       }
     }
     method.instructions.size != initialSize
@@ -876,8 +875,7 @@ object LocalOptImpls {
         activeHandlers ++= allHandlers.filter(_.start == l)
         activeHandlers = activeHandlers.filter(_.end != l)
 
-      case ji: JumpInsnNode =>
-        jumpInsns(ji) = activeHandlers.nonEmpty
+      case ji: JumpInsnNode => jumpInsns(ji) = activeHandlers.nonEmpty
 
       case _ =>
     }
@@ -910,8 +908,7 @@ object LocalOptImpls {
       */
     def simplifyThenElseSameTarget(insn: AbstractInsnNode): Boolean =
       insn match {
-        case ConditionalJump(jump) =>
-          nextExecutableInstruction(insn) match {
+        case ConditionalJump(jump) => nextExecutableInstruction(insn) match {
             case Some(Goto(elseJump))
                 if sameTargetExecutableInstruction(jump, elseJump) =>
               replaceJumpByPop(jump)
@@ -1015,8 +1012,7 @@ object LocalOptImpls {
         instruction: AbstractInsnNode,
         inTryBlock: Boolean): Boolean =
       !inTryBlock && (instruction match {
-        case Goto(jump) =>
-          nextExecutableInstruction(jump.label) match {
+        case Goto(jump) => nextExecutableInstruction(jump.label) match {
             case Some(target) =>
               if (isReturn(target) || target.getOpcode == ATHROW) {
                 method.instructions.set(jump, target.clone(null))

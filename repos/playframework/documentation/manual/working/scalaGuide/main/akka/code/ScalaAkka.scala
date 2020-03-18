@@ -207,8 +207,7 @@ package scalaguide.akka {
       import HelloActor._
 
       def receive = {
-        case SayHello(name: String) =>
-          sender() ! "Hello, " + name
+        case SayHello(name: String) => sender() ! "Hello, " + name
       }
     }
 //#actor
@@ -228,10 +227,7 @@ package scalaguide.akka {
 
       val config = configuration.getString("my.config").getOrElse("none")
 
-      def receive = {
-        case GetConfig =>
-          sender() ! config
-      }
+      def receive = { case GetConfig => sender() ! config }
     }
 //#injected
 
@@ -258,10 +254,7 @@ package scalaguide.akka {
 
       val config = configuration.getString(key).getOrElse("none")
 
-      def receive = {
-        case GetConfig =>
-          sender() ! config
-      }
+      def receive = { case GetConfig => sender() ! config }
     }
 //#injectedchild
 

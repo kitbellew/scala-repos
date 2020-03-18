@@ -27,8 +27,7 @@ class JSExportASTTest extends JSASTTest {
       override def foo = 2
     }
     """.traverse {
-      case js.PropertyDef(js.StringLiteral("foo"), _, _, _) =>
-        props += 1
+      case js.PropertyDef(js.StringLiteral("foo"), _, _, _) => props += 1
     }
 
     assertEquals("Only define the property `foo` once", props, 1)

@@ -95,10 +95,7 @@ private[spark] class IndexShuffleBlockResolver(
     val in =
       try {
         new DataInputStream(new BufferedInputStream(new FileInputStream(index)))
-      } catch {
-        case e: IOException =>
-          return null
-      }
+      } catch { case e: IOException => return null }
     try {
       // Convert the offsets into lengths of each block
       var offset = in.readLong()
@@ -110,10 +107,8 @@ private[spark] class IndexShuffleBlockResolver(
         offset = off
         i += 1
       }
-    } catch {
-      case e: IOException =>
-        return null
-    } finally { in.close() }
+    } catch { case e: IOException => return null }
+    finally { in.close() }
 
     // the size of data file should match with index file
     if (data.length() == lengths.sum) { lengths }

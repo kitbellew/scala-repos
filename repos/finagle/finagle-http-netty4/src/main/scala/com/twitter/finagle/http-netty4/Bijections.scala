@@ -75,15 +75,11 @@ private[http4] object Bijections {
 
     def headersToNetty(h: FinagleHttp.HeaderMap): NettyHttp.HttpHeaders =
       h match {
-        case map: Netty4HeaderMap =>
-          map.underlying
+        case map: Netty4HeaderMap => map.underlying
 
         case _ =>
           val result = new NettyHttp.DefaultHttpHeaders()
-          h.foreach {
-            case (k, v) =>
-              result.add(k, v)
-          }
+          h.foreach { case (k, v) => result.add(k, v) }
           result
       }
 

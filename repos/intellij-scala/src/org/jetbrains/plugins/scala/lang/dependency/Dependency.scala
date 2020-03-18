@@ -87,23 +87,17 @@ object Dependency {
         Path(entity, Some(member))))
 
     reference match {
-      case Parent(_: ScConstructorPattern) =>
-        target match {
-          case ContainingClass(aClass) =>
-            withEntity(aClass.qualifiedName)
+      case Parent(_: ScConstructorPattern) => target match {
+          case ContainingClass(aClass)  => withEntity(aClass.qualifiedName)
           case aClass: ScSyntheticClass => None
           case _                        => None
         }
-      case _ =>
-        target match {
-          case e: ScSyntheticClass =>
-            None
-          case e: PsiClass =>
-            withEntity(e.qualifiedName)
-          case e: PsiPackage =>
-            withEntity(e.getQualifiedName)
-          case (_: ScPrimaryConstructor) && Parent(e: ScClass) =>
-            withEntity(e.qualifiedName)
+      case _ => target match {
+          case e: ScSyntheticClass => None
+          case e: PsiClass         => withEntity(e.qualifiedName)
+          case e: PsiPackage       => withEntity(e.getQualifiedName)
+          case (_: ScPrimaryConstructor) && Parent(e: ScClass) => withEntity(
+              e.qualifiedName)
           case (function: ScFunctionDefinition) && ContainingClass(
                 obj: ScObject)
               if function.isSynthetic || function.name == "apply" || function.name == "unapply" =>
@@ -118,11 +112,9 @@ object Dependency {
                 Parent(ContainingClass(obj: ScObject))) =>
             withMember(obj.qualifiedName, pattern.name)
           case (function: ScFunctionDefinition) && ContainingClass(obj: ScClass)
-              if function.isConstructor =>
-            withEntity(obj.qualifiedName)
+              if function.isConstructor => withEntity(obj.qualifiedName)
           case (method: PsiMethod) && ContainingClass(e: PsiClass)
-              if method.isConstructor =>
-            withEntity(e.qualifiedName)
+              if method.isConstructor => withEntity(e.qualifiedName)
           case (method: PsiMember) && ContainingClass(e: PsiClass)
               if method.getModifierList.hasModifierProperty("static") =>
             withMember(e.qualifiedName, method.getName)

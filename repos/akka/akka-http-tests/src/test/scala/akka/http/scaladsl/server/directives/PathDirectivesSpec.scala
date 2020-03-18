@@ -340,8 +340,7 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
               if (expectedResponse eq null) handled shouldEqual false
               else responseAs[String] shouldEqual expectedResponse
             }
-          case None ⇒
-            failTest(
+          case None ⇒ failTest(
               "Example '" + exampleString + "' doesn't contain a test uri")
         }
   }

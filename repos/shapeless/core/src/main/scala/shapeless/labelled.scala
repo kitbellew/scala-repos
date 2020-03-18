@@ -188,8 +188,7 @@ class LabelledMacros(val c: whitebox.Context)
         }
 
     val tpe = elemTypes.foldRight(nilTpe) {
-      case (elemTpe, acc) =>
-        appliedType(consTpe, List(elemTpe, acc))
+      case (elemTpe, acc) => appliedType(consTpe, List(elemTpe, acc))
     }
 
     typeCarrier(tpe)

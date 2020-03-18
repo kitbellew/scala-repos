@@ -31,8 +31,7 @@ class HoconFormatter(settings: CodeStyleSettings) {
       case DoubleSlashComment
           if customSettings.DOUBLE_SLASH_COMMENTS_AT_FIRST_COLUMN =>
         Spacing.createKeepingFirstColumnSpacing(0, 0, true, maxBlankLines)
-      case _ =>
-        Spacing.createSpacing(0, 0, 0, true, maxBlankLines)
+      case _ => Spacing.createSpacing(0, 0, 0, true, maxBlankLines)
     }
   }
 
@@ -95,8 +94,8 @@ class HoconFormatter(settings: CodeStyleSettings) {
 
     def standardSpacing =
       (leftChild.getElementType, rightChild.getElementType) match {
-        case (LBrace, RBrace) =>
-          normalSpacing(commonSettings.SPACE_WITHIN_BRACES)
+        case (LBrace, RBrace) => normalSpacing(
+            commonSettings.SPACE_WITHIN_BRACES)
 
         case (LBrace, Include | KeyedField.extractor()) =>
           if (customSettings.OBJECTS_NEW_LINE_AFTER_LBRACE)
@@ -105,77 +104,71 @@ class HoconFormatter(settings: CodeStyleSettings) {
 
         case (
               Include | KeyedField.extractor(),
-              Include | KeyedField.extractor()) =>
-          lineBreakEnsuringSpacing
+              Include | KeyedField.extractor()) => lineBreakEnsuringSpacing
 
-        case (Include | KeyedField.extractor(), Comma) =>
-          normalSpacing(commonSettings.SPACE_BEFORE_COMMA)
+        case (Include | KeyedField.extractor(), Comma) => normalSpacing(
+            commonSettings.SPACE_BEFORE_COMMA)
 
-        case (Comma, KeyedField.extractor() | Include) =>
-          normalSpacing(commonSettings.SPACE_AFTER_COMMA)
+        case (Comma, KeyedField.extractor() | Include) => normalSpacing(
+            commonSettings.SPACE_AFTER_COMMA)
 
         case (KeyedField.extractor() | Include | Comma, RBrace) =>
           if (customSettings.OBJECTS_RBRACE_ON_NEXT_LINE)
             dependentLFSpacing(commonSettings.SPACE_WITHIN_BRACES)
           else normalSpacing(commonSettings.SPACE_WITHIN_BRACES)
 
-        case (LBracket, RBracket) =>
-          normalSpacing(commonSettings.SPACE_WITHIN_BRACKETS)
+        case (LBracket, RBracket) => normalSpacing(
+            commonSettings.SPACE_WITHIN_BRACKETS)
 
         case (LBracket, Value.extractor()) =>
           if (customSettings.LISTS_NEW_LINE_AFTER_LBRACKET)
             dependentLFSpacing(commonSettings.SPACE_WITHIN_BRACKETS)
           else normalSpacing(commonSettings.SPACE_WITHIN_BRACKETS)
 
-        case (Value.extractor(), Value.extractor()) =>
-          lineBreakEnsuringSpacing
+        case (Value.extractor(), Value.extractor()) => lineBreakEnsuringSpacing
 
-        case (Value.extractor(), Comma) =>
-          normalSpacing(commonSettings.SPACE_BEFORE_COMMA)
+        case (Value.extractor(), Comma) => normalSpacing(
+            commonSettings.SPACE_BEFORE_COMMA)
 
-        case (Comma, Value.extractor()) =>
-          normalSpacing(commonSettings.SPACE_AFTER_COMMA)
+        case (Comma, Value.extractor()) => normalSpacing(
+            commonSettings.SPACE_AFTER_COMMA)
 
         case (Value.extractor() | Comma, RBracket) =>
           if (customSettings.LISTS_RBRACKET_ON_NEXT_LINE)
             dependentLFSpacing(commonSettings.SPACE_WITHIN_BRACKETS)
           else normalSpacing(commonSettings.SPACE_WITHIN_BRACKETS)
 
-        case (UnquotedChars, Included) =>
-          normalSpacing(shouldBeSpace = true)
+        case (UnquotedChars, Included) => normalSpacing(shouldBeSpace = true)
 
-        case (Key, Object) =>
-          normalSpacing(customSettings.SPACE_BEFORE_LBRACE_AFTER_PATH)
+        case (Key, Object) => normalSpacing(
+            customSettings.SPACE_BEFORE_LBRACE_AFTER_PATH)
 
-        case (Key, Colon) =>
-          normalSpacing(customSettings.SPACE_BEFORE_COLON)
+        case (Key, Colon) => normalSpacing(customSettings.SPACE_BEFORE_COLON)
 
-        case (Key, Equals | PlusEquals) =>
-          normalSpacing(customSettings.SPACE_BEFORE_ASSIGNMENT)
+        case (Key, Equals | PlusEquals) => normalSpacing(
+            customSettings.SPACE_BEFORE_ASSIGNMENT)
 
-        case (Colon, Value.extractor()) =>
-          normalSpacing(customSettings.SPACE_AFTER_COLON)
+        case (Colon, Value.extractor()) => normalSpacing(
+            customSettings.SPACE_AFTER_COLON)
 
-        case (Equals | PlusEquals, Value.extractor()) =>
-          normalSpacing(customSettings.SPACE_AFTER_ASSIGNMENT)
+        case (Equals | PlusEquals, Value.extractor()) => normalSpacing(
+            customSettings.SPACE_AFTER_ASSIGNMENT)
 
         case (Dollar, SubLBrace) | (SubLBrace, QMark) =>
           Spacing.getReadOnlySpacing
 
-        case (SubLBrace, Path | SubRBrace) =>
-          normalSpacing(customSettings.SPACE_WITHIN_SUBSTITUTION_BRACES)
+        case (SubLBrace, Path | SubRBrace) => normalSpacing(
+            customSettings.SPACE_WITHIN_SUBSTITUTION_BRACES)
 
-        case (QMark, Path) =>
-          normalSpacing(customSettings.SPACE_AFTER_QMARK)
+        case (QMark, Path) => normalSpacing(customSettings.SPACE_AFTER_QMARK)
 
-        case (Path, SubRBrace) =>
-          normalSpacing(customSettings.SPACE_WITHIN_SUBSTITUTION_BRACES)
+        case (Path, SubRBrace) => normalSpacing(
+            customSettings.SPACE_WITHIN_SUBSTITUTION_BRACES)
 
         case (UnquotedChars, IncludeTarget) | (IncludeTarget, UnquotedChars) =>
           normalSpacing(commonSettings.SPACE_WITHIN_METHOD_CALL_PARENTHESES)
 
-        case _ =>
-          null
+        case _ => null
 
       }
 
@@ -237,17 +230,14 @@ class HoconFormatter(settings: CodeStyleSettings) {
       case (Object, Include | KeyedField.extractor()) =>
         wrapCache.objectEntryWrap
 
-      case (Array, Value.extractor()) =>
-        wrapCache.arrayValueWrap
+      case (Array, Value.extractor()) => wrapCache.arrayValueWrap
 
       case (ValuedField, KeyValueSeparator.extractor()) =>
         wrapCache.keyValueSeparatorWrap
 
-      case (ValuedField, Value.extractor()) =>
-        wrapCache.fieldValueWrap
+      case (ValuedField, Value.extractor()) => wrapCache.fieldValueWrap
 
-      case (Include, _) =>
-        wrapCache.includeInnerWrap
+      case (Include, _) => wrapCache.includeInnerWrap
 
       case _ => null
     }
@@ -276,8 +266,7 @@ class HoconFormatter(settings: CodeStyleSettings) {
       case (Include, Included) |
           (ValuedField, KeyValueSeparator.extractor() | Value.extractor()) =>
         Indent.getContinuationIndent
-      case _ =>
-        Indent.getNoneIndent
+      case _ => Indent.getNoneIndent
 
     }
 
@@ -297,8 +286,7 @@ class HoconFormatter(settings: CodeStyleSettings) {
 
   def getChildren(node: ASTNode): Iterator[ASTNode] =
     node.getElementType match {
-      case ForcedLeafBlock.extractor() =>
-        Iterator.empty
+      case ForcedLeafBlock.extractor()   => Iterator.empty
       case HoconFileElementType | Object =>
         // immediately expand ObjectEntries element
         node.childrenIterator.flatMap(child =>

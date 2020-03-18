@@ -88,8 +88,7 @@ object PlayForkProcess {
             "Forked Play process did not exit on its own, terminating it")
           // fire-and-forget sigterm, may or may not work
           process.destroy()
-        case Some(x) =>
-          log.info(s"Forked Play process exited with status: $x")
+        case Some(x) => log.info(s"Forked Play process exited with status: $x")
       }
       // now join our logging threads (process is supposed to be gone, so nothing to log)
       try process.getInputStream.close()

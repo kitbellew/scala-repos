@@ -42,8 +42,7 @@ private[fpm] class LocalPrefixSpan(
     */
   def run(postfixes: Array[Postfix]): Iterator[(Array[Int], Long)] = {
     genFreqPatterns(ReversedPrefix.empty, postfixes).map {
-      case (prefix, count) =>
-        (prefix.toSequence, count)
+      case (prefix, count) => (prefix.toSequence, count)
     }
   }
 
@@ -62,14 +61,10 @@ private[fpm] class LocalPrefixSpan(
     // find frequent items
     val counts = mutable.Map.empty[Int, Long].withDefaultValue(0)
     postfixes.foreach { postfix =>
-      postfix.genPrefixItems.foreach {
-        case (x, _) =>
-          counts(x) += 1L
-      }
+      postfix.genPrefixItems.foreach { case (x, _) => counts(x) += 1L }
     }
     val freqItems = counts.toSeq.filter {
-      case (_, count) =>
-        count >= minCount
+      case (_, count) => count >= minCount
     }.sorted
     // project and recursively call genFreqPatterns
     freqItems.toIterator.flatMap {

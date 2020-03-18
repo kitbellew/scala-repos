@@ -14,8 +14,7 @@ private[thrift] class ThriftChannelBufferDecoder extends OneToOneDecoder {
       case buffer: ChannelBuffer
           if buffer.hasArray
             && buffer.arrayOffset == 0 && buffer.readerIndex == 0
-            && buffer.readableBytes == buffer.array().length =>
-        buffer.array()
+            && buffer.readableBytes == buffer.array().length => buffer.array()
       case buffer: ChannelBuffer =>
         val arr = new Array[Byte](buffer.readableBytes)
         buffer.getBytes(buffer.readerIndex, arr)

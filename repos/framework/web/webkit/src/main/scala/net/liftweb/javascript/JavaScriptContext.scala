@@ -48,8 +48,7 @@ object JavaScriptContext {
           }
 
         v2 match {
-          case Full(v22) =>
-            exec(v22) match {
+          case Full(v22) => exec(v22) match {
               case fut: LAFuture[_] =>
                 val ret = new LAFuture[NodeSeq]
                 fut.foreach(v =>

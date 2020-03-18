@@ -35,8 +35,7 @@ class KindProjectorUseCorrectLambdaKeywordInspection
         .getInstance(param.getProject)
         .REPLACE_LAMBDA_WITH_GREEK_LETTER
       param.children.foreach {
-        case simple: ScSimpleTypeElement =>
-          simple.getText match {
+        case simple: ScSimpleTypeElement => simple.getText match {
             case "Lambda" if useGreekLambda =>
               val changeKeywordFix =
                 new KindProjectorUseCorrectLambdaKeywordQuickFix(simple, "λ")

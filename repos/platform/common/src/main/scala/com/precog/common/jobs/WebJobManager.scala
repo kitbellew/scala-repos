@@ -121,8 +121,7 @@ trait WebJobManager
           case HttpResponse(HttpStatus(Created, _), _, Some(obj), _) =>
             obj.validated[Job] map (right(_)) getOrElse left(
               "Invalid job returned by server:\n" + obj)
-          case res =>
-            left(unexpected(res))
+          case res => left(unexpected(res))
         })
 
       started map { timestamp =>
@@ -146,8 +145,7 @@ trait WebJobManager
         case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
           obj.validated[Vector[Job]] map (right(_)) getOrElse left(
             "Invalid list of jobs returned from server:\n" + obj)
-        case res =>
-          left(unexpected(res))
+        case res => left(unexpected(res))
       })
     }
   }
@@ -158,10 +156,8 @@ trait WebJobManager
         case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
           obj.validated[Job] map { job => right(Some(job)) } getOrElse left(
             "Invalid job returned from server:\n" + obj)
-        case HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
-          right(None)
-        case res =>
-          left(unexpected(res))
+        case HttpResponse(HttpStatus(NotFound, _), _, _, _) => right(None)
+        case res                                            => left(unexpected(res))
       })
     }
   }
@@ -195,8 +191,7 @@ trait WebJobManager
           right(Left(msg))
         case HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
           right(Left("No job exists with the given job ID: " + jobId))
-        case res =>
-          left(unexpected(res))
+        case res => left(unexpected(res))
       })
     }
   }
@@ -210,10 +205,8 @@ trait WebJobManager
             case _ =>
               left("Invalid status returned from upstream server:\n" + obj)
           }
-        case HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
-          right(None)
-        case res =>
-          left(unexpected(res))
+        case HttpResponse(HttpStatus(NotFound, _), _, _, _) => right(None)
+        case res                                            => left(unexpected(res))
       })
     }
 
@@ -223,8 +216,7 @@ trait WebJobManager
         case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
           obj.validated[Vector[String]] map (right(_)) getOrElse left(
             "Invalid list of channels returned from server:\n" + obj)
-        case res =>
-          left(unexpected(res))
+        case res => left(unexpected(res))
       })
     }
 
@@ -239,8 +231,7 @@ trait WebJobManager
           case HttpResponse(HttpStatus(Created, _), _, Some(obj), _) =>
             obj.validated[Message] map (right(_)) getOrElse left(
               "Invalid message returned from server:\n" + obj)
-          case res =>
-            left(unexpected(res))
+          case res => left(unexpected(res))
         })
     }
 
@@ -257,8 +248,7 @@ trait WebJobManager
           case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
             obj.validated[Vector[Message]] map (right(_)) getOrElse left(
               "Invalid list of messages returned from server:\n" + obj)
-          case res =>
-            left(unexpected(res))
+          case res => left(unexpected(res))
         })
     }
 
@@ -266,8 +256,7 @@ trait WebJobManager
       t: JobState => Either[String, JobState]): Response[Either[String, Job]] =
     withJsonClient { client =>
       findJob(jobId) flatMap {
-        case Some(job) =>
-          t(job.state) match {
+        case Some(job) => t(job.state) match {
             case Right(state) =>
               Response(client.put[JValue]("/jobs/" + jobId + "/state")(
                 state.serialize)) flatMap {
@@ -280,18 +269,14 @@ trait WebJobManager
                       HttpStatus(BadRequest, _),
                       _,
                       Some(JString(msg)),
-                      _) =>
-                  BadResponse(msg)
-                case res =>
-                  BadResponse(unexpected(res))
+                      _) => BadResponse(msg)
+                case res => BadResponse(unexpected(res))
               }
 
-            case Left(msg) =>
-              rightT(Left(msg).point[Future])
+            case Left(msg) => rightT(Left(msg).point[Future])
           }
 
-        case None =>
-          BadResponse("Could not find job with ID: " + jobId)
+        case None => BadResponse("Could not find job with ID: " + jobId)
       }
     }
 
@@ -339,8 +324,7 @@ trait WebJobManager
         case HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
           right(Left("Cannot find job with id: " + jobId))
 
-        case res =>
-          left(unexpected(res))
+        case res => left(unexpected(res))
       })
     }
   }

@@ -83,10 +83,8 @@ object EntityLink {
 final case class HtmlTag(data: String) extends Inline {
   private val Pattern = """(?ms)\A<(/?)(.*?)[\s>].*\z""".r
   private val (isEnd, tagName) = data match {
-    case Pattern(s1, s2) =>
-      (!s1.isEmpty, Some(s2.toLowerCase))
-    case _ =>
-      (false, None)
+    case Pattern(s1, s2) => (!s1.isEmpty, Some(s2.toLowerCase))
+    case _               => (false, None)
   }
 
   def canClose(open: HtmlTag) = { isEnd && tagName == open.tagName }

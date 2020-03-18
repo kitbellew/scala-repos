@@ -119,10 +119,10 @@ object ScalaOptionParser {
           Space ~> (options | concat(
             concat(
               options ~ Space.string) ~ runnableAndArgs) | runnableAndArgs))
-      case "scaladoc" =>
-        Opt(Space ~> Opt(repsep(ScalaDocOpt, Space).map(_.mkString(" "))))
-      case "scalac" =>
-        Opt(Space ~> repsep(ScalacOpt, Space).map(_.mkString(" ")))
+      case "scaladoc" => Opt(
+          Space ~> Opt(repsep(ScalaDocOpt, Space).map(_.mkString(" "))))
+      case "scalac" => Opt(
+          Space ~> repsep(ScalacOpt, Space).map(_.mkString(" ")))
     }
     P <~ token(OptSpace)
   }

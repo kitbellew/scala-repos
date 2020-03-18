@@ -101,10 +101,8 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
           throw new MessageOnlyException(error)
       }
     val parsedTrees = parsed match {
-      case Block(stmt, expr) =>
-        stmt :+ expr
-      case t: Tree =>
-        Seq(t)
+      case Block(stmt, expr) => stmt :+ expr
+      case t: Tree           => Seq(t)
     }
 
     // Check No val (a,b) = foo *or* val a,b = foo as these are problematic to range positions and the WHOLE architecture.
@@ -143,16 +141,14 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
             fileName,
             th)
           originalStatement + missingText
-        case _ =>
-          originalStatement
+        case _ => originalStatement
       }
       statement
     }
 
     def convertStatement(t: Tree): Option[(String, Tree, LineRange)] =
       t.pos match {
-        case NoPosition =>
-          None
+        case NoPosition => None
         case position =>
           val originalStatement = content.substring(
             position.start,
@@ -213,8 +209,7 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
       modifiedContent: String,
       importsInOneLine: Seq[((Int, Int), Int)]): String = {
     val (begin, end) = importsInOneLine.foldLeft((Int.MaxValue, Int.MinValue)) {
-      case ((min, max), ((start, end), _)) =>
-        (min.min(start), max.max(end))
+      case ((min, max), ((start, end), _)) => (min.min(start), max.max(end))
     }
     modifiedContent.substring(begin, end)
   }
@@ -250,8 +245,7 @@ private[sbt] object MissingBracketHandler {
         val textWithoutBracket = text.substring(0, text.length - 1)
         scala.util.Try(
           SbtParser(FAKE_FILE, textWithoutBracket.lines.toSeq)) match {
-          case scala.util.Success(_) =>
-            text
+          case scala.util.Success(_) => text
           case scala.util.Failure(th) =>
             findMissingText(
               content,

@@ -15,8 +15,7 @@ sealed abstract class FreeApplicative[F[_], A]
 
   final def ap[B](b: FA[F, A => B]): FA[F, B] =
     b match {
-      case Pure(f) =>
-        this.map(f)
+      case Pure(f) => this.map(f)
       case Ap(pivot, fn) =>
         apply(pivot)(self.ap(fn.map(fx => a => p => fx(p)(a))))
     }

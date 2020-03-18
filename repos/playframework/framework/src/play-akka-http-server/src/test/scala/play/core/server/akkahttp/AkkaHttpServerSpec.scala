@@ -59,8 +59,9 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
 
     "not send chunked responses when given a Content-Length" in {
       requestFromServer("/hello") { request => request.get() } {
-        case ("GET", "/hello") =>
-          Action { Ok("greetings").withHeaders(CONTENT_LENGTH -> "9") }
+        case ("GET", "/hello") => Action {
+            Ok("greetings").withHeaders(CONTENT_LENGTH -> "9")
+          }
       } { response =>
         response.status must_== 200
         response.header(CONTENT_TYPE) must_== Some("text/plain; charset=UTF-8")
@@ -85,8 +86,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
           .withHeaders(ACCEPT_ENCODING -> "utf-8", ACCEPT_LANGUAGE -> "en-NZ")
           .get()
       } {
-        case ("GET", "/abc") =>
-          Action { implicit request =>
+        case ("GET", "/abc") => Action { implicit request =>
             Ok(headerDump(ACCEPT_ENCODING, ACCEPT_LANGUAGE))
           }
       } { response =>
@@ -127,8 +127,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
 
     "pass POST request bodies to Actions" in {
       requestFromServer("/greet") { request => request.post("Bob") } {
-        case ("POST", "/greet") =>
-          Action(parse.text) { implicit request =>
+        case ("POST", "/greet") => Action(parse.text) { implicit request =>
             val name = request.body
             Ok(s"Hello $name")
           }
@@ -145,8 +144,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     }
 
     val httpServerTagRoutes: PartialFunction[(String, String), Handler] = {
-      case ("GET", "/httpServerTag") =>
-        Action { implicit request =>
+      case ("GET", "/httpServerTag") => Action { implicit request =>
           val httpServer = request.tags.get("HTTP_SERVER")
           Ok(httpServer.toString)
         }
@@ -154,8 +152,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
 
     "pass tag of HTTP_SERVER->akka-http to Actions" in {
       requestFromServer("/httpServerTag") { request => request.get() } {
-        case ("GET", "/httpServerTag") =>
-          Action { implicit request =>
+        case ("GET", "/httpServerTag") => Action { implicit request =>
             val httpServer = request.tags.get("HTTP_SERVER")
             Ok(httpServer.toString)
           }

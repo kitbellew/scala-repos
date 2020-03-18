@@ -65,12 +65,10 @@ trait BuildFileModifier {
                   case Some(acceptedChanges) if acceptedChanges.nonEmpty =>
                     applyChanges(acceptedChanges, project, vfsFileToCopy)
                     res = true
-                  case _ =>
-                    res = false
+                  case _ => res = false
                 }
               }
-            case None =>
-              res = false
+            case None => res = false
           }
         }
       },

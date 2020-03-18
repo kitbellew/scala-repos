@@ -38,8 +38,8 @@ object HttpResponseClassifier {
 
       def apply(x: ReqRep): ResponseClass =
         x match {
-          case ReqRep(req: Request, Return(rep: Response)) =>
-            underlying((req, rep))
+          case ReqRep(req: Request, Return(rep: Response)) => underlying(
+              (req, rep))
         }
     }
 }

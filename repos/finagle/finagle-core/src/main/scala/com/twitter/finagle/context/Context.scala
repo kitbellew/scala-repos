@@ -293,8 +293,7 @@ final class MarshalledContext extends Context {
       case Cleared(next, key) =>
         marshalMap(next, map)
         map.remove(key.marshalId)
-      case Empty =>
-        ()
+      case Empty => ()
     }
 
   /**

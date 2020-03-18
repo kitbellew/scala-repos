@@ -514,16 +514,15 @@ trait CaseClassMacros extends ReprTypes {
     val KeyTagSym = keyTagTpe.typeSymbol
     tpe.dealias match {
       case RefinedType(List(v0, TypeRef(pre, KeyTagSym, List(k, v1))), _)
-          if pre =:= KeyTagPre && v0 =:= v1 =>
-        (k, v0)
-      case _ => abort(s"$tpe is not a field type")
+          if pre =:= KeyTagPre && v0 =:= v1 => (k, v0)
+      case _                                => abort(s"$tpe is not a field type")
     }
   }
 
   def mkTypTree(tpe: Type): Tree = {
     tpe match {
-      case SingleType(pre @ SingleType(_, _), sym) =>
-        SingletonTypeTree(mkAttributedRef(pre, sym))
+      case SingleType(pre @ SingleType(_, _), sym) => SingletonTypeTree(
+          mkAttributedRef(pre, sym))
 
       case TypeRef(pre, _, args) if isVararg(tpe) =>
         val argTrees = args.map(mkTypTree)
@@ -535,16 +534,14 @@ trait CaseClassMacros extends ReprTypes {
 
   def appliedTypTree1(tpe: Type, param: Type, arg: TypeName): Tree = {
     tpe match {
-      case t if t =:= param =>
-        Ident(arg)
+      case t if t =:= param => Ident(arg)
       case PolyType(params, body) if params.head.asType.toType =:= param =>
         appliedTypTree1(body, param, arg)
       case t @ TypeRef(pre, sym, List()) if t.takesTypeArgs =>
         val argTrees = t.typeParams.map(sym =>
           appliedTypTree1(sym.asType.toType, param, arg))
         AppliedTypeTree(mkAttributedRef(pre, sym), argTrees)
-      case TypeRef(pre, sym, List()) =>
-        mkAttributedRef(pre, sym)
+      case TypeRef(pre, sym, List()) => mkAttributedRef(pre, sym)
       case TypeRef(pre, sym, args) =>
         val argTrees = args.map(appliedTypTree1(_, param, arg))
         AppliedTypeTree(mkAttributedRef(pre, sym), argTrees)
@@ -552,8 +549,7 @@ trait CaseClassMacros extends ReprTypes {
         val argTrees = t.typeParams.map(sym =>
           appliedTypTree1(sym.asType.toType, param, arg))
         AppliedTypeTree(mkAttributedRef(tpe.typeConstructor), argTrees)
-      case t =>
-        tq"$tpe"
+      case t => tq"$tpe"
     }
   }
 
@@ -841,8 +837,9 @@ trait CaseClassMacros extends ReprTypes {
           acc: List[(TermName, Type)]): Option[List[(TermName, Type)]] =
         ts match {
           case Nil => Some(acc.reverse)
-          case Seq(hd, tl @ _*) =>
-            fields.span { case (_, tpe) => !(tpe =:= hd) } match {
+          case Seq(hd, tl @ _*) => fields.span {
+              case (_, tpe) => !(tpe =:= hd)
+            } match {
               case (fpre, List(f, fsuff @ _*)) =>
                 loop(fpre ++ fsuff, tl, f :: acc)
               case _ => None
@@ -882,8 +879,7 @@ trait CaseClassMacros extends ReprTypes {
           .finalResultType
           .baseType(symbolOf[Option[_]]) match {
           case TypeRef(_, _, List(o @ TypeRef(_, _, args)))
-              if o <:< typeOf[Product] =>
-            Some(args)
+              if o <:< typeOf[Product]         => Some(args)
           case TypeRef(_, _, args @ List(arg)) => Some(args)
           case _                               => None
         }
@@ -924,9 +920,8 @@ trait CaseClassMacros extends ReprTypes {
     def unapply(tpe: Type): Option[List[(TermName, Type)]] =
       (tpe, tpe) match {
         case (HasUniqueCtor(as), HasUnapply(bs))
-            if equalTypes(as.map(_._2), bs) =>
-          Some(as)
-        case _ => None
+            if equalTypes(as.map(_._2), bs) => Some(as)
+        case _                              => None
       }
   }
 
@@ -947,10 +942,8 @@ trait CaseClassMacros extends ReprTypes {
 
       def narrow(tree: Tree, tpe: Type): Tree =
         tpe match {
-          case ConstantType(c) =>
-            q"$c.asInstanceOf[$tpe]"
-          case _ =>
-            tree
+          case ConstantType(c) => q"$c.asInstanceOf[$tpe]"
+          case _               => tree
         }
 
       def narrow1(tree: Tree, tpe: Type): Tree =
@@ -1017,8 +1010,7 @@ trait CaseClassMacros extends ReprTypes {
               c.internal.gen.mkAttributedRef(pre, sym.asModule)
             case TypeRef(pre, sym, List()) if sym.isModuleClass =>
               c.internal.gen.mkAttributedRef(pre, sym.asClass.module)
-            case other =>
-              abort(s"Bad case object-like type $tpe")
+            case other => abort(s"Bad case object-like type $tpe")
           }
           new CtorDtor {
             def construct(args: List[Tree]): Tree = q"$singleton: $tpe"
@@ -1103,8 +1095,7 @@ class GenericMacros(val c: whitebox.Context) extends CaseClassMacros {
         case SingleType(pre, sym) =>
           val singleton = mkAttributedRef(pre, sym)
           cq"p if p eq $singleton => $index"
-        case _ =>
-          cq"_: $tpe0 => $index"
+        case _ => cq"_: $tpe0 => $index"
       }
     }
 

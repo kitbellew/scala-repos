@@ -134,8 +134,7 @@ class Main {
         }
       // if the class corresponds to the artificial class scala.Any.
       // (see member list in class scala.tool.nsc.symtab.Definitions)
-      case _ =>
-        Console.println(s"class/object $classname not found.")
+      case _ => Console.println(s"class/object $classname not found.")
     }
   }
 }
@@ -221,10 +220,8 @@ object Main extends Main {
 
   private def createClassPath(cpArg: Option[String], settings: Settings) =
     cpArg match {
-      case Some(cp) =>
-        settings.YclasspathImpl.value match {
-          case ClassPathRepresentationType.Flat =>
-            AggregateFlatClassPath(
+      case Some(cp) => settings.YclasspathImpl.value match {
+          case ClassPathRepresentationType.Flat => AggregateFlatClassPath(
               new FlatClassPathFactory(settings).classesInExpandedPath(cp))
           case ClassPathRepresentationType.Recursive =>
             new JavaClassPath(

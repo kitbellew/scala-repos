@@ -16,8 +16,7 @@ class SwankProtocol extends FramedStringProtocol {
       case (Some(message), remainder) =>
         val parsedMessage = message.parseSexp.convertTo[RpcRequestEnvelope]
         (Some(parsedMessage), remainder)
-      case (None, remainder) =>
-        (None, remainder)
+      case (None, remainder) => (None, remainder)
     }
   }
 

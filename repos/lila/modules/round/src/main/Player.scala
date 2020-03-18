@@ -28,8 +28,7 @@ private[round] final class Player(
 
   def human(play: HumanPlay, round: ActorRef)(pov: Pov): Fu[Events] =
     play match {
-      case HumanPlay(playerId, uci, blur, lag, promiseOption) =>
-        pov match {
+      case HumanPlay(playerId, uci, blur, lag, promiseOption) => pov match {
           case Pov(game, color) if game playableBy color =>
             lila.mon
               .measure(_.round.move.segment.logic)(

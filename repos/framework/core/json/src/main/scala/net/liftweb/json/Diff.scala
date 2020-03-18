@@ -78,8 +78,7 @@ object Diff {
             JNothing,
             if (yleft.isEmpty) JNothing else JObject(yleft),
             JNothing)
-        case x :: xs =>
-          yleft find (_.name == x.name) match {
+        case x :: xs => yleft find (_.name == x.name) match {
             case Some(y) =>
               val Diff(c1, a1, d1) = diff(x.value, y.value).toField(y.name)
               val Diff(c2, a2, d2) = diffRec(xs, yleft filterNot (_ == y))

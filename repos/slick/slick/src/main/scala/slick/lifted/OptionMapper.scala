@@ -176,8 +176,7 @@ object OptionLift extends OptionLiftLowPriority {
               if !r.tpe.isInstanceOf[OptionType] /* An primitive column */ =>
             Rep.forNode[Option[P]](n)(
               r.tpe.asInstanceOf[TypedType[P]].optionType)
-          case _ =>
-            RepOption[P](ShapedValue(packed, shape.packedShape), n)
+          case _ => RepOption[P](ShapedValue(packed, shape.packedShape), n)
         }
       }
     }

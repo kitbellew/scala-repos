@@ -44,8 +44,7 @@ class StorageLevel private (
           s.useMemory == useMemory &&
           s.deserialized == deserialized &&
           s.replication == replication
-      case _ =>
-        false
+      case _ => false
     }
 
   override def toString: String =

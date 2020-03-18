@@ -100,8 +100,7 @@ class CamelSettings private[camel] (
     }
     val conversions =
       (Map[String, Class[_ <: AnyRef]]() /: specifiedConversions) {
-        case (m, (key, fqcn)) ⇒
-          m.updated(
+        case (m, (key, fqcn)) ⇒ m.updated(
             key,
             dynamicAccess
               .getClassFor[AnyRef](fqcn)

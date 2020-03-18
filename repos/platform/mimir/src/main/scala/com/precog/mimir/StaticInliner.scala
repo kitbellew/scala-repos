@@ -109,8 +109,7 @@ trait StdLibStaticInlinerModule[M[+_]]
             (left2, right2) match {
               case (Const(RArray(l)), Const(RArray(r))) =>
                 Const(RArray(l ++ r))(graph.loc)
-              case _ =>
-                Join(JoinArray, sort, left2, right2)(graph.loc)
+              case _ => Join(JoinArray, sort, left2, right2)(graph.loc)
             }
 
           case graph @ Join(DerefArray, sort @ Cross(_), left, right) =>
@@ -119,10 +118,8 @@ trait StdLibStaticInlinerModule[M[+_]]
 
             (left2, right2) match {
               case (Const(RArray(l)), Const(CNum(r)))
-                  if r >= 0 && r < l.length =>
-                Const(l(r.intValue))(graph.loc)
-              case _ =>
-                Join(DerefArray, sort, left2, right2)(graph.loc)
+                  if r >= 0 && r < l.length => Const(l(r.intValue))(graph.loc)
+              case _                        => Join(DerefArray, sort, left2, right2)(graph.loc)
             }
 
           case graph @ Join(ArraySwap, sort @ Cross(_), left, right) =>
@@ -137,8 +134,7 @@ trait StdLibStaticInlinerModule[M[+_]]
                 val (c, b) = beforeIndex.splitAt(1)
 
                 Const(RArray(a ++ b ++ c ++ d))(graph.loc)
-              case _ =>
-                Join(ArraySwap, sort, left2, right2)(graph.loc)
+              case _ => Join(ArraySwap, sort, left2, right2)(graph.loc)
             }
 
           // Object operations
@@ -149,8 +145,7 @@ trait StdLibStaticInlinerModule[M[+_]]
             (left2, right2) match {
               case (Const(CString(k)), Const(v)) =>
                 Const(RObject(Map(k -> v)))(graph.loc)
-              case _ =>
-                Join(WrapObject, sort, left2, right2)(graph.loc)
+              case _ => Join(WrapObject, sort, left2, right2)(graph.loc)
             }
 
           case graph @ Join(DerefObject, sort @ Cross(_), left, right) =>
@@ -160,8 +155,7 @@ trait StdLibStaticInlinerModule[M[+_]]
             (left2, right2) match {
               case (Const(RObject(v)), Const(CString(k))) if v contains k =>
                 Const(v(k))(graph.loc)
-              case _ =>
-                Join(DerefObject, sort, left2, right2)(graph.loc)
+              case _ => Join(DerefObject, sort, left2, right2)(graph.loc)
             }
 
           case graph @ Join(JoinObject, sort @ Cross(_), left, right) =>
@@ -171,8 +165,7 @@ trait StdLibStaticInlinerModule[M[+_]]
             (left2, right2) match {
               case (Const(RObject(l)), Const(RObject(r))) =>
                 Const(RObject(l ++ r))(graph.loc)
-              case _ =>
-                Join(JoinObject, sort, left2, right2)(graph.loc)
+              case _ => Join(JoinObject, sort, left2, right2)(graph.loc)
             }
 
           case graph @ Join(op, sort @ Cross(_), left, right) => {

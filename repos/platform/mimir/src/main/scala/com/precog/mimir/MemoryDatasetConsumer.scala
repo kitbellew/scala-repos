@@ -98,8 +98,7 @@ trait MemoryDatasetConsumer[M[+_]] extends EvaluatorModule[M] {
         SObject(map)
       }
 
-      case JArray(values) =>
-        SArray(Vector(values map jvalueToSValue: _*))
+      case JArray(values) => SArray(Vector(values map jvalueToSValue: _*))
     }
 }
 

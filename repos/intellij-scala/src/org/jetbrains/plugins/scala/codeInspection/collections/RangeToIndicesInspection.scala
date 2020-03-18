@@ -20,9 +20,8 @@ object RangeToIndices extends SimplificationType {
   override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case Range(_, literal("0"), qual `.sizeOrLength` ())
-          if isSeq(qual) || isArray(qual) =>
-        toIndicesSimplification(expr, qual)
-      case _ => None
+          if isSeq(qual) || isArray(qual) => toIndicesSimplification(expr, qual)
+      case _                              => None
     }
 
   def toIndicesSimplification(

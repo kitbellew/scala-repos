@@ -105,8 +105,7 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
       case RDDBlockId(rddId, _) =>
         _rddBlocks.getOrElseUpdate(rddId, new mutable.HashMap)(blockId) =
           blockStatus
-      case _ =>
-        _nonRddBlocks(blockId) = blockStatus
+      case _ => _nonRddBlocks(blockId) = blockStatus
     }
   }
 
@@ -127,8 +126,7 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
           if (_rddBlocks(rddId).isEmpty) { _rddBlocks.remove(rddId) }
           removed
         } else { None }
-      case _ =>
-        _nonRddBlocks.remove(blockId)
+      case _ => _nonRddBlocks.remove(blockId)
     }
   }
 
@@ -140,8 +138,7 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
     blockId match {
       case RDDBlockId(rddId, _) =>
         _rddBlocks.get(rddId).exists(_.contains(blockId))
-      case _ =>
-        _nonRddBlocks.contains(blockId)
+      case _ => _nonRddBlocks.contains(blockId)
     }
   }
 
@@ -151,10 +148,8 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
     */
   def getBlock(blockId: BlockId): Option[BlockStatus] = {
     blockId match {
-      case RDDBlockId(rddId, _) =>
-        _rddBlocks.get(rddId).flatMap(_.get(blockId))
-      case _ =>
-        _nonRddBlocks.get(blockId)
+      case RDDBlockId(rddId, _) => _rddBlocks.get(rddId).flatMap(_.get(blockId))
+      case _                    => _nonRddBlocks.get(blockId)
     }
   }
 
@@ -219,8 +214,7 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
           .get(rddId)
           .map { case (mem, disk, _) => (mem, disk) }
           .getOrElse((0L, 0L))
-      case _ =>
-        _nonRddStorageInfo
+      case _ => _nonRddStorageInfo
     }
     val newMem = math.max(oldMem + changeInMem, 0L)
     val newDisk = math.max(oldDisk + changeInDisk, 0L)
@@ -231,8 +225,7 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
         // If this RDD is no longer persisted, remove it
         if (newMem + newDisk == 0) { _rddStorageInfo.remove(rddId) }
         else { _rddStorageInfo(rddId) = (newMem, newDisk, level) }
-      case _ =>
-        _nonRddStorageInfo = (newMem, newDisk)
+      case _ => _nonRddStorageInfo = (newMem, newDisk)
     }
   }
 

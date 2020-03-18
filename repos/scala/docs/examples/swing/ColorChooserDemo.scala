@@ -24,10 +24,7 @@ object ColorChooserDemo extends SimpleSwingApplication {
   def ui =
     new BorderPanel {
       val colorChooser = new ColorChooser {
-        reactions += {
-          case ColorChanged(_, c) =>
-            banner.foreground = c
-        }
+        reactions += { case ColorChanged(_, c) => banner.foreground = c }
       }
 
       colorChooser.border = TitledBorder(EtchedBorder, "Choose Text Color")

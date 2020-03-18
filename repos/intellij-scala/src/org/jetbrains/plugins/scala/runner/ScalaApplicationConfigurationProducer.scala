@@ -210,8 +210,7 @@ object ScalaApplicationConfigurationProducer {
     while (method != null) {
       def isMainMethod(method: PsiMethod): Option[PsiMethod] = {
         method match {
-          case f: ScFunction =>
-            f.containingClass match {
+          case f: ScFunction => f.containingClass match {
               case o: ScObject =>
                 for {
                   wrapper <- f

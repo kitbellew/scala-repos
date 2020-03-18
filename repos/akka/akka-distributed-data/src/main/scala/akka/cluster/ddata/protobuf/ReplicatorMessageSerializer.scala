@@ -441,8 +441,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
               .map(addressToProto)
               .foreach { a ⇒ b.addSeen(a) }
             b.setPerformed(false)
-          case PruningState.PruningPerformed ⇒
-            b.setPerformed(true)
+          case PruningState.PruningPerformed ⇒ b.setPerformed(true)
         }
         dataEnvelopeBuilder.addPruning(b)
     }

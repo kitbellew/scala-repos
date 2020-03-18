@@ -22,8 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 class ScalaRedundantCastInspection
     extends AbstractInspection("Redundant cast") {
   def actionFor(holder: ProblemsHolder) = {
-    case call: ScGenericCall =>
-      call.referencedExpr.children.toList match {
+    case call: ScGenericCall => call.referencedExpr.children.toList match {
         case List(
               left: ScExpression,
               ElementText("."),
@@ -36,9 +35,8 @@ class ScalaRedundantCastInspection
             val descriptor = {
               val range = new TextRange(left.getTextLength, call.getTextLength)
 
-              val message = "Casting '%s' to '%s' is redundant".format(
-                left.getText,
-                castType.presentableText)
+              val message = "Casting '%s' to '%s' is redundant"
+                .format(left.getText, castType.presentableText)
 
               new ProblemDescriptorImpl(
                 call,

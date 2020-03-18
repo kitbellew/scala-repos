@@ -50,8 +50,7 @@ class AbstractCollectionFactory extends CollectionFactory {
               case Some(elem) =>
                 inner -= Box(elem)
                 last = None
-              case None =>
-                throw new IllegalStateException()
+              case None => throw new IllegalStateException()
             }
           }
 

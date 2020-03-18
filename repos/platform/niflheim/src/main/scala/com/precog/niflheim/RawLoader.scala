@@ -85,10 +85,7 @@ private[niflheim] object RawLoader {
             events.append((eventid, count))
             line = reader.readLine()
           }
-        } catch {
-          case _: Exception =>
-            ok = false
-        }
+        } catch { case _: Exception => ok = false }
       } else { ok = false }
     }
     if (!ok) recover1(id, f, rows, events)
@@ -163,10 +160,7 @@ private[niflheim] object RawLoader {
           sofar.append(JParser.parseUnsafe(line))
           count += 1
           line = reader.readLine()
-        } catch {
-          case _: Exception =>
-            going = false
-        }
+        } catch { case _: Exception => going = false }
       }
     }
     if (ok) {

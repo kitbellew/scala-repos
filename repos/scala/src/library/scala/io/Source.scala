@@ -290,10 +290,8 @@ abstract class Source extends Iterator[Char] with Closeable {
         case '\n' =>
           ccol = 1
           cline += 1
-        case '\t' =>
-          ccol += tabinc
-        case _ =>
-          ccol += 1
+        case '\t' => ccol += tabinc
+        case _    => ccol += 1
       }
       ch
     }

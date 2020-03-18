@@ -76,9 +76,7 @@ class UISeleniumSuite
     inputStream.foreachRDD { rdd =>
       rdd.foreach(_ => {})
       try { rdd.foreach(_ => throw new RuntimeException("Oops")) }
-      catch {
-        case e: SparkException if e.getMessage.contains("Oops") =>
-      }
+      catch { case e: SparkException if e.getMessage.contains("Oops") => }
     }
   }
 

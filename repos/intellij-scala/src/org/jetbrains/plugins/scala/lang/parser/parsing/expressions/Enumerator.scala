@@ -40,8 +40,7 @@ object Enumerator {
         }
       }
       builder.getTokenType match {
-        case ScalaTokenTypes.tASSIGN =>
-          builder.advanceLexer() //Ate =
+        case ScalaTokenTypes.tASSIGN => builder.advanceLexer() //Ate =
         case ScalaTokenTypes.tCHOOSE =>
           enumMarker.rollbackTo()
           return Generator parse builder
@@ -68,8 +67,7 @@ object Enumerator {
       case ScalaTokenTypes.kVAL =>
         builder.advanceLexer() //Ate val
         parseNonGuard(false)
-      case _ =>
-        parseNonGuard(true)
+      case _ => parseNonGuard(true)
     }
   }
 }

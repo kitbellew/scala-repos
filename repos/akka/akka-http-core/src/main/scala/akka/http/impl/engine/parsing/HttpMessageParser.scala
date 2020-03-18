@@ -183,8 +183,7 @@ private[http] abstract class HttpMessageParser[
             hh,
             close)
 
-        case h: `Content-Length` ⇒
-          clh match {
+        case h: `Content-Length` ⇒ clh match {
             case None ⇒
               parseHeaderLines(
                 input,
@@ -213,8 +212,7 @@ private[http] abstract class HttpMessageParser[
               failMessageStart(
                 "HTTP message must not contain more than one Content-Length header")
           }
-        case h: `Content-Type` ⇒
-          cth match {
+        case h: `Content-Type` ⇒ cth match {
             case None ⇒
               parseHeaderLines(
                 input,
@@ -243,8 +241,7 @@ private[http] abstract class HttpMessageParser[
               failMessageStart(
                 "HTTP message must not contain more than one Content-Type header")
           }
-        case h: `Transfer-Encoding` ⇒
-          teh match {
+        case h: `Transfer-Encoding` ⇒ teh match {
             case None ⇒
               parseHeaderLines(
                 input,
@@ -270,8 +267,7 @@ private[http] abstract class HttpMessageParser[
                 e100c,
                 hh)
           }
-        case h: Connection ⇒
-          ch match {
+        case h: Connection ⇒ ch match {
             case None ⇒
               parseHeaderLines(
                 input,
@@ -483,8 +479,8 @@ private[http] abstract class HttpMessageParser[
             parseChunkExtensions(size.toInt, cursor + 1)()
           case '\r' if cursor > offset && byteChar(input, cursor + 1) == '\n' ⇒
             parseChunkBody(size.toInt, "", cursor + 2)
-          case c ⇒
-            failEntityStream(s"Illegal character '${escape(c)}' in chunk start")
+          case c ⇒ failEntityStream(
+              s"Illegal character '${escape(c)}' in chunk start")
         }
       } else
         failEntityStream(

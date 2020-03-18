@@ -840,8 +840,7 @@ case class XhtmlResponse(
   val headers: List[(String, String)] =
     _headers.find(_._1 equalsIgnoreCase "content-type") match {
       case Some(_) => _headers
-      case _ =>
-        htmlProperties.contentType match {
+      case _ => htmlProperties.contentType match {
           case Full(ct) => ("Content-Type" -> ct) :: _headers
           case _        => _headers
         }

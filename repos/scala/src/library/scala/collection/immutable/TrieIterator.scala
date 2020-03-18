@@ -99,8 +99,7 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
       ad(0) match {
         case _: HashMapCollision1[_, _] | _: HashSetCollision1[_] =>
           arrayToIterators(collisionToArray(ad(0)))
-        case _ =>
-          splitArray(getElems(ad(0)))
+        case _ => splitArray(getElems(ad(0)))
       }
 
   def hasNext = (subIter ne null) || depth >= 0

@@ -384,10 +384,7 @@ class ALSSuite
               val err = prediction01 - rating01
               (confidence, confidence * err * err)
           }
-          .reduce {
-            case ((c0, e0), (c1, e1)) =>
-              (c0 + c1, e0 + e1)
-          }
+          .reduce { case ((c0, e0), (c1, e1)) => (c0 + c1, e0 + e1) }
         math.sqrt(weightedSumSq / totalWeight)
       } else {
         val mse = predictions
@@ -641,8 +638,7 @@ class ALSSuite
     val (ratings, _) = genExplicitTestData(numUsers = 4, numItems = 4, rank = 1)
     val als = new ALS()
     allEstimatorParamSettings.foreach {
-      case (p, v) =>
-        als.set(als.getParam(p), v)
+      case (p, v) => als.set(als.getParam(p), v)
     }
     val sqlContext = this.sqlContext
     import sqlContext.implicits._
@@ -667,10 +663,7 @@ class ALSSuite
     def getFactors(df: DataFrame): Set[(Int, Array[Float])] = {
       df.select("id", "features")
         .collect()
-        .map {
-          case r =>
-            (r.getInt(0), r.getAs[Array[Float]](1))
-        }
+        .map { case r => (r.getInt(0), r.getAs[Array[Float]](1)) }
         .toSet
     }
     assert(getFactors(model.userFactors) === getFactors(model2.userFactors))

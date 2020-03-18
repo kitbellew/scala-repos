@@ -53,8 +53,7 @@ class TestCodec[A](val codec: Codec[A]) {
         val bytes = new Array[Byte](buffer.readableBytes)
         buffer.readBytes(bytes)
         list += bytes
-      case x =>
-        list += x
+      case x => list += x
     }
   }
 

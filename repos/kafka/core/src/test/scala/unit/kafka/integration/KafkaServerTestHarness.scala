@@ -78,9 +78,8 @@ trait KafkaServerTestHarness extends ZooKeeperTestHarness {
     // if the test case requires setting up a cluster ACL,
     // then it needs to be implemented.
     setClusterAcl match {
-      case Some(f) =>
-        f()
-      case None => // Nothing to do
+      case Some(f) => f()
+      case None    => // Nothing to do
     }
   }
 

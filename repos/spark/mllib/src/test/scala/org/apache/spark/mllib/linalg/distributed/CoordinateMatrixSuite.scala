@@ -44,10 +44,7 @@ class CoordinateMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
           (3, 3, 8.0),
           (4, 1, 9.0)),
         3)
-      .map {
-        case (i, j, value) =>
-          MatrixEntry(i, j, value)
-      }
+      .map { case (i, j, value) => MatrixEntry(i, j, value) }
     mat = new CoordinateMatrix(entries)
   }
 

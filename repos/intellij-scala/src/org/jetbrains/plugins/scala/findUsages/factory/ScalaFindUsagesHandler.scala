@@ -105,8 +105,7 @@ class ScalaFindUsagesHandler(
 
   override def getSecondaryElements: Array[PsiElement] = {
     element match {
-      case t: ScObject =>
-        t.fakeCompanionClass match {
+      case t: ScObject => t.fakeCompanionClass match {
           case Some(clazz) => Array(clazz)
           case _           => Array.empty
         }
@@ -189,13 +188,11 @@ class ScalaFindUsagesHandler(
             case fun: ScFunction =>
               if (!super.processElementUsages(fun, processor, options))
                 return false
-            case v: ScValue =>
-              v.declaredElements.foreach { d =>
+            case v: ScValue => v.declaredElements.foreach { d =>
                 if (!super.processElementUsages(d, processor, options))
                   return false
               }
-            case v: ScVariable =>
-              v.declaredElements.foreach { d =>
+            case v: ScVariable => v.declaredElements.foreach { d =>
                 if (!super.processElementUsages(d, processor, options))
                   return false
               }
@@ -210,14 +207,13 @@ class ScalaFindUsagesHandler(
                 return false
           }
           clazz match {
-            case c: ScClass =>
-              c.constructor match {
-                case Some(constr) =>
-                  constr.effectiveParameterClauses.foreach { clause =>
-                    clause.effectiveParameters.foreach { param =>
-                      if (!super.processElementUsages(c, processor, options))
-                        return false
-                    }
+            case c: ScClass => c.constructor match {
+                case Some(constr) => constr.effectiveParameterClauses.foreach {
+                    clause =>
+                      clause.effectiveParameters.foreach { param =>
+                        if (!super.processElementUsages(c, processor, options))
+                          return false
+                      }
                   }
                 case _ =>
               }

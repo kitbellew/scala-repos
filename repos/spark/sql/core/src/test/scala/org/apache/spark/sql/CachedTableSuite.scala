@@ -43,8 +43,7 @@ class CachedTableSuite
     plan.collect {
       case InMemoryColumnarTableScan(_, _, relation) =>
         relation.cachedColumnBuffers.id
-      case _ =>
-        fail(s"Table $tableName is not cached\n" + plan)
+      case _ => fail(s"Table $tableName is not cached\n" + plan)
     }.head
   }
 
@@ -192,8 +191,7 @@ class CachedTableSuite
                 _,
                 _,
                 _: InMemoryColumnarTableScan,
-                _) =>
-            r
+                _) => r
         }
         .size
     }

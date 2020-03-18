@@ -169,9 +169,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
               (!hasMarginChars(
                 element,
                 mChar.toString) && lines.length > 3) || needAddByType(
-              literal) =>
-          marginCharFromSettings
-        case _ => None
+              literal) => marginCharFromSettings
+        case _         => None
       }
 
       if (wasSingleLine || lines.length == 3 &&
@@ -181,13 +180,11 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
           document.getLineNumber(offset) - 1).trim()
         val inConcatenation = literal.getParent match {
           case ScInfixExpr(lit: ScLiteral, op, `literal`)
-              if op.refName == "+" && lit.isString =>
-            Option(lit)
+              if op.refName == "+" && lit.isString => Option(lit)
           case ScInfixExpr(expr, op, `literal`)
               if op.refName == "+" && StringConcatenationParser.isString(
-                expr) =>
-            Option(expr)
-          case _ => None
+                expr) => Option(expr)
+          case _      => None
         }
         val needInsertNLBefore = (!trimmedStartLine.startsWith(
           firstMLQuote) || inConcatenation.isDefined) && quotesOnNewLine

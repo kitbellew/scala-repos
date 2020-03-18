@@ -63,10 +63,8 @@ package javaguide.testhelpers {
         mat: Materializer): Result = {
       Helpers
         .await(requestBuilder.body() match {
-          case null =>
-            action.apply(requestBuilder.build()._underlyingRequest)
-          case other =>
-            Helpers.call(
+          case null => action.apply(requestBuilder.build()._underlyingRequest)
+          case other => Helpers.call(
               action,
               requestBuilder.build()._underlyingRequest,
               other.asBytes())

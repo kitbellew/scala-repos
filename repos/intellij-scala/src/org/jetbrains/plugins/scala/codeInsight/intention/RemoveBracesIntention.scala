@@ -88,12 +88,9 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
         }
       case finallyBlock: ScFinallyBlock =>
         finallyBlock.expression.filter(isAncestorOfElement)
-      case whileStmt: ScWhileStmt =>
-        whileStmt.body.filter(isAncestorOfElement)
-      case doStmt: ScDoStmt =>
-        doStmt.getExprBody.filter(isAncestorOfElement)
-      case caseClause: ScCaseClause =>
-        caseClause.expr match {
+      case whileStmt: ScWhileStmt => whileStmt.body.filter(isAncestorOfElement)
+      case doStmt: ScDoStmt       => doStmt.getExprBody.filter(isAncestorOfElement)
+      case caseClause: ScCaseClause => caseClause.expr match {
           case Some(x: ScBlockExpr) if isAncestorOfElement(x) =>
             // special handling for case clauses, which never _need_ braces.
             val action = () => {
@@ -109,13 +106,11 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
                     x.getNode,
                     replacement.getNode)
                   CodeEditUtil.markToReformat(caseClause.getNode, true)
-                case _ =>
-                  ()
+                case _ => ()
               }
             }
             return Some(action)
-          case _ =>
-            None
+          case _ => None
         }
       case _ => None
     }
@@ -126,12 +121,10 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
     val oneLinerBlock
         : Option[(ScBlockExpr, ScExpression, CommentsAroundElement)] = expr
       .flatMap {
-        case blk: ScBlockExpr =>
-          blk.statements match {
+        case blk: ScBlockExpr => blk.statements match {
             case Seq(x: ScExpression) =>
-              val comments = IntentionUtil.collectComments(
-                x,
-                onElementLine = true)
+              val comments = IntentionUtil
+                .collectComments(x, onElementLine = true)
               if (!IntentionUtil.hasOtherComments(blk, comments))
                 Some((blk, x, comments))
               else None

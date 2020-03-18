@@ -228,9 +228,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           // TODO: have super-trait for retrieving the variable that's operated on by a tree maker
           // and thus assumed in scope, either because it binds it or because it refers to it
           dropped.treeMaker match {
-            case dropped: FunTreeMaker =>
-              mapToStored(dropped.nextBinder)
-            case _ => Nil
+            case dropped: FunTreeMaker => mapToStored(dropped.nextBinder)
+            case _                     => Nil
           }
         }.unzip
         val rerouteToReusedBinders = Substitution(from, to)
@@ -301,12 +300,12 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       object GuardAndBodyTreeMakers {
         def unapply(tms: List[TreeMaker]): Option[(Tree, Tree)] = {
           tms match {
-            case (btm @ BodyTreeMaker(body, _)) :: Nil =>
-              Some((EmptyTree, btm.substitution(body)))
+            case (btm @ BodyTreeMaker(body, _)) :: Nil => Some(
+                (EmptyTree, btm.substitution(body)))
             case (gtm @ GuardTreeMaker(guard)) :: (btm @ BodyTreeMaker(
                   body,
-                  _)) :: Nil =>
-              Some((gtm.substitution(guard), btm.substitution(body)))
+                  _)) :: Nil => Some(
+                (gtm.substitution(guard), btm.substitution(body)))
             case _ => None
           }
         }
@@ -464,9 +463,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           // type-switch for catch
           case (
                 Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
-                Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
-            tpX.tpe =:= tpY.tpe
-          case _ => false
+                Bind(_, Typed(Ident(nme.WILDCARD), tpY))) => tpX.tpe =:= tpY.tpe
+          case _                                          => false
         }
 
       // if y matches then x matches for sure (thus, if x comes before y, y is unreachable)
@@ -515,16 +513,14 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         if (cases.isEmpty || cases.tail.isEmpty) Nil
         else {
           val caseDefs = cases map {
-            case (scrutSym, makers) =>
-              makers match {
+            case (scrutSym, makers) => makers match {
                 // default case
                 case GuardAndBodyTreeMakers(guard, body) =>
                   Some(defaultCase(scrutSym, guard, body))
                 // constant (or typetest for typeSwitch)
                 case SwitchableTreeMaker(pattern) :: GuardAndBodyTreeMakers(
                       guard,
-                      body) =>
-                  Some(CaseDef(pattern, guard, body))
+                      body) => Some(CaseDef(pattern, guard, body))
                 // alternatives
                 case AlternativesTreeMaker(
                       _,
@@ -532,10 +528,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
                       pos) :: GuardAndBodyTreeMakers(guard, body)
                     if alternativesSupported =>
                   val switchableAlts = altss map {
-                    case SwitchableTreeMaker(pattern) :: Nil =>
-                      Some(pattern)
-                    case _ =>
-                      None
+                    case SwitchableTreeMaker(pattern) :: Nil => Some(pattern)
+                    case _                                   => None
                   }
 
                   // succeed if they were all switchable
@@ -634,8 +628,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       object SwitchableTreeMaker extends SwitchableTreeMakerExtractor {
         def unapply(x: TreeMaker): Option[Tree] =
           x match {
-            case EqualityTestTreeMaker(_, SwitchablePattern(const), _) =>
-              Some(const)
+            case EqualityTestTreeMaker(_, SwitchablePattern(const), _) => Some(
+                const)
             case _ => None
           }
       }
@@ -710,19 +704,16 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
                   Ident(nme.WILDCARD),
                   TypeTree(pt)
                 ) /* not used by back-end */ ))
-            case _ =>
-              None
+            case _ => None
           }
       }
 
       def isDefault(x: CaseDef): Boolean =
         x match {
           case CaseDef(Typed(Ident(nme.WILDCARD), tpt), EmptyTree, _)
-              if (tpt.tpe =:= ThrowableTpe) =>
-            true
+              if (tpt.tpe =:= ThrowableTpe) => true
           case CaseDef(Bind(_, Typed(Ident(nme.WILDCARD), tpt)), EmptyTree, _)
-              if (tpt.tpe =:= ThrowableTpe) =>
-            true
+              if (tpt.tpe =:= ThrowableTpe)               => true
           case CaseDef(Ident(nme.WILDCARD), EmptyTree, _) => true
           case _                                          => false
         }

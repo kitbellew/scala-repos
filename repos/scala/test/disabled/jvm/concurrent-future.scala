@@ -41,10 +41,7 @@ object Test extends App {
         done()
         throw new Exception
       }
-      f onSuccess {
-        case _ =>
-          output(3, "onoes")
-      }
+      f onSuccess { case _ => output(3, "onoes") }
     }
 
   def testOnFailure(): Unit =

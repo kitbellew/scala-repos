@@ -49,14 +49,12 @@ trait Server extends ServerWithStop {
 
     try {
       applicationProvider.handleWebCommand(request) match {
-        case Some(result) =>
-          Left(Future.successful(result))
-        case None =>
-          applicationProvider.get match {
+        case Some(result) => Left(Future.successful(result))
+        case None => applicationProvider.get match {
             case Success(application) =>
               application.requestHandler.handlerForRequest(request) match {
-                case (requestHeader, handler) =>
-                  Right((requestHeader, handler, application))
+                case (requestHeader, handler) => Right(
+                    (requestHeader, handler, application))
               }
             case Failure(e) => logExceptionAndGetResult(e)
           }
@@ -64,8 +62,7 @@ trait Server extends ServerWithStop {
     } catch {
       case e: ThreadDeath         => throw e
       case e: VirtualMachineError => throw e
-      case e: Throwable =>
-        logExceptionAndGetResult(e)
+      case e: Throwable           => logExceptionAndGetResult(e)
     }
   }
 

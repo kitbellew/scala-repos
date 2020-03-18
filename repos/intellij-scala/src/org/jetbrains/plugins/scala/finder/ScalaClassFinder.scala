@@ -52,8 +52,7 @@ class ScalaClassFinder(project: Project) extends PsiElementFinder {
     }
 
     iterateClasses("$") {
-      case c: ScTypeDefinition =>
-        c.fakeCompanionModule match {
+      case c: ScTypeDefinition => c.fakeCompanionModule match {
           case Some(o) => res += o
           case _       =>
         }

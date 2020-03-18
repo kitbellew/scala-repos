@@ -133,15 +133,11 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
       } else Seq.empty
     }
     ScalaPsiUtil.nameContext(this) match {
-      case v: ScValue =>
-        valueSeq(v)
-      case v: ScVariable =>
-        variableSeq(v)
-      case v: ScClassParameter if v.isVal =>
-        valueSeq(v)
-      case v: ScClassParameter if v.isVar =>
-        variableSeq(v)
-      case _ => Seq.empty
+      case v: ScValue                     => valueSeq(v)
+      case v: ScVariable                  => variableSeq(v)
+      case v: ScClassParameter if v.isVal => valueSeq(v)
+      case v: ScClassParameter if v.isVar => variableSeq(v)
+      case _                              => Seq.empty
     }
   }
 
@@ -173,9 +169,8 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
   def isAbstractMember: Boolean =
     ScalaPsiUtil.nameContext(this) match {
       case _: ScFunctionDefinition | _: ScPatternDefinition |
-          _: ScVariableDefinition =>
-        false
-      case cp: ScClassParameter => false
-      case _                    => true
+          _: ScVariableDefinition => false
+      case cp: ScClassParameter   => false
+      case _                      => true
     }
 }

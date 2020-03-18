@@ -50,8 +50,7 @@ private[storage] class BlockManagerSlaveEndpoint(
         true
       }
 
-    case RemoveRdd(rddId) =>
-      doAsync[Int]("removing RDD " + rddId, context) {
+    case RemoveRdd(rddId) => doAsync[Int]("removing RDD " + rddId, context) {
         blockManager.removeRdd(rddId)
       }
 
@@ -74,8 +73,7 @@ private[storage] class BlockManagerSlaveEndpoint(
     case GetMatchingBlockIds(filter, _) =>
       context.reply(blockManager.getMatchingBlockIds(filter))
 
-    case TriggerThreadDump =>
-      context.reply(Utils.getThreadDump())
+    case TriggerThreadDump => context.reply(Utils.getThreadDump())
   }
 
   private def doAsync[T](actionMessage: String, context: RpcCallContext)(

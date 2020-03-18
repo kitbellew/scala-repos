@@ -1360,8 +1360,7 @@ final class Replicator(settings: ReplicatorSettings)
     // initiate pruning for removed nodes
     val removedSet: Set[UniqueAddress] = removedNodes.collect {
       case (r, t)
-          if ((allReachableClockTime - t) > maxPruningDisseminationNanos) ⇒
-        r
+          if ((allReachableClockTime - t) > maxPruningDisseminationNanos) ⇒ r
     }(collection.breakOut)
 
     if (removedSet.nonEmpty) {
@@ -1381,8 +1380,7 @@ final class Replicator(settings: ReplicatorSettings)
               envelope.pruning.get(removed) match {
                 case None ⇒ init()
                 case Some(PruningState(owner, PruningInitialized(_)))
-                    if owner != selfUniqueAddress ⇒
-                  init()
+                    if owner != selfUniqueAddress ⇒ init()
                 case _ ⇒ // already in progress
               }
             case _ ⇒
@@ -1601,8 +1599,7 @@ private[akka] class WriteAggregator(
     case WriteAck ⇒
       remaining -= senderAddress()
       if (remaining.size == doneWhenRemainingSize) reply(ok = true)
-    case SendToSecondary ⇒
-      secondaryNodes.foreach { replica(_) ! writeMsg }
+    case SendToSecondary ⇒ secondaryNodes.foreach { replica(_) ! writeMsg }
     case ReceiveTimeout ⇒ reply(ok = false)
   }
 
@@ -1686,8 +1683,7 @@ private[akka] class ReadAggregator(
       }
       remaining -= sender().path.address
       if (remaining.size == doneWhenRemainingSize) reply(ok = true)
-    case SendToSecondary ⇒
-      secondaryNodes.foreach { replica(_) ! readMsg }
+    case SendToSecondary ⇒ secondaryNodes.foreach { replica(_) ! readMsg }
     case ReceiveTimeout ⇒ reply(ok = false)
   }
 

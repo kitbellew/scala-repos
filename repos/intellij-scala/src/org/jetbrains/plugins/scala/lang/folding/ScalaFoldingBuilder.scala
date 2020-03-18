@@ -73,8 +73,7 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
             new TextRange(
               nodeTextRange.getStartOffset + startOffsetForMatchStmt(node),
               nodeTextRange.getEndOffset))
-        case ScalaElementTypes.FUNCTION_DEFINITION =>
-          psi match {
+        case ScalaElementTypes.FUNCTION_DEFINITION => psi match {
             case f: ScFunctionDefinition =>
               val (isMultilineBody, textRange, _) = isMultilineFuncBody(f)
               if (isMultilineBody)
@@ -327,14 +326,12 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
         case ScalaTokenTypes.tBLOCK_COMMENT
             if ScalaCodeFoldingSettings
               .getInstance()
-              .isCollapseBlockComments && !isWorksheetResults(node) =>
-          true
+              .isCollapseBlockComments && !isWorksheetResults(node) => true
         case ScalaTokenTypes.tLINE_COMMENT
             if !isCustomRegionStart(node.getText) &&
               ScalaCodeFoldingSettings
                 .getInstance()
-                .isCollapseLineComments && !isWorksheetResults(node) =>
-          true
+                .isCollapseLineComments && !isWorksheetResults(node) => true
         case ScalaTokenTypes.tLINE_COMMENT
             if isCustomRegionStart(node.getText) &&
               ScalaCodeFoldingSettings.getInstance().isCollapseCustomRegions =>
@@ -342,42 +339,35 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
         case ScalaDocElementTypes.SCALA_DOC_COMMENT
             if ScalaCodeFoldingSettings
               .getInstance()
-              .isCollapseScalaDocComments && !isWorksheetResults(node) =>
-          true
+              .isCollapseScalaDocComments && !isWorksheetResults(node) => true
         case ScalaElementTypes.TEMPLATE_BODY
             if ScalaCodeFoldingSettings
               .getInstance()
-              .isCollapseTemplateBodies =>
-          true
+              .isCollapseTemplateBodies => true
         case ScalaElementTypes.PACKAGING
             if ScalaCodeFoldingSettings.getInstance().isCollapsePackagings =>
           true
         case ScalaElementTypes.IMPORT_STMT
-            if ScalaCodeFoldingSettings.getInstance().isCollapseImports =>
-          true
+            if ScalaCodeFoldingSettings.getInstance().isCollapseImports => true
         case ScalaTokenTypes.tSH_COMMENT
             if ScalaCodeFoldingSettings
               .getInstance()
-              .isCollapseShellComments && !isWorksheetResults(node) =>
-          true
+              .isCollapseShellComments && !isWorksheetResults(node) => true
         case ScalaElementTypes.MATCH_STMT
             if ScalaCodeFoldingSettings
               .getInstance()
-              .isCollapseMultilineBlocks =>
-          true
+              .isCollapseMultilineBlocks => true
         case ScalaElementTypes.BLOCK_EXPR
             if ScalaCodeFoldingSettings
               .getInstance()
-              .isCollapseMultilineBlocks =>
-          true
+              .isCollapseMultilineBlocks   => true
         case ScalaElementTypes.SIMPLE_TYPE => true
         case _
             if node.getPsi.isInstanceOf[ScBlockExpr] &&
               node.getTreeParent.getElementType == ScalaElementTypes.ARG_EXPRS &&
               ScalaCodeFoldingSettings
                 .getInstance()
-                .isCollapseMethodCallBodies =>
-          true
+                .isCollapseMethodCallBodies => true
         case _
             if node.getTreeParent.getElementType == ScalaElementTypes.FUNCTION_DEFINITION &&
               ScalaCodeFoldingSettings
@@ -385,8 +375,7 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
                 .isCollapseMethodCallBodies &&
               isMultilineFuncBody(
                 node.getTreeParent.getPsi
-                  .asInstanceOf[ScFunctionDefinition])._1 =>
-          true
+                  .asInstanceOf[ScFunctionDefinition])._1 => true
         case _
             if node.getPsi.isInstanceOf[ScTypeProjection] &&
               ScalaCodeFoldingSettings.getInstance().isCollapseTypeLambdas =>
@@ -400,15 +389,13 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
               node.getPsi.asInstanceOf[ScLiteral].isMultiLineString &&
               ScalaCodeFoldingSettings
                 .getInstance()
-                .isCollapseMultilineStrings =>
-          true
+                .isCollapseMultilineStrings => true
         case _
             if node.getPsi.isInstanceOf[ScArgumentExprList] &&
               ScalaCodeFoldingSettings
                 .getInstance()
-                .isCollapseMultilineBlocks =>
-          true
-        case _ => false
+                .isCollapseMultilineBlocks => true
+        case _                             => false
       }
     }
   }
@@ -645,12 +632,10 @@ object TypeLambda {
         val element = tp.typeElement
         val nameId = tp.nameId
         element match {
-          case pte: ScParenthesisedTypeElement =>
-            pte.typeElement match {
+          case pte: ScParenthesisedTypeElement => pte.typeElement match {
               case Some(cte: ScCompoundTypeElement) if cte.components.isEmpty =>
                 cte.refinement match {
-                  case Some(ref) =>
-                    (ref.holders, ref.types) match {
+                  case Some(ref) => (ref.holders, ref.types) match {
                       case (
                             scala.Seq(),
                             scala.Seq(tad: ScTypeAliasDefinitionImpl))

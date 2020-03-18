@@ -205,8 +205,7 @@ trait CheckAnalysis {
             aggregateExprs.foreach(checkValidAggregateExpression)
             groupingExprs.foreach(checkValidGroupingExprs)
 
-          case Sort(orders, _, _) =>
-            orders.foreach { order =>
+          case Sort(orders, _, _) => orders.foreach { order =>
               if (!RowOrdering.isOrderable(order.dataType)) {
                 failAnalysis(
                   s"sorting is not supported for columns of type ${order.dataType.simpleString}")

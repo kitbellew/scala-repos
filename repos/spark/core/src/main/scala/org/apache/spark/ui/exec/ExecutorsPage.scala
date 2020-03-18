@@ -174,8 +174,7 @@ private[ui] class ExecutorsPage(
         <td>
             {
           info.executorLogs.map {
-            case (logName, logUrl) =>
-              <div>
+            case (logName, logUrl) => <div>
                   <a href={logUrl}>
                     {logName}
                   </a>

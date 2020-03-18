@@ -93,8 +93,7 @@ class OneHotEncoder(override val uid: String)
       case _: NumericAttribute =>
         throw new RuntimeException(
           s"The input column $inputColName cannot be numeric.")
-      case _ =>
-        None // optimistic about unknown attributes
+      case _ => None // optimistic about unknown attributes
     }
 
     val filteredOutputAttrNames = outputAttrNames.map { names =>

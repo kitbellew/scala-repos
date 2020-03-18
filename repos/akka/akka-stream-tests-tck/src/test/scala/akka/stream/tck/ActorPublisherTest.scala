@@ -22,8 +22,7 @@ object ActorPublisherTest {
        else 0 until allElements.toInt).toIterator
 
     override def receive: Receive = {
-      case Request(elements) ⇒
-        loopDemand()
+      case Request(elements) ⇒ loopDemand()
 
       case Produce if totalDemand > 0 && !isCompleted && source.hasNext ⇒
         onNext(source.next())

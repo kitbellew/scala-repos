@@ -852,8 +852,7 @@ object Defaults extends BuildCommon {
       javaOptions: Seq[String]): Task[Tests.Output] = {
     val runners = createTestRunners(frameworks, loader, config)
     val groupTasks = groups map {
-      case Tests.Group(name, tests, runPolicy) =>
-        runPolicy match {
+      case Tests.Group(name, tests, runPolicy) => runPolicy match {
           case Tests.SubProcess(opts) =>
             s.log.debug(s"javaOptions: ${opts.runJVMOptions}")
             val forkedConfig = config.copy(parallel =
@@ -878,8 +877,7 @@ object Defaults extends BuildCommon {
     output map { out =>
       val summaries =
         runners map {
-          case (tf, r) =>
-            Tests.Summary(frameworks(tf).name, r.done())
+          case (tf, r) => Tests.Summary(frameworks(tf).name, r.done())
         }
       out.copy(summaries = summaries)
     }
@@ -1772,8 +1770,9 @@ object Classpaths {
         useJCenter) {
         case (Some(delegated), Seq(), _, _) => delegated
         case (_, rs, Some(ars), uj)         => task { ars ++ rs }
-        case (_, rs, _, uj) =>
-          task { Resolver.withDefaultResolvers(rs, uj, true) }
+        case (_, rs, _, uj) => task {
+            Resolver.withDefaultResolvers(rs, uj, true)
+          }
       },
       appResolvers := {
         val ac = appConfiguration.value
@@ -2923,8 +2922,7 @@ object Classpaths {
             Resolver.file(i.id, file)(patterns)
           case _ => Resolver.url(i.id, i.url)(patterns)
         }
-      case p: xsbti.PredefinedRepository =>
-        p.id match {
+      case p: xsbti.PredefinedRepository => p.id match {
           case Predefined.Local               => Resolver.defaultLocal
           case Predefined.MavenLocal          => Resolver.mavenLocal
           case Predefined.MavenCentral        => DefaultMavenRepository

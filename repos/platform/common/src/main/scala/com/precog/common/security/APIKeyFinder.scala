@@ -133,8 +133,7 @@ class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(implicit
           (recs collect recordDetails).toList.sequence.map(_.toSet)
         }
 
-      case None =>
-        M.point(Set())
+      case None => M.point(Set())
     }
   }
 

@@ -62,19 +62,16 @@ private[round] final class Round(
       handle { game => player.fishnet(game, uci, currentFen) } >>- monitorMove(
         none)
 
-    case Abort(playerId) =>
-      handle(playerId) { pov => pov.game.abortable ?? finisher.abort(pov) }
-
-    case Resign(playerId) =>
-      handle(playerId) { pov =>
-        pov.game.resignable ?? finisher.other(
-          pov.game,
-          _.Resign,
-          Some(!pov.color))
+    case Abort(playerId) => handle(playerId) { pov =>
+        pov.game.abortable ?? finisher.abort(pov)
       }
 
-    case GoBerserk(color) =>
-      handle(color) { pov =>
+    case Resign(playerId) => handle(playerId) { pov =>
+        pov.game.resignable ?? finisher
+          .other(pov.game, _.Resign, Some(!pov.color))
+      }
+
+    case GoBerserk(color) => handle(color) { pov =>
         pov.game.goBerserk(color) ?? { progress =>
           messenger.system(
             pov.game,
@@ -84,8 +81,7 @@ private[round] final class Round(
         }
       }
 
-    case ResignForce(playerId) =>
-      handle(playerId) { pov =>
+    case ResignForce(playerId) => handle(playerId) { pov =>
         (pov.game.resignable && !pov.game.hasAi && pov.game.hasClock) ?? {
           socketHub ? Ask(pov.gameId, IsGone(!pov.color)) flatMap {
             case true => finisher.rageQuit(pov.game, Some(pov.color))
@@ -94,13 +90,11 @@ private[round] final class Round(
         }
       }
 
-    case NoStartColor(color) =>
-      handle(color) { pov =>
+    case NoStartColor(color) => handle(color) { pov =>
         finisher.other(pov.game, _.NoStart, Some(!pov.color))
       }
 
-    case DrawForce(playerId) =>
-      handle(playerId) { pov =>
+    case DrawForce(playerId) => handle(playerId) { pov =>
         (pov.game.drawable && !pov.game.hasAi && pov.game.hasClock) ?? {
           socketHub ? Ask(pov.gameId, IsGone(!pov.color)) flatMap {
             case true => finisher.rageQuit(pov.game, None)
@@ -109,14 +103,14 @@ private[round] final class Round(
         }
       }
 
-    case Outoftime =>
-      handle { game => game.outoftime(lags.get) ?? outOfTime(game) }
+    case Outoftime => handle { game =>
+        game.outoftime(lags.get) ?? outOfTime(game)
+      }
 
     // exceptionally we don't block nor publish events
     // if the game is abandoned, then nobody is around to see it
     // we can also terminate this actor
-    case Abandon =>
-      fuccess {
+    case Abandon => fuccess {
         GameRepo game gameId foreach { gameOption =>
           gameOption filter (_.abandoned) foreach { game =>
             if (game.abortable) finisher.other(game, _.Aborted)
@@ -130,8 +124,7 @@ private[round] final class Round(
     case DrawNo(playerRef)   => handle(playerRef)(drawer.no)
     case DrawClaim(playerId) => handle(playerId)(drawer.claim)
     case DrawForce           => handle(drawer force _)
-    case Cheat(color) =>
-      handle { game =>
+    case Cheat(color) => handle { game =>
         (game.playable && !game.imported) ?? {
           finisher.other(game, _.Cheat, Some(!color))
         }
@@ -144,8 +137,7 @@ private[round] final class Round(
         }
       }
 
-    case HoldAlert(playerId, mean, sd, ip) =>
-      handle(playerId) { pov =>
+    case HoldAlert(playerId, mean, sd, ip) => handle(playerId) { pov =>
         !pov.player.hasHoldAlert ?? {
           lila
             .log("cheat")
@@ -162,8 +154,7 @@ private[round] final class Round(
     case TakebackYes(playerRef) => handle(playerRef)(takebacker.yes)
     case TakebackNo(playerRef)  => handle(playerRef)(takebacker.no)
 
-    case Moretime(playerRef) =>
-      handle(playerRef) { pov =>
+    case Moretime(playerRef) => handle(playerRef) { pov =>
         pov.game.clock.ifTrue(pov.game moretimeable !pov.color) ?? { clock =>
           val newClock = clock.giveTime(!pov.color, moretimeDuration.toSeconds)
           val progress = (pov.game withClock newClock) + Event.Clock(newClock)
@@ -176,8 +167,7 @@ private[round] final class Round(
         }
       }
 
-    case ForecastPlay(lastMove) =>
-      handle { game =>
+    case ForecastPlay(lastMove) => handle { game =>
         forecastApi.nextMove(game, lastMove) map { mOpt =>
           mOpt foreach { move =>
             self ! HumanPlay(game.player.id, move, false, 0.seconds)
@@ -186,8 +176,7 @@ private[round] final class Round(
         }
       }
 
-    case Deploy(RemindDeployPost, _) =>
-      handle { game =>
+    case Deploy(RemindDeployPost, _) => handle { game =>
         game.clock.filter(_ => game.playable) ?? { clock =>
           val freeSeconds = 15
           val newClock = clock
@@ -195,23 +184,19 @@ private[round] final class Round(
             .giveTime(Color.Black, freeSeconds)
           val progress = (game withClock newClock) + Event.Clock(newClock)
           messenger.system(game, (_.untranslated("Lichess has been updated")))
-          messenger.system(
-            game,
-            (_.untranslated("Sorry for the inconvenience!")))
+          messenger
+            .system(game, (_.untranslated("Sorry for the inconvenience!")))
           Color.all.foreach { c =>
-            messenger.system(
-              game,
-              (_.untranslated(s"$c + $freeSeconds seconds")))
+            messenger
+              .system(game, (_.untranslated(s"$c + $freeSeconds seconds")))
           }
           GameRepo save progress inject progress.events
         }
       }
 
-    case AbortForMaintenance =>
-      handle { game =>
-        messenger.system(
-          game,
-          (_.untranslated("Game aborted for server maintenance")))
+    case AbortForMaintenance => handle { game =>
+        messenger
+          .system(game, (_.untranslated("Game aborted for server maintenance")))
         messenger.system(game, (_.untranslated("Sorry for the inconvenience!")))
         game.playable ?? finisher.other(game, _.Aborted)
       }

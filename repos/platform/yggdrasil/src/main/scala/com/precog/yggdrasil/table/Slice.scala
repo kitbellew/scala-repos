@@ -75,8 +75,7 @@ trait Slice {
     // Otherwise return Nil.
     columns collect {
       case (ColumnRef(cpath, ctype), col)
-          if Schema.includes(jtpe, cpath, ctype) =>
-        col
+          if Schema.includes(jtpe, cpath, ctype) => col
     } toSet
   }
 
@@ -88,10 +87,7 @@ trait Slice {
 
   def definedAt: BitSet = {
     val defined = BitSetUtil.create()
-    columns foreach {
-      case (_, col) =>
-        defined.or(col.definedAt(0, size))
-    }
+    columns foreach { case (_, col) => defined.or(col.definedAt(0, size)) }
     defined
   }
 
@@ -420,14 +416,10 @@ trait Slice {
             flattenDeleteTree(aJType, cType, cPath) andThen (
               _ flatMap flattenDeleteTree(bJType, cType, cPath)
             )
-          case (JTextT, CString, CPath.Identity) =>
-            delete
-          case (JBooleanT, CBoolean, CPath.Identity) =>
-            delete
-          case (JNumberT, CLong | CDouble | CNum, CPath.Identity) =>
-            delete
-          case (JObjectUnfixedT, _, CPath(CPathField(_), _*)) =>
-            delete
+          case (JTextT, CString, CPath.Identity)                  => delete
+          case (JBooleanT, CBoolean, CPath.Identity)              => delete
+          case (JNumberT, CLong | CDouble | CNum, CPath.Identity) => delete
+          case (JObjectUnfixedT, _, CPath(CPathField(_), _*))     => delete
           case (
                 JObjectFixedT(fields),
                 _,
@@ -453,8 +445,7 @@ trait Slice {
               CPath(cPath: _*)))
             xs =>
               Some(xs.zipWithIndex map {
-                case (x, j) =>
-                  mappers get j match {
+                case (x, j) => mappers get j match {
                     case Some(f) => f(x)
                     case None    => x
                   }
@@ -462,18 +453,15 @@ trait Slice {
           case (
                 JArrayHomogeneousT(jType),
                 CArrayType(cType),
-                CPath(CPathArray, _*)) if Schema.ctypes(jType)(cType) =>
-            delete
-          case _ =>
-            retain
+                CPath(CPathArray, _*)) if Schema.ctypes(jType)(cType) => delete
+          case _                                                      => retain
         }
       }
 
       val size = source.size
       val columns = fixArrays(source.columns flatMap {
         case (ColumnRef(cpath, ctype), _)
-            if Schema.includes(jtype, cpath, ctype) =>
-          None
+            if Schema.includes(jtype, cpath, ctype) => None
 
         case (
               ref @ ColumnRef(cpath, ctype: CArrayType[a]),
@@ -489,8 +477,7 @@ trait Slice {
                   "Oh dear, this cannot be happening to me.")
             }))
 
-        case (ref, col) =>
-          Some((ref, col))
+        case (ref, col) => Some((ref, col))
       })
     }
 
@@ -715,8 +702,7 @@ trait Slice {
     new Slice {
       private val colValues = filter.columns.values.toArray
       lazy val defined = definedness match {
-        case AnyDefined =>
-          BitSetUtil.filteredRange(0, source.size) { i =>
+        case AnyDefined => BitSetUtil.filteredRange(0, source.size) { i =>
             colValues.exists(_.isDefinedAt(i))
           }
 
@@ -751,8 +737,7 @@ trait Slice {
         case AllDefined => {
           val acc = new ArrayIntList
           val (numCols, otherCols) = cols partition {
-            case (ColumnRef(_, ctype), _) =>
-              ctype.isNumeric
+            case (ColumnRef(_, ctype), _) => ctype.isNumeric
           }
 
           val grouped = numCols groupBy {
@@ -761,8 +746,7 @@ trait Slice {
 
           Loop.range(0, filter.size) { i =>
             val numBools = grouped.values map {
-              case refs =>
-                refs.values.toArray.exists(_.isDefinedAt(i))
+              case refs => refs.values.toArray.exists(_.isDefinedAt(i))
             }
 
             val numBool = numBools reduce { _ && _ }
@@ -888,10 +872,7 @@ trait Slice {
         case Left(cols0) =>
           val cols = cols0.toList
             .sortBy(_._1)
-            .map {
-              case (_, col) =>
-                Column.rowOrder(col)
-            }
+            .map { case (_, col) => Column.rowOrder(col) }
             .toArray
 
           new spire.math.Order[Int] {
@@ -1278,14 +1259,11 @@ trait Slice {
         val depth = {
           def loop(schema: SchemaNode): Int =
             schema match {
-              case obj: SchemaNode.Obj =>
-                4 + (obj.values map loop max)
+              case obj: SchemaNode.Obj => 4 + (obj.values map loop max)
 
-              case arr: SchemaNode.Arr =>
-                2 + (arr.nodes map loop max)
+              case arr: SchemaNode.Arr => 2 + (arr.nodes map loop max)
 
-              case union: SchemaNode.Union =>
-                union.possibilities map loop max
+              case union: SchemaNode.Union => union.possibilities map loop max
 
               case SchemaNode.Leaf(_, _) => 0
             }
@@ -1542,8 +1520,7 @@ trait Slice {
               loop(0)
             }
 
-            case SchemaNode.Leaf(tpe, col) =>
-              tpe match {
+            case SchemaNode.Leaf(tpe, col) => tpe match {
                 case CString => {
                   val specCol = col.asInstanceOf[StrColumn]
 
@@ -1854,8 +1831,7 @@ object Slice {
         case jv #:: xs =>
           val refs = updateRefs(jv, into, sliceIndex, sliceSize)
           buildColArrays(xs, refs, sliceIndex + 1)
-        case _ =>
-          (into, sliceIndex)
+        case _ => (into, sliceIndex)
       }
     }
 
@@ -1888,8 +1864,7 @@ object Slice {
     val slice = new Slice {
       val size = _size
       val columns = _columns.flatMap {
-        case (ref, parts) =>
-          cf.util.NConcat(parts) map ((ref, _))
+        case (ref, parts) => cf.util.NConcat(parts) map ((ref, _))
       }
     }
 
@@ -1943,8 +1918,7 @@ object Slice {
               .asInstanceOf[ArrayBoolColumn]
               .unsafeTap { c => c.update(sliceIndex, b) }
 
-          case JNum(d) =>
-            ctype match {
+          case JNum(d) => ctype match {
               case CLong =>
                 acc
                   .getOrElse(ref, ArrayLongColumn.empty(sliceSize))

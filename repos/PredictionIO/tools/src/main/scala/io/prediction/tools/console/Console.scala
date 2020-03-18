@@ -660,10 +660,8 @@ object Console extends Logging {
         case Seq("eval") =>
           regenerateManifestJson(ca.common.manifestJson)
           train(ca)
-        case Seq("deploy") =>
-          deploy(ca)
-        case Seq("undeploy") =>
-          undeploy(ca)
+        case Seq("deploy")   => deploy(ca)
+        case Seq("undeploy") => undeploy(ca)
         case Seq("dashboard") =>
           dashboard(ca)
           0
@@ -676,39 +674,24 @@ object Console extends Logging {
         case Seq("run") =>
           generateManifestJson(ca.common.manifestJson)
           run(ca)
-        case Seq("status") =>
-          status(ca)
+        case Seq("status") => status(ca)
         case Seq("upgrade") =>
           upgrade(ca)
           0
-        case Seq("app", "new") =>
-          App.create(ca)
-        case Seq("app", "list") =>
-          App.list(ca)
-        case Seq("app", "show") =>
-          App.show(ca)
-        case Seq("app", "delete") =>
-          App.delete(ca)
-        case Seq("app", "data-delete") =>
-          App.dataDelete(ca)
-        case Seq("app", "channel-new") =>
-          App.channelNew(ca)
-        case Seq("app", "channel-delete") =>
-          App.channelDelete(ca)
-        case Seq("accesskey", "new") =>
-          AccessKey.create(ca)
-        case Seq("accesskey", "list") =>
-          AccessKey.list(ca)
-        case Seq("accesskey", "delete") =>
-          AccessKey.delete(ca)
-        case Seq("template", "get") =>
-          Template.get(ca)
-        case Seq("template", "list") =>
-          Template.list(ca)
-        case Seq("export") =>
-          Export.eventsToFile(ca)
-        case Seq("import") =>
-          Import.fileToEvents(ca)
+        case Seq("app", "new")            => App.create(ca)
+        case Seq("app", "list")           => App.list(ca)
+        case Seq("app", "show")           => App.show(ca)
+        case Seq("app", "delete")         => App.delete(ca)
+        case Seq("app", "data-delete")    => App.dataDelete(ca)
+        case Seq("app", "channel-new")    => App.channelNew(ca)
+        case Seq("app", "channel-delete") => App.channelDelete(ca)
+        case Seq("accesskey", "new")      => AccessKey.create(ca)
+        case Seq("accesskey", "list")     => AccessKey.list(ca)
+        case Seq("accesskey", "delete")   => AccessKey.delete(ca)
+        case Seq("template", "get")       => Template.get(ca)
+        case Seq("template", "list")      => Template.list(ca)
+        case Seq("export")                => Export.eventsToFile(ca)
+        case Seq("import")                => Import.fileToEvents(ca)
         case _ =>
           System.err.println(help(ca.commands))
           1

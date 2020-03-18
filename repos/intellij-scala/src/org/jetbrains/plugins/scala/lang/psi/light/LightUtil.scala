@@ -41,8 +41,7 @@ object LightUtil {
                         arg,
                         holder.getProject,
                         holder.getResolveScope) match {
-                        case c: PsiClassType =>
-                          c.resolve() match {
+                        case c: PsiClassType => c.resolve() match {
                             case clazz: PsiClass => Seq(clazz.getQualifiedName)
                             case _               => Seq.empty
                           }
@@ -65,8 +64,7 @@ object LightUtil {
                       arg,
                       holder.getProject,
                       holder.getResolveScope) match {
-                      case c: PsiClassType =>
-                        c.resolve() match {
+                      case c: PsiClassType => c.resolve() match {
                           case clazz: PsiClass => Seq(clazz.getQualifiedName)
                           case _               => Seq.empty
                         }

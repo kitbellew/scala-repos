@@ -86,8 +86,7 @@ object DistributedPubSubMediatorSpec extends MultiNodeConfig {
     mediator ! Subscribe("content", self)
 
     def receive = {
-      case s: String ⇒
-        log.info("Got {}", s)
+      case s: String ⇒ log.info("Got {}", s)
       case SubscribeAck(Subscribe("content", None, `self`)) ⇒
         log.info("subscribing");
     }
@@ -118,10 +117,7 @@ object DistributedPubSubMediatorSpec extends MultiNodeConfig {
     // register to the path
     mediator ! Put(self)
 
-    def receive = {
-      case s: String ⇒
-        log.info("Got {}", s)
-    }
+    def receive = { case s: String ⇒ log.info("Got {}", s) }
   }
   //#send-destination
 
@@ -539,8 +535,7 @@ class DistributedPubSubMediatorSpec
         expectMsgPF() {
           case CurrentTopics(topics)
               if topics.contains("topic_a1")
-                && topics.contains("topic_a2") ⇒
-            true
+                && topics.contains("topic_a2") ⇒ true
         }
       }
 

@@ -23,8 +23,7 @@ object UserAnalysis extends LilaController with TheftPrevention {
   def parse(arg: String) =
     arg.split("/", 2) match {
       case Array(key) => load("", Variant orDefault key)
-      case Array(key, fen) =>
-        Variant.byKey get key match {
+      case Array(key, fen) => Variant.byKey get key match {
           case Some(variant) => load(fen, variant)
           case _             => load(arg, Standard)
         }

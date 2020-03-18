@@ -124,9 +124,7 @@ class LogbackLoggerConfigurator extends LoggerConfigurator {
           }
 
           StatusPrinter.printIfErrorsOccured(ctx)
-        } catch {
-          case NonFatal(_) =>
-        }
+        } catch { case NonFatal(_) => }
 
       }
 

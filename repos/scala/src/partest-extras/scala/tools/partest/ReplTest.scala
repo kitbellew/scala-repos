@@ -89,8 +89,7 @@ abstract class SessionTest extends ReplTest {
             case _            => None
           }
         margin.replaceSomeIn(prompted, continued)
-      case pasted(cmd, pasted, null) =>
-        cmd + pasted + "\u0004"
+      case pasted(cmd, pasted, null) => cmd + pasted + "\u0004"
     } mkString
 
   // Just the last line of the interactive prompt

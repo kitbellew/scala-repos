@@ -177,16 +177,14 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
               unquoteString(aname))
           case Token(fname, Nil) :: Token(aname, Nil) :: Nil =>
             (unquoteString(fname), unquoteString(aname))
-          case _ =>
-            parseFailed("Invalid CREATE FUNCTION command", node)
+          case _ => parseFailed("Invalid CREATE FUNCTION command", node)
         }
         // Extract other keywords, if they exist
         val Seq(rList, temp) = getClauses(
           Seq("TOK_RESOURCE_LIST", "TOK_TEMPORARY"),
           otherArgs)
         val resources: Seq[(String, String)] = rList.toSeq.flatMap {
-          case Token("TOK_RESOURCE_LIST", resList) =>
-            resList.map {
+          case Token("TOK_RESOURCE_LIST", resList) => resList.map {
               case Token(
                     "TOK_RESOURCE_URI",
                     rType :: Token(rPath, Nil) :: Nil) =>
@@ -317,12 +315,10 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
                   datasources.DescribeCommand(
                     TableIdentifier(cleanIdentifier(tableName.text)),
                     isExtended = extended.isDefined)
-                case _ =>
-                  nodeToDescribeFallback(node)
+                case _ => nodeToDescribeFallback(node)
               }
             // All other cases.
-            case _ =>
-              nodeToDescribeFallback(node)
+            case _ => nodeToDescribeFallback(node)
           }
         }
 
@@ -333,20 +329,18 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
       case Token("TOK_UNCACHETABLE", Token(tableName, Nil) :: Nil) =>
         UncacheTableCommand(tableName)
 
-      case Token("TOK_CLEARCACHE", Nil) =>
-        ClearCacheCommand
+      case Token("TOK_CLEARCACHE", Nil) => ClearCacheCommand
 
       case Token("TOK_SHOWTABLES", args) =>
         val databaseName = args match {
           case Nil => None
-          case Token("TOK_FROM", Token(dbName, Nil) :: Nil) :: Nil =>
-            Option(dbName)
+          case Token("TOK_FROM", Token(dbName, Nil) :: Nil) :: Nil => Option(
+              dbName)
           case _ => noParseRule("SHOW TABLES", node)
         }
         ShowTablesCommand(databaseName)
 
-      case _ =>
-        super.nodeToPlan(node)
+      case _ => super.nodeToPlan(node)
     }
   }
 

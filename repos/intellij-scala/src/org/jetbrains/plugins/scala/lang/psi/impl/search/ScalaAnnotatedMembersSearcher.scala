@@ -53,8 +53,7 @@ class ScalaAnnotatedMembersSearcher
         while (iter.hasNext) {
           val annotation = iter.next
           annotation.getParent match {
-            case ann: ScAnnotations =>
-              ann.getParent match {
+            case ann: ScAnnotations => ann.getParent match {
                 case member: PsiMember =>
                   if (!consumer.process(member)) return false
                 case _ =>

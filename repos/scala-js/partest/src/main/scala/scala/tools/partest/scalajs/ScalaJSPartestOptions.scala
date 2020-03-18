@@ -77,29 +77,19 @@ object ScalaJSPartestOptions {
         case (Some(fil), newFilter) =>
           error(
             s"You cannot specify twice what tests to use (already specified: $fil, new: $newFilter)")
-        case (None, newFilter) =>
-          filter = Some(newFilter)
+        case (None, newFilter) => filter = Some(newFilter)
       }
 
     for (arg <- args) arg match {
-      case "--fastOpt" =>
-        optMode = FastOpt
-      case "--noOpt" =>
-        optMode = NoOpt
-      case "--fullOpt" =>
-        optMode = FullOpt
-      case "--blacklisted" =>
-        setFilter(BlacklistedTests)
-      case "--buglisted" =>
-        setFilter(BuglistedTests)
-      case "--whitelisted" =>
-        setFilter(WhitelistedTests)
-      case "--unknown" =>
-        setFilter(UnknownTests)
-      case "--showDiff" =>
-        showDiff = true
-      case _ =>
-        setFilter(SomeTests(arg :: Nil))
+      case "--fastOpt"     => optMode = FastOpt
+      case "--noOpt"       => optMode = NoOpt
+      case "--fullOpt"     => optMode = FullOpt
+      case "--blacklisted" => setFilter(BlacklistedTests)
+      case "--buglisted"   => setFilter(BuglistedTests)
+      case "--whitelisted" => setFilter(WhitelistedTests)
+      case "--unknown"     => setFilter(UnknownTests)
+      case "--showDiff"    => showDiff = true
+      case _               => setFilter(SomeTests(arg :: Nil))
     }
 
     if (failed) None

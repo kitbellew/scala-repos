@@ -3,10 +3,8 @@ object foo {
   // if "val _" is in the body of a case
   def cooked(ckd: StringBuilder) {
     'a' match {
-      case '-' =>
-        val _ = ckd.append('_');
-      case 'v' =>
-        val _ = ckd.append('_');
+      case '-' => val _ = ckd.append('_');
+      case 'v' => val _ = ckd.append('_');
     }
   }
 }

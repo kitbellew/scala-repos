@@ -182,8 +182,7 @@ object ServerResultUtils {
         case (SET_COOKIE, value) =>
           val cookieParts = Cookies.SetCookieHeaderSeparatorRegex.split(value)
           cookieParts.map { cookiePart => SET_COOKIE -> cookiePart }
-        case (name, value) =>
-          Seq((name, value))
+        case (name, value) => Seq((name, value))
       }
     } else {
       // No Set-Cookie header so we can just use the headers as they are

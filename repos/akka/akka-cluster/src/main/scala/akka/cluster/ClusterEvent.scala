@@ -480,8 +480,7 @@ private[cluster] final class ClusterDomainEventPublisher
           if (to.exists(_.isAssignableFrom(event.getClass))) subscriber ! event
         }
         publishDiff(Gossip.empty, latestGossip, pub)
-      case InitialStateAsSnapshot ⇒
-        sendCurrentClusterState(subscriber)
+      case InitialStateAsSnapshot ⇒ sendCurrentClusterState(subscriber)
     }
 
     to foreach { eventStream.subscribe(subscriber, _) }

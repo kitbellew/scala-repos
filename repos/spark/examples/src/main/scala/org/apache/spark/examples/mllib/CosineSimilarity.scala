@@ -104,10 +104,8 @@ object CosineSimilarity {
       .leftOuterJoin(approxEntries)
       .values
       .map {
-        case (u, Some(v)) =>
-          math.abs(u - v)
-        case (u, None) =>
-          math.abs(u)
+        case (u, Some(v)) => math.abs(u - v)
+        case (u, None)    => math.abs(u)
       }
       .mean()
 

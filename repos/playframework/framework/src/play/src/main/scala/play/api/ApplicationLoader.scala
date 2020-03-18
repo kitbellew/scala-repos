@@ -62,10 +62,8 @@ object ApplicationLoader {
       PlayConfig(context.initialConfiguration),
       "play.application.loader",
       classOf[GuiceApplicationLoader].getName) match {
-      case None =>
-        new GuiceApplicationLoader
-      case Some(Left(scalaClass)) =>
-        scalaClass.newInstance
+      case None                   => new GuiceApplicationLoader
+      case Some(Left(scalaClass)) => scalaClass.newInstance
       case Some(Right(javaClass)) =>
         val javaApplicationLoader: play.ApplicationLoader =
           javaClass.newInstance

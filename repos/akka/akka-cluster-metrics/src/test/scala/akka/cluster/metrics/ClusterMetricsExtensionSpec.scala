@@ -75,8 +75,7 @@ class MetricsExtensionSpec
       expected.size should ===(sampleCount)
 
       history.zip(expected) foreach {
-        case (mockMetrics, expectedData) ⇒
-          (mockMetrics, expectedData) match {
+        case (mockMetrics, expectedData) ⇒ (mockMetrics, expectedData) match {
             case (
                   Cpu(_, _, loadAverageMock, cpuCombinedMock, cpuStolenMock, _),
                   (loadAverageEwma, cpuCombinedEwma, cpuStolenEwma)) ⇒

@@ -323,10 +323,8 @@ final class Algebraic private (val expr: Algebraic.Expr)
             lb,
             ub,
             new MathContext(digits, roundingMode)).approximateValue
-        case Neg(sub) =>
-          rec(sub, digits).negate()
-        case Add(_, _) | Sub(_, _) if e.signum == 0 =>
-          JBigDecimal.ZERO
+        case Neg(sub)                               => rec(sub, digits).negate()
+        case Add(_, _) | Sub(_, _) if e.signum == 0 => JBigDecimal.ZERO
         case Add(lhs, rhs) =>
           val digits0 = digits + e.separationBound.decimalDigits.toInt + 1
           val lValue = rec(lhs, digits0)
@@ -534,12 +532,10 @@ object Algebraic extends AlgebraicInstances {
           s"cannot extract root $i, there are only ${intervals.size} roots")
       }
       intervals(i) match {
-        case Point(value) =>
-          new Algebraic(Expr.ConstantRational(value))
+        case Point(value) => new Algebraic(Expr.ConstantRational(value))
         case Bounded(lb, ub, _) =>
           new Algebraic(Expr.ConstantRoot(zpoly, i, lb, ub))
-        case _ =>
-          throw new RuntimeException("invalid isolated root interval")
+        case _ => throw new RuntimeException("invalid isolated root interval")
       }
     }
   }
@@ -555,8 +551,7 @@ object Algebraic extends AlgebraicInstances {
     val zpoly = Roots.removeFractions(poly)
     val intervals = Roots.isolateRoots(zpoly)
     intervals.zipWithIndex map {
-      case (Point(value), _) =>
-        new Algebraic(Expr.ConstantRational(value))
+      case (Point(value), _) => new Algebraic(Expr.ConstantRational(value))
       case (Bounded(lb, ub, _), i) =>
         new Algebraic(Expr.ConstantRoot(zpoly, i, lb, ub))
       case x =>
@@ -626,10 +621,8 @@ object Algebraic extends AlgebraicInstances {
         acc ++ child.radicalNodes()
       }
       val radicals = this match {
-        case expr @ KRoot(sub, k) =>
-          childRadicals + expr
-        case _ =>
-          childRadicals
+        case expr @ KRoot(sub, k) => childRadicals + expr
+        case _                    => childRadicals
       }
       if (cachedDegreeBound == 0L) {
         cachedDegreeBound = radicals.foldLeft(1L) { (acc, kroot) =>
@@ -1203,8 +1196,7 @@ object Algebraic extends AlgebraicInstances {
           new JBigDecimal(BigInteger.ONE, scale)
         case UP | FLOOR if exact.signum < 0 =>
           new JBigDecimal(BigInteger.ONE.negate, scale)
-        case _ =>
-          approx.setScale(scale, RoundingMode.DOWN)
+        case _ => approx.setScale(scale, RoundingMode.DOWN)
       }
     } else if (approx.signum > 0) { roundPositive(exact, approx, scale, mode) }
     else {
@@ -1256,8 +1248,7 @@ object Algebraic extends AlgebraicInstances {
       def epsilon: JBigDecimal = new JBigDecimal(BigInteger.ONE, scale)
       val remainder = bigRemainder.longValue
       val rounded = mode match {
-        case UNNECESSARY =>
-          truncated
+        case UNNECESSARY => truncated
 
         case HALF_DOWN | HALF_UP | HALF_EVEN =>
           val dangerZoneStart = (unscale / 2) - 1
@@ -1351,23 +1342,18 @@ object Algebraic extends AlgebraicInstances {
         // then we risk terrible runtime behaviour.
         val degreeBound = expr.degreeBound
         expr match {
-          case ConstantLong(n) =>
-            rational(Rational(n))
+          case ConstantLong(n) => rational(Rational(n))
 
-          case ConstantDouble(n) =>
-            rational(Rational(n))
+          case ConstantDouble(n) => rational(Rational(n))
 
-          case ConstantBigDecimal(n) =>
-            rational(Rational(n))
+          case ConstantBigDecimal(n) => rational(Rational(n))
 
-          case ConstantRational(n) =>
-            rational(n)
+          case ConstantRational(n) => rational(n)
 
           case root @ ConstantRoot(poly, _, _, _) =>
             // Bound on the euclidean distance of the coefficients.
             val distBound = poly.terms.map {
-              case Term(c, _) =>
-                2L * c.bitLength
+              case Term(c, _) => 2L * c.bitLength
             }.qsum / 2L + 1L
             Bound(
               root.lead.bitLength + 1L,
@@ -1376,8 +1362,7 @@ object Algebraic extends AlgebraicInstances {
               Roots.lowerBound(poly),
               Roots.upperBound(poly))
 
-          case Neg(sub) =>
-            sub.getBound(this)
+          case Neg(sub) => sub.getBound(this)
 
           case expr: AddOrSubExpr =>
             val lhsExpr = expr.lhs

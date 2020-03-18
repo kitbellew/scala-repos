@@ -224,8 +224,7 @@ class NettyServer(
       // sending/receiving the response.
       case e: IOException =>
         logger.trace("Benign IO exception caught in Netty", e)
-      case e =>
-        logger.error("Exception caught in Netty", e)
+      case e => logger.error("Exception caught in Netty", e)
     }
   }
 

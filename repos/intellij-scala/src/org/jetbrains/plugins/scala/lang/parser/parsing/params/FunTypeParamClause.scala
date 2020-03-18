@@ -36,9 +36,8 @@ object FunTypeParamClause {
       }
     }
     builder.getTokenType match {
-      case ScalaTokenTypes.tRSQBRACKET =>
-        builder.advanceLexer //Ate ]
-      case _ => builder error ErrMsg("wrong.parameter")
+      case ScalaTokenTypes.tRSQBRACKET => builder.advanceLexer //Ate ]
+      case _                           => builder error ErrMsg("wrong.parameter")
     }
     builder.restoreNewlinesState
     funMarker.done(ScalaElementTypes.TYPE_PARAM_CLAUSE)

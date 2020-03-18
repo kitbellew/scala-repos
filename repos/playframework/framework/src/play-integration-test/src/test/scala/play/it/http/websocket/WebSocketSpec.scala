@@ -363,10 +363,7 @@ trait WebSocketSpec
           WebSocket.acceptWithActor[String, String] { req => out =>
             Props(new Actor() {
               var messages = List.empty[String]
-              def receive = {
-                case msg: String =>
-                  messages = msg :: messages
-              }
+              def receive = { case msg: String => messages = msg :: messages }
               override def postStop() = { consumed.success(messages.reverse) }
             })
           }

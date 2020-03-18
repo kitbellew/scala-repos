@@ -51,10 +51,8 @@ object SerializableLaws {
           val a2 = ois.readObject()
           ois.close()
           Result(status = Proof)
-        } catch {
-          case NonFatal(t) =>
-            Result(status = Exception(t))
-        } finally {
+        } catch { case NonFatal(t) => Result(status = Exception(t)) }
+        finally {
           oos.close()
           if (ois != null) ois.close()
         }

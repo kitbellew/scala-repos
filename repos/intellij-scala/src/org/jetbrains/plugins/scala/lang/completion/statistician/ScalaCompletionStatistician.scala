@@ -28,8 +28,7 @@ class ScalaCompletionStatistician extends CompletionStatistician {
       case s: ScalaLookupItem
           if s.isLocalVariable || s.isNamedParameter || s.isDeprecated =>
         StatisticsInfo.EMPTY
-      case s: ScalaLookupItem =>
-        s.element match {
+      case s: ScalaLookupItem => s.element match {
           case withImplicit: ScModifierListOwner
               if withImplicit.hasModifierPropertyScala("implicit") =>
             StatisticsInfo.EMPTY
@@ -39,8 +38,7 @@ class ScalaCompletionStatistician extends CompletionStatistician {
       // otherwise will be computed java statistic that may lead to ClassCastError
       case e
           if location.getCompletionParameters.getOriginalFile
-            .isInstanceOf[ScalaFile] =>
-        StatisticsInfo.EMPTY
+            .isInstanceOf[ScalaFile] => StatisticsInfo.EMPTY
       case _ =>
         null //don't impact on java Lookups, no statistics for scala keyword elements
     }

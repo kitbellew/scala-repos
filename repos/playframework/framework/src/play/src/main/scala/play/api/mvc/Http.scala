@@ -484,10 +484,7 @@ package play.api.mvc {
 
     override def hashCode = {
       toMap
-        .map {
-          case (name, value) =>
-            name.toLowerCase(Locale.ENGLISH) -> value
-        }
+        .map { case (name, value) => name.toLowerCase(Locale.ENGLISH) -> value }
         .hashCode()
     }
 

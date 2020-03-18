@@ -315,11 +315,9 @@ final class Split[T](
             val elem = grab(in)
 
             decision match {
-              case SplitAfter if p(elem) ⇒
-                push(out, Source.single(elem))
+              case SplitAfter if p(elem) ⇒ push(out, Source.single(elem))
               // Next pull will come from the next substream that we will open
-              case _ ⇒
-                handler.firstElem = elem
+              case _ ⇒ handler.firstElem = elem
             }
 
             handOver(handler)
@@ -450,8 +448,7 @@ final class SubSink[T](
   def pullSubstream(): Unit =
     status.get match {
       case f: AsyncCallback[Any] @unchecked ⇒ f.invoke(RequestOne)
-      case null ⇒
-        if (!status.compareAndSet(null, RequestOne))
+      case null ⇒ if (!status.compareAndSet(null, RequestOne))
           status.get.asInstanceOf[Command ⇒ Unit](RequestOne)
     }
 
@@ -477,8 +474,7 @@ final class SubSink[T](
       @tailrec
       private def setCB(cb: AsyncCallback[Command]): Unit = {
         status.get match {
-          case null ⇒
-            if (!status.compareAndSet(null, cb)) setCB(cb)
+          case null ⇒ if (!status.compareAndSet(null, cb)) setCB(cb)
           case RequestOne ⇒
             pull(in)
             if (!status.compareAndSet(RequestOne, cb)) setCB(cb)
@@ -519,8 +515,7 @@ object SubSource {
         stage.externalCallback.invoke(SubSink.Cancel)
       case pub: PublisherSource[_] ⇒
         pub.create(null)._1.subscribe(new CancellingSubscriber)
-      case m ⇒
-        GraphInterpreter.currentInterpreterOrNull match {
+      case m ⇒ GraphInterpreter.currentInterpreterOrNull match {
           case null ⇒
             throw new UnsupportedOperationException(
               s"cannot drop Source of type ${m.getClass.getName}")

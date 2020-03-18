@@ -312,8 +312,7 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
             case extras: CandleStick =>
               yData += extras.high
               yData += extras.low
-            case _ =>
-              yData += seriesData.YValue()
+            case _ => yData += seriesData.YValue()
           }
         }
 

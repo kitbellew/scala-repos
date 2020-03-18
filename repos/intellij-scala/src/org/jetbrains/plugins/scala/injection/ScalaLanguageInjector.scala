@@ -81,9 +81,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
       .depthFirst {
         case injectedExpr: ScExpression
             if injectedExpr.getParent
-              .isInstanceOf[ScInterpolatedStringLiteral] =>
-          false
-        case _ => true
+              .isInstanceOf[ScInterpolatedStringLiteral] => false
+        case _                                           => true
       }
       .filter(_.isInstanceOf[ScExpression])
       .toList
@@ -276,8 +275,7 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
             case interpolated: ScInterpolatedStringLiteral
                 if interpolated.reference exists (
                   mapping containsKey _.getText
-                ) =>
-              true
+                )  => true
             case _ => false
           } foreach {
             case literal: ScInterpolatedStringLiteral =>
@@ -350,8 +348,7 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     }
 
     argument.getParent match {
-      case args: ScArgumentExprList =>
-        args.getParent match {
+      case args: ScArgumentExprList => args.getParent match {
           case call: ScMethodCall =>
             getParameter(call, args.exprs.indexOf(argument))
           case _ => None

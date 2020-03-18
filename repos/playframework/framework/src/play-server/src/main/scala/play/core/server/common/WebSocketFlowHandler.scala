@@ -126,8 +126,7 @@ object WebSocketFlowHandler {
                     CloseCodes.ProtocolError,
                     "Received non continuation frame when previous message wasn't finished"))
                   null
-                case _ if read.isFinal =>
-                  toMessage(read.messageType, read.data)
+                case _ if read.isFinal => toMessage(read.messageType, read.data)
                 case start =>
                   currentPartialMessage = read
                   null
@@ -166,8 +165,7 @@ object WebSocketFlowHandler {
                         // Server has initiated the close, if this is a close ack from the client, close the connection,
                         // otherwise, forward it down to the appIn if it's still listening
                         message match {
-                          case close: CloseMessage =>
-                            completeStage()
+                          case close: CloseMessage => completeStage()
                           case other =>
                             if (!isClosed(appOut)) { push(appOut, other) }
                             else {
@@ -175,8 +173,7 @@ object WebSocketFlowHandler {
                               pull(remoteIn)
                             }
                         }
-                      case Open =>
-                        message match {
+                      case Open => message match {
                           case ping @ PingMessage(data) =>
                             // Forward down to app
                             push(appOut, ping)

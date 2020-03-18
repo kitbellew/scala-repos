@@ -56,8 +56,7 @@ class ScalaPackageNameInspection extends LocalInspectionTool {
         val expectedPackageName = file.typeDefinitions.head match {
           case obj: ScObject if obj.hasPackageKeyword =>
             Option(pack.getParentPackage).map(_.getQualifiedName).getOrElse("")
-          case _ =>
-            pack.getQualifiedName
+          case _ => pack.getQualifiedName
         }
 
         if (packName == null) {

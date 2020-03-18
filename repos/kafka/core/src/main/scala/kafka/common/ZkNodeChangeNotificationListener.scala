@@ -99,10 +99,7 @@ class ZkNodeChangeNotificationListener(
           lastExecutedChange = changeId
         }
         purgeObsoleteNotifications(now, notifications)
-      } catch {
-        case e: ZkInterruptedException =>
-          if (!isClosed.get) throw e
-      }
+      } catch { case e: ZkInterruptedException => if (!isClosed.get) throw e }
     }
   }
 

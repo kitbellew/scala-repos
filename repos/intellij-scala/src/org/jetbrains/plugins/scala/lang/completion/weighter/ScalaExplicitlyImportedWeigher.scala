@@ -138,8 +138,7 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
           case Some(x) => return x
           case None    =>
         }
-      case member: ScMember =>
-        applyToMember(member, position) match {
+      case member: ScMember => applyToMember(member, position) match {
           case Some(x) => return x
           case None    =>
         }
@@ -157,15 +156,12 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
             case None    =>
           }
         }
-      case b: ScBindingPattern =>
-        ScalaPsiUtil.nameContext(b) match {
-          case v: ScValue =>
-            applyToMember(v, position) match {
+      case b: ScBindingPattern => ScalaPsiUtil.nameContext(b) match {
+          case v: ScValue => applyToMember(v, position) match {
               case Some(x) => return x
               case None    =>
             }
-          case v: ScVariable =>
-            applyToMember(v, position) match {
+          case v: ScVariable => applyToMember(v, position) match {
               case Some(x) => return x
               case None    =>
             }

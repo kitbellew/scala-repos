@@ -49,13 +49,11 @@ private[setup] final class Processor(
     val config = configBase.fixColor
     saveConfig(_ withHook config) >> {
       config.hook(uid, ctx.me, sid, blocking) match {
-        case Left(hook) =>
-          fuccess {
+        case Left(hook) => fuccess {
             lobby ! AddHook(hook)
             hook.id
           }
-        case Right(Some(seek)) =>
-          fuccess {
+        case Right(Some(seek)) => fuccess {
             lobby ! AddSeek(seek)
             seek.id
           }

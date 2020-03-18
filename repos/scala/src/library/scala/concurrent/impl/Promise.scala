@@ -101,12 +101,12 @@ private[concurrent] object Promise {
 
   private def resolver[T](throwable: Throwable): Try[T] =
     throwable match {
-      case t: scala.runtime.NonLocalReturnControl[_] =>
-        Success(t.value.asInstanceOf[T])
-      case t: scala.util.control.ControlThrowable =>
-        Failure(new ExecutionException("Boxed ControlThrowable", t))
-      case t: InterruptedException =>
-        Failure(new ExecutionException("Boxed InterruptedException", t))
+      case t: scala.runtime.NonLocalReturnControl[_] => Success(
+          t.value.asInstanceOf[T])
+      case t: scala.util.control.ControlThrowable => Failure(
+          new ExecutionException("Boxed ControlThrowable", t))
+      case t: InterruptedException => Failure(
+          new ExecutionException("Boxed InterruptedException", t))
       case e: Error => Failure(new ExecutionException("Boxed Error", e))
       case t        => Failure(t)
     }
@@ -377,19 +377,16 @@ private[concurrent] object Promise {
     private def link(target: DefaultPromise[T]): Unit =
       if (this ne target) {
         get() match {
-          case r: Try[_] =>
-            if (!target.tryComplete(r.asInstanceOf[Try[T]]))
+          case r: Try[_] => if (!target.tryComplete(r.asInstanceOf[Try[T]]))
               throw new IllegalStateException(
                 "Cannot link completed promises together")
-          case dp: DefaultPromise[_] =>
-            compressedRoot(dp).link(target)
+          case dp: DefaultPromise[_] => compressedRoot(dp).link(target)
           case listeners: List[_] if compareAndSet(listeners, target) =>
             if (listeners.nonEmpty)
               listeners
                 .asInstanceOf[List[CallbackRunnable[T]]]
                 .foreach(target.dispatchOrAddCallback(_))
-          case _ =>
-            link(target)
+          case _ => link(target)
         }
       }
   }

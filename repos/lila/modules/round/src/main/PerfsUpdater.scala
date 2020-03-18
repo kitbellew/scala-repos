@@ -64,8 +64,7 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
               ratingsB.crazyhouse,
               result,
               system)
-          case chess.variant.Standard =>
-            game.speed match {
+          case chess.variant.Standard => game.speed match {
               case Speed.Bullet =>
                 updateRatings(ratingsW.bullet, ratingsB.bullet, result, system)
               case Speed.Blitz =>

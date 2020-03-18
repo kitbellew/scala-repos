@@ -71,8 +71,7 @@ object ScalaBuilder {
           try { Some(IncrementalityType.valueOf(in.readUTF())) }
           catch {
             case _: IOException | _: IllegalArgumentException |
-                _: NullPointerException =>
-              None
+                _: NullPointerException => None
           }
         }
         if (result.isEmpty) file.delete()

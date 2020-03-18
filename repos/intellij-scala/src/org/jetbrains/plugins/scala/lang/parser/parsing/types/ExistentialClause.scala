@@ -20,8 +20,7 @@ object ExistentialClause {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val existMarker = builder.mark
     builder.getTokenType match {
-      case ScalaTokenTypes.kFOR_SOME =>
-        builder.advanceLexer() //Ate forSome
+      case ScalaTokenTypes.kFOR_SOME => builder.advanceLexer() //Ate forSome
       case _ =>
         existMarker.drop()
         return false

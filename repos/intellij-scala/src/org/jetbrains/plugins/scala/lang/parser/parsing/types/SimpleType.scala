@@ -49,8 +49,7 @@ object SimpleType {
               newMarker.drop()
               curMarker.drop()
           }
-        case _ =>
-          curMarker.drop()
+        case _ => curMarker.drop()
       }
     }
 

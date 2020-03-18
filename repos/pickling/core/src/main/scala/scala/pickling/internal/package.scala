@@ -77,8 +77,7 @@ package object internal {
                 mirror.staticModule(typename.stripSuffix(".type")).moduleClass
               else mirror.staticClass(typename)
             } catch {
-              case _: ScalaReflectionException =>
-                sys.error(errorMsg)
+              case _: ScalaReflectionException => sys.error(errorMsg)
               case _: scala.reflect.internal.MissingRequirementError =>
                 sys.error(errorMsg)
             }
@@ -87,8 +86,7 @@ package object internal {
             tycon,
             appliedTypeArgs.map(starg =>
               typeFromString(mirror, starg.toString)))
-        case None =>
-          sys.error(s"fatal: cannot unpickle $stpe")
+        case None => sys.error(s"fatal: cannot unpickle $stpe")
       }
       typeFromStringCache(stpe) = result
       result
@@ -102,15 +100,13 @@ package object internal {
       tpe.normalize match {
         case ExistentialType(tparams, TypeRef(pre, sym, targs))
             if targs.nonEmpty && targs.forall(targ =>
-              tparams.contains(targ.typeSymbol)) =>
-          TypeRef(pre, sym, Nil).key
+              tparams.contains(targ.typeSymbol)) => TypeRef(pre, sym, Nil).key
         case TypeRef(pre, sym, targs) if pre.typeSymbol.isModuleClass =>
           sym.fullName +
             (if (sym.isModuleClass) ".type" else "") +
             (if (targs.isEmpty) ""
              else targs.map(_.key).mkString("[", ",", "]"))
-        case _ =>
-          tpe.toString
+        case _ => tpe.toString
       }
     }
     def isEffectivelyPrimitive: Boolean =

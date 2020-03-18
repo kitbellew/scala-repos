@@ -1189,10 +1189,7 @@ class TypedMultiJoinJobTest extends WordSpec with Matchers {
                 v2 <- d2.get(k)
               } yield (v0s, (k, v1, v2)))
             }
-            .flatMap {
-              case (v0s, (k, v1, v2)) =>
-                v0s.map { (k, _, v1, v2) }
-            }
+            .flatMap { case (v0s, (k, v1, v2)) => v0s.map { (k, _, v1, v2) } }
             .toList
             .sorted
 
@@ -1259,10 +1256,7 @@ class TypedMultiSelfJoinJobTest extends WordSpec with Matchers {
                 v2 <- d2.get(k)
               } yield (v0s, (k, v1, v2)))
             }
-            .flatMap {
-              case (v0s, (k, v1, v2)) =>
-                v0s.map { (k, _, v1, v2) }
-            }
+            .flatMap { case (v0s, (k, v1, v2)) => v0s.map { (k, _, v1, v2) } }
             .toList
             .sorted
 

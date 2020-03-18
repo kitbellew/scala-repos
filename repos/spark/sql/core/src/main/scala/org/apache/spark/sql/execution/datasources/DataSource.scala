@@ -342,10 +342,7 @@ case class DataSource(
                   .partitionColumns
                   .fieldNames
                   .toSet)
-            } catch {
-              case e: Exception =>
-                None
-            }
+            } catch { case e: Exception => None }
 
           existingPartitionColumnSet.foreach { ex =>
             if (ex.map(_.toLowerCase) != partitionColumns

@@ -967,8 +967,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
           .Call(
             "lift.registerComets",
             js.JE.JsObj(cometVersions.toList.map {
-              case CometVersionPair(guid, version) =>
-                (guid, js.JE.Num(version))
+              case CometVersionPair(guid, version) => (guid, js.JE.Num(version))
             }: _*),
             // Don't kick off a new comet request client-side if we're responding
             // to a comet request right now.
@@ -997,10 +996,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     val allJs =
       globalJs ::: {
         postPageJs ::: cometJs ::: _jsToAppend.is.toList match {
-          case Nil =>
-            Nil
-          case loadJs =>
-            List(OnLoad(loadJs))
+          case Nil    => Nil
+          case loadJs => List(OnLoad(loadJs))
         }
       }
 
@@ -1795,8 +1792,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
               case Full(s) if s.stateful_? =>
                 LiftRules.earlyInStateful.toList.foreach(_(req))
 
-              case Full(s) =>
-                LiftRules.earlyInStateless.toList.foreach(_(req))
+              case Full(s) => LiftRules.earlyInStateless.toList.foreach(_(req))
 
               case _ =>
             }
@@ -2755,8 +2751,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
           )
         }
 
-        case _ =>
-          updateFunctionMap(name, value)
+        case _ => updateFunctionMap(name, value)
       }
     }
   }

@@ -44,8 +44,7 @@ object CValueGenerators {
     if (data.isEmpty) { Seq.empty }
     else {
       val current = data.head.flattenWithPath flatMap {
-        case (path, jv) =>
-          CType.forJValue(jv) map { ct => (path, ct) }
+        case (path, jv) => CType.forJValue(jv) map { ct => (path, ct) }
       }
 
       (current ++ inferSchema(data.tail)).distinct
@@ -126,8 +125,7 @@ trait CValueGenerators extends ArbitraryBigDecimal {
 
   def jvalue(schema: Seq[(JPath, CType)]): Gen[JValue] = {
     schema.foldLeft(Gen.value[JValue](JUndefined)) {
-      case (gen, (jpath, ctype)) =>
-        for {
+      case (gen, (jpath, ctype)) => for {
           acc <- gen
           jv <- jvalue(ctype)
         } yield { acc.unsafeInsert(jpath, jv) }

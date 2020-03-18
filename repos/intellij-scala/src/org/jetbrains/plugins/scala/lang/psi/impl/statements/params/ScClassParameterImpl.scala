@@ -50,9 +50,8 @@ class ScClassParameterImpl private (
   def isPrivateThis: Boolean = {
     if (!isEffectiveVal) return true
     getModifierList.accessModifier match {
-      case Some(am) =>
-        am.isThis && am.isPrivate
-      case _ => false
+      case Some(am) => am.isThis && am.isPrivate
+      case _        => false
     }
   }
 

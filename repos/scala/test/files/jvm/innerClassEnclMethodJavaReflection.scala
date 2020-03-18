@@ -23,9 +23,8 @@ object Test extends App {
     def unapply(t: Throwable): Option[Throwable] =
       t match {
         case _: NoClassDefFoundError | _: ClassNotFoundException |
-            _: TypeNotPresentException if ok(t) =>
-          Some(t)
-        case _ => None
+            _: TypeNotPresentException if ok(t) => Some(t)
+        case _                                  => None
       }
   }
 

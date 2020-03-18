@@ -48,9 +48,8 @@ package sexp {
           Some((name, value), SexpNil)
         case SexpCons(
               SexpCons(SexpAtom(name), SexpCons(value, SexpNil)),
-              cdr) =>
-          Some((name, value), cdr)
-        case _ => None
+              cdr) => Some((name, value), cdr)
+        case _     => None
       }
   }
 }
@@ -350,8 +349,7 @@ object SexpConvert {
         s match {
           case SexpCons(SexpAtom(impl), cdr) if impl == key.value.name =>
             scv.value.deser(cdr).map(v => Inl(field[K](v)))
-          case SexpCons(SexpAtom(impl), cdr) =>
-            sct.value.deser(s).map(Inr(_))
+          case SexpCons(SexpAtom(impl), cdr) => sct.value.deser(s).map(Inr(_))
           case _ =>
             println("COPRODUCT MISS " + s)
             None

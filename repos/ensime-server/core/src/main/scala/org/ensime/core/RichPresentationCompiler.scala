@@ -75,8 +75,7 @@ trait RichCompilerControl
   def askOption[A](op: => A): Option[A] =
     try { Some(ask(() => op)) }
     catch {
-      case fi: FailedInterrupt =>
-        fi.getCause match {
+      case fi: FailedInterrupt => fi.getCause match {
           case e: InterruptedException =>
             Thread.currentThread().interrupt()
             logger.error("interrupted exception in askOption", e)
@@ -388,16 +387,11 @@ class RichPresentationCompiler(
 
   private def typeOfTree(t: Tree): Option[Type] = {
     val tree = t match {
-      case Select(qualifier, name) if t.tpe == ErrorType =>
-        qualifier
-      case t: ImplDef if t.impl != null =>
-        t.impl
-      case t: ValOrDefDef if t.tpt != null =>
-        t.tpt
-      case t: ValOrDefDef if t.rhs != null =>
-        t.rhs
-      case otherTree =>
-        otherTree
+      case Select(qualifier, name) if t.tpe == ErrorType => qualifier
+      case t: ImplDef if t.impl != null                  => t.impl
+      case t: ValOrDefDef if t.tpt != null               => t.tpt
+      case t: ValOrDefDef if t.rhs != null               => t.rhs
+      case otherTree                                     => otherTree
     }
 
     Option(tree.tpe)
@@ -413,8 +407,7 @@ class RichPresentationCompiler(
   protected def typeByName(name: String): Option[Type] =
     symbolByName(name).flatMap {
       case NoSymbol => None
-      case sym: Symbol =>
-        sym.tpe match {
+      case sym: Symbol => sym.tpe match {
           case NoType    => None
           case tpe: Type => Some(tpe)
         }
@@ -489,8 +482,7 @@ class RichPresentationCompiler(
             List(tpe.member(sel.name), tpe.member(sel.name.toTypeName))
           } getOrElse Nil
         }
-      case Annotated(atp, _) =>
-        List(atp.symbol)
+      case Annotated(atp, _)                 => List(atp.symbol)
       case ap @ Select(qualifier, nme.apply) =>
         // If we would like to give user choice if to go to method apply or value
         // like Eclipse is doing we would need to return:
@@ -499,8 +491,7 @@ class RichPresentationCompiler(
       case st if st.symbol ne null =>
         logger.debug("using symbol of " + tree.getClass + " tree")
         List(st.symbol)
-      case _ =>
-        noDefinitionFound(tree)
+      case _ => noDefinitionFound(tree)
     }
     wannabes.find(_.exists)
   }
@@ -508,8 +499,7 @@ class RichPresentationCompiler(
   protected def specificOwnerOfSymbolAt(pos: Position): Option[Symbol] = {
     val tree = wrapTypedTreeAt(pos)
     tree match {
-      case tree @ Select(qualifier, name) =>
-        qualifier match {
+      case tree @ Select(qualifier, name) => qualifier match {
           case t: ApplyImplicitView => t.args.headOption.map(_.tpe.typeSymbol)
           case _                    => Some(qualifier.tpe.typeSymbol)
         }
@@ -535,8 +525,7 @@ class RichPresentationCompiler(
           val result = index.occurences(sym).map {
             _.pos match {
               case p: RangePosition => p
-              case p =>
-                new RangePosition(p.source, p.point, p.point, p.point)
+              case p                => new RangePosition(p.source, p.point, p.point, p.point)
             }
           }
         }

@@ -404,10 +404,9 @@ sealed trait List[@specialized +A]
     /** Merge-sort the specified list */
     def ms(lst: List[A]): List[A] =
       lst match {
-        case Nil      => lst
-        case x :: Nil => lst
-        case x :: y :: Nil =>
-          if (lt(x, y)) lst else y :: x :: Nil
+        case Nil           => lst
+        case x :: Nil      => lst
+        case x :: y :: Nil => if (lt(x, y)) lst else y :: x :: Nil
 
         case lst =>
           val (l1, l2) = split(lst)

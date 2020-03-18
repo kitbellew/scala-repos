@@ -62,10 +62,8 @@ object ExtractCssSelectorExamples extends App {
 
   private def hasClass_?(element: Elem, className: String) = {
     element.attribute("class") match {
-      case Some(thing) =>
-        charSplit(thing.text, ' ').exists(_ == className)
-      case _ =>
-        false
+      case Some(thing) => charSplit(thing.text, ' ').exists(_ == className)
+      case _           => false
     }
   }
 

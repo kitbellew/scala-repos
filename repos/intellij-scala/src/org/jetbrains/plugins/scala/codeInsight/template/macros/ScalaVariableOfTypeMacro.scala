@@ -162,8 +162,7 @@ class ScalaVariableOfTypeMacro extends Macro {
       scType: ScType,
       project: Project): Option[Result] = {
     exprs.apply(0).calculateResult(context).toString match {
-      case "" =>
-        Some(new TextResult(variant.getElement.name))
+      case "" => Some(new TextResult(variant.getElement.name))
       case ScalaVariableOfTypeMacro.iterableId =>
         if (scType.canonicalText.startsWith("_root_.scala.Array"))
           Some(new TextResult(variant.getElement.name))
@@ -172,8 +171,7 @@ class ScalaVariableOfTypeMacro extends Macro {
             case Some((x: ScTypeDefinition, _))
                 if x.functionsByName("foreach").nonEmpty =>
               Some(new TextResult(variant.getElement.name))
-            case _ =>
-              None
+            case _ => None
           }
       case _ =>
         exprs

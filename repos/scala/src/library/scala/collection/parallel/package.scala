@@ -260,8 +260,7 @@ package parallel {
             sz = sz + that.size
             afterCombine(other)
             this
-          case _ =>
-            sys.error("Unexpected combiner type.")
+          case _ => sys.error("Unexpected combiner type.")
         }
     }
   }

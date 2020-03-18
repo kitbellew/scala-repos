@@ -42,8 +42,8 @@ private[streaming] case class ReceivedBlockInfo(
 
   def walRecordHandleOption: Option[WriteAheadLogRecordHandle] = {
     blockStoreResult match {
-      case walStoreResult: WriteAheadLogBasedStoreResult =>
-        Some(walStoreResult.walRecordHandle)
+      case walStoreResult: WriteAheadLogBasedStoreResult => Some(
+          walStoreResult.walRecordHandle)
       case _ => None
     }
   }

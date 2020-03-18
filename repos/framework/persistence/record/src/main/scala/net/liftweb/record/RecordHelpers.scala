@@ -51,8 +51,8 @@ object RecordHelpers {
       case JInt(i)    => Num(i)
       case JNothing   => JsNull
       case JNull      => JsNull
-      case JObject(fs) =>
-        JsObj(fs.map(f => (f.name, jvalueToJsExp(f.value))): _*)
+      case JObject(fs) => JsObj(
+          fs.map(f => (f.name, jvalueToJsExp(f.value))): _*)
       case JString(s) => Str(s)
     }
   }

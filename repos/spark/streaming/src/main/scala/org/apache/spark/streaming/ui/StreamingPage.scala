@@ -56,10 +56,7 @@ private[ui] class GraphUIData(
 
   def generateDataJs(jsCollector: JsCollector): Unit = {
     val jsForData = data
-      .map {
-        case (x, y) =>
-          s"""{"x": $x, "y": $y}"""
-      }
+      .map { case (x, y) => s"""{"x": $x, "y": $y}""" }
       .mkString("[", ",", "]")
     dataJavaScriptName = jsCollector.nextVariableName
     jsCollector.addPreparedStatement(s"var $dataJavaScriptName = $jsForData;")
@@ -454,8 +451,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
       maxY: Double): Seq[Node] = {
     val maxYCalculated = listener.receivedEventRateWithBatchTime.values
       .flatMap {
-        case streamAndRates =>
-          streamAndRates.map { case (_, eventRate) => eventRate }
+        case streamAndRates => streamAndRates.map {
+            case (_, eventRate) => eventRate
+          }
       }
       .reduceOption[Double](math.max)
       .map(_.ceil.toLong)

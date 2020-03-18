@@ -471,10 +471,7 @@ private class ReplicaFetcher(
 
     var response: FetchResponse = null
     try { response = simpleConsumer.fetch(fetchRequest) }
-    catch {
-      case t: Throwable =>
-        if (!isRunning.get) throw t
-    }
+    catch { case t: Throwable => if (!isRunning.get) throw t }
 
     if (response != null) {
       response.data.foreach {

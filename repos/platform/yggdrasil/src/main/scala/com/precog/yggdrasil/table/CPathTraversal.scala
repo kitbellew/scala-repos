@@ -121,8 +121,7 @@ sealed trait CPathTraversal {
             }
           }
 
-        case Select(CPathArray, t) =>
-          plan0(Loop(0, None, t), paths, idx)
+        case Select(CPathArray, t) => plan0(Loop(0, None, t), paths, idx)
 
         case Select(CPathIndex(i), t) =>
           val matches = paths collect {
@@ -238,11 +237,9 @@ object CPathTraversal {
           val (ts, os2) = collectWhile(os) { case Loop(`s`, `e`, t2) => t2 }
           join(os2, Loop(s, e, join(t :: ts, Nil)) :: seq)
 
-        case t :: os =>
-          join(os, t :: seq)
+        case t :: os => join(os, t :: seq)
 
-        case Nil =>
-          seq match {
+        case Nil => seq match {
             case Nil      => Done
             case x :: Nil => x
             case xs       => Sequence(xs.reverse)
@@ -377,11 +374,9 @@ object CPathTraversal {
           is: List[CPathPosition],
           rss: List[List[CPathPosition]]): List[List[CPathPosition]] =
         (ps, qs) match {
-          case (Nil, Nil) =>
-            is.reverse :: rss
+          case (Nil, Nil) => is.reverse :: rss
 
-          case (p :: ps, q :: qs) if p == q =>
-            loop(ps, qs, p :: is, rss)
+          case (p :: ps, q :: qs) if p == q => loop(ps, qs, p :: is, rss)
 
           case (CPathPoint(n @ CPathIndex(i)) :: ps, CPathRange(ns, j, k) :: qs)
               if i >= j && i <= k.getOrElse(i) =>
@@ -431,8 +426,7 @@ object CPathTraversal {
                 ((CPathRange(ns1, r2 + 1, r1) :: is) reverse_::: ps) :: rss0
               case (Some(r1), r2) if r2 map (_ > r1) getOrElse true =>
                 ((CPathRange(ns2, r1 + 1, r2) :: is) reverse_::: qs) :: rss0
-              case _ =>
-                rss0
+              case _ => rss0
             }
 
             loop(
@@ -444,8 +438,7 @@ object CPathTraversal {
                 ^(r1, r2)(math.min(_, _)) orElse r1 orElse r2) :: is,
               rss1)
 
-          case (ps, qs) =>
-            List(is reverse_::: ps, is reverse_::: qs)
+          case (ps, qs) => List(is reverse_::: ps, is reverse_::: qs)
         }
 
       loop(c1, c2, Nil, Nil)
@@ -458,16 +451,13 @@ object CPathTraversal {
         (as, bs) match {
           case (a :: as, b :: bs) if a == b => loop(as, bs)
           case (CPathPoint(CPathIndex(i)) :: as, CPathRange(_, j, k) :: bs)
-              if i >= j && i <= k.getOrElse(i) =>
-            loop(as, bs)
+              if i >= j && i <= k.getOrElse(i) => loop(as, bs)
           case (CPathRange(_, j, k) :: as, CPathPoint(CPathIndex(i)) :: bs)
-              if i >= j && i <= k.getOrElse(i) =>
-            loop(as, bs)
+              if i >= j && i <= k.getOrElse(i) => loop(as, bs)
           case (CPathRange(_, l1, r1) :: as, CPathRange(_, l2, r2) :: bs)
-              if overlaps(l1, r1, l2, r2) =>
-            loop(as, bs)
-          case (Nil, Nil) => true
-          case _          => false
+              if overlaps(l1, r1, l2, r2) => loop(as, bs)
+          case (Nil, Nil)                 => true
+          case _                          => false
         }
 
       loop(as, bs)

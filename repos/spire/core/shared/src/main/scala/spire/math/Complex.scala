@@ -294,8 +294,7 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
       val two = f.fromInt(2)
       val a = ((abs + real.abs) / two).sqrt
       imag.signum match {
-        case 0 =>
-          if (real < f.zero) Complex(f.zero, a) else Complex(a, f.zero)
+        case 0 => if (real < f.zero) Complex(f.zero, a) else Complex(a, f.zero)
         case n =>
           val b = ((abs - real.abs) / two).sqrt
           if (n < 0) Complex(a, -b) else Complex(a, b)
@@ -408,8 +407,7 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
       case that: Quaternion[_] =>
         real == that.r && imag == that.i && anyIsZero(that.j) && anyIsZero(
           that.k)
-      case that =>
-        anyIsZero(imag) && real == that
+      case that => anyIsZero(imag) && real == that
     }
 
   def ===(that: Complex[_]): Boolean = real == that.real && imag == that.imag

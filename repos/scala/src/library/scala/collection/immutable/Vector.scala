@@ -490,18 +490,12 @@ final class Vector[+A] private[immutable] (
 
   private def shiftTopLevel(oldLeft: Int, newLeft: Int) =
     (depth - 1) match {
-      case 0 =>
-        display0 = copyRange(display0, oldLeft, newLeft)
-      case 1 =>
-        display1 = copyRange(display1, oldLeft, newLeft)
-      case 2 =>
-        display2 = copyRange(display2, oldLeft, newLeft)
-      case 3 =>
-        display3 = copyRange(display3, oldLeft, newLeft)
-      case 4 =>
-        display4 = copyRange(display4, oldLeft, newLeft)
-      case 5 =>
-        display5 = copyRange(display5, oldLeft, newLeft)
+      case 0 => display0 = copyRange(display0, oldLeft, newLeft)
+      case 1 => display1 = copyRange(display1, oldLeft, newLeft)
+      case 2 => display2 = copyRange(display2, oldLeft, newLeft)
+      case 3 => display3 = copyRange(display3, oldLeft, newLeft)
+      case 4 => display4 = copyRange(display4, oldLeft, newLeft)
+      case 5 => display5 = copyRange(display5, oldLeft, newLeft)
     }
 
   private def zeroLeft(array: Array[AnyRef], index: Int): Unit = {
@@ -546,8 +540,7 @@ final class Vector[+A] private[immutable] (
       case 3 =>
         display4 = null
         display5 = null
-      case 4 =>
-        display5 = null
+      case 4 => display5 = null
       case 5 =>
     }
   }
@@ -792,8 +785,7 @@ private[immutable] trait VectorPointer[T] {
     this.depth = depth
     (depth - 1) match {
       case -1 =>
-      case 0 =>
-        display0 = that.display0
+      case 0  => display0 = that.display0
       case 1 =>
         display1 = that.display1
         display0 = that.display0
@@ -1092,8 +1084,7 @@ private[immutable] trait VectorPointer[T] {
         display1 = copyOf(display1)
         display0 = nullSlotAndCopy(display1, (newIndex >> 5) & 31)
           .asInstanceOf[Array[AnyRef]]
-      case 0 =>
-        display0 = copyOf(display0)
+      case 0 => display0 = copyOf(display0)
     }
 
   // requires structure is dirty and at pos oldIndex,

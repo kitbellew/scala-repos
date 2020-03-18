@@ -128,9 +128,8 @@ trait RelationalProfile
         case tm @ TypeMappingResultConverter(
               _: ProductResultConverter[_, _],
               _,
-              _) =>
-          fpf(tm.asInstanceOf[TypeMappingResultConverter[M, T, _]])
-        case tm => tm
+              _) => fpf(tm.asInstanceOf[TypeMappingResultConverter[M, T, _]])
+        case tm  => tm
       }
   }
 }

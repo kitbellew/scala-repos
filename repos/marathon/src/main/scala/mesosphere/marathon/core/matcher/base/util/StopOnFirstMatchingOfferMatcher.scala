@@ -17,8 +17,7 @@ class StopOnFirstMatchingOfferMatcher(chained: OfferMatcher*)
       offer: Offer): Future[MatchedTaskOps] = {
     chained.foldLeft(Future.successful(
       MatchedTaskOps.noMatch(offer.getId, resendThisOffer = false))) {
-      case (matchedFuture, nextMatcher) =>
-        matchedFuture.flatMap { matched =>
+      case (matchedFuture, nextMatcher) => matchedFuture.flatMap { matched =>
           if (matched.ops.isEmpty) nextMatcher.matchOffer(deadline, offer)
           else matchedFuture
         }(ExecutionContext.global)

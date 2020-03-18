@@ -37,8 +37,7 @@ class RenameScalaVariableProcessor
     with ScalaRenameProcessor {
   override def canProcessElement(element: PsiElement): Boolean =
     element match {
-      case c: ScNamedElement =>
-        ScalaPsiUtil.nameContext(c) match {
+      case c: ScNamedElement => ScalaPsiUtil.nameContext(c) match {
           case _: ScVariable | _: ScValue | _: ScParameter => true
           case method: FakePsiMethod                       => true
           case _                                           => false

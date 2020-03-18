@@ -94,8 +94,7 @@ abstract class QueryTest extends PlanTest {
     val decoded =
       try ds.collect().toSet
       catch {
-        case e: Exception =>
-          fail(
+        case e: Exception => fail(
             s"""
              |Exception collecting dataset as objects
              |${ds.resolvedTEncoder}
@@ -231,8 +230,7 @@ abstract class QueryTest extends PlanTest {
     val jsonString =
       try { logicalPlan.toJSON }
       catch {
-        case NonFatal(e) =>
-          fail(s"""
+        case NonFatal(e) => fail(s"""
              |Failed to parse logical plan to JSON:
              |${logicalPlan.treeString}
            """.stripMargin, e)
@@ -258,8 +256,7 @@ abstract class QueryTest extends PlanTest {
       try {
         TreeNode.fromJSON[LogicalPlan](jsonString, sqlContext.sparkContext)
       } catch {
-        case NonFatal(e) =>
-          fail(
+        case NonFatal(e) => fail(
             s"""
              |Failed to rebuild the logical plan from JSON:
              |${logicalPlan.treeString}

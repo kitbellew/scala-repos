@@ -37,12 +37,12 @@ private[pickling] object IrAst {
       case x: AllocateInstance       => f(x)
       case x: PickleExternalizable   => f(x)
       case x: UnpickleExternalizable => f(x)
-      case UnpickleBehavior(ops) =>
-        f(UnpickleBehavior(ops.map(chain).asInstanceOf[Seq[UnpicklerAst]]))
-      case PickleBehavior(ops) =>
-        f(PickleBehavior(ops.map(chain).asInstanceOf[Seq[PicklerAst]]))
-      case PickleEntry(ops) =>
-        f(PickleEntry(ops.map(chain).asInstanceOf[Seq[PicklerAst]]))
+      case UnpickleBehavior(ops) => f(
+          UnpickleBehavior(ops.map(chain).asInstanceOf[Seq[UnpicklerAst]]))
+      case PickleBehavior(ops) => f(
+          PickleBehavior(ops.map(chain).asInstanceOf[Seq[PicklerAst]]))
+      case PickleEntry(ops) => f(
+          PickleEntry(ops.map(chain).asInstanceOf[Seq[PicklerAst]]))
       case SubclassUnpicklerDelegation(subs, parent, bOpt, runtime) =>
         f(SubclassUnpicklerDelegation(
           subs,

@@ -292,8 +292,7 @@ private[sql] object PartitioningUtils {
 
       // Fills resolved literals back to each partition
       values.zipWithIndex.map {
-        case (d, index) =>
-          d.copy(literals = resolvedValues.map(_(index)))
+        case (d, index) => d.copy(literals = resolvedValues.map(_(index)))
       }
     }
   }
@@ -316,8 +315,7 @@ private[sql] object PartitioningUtils {
       .map(_.mkString(", "))
       .zipWithIndex
       .map {
-        case (names, index) =>
-          s"Partition column name list #$index: $names"
+        case (names, index) => s"Partition column name list #$index: $names"
       }
 
     // Lists out those non-leaf partition directories that also contain files
@@ -473,10 +471,7 @@ private[sql] object PartitioningUtils {
       if (c == '%' && i + 2 < path.length) {
         val code: Int =
           try { Integer.valueOf(path.substring(i + 1, i + 3), 16) }
-          catch {
-            case e: Exception =>
-              -1: Integer
-          }
+          catch { case e: Exception => -1: Integer }
         if (code >= 0) {
           sb.append(code.asInstanceOf[Char])
           i += 3

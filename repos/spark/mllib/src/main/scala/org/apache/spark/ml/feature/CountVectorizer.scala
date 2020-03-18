@@ -160,18 +160,9 @@ class CountVectorizer(override val uid: String)
           tokens.foreach { w => wc.changeValue(w, 1L, _ + 1L) }
           wc.map { case (word, count) => (word, (count, 1)) }
       }
-      .reduceByKey {
-        case ((wc1, df1), (wc2, df2)) =>
-          (wc1 + wc2, df1 + df2)
-      }
-      .filter {
-        case (word, (wc, df)) =>
-          df >= minDf
-      }
-      .map {
-        case (word, (count, dfCount)) =>
-          (word, count)
-      }
+      .reduceByKey { case ((wc1, df1), (wc2, df2)) => (wc1 + wc2, df1 + df2) }
+      .filter { case (word, (wc, df)) => df >= minDf }
+      .map { case (word, (count, dfCount)) => (word, count) }
       .cache()
     val fullVocabSize = wordCounts.count()
     val vocab: Array[String] = {

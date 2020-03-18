@@ -88,8 +88,7 @@ trait PathReads {
             .flatMap(js => reads.reads(js).repath(path))
             .map(jsv => JsPath.createObj(path -> jsv))
             .map(opath => o.deepMerge(opath))
-        case _ =>
-          JsError(JsPath(), ValidationError("error.expected.jsobject"))
+        case _ => JsError(JsPath(), ValidationError("error.expected.jsobject"))
       })
 
   def jsPrune(path: JsPath) = Reads[JsObject](js => path.prune(js))

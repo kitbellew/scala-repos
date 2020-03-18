@@ -106,10 +106,7 @@ class ESChannels(client: Client, config: StorageClientConfig, index: String)
 
   def delete(id: Int): Unit = {
     try { client.prepareDelete(index, estype, id.toString).get }
-    catch {
-      case e: ElasticsearchException =>
-        error(e.getMessage)
-    }
+    catch { case e: ElasticsearchException => error(e.getMessage) }
   }
 
 }

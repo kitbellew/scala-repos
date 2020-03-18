@@ -58,8 +58,7 @@ object FormattedStringParser extends StringParser {
             Seq(literal: ScLiteral))
           if literal.isString && isFormattedMethod(
             owner.qualifiedName,
-            f.name) =>
-        (literal, Seq(arg))
+            f.name) => (literal, Seq(arg))
 
       // 1 formatted "%d"
       case ScInfixExpr(
@@ -70,8 +69,7 @@ object FormattedStringParser extends StringParser {
             literal: ScLiteral)
           if literal.isString && isFormattedMethod(
             owner.qualifiedName,
-            f.name) =>
-        (literal, Seq(arg))
+            f.name) => (literal, Seq(arg))
 
       // String.format("%d", 1)
       case MethodInvocation(
@@ -81,8 +79,7 @@ object FormattedStringParser extends StringParser {
             Seq(literal: ScLiteral, args @ _*))
           if literal.isString && isStringFormatMethod(
             owner.qualifiedName,
-            f.getName) =>
-        (literal, args)
+            f.getName) => (literal, args)
     }
 
   private def isFormatMethod(holder: String, method: String) =

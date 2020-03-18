@@ -326,8 +326,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
             }
             .onSuccess { _ => fail("Shouldn't have succeeded") }
             .handle {
-              case e: KeeperException.ConnectionLossException =>
-                assert(i == 1)
+              case e: KeeperException.ConnectionLossException => assert(i == 1)
             })
       }
     }
@@ -490,8 +489,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         Await.ready(zkClient(path).delete(version) map { _ =>
           fail("Unexpected success")
         } handle {
-          case e: KeeperException.NoNodeException =>
-            assert(e.getPath == path)
+          case e: KeeperException.NoNodeException => assert(e.getPath == path)
         })
       }
     }
@@ -765,10 +763,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
             assert(
               Await.result(update.sync(), 1.second).get().path == data.path)
           }
-        } catch {
-          case e: Throwable =>
-            fail("unexpected error: %s".format(e))
-        }
+        } catch { case e: Throwable => fail("unexpected error: %s".format(e)) }
         watchData(znode.path) {
           Future.exception(new KeeperException.SessionExpiredException)
         } { new Promise[WatchedEvent] }

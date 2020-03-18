@@ -957,8 +957,7 @@ class LinearRegressionSuite
 
         val rnd = new Random(8392)
         val signedData = activeData.map {
-          case p: LabeledPoint =>
-            (rnd.nextGaussian() > 0.0, p)
+          case p: LabeledPoint => (rnd.nextGaussian() > 0.0, p)
         }
 
         val data1 = signedData.flatMap {

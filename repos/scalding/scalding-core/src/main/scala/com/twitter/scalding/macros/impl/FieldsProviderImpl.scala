@@ -100,8 +100,7 @@ object FieldsProviderImpl {
         case tpe if tpe =:= typeOf[Float]   => true
         case tpe if tpe =:= typeOf[Double]  => true
         case tpe if tpe =:= typeOf[String]  => true
-        case tpe =>
-          optionInner(c)(tpe) match {
+        case tpe => optionInner(c)(tpe) match {
             case Some(t) => isNumbered(t)
             case None    => false
           }

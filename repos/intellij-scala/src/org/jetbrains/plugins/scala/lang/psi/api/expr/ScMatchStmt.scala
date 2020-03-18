@@ -19,8 +19,7 @@ trait ScMatchStmt extends ScExpression {
   def getBranches: Seq[ScExpression] =
     getCaseClauses match {
       case null => Seq.empty
-      case c =>
-        c.caseClauses.map { (clause: ScCaseClause) =>
+      case c => c.caseClauses.map { (clause: ScCaseClause) =>
           clause.expr match {
             case Some(expr) => expr
             case None =>

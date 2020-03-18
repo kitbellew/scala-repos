@@ -119,10 +119,8 @@ private[spark] object SerDeUtil extends Logging {
   def toJavaArray(jrdd: JavaRDD[Any]): JavaRDD[Array[_]] = {
     jrdd.rdd
       .map {
-        case objs: JArrayList[_] =>
-          objs.toArray
-        case obj if obj.getClass.isArray =>
-          obj.asInstanceOf[Array[_]].toArray
+        case objs: JArrayList[_]         => objs.toArray
+        case obj if obj.getClass.isArray => obj.asInstanceOf[Array[_]].toArray
       }
       .toJavaRDD()
   }
@@ -204,8 +202,7 @@ private[spark] object SerDeUtil extends Logging {
                |Failed to pickle Java object as value: ${t._2.getClass.getSimpleName}, falling back
                |to 'toString'. Error: ${vf.getMessage}""".stripMargin)
         (false, true)
-      case _ =>
-        (false, false)
+      case _ => (false, false)
     }
   }
 

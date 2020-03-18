@@ -40,8 +40,7 @@ private[tournament] final class Socket(
 
   def receiveSpecific = {
 
-    case SetTournament(Some(tour)) =>
-      clock = tour.clock.chessClock.some
+    case SetTournament(Some(tour)) => clock = tour.clock.chessClock.some
 
     case StartGame(game) =>
       game.players foreach { player =>
@@ -72,8 +71,7 @@ private[tournament] final class Socket(
       if (timeBomb.boom) self ! PoisonPill
     }
 
-    case lila.chat.actorApi.ChatLine(_, line) =>
-      line match {
+    case lila.chat.actorApi.ChatLine(_, line) => line match {
         case line: lila.chat.UserLine =>
           notifyVersion(
             "message",

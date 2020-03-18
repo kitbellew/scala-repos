@@ -39,9 +39,8 @@ object ScalaRunTime {
   def isAnyVal(x: Any) =
     x match {
       case _: Byte | _: Short | _: Char | _: Int | _: Long | _: Float |
-          _: Double | _: Boolean | _: Unit =>
-        true
-      case _ => false
+          _: Double | _: Boolean | _: Unit => true
+      case _                               => false
     }
 
   // A helper method to make my life in the pattern matcher a lot easier.

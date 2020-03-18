@@ -97,8 +97,7 @@ trait SliceTransforms[M[+_]]
         case Leaf(source) if source == Source || source == SourceLeft =>
           SliceTransform.left(())
 
-        case Leaf(source) if source == SourceRight =>
-          SliceTransform.right(())
+        case Leaf(source) if source == SourceRight => SliceTransform.right(())
 
         case Map1(source, f) =>
           composeSliceTransform2(source) map { _ mapRoot f }
@@ -238,8 +237,7 @@ trait SliceTransforms[M[+_]]
                         def apply(row: Int) = false
                       }
 
-                    case Right((left, right)) =>
-                      new FuzzyEqColumn(left, right)
+                    case Right((left, right)) => new FuzzyEqColumn(left, right)
 
                   })(collection.breakOut)
 
@@ -329,9 +327,8 @@ trait SliceTransforms[M[+_]]
               val columns = {
                 val (comparable0, other0) = ss.columns.toList.partition {
                   case (ref @ ColumnRef(CPath.Identity, tpe), col)
-                      if CType.canCompare(CType.of(value), tpe) =>
-                    true
-                  case _ => false
+                      if CType.canCompare(CType.of(value), tpe) => true
+                  case _                                        => false
                 }
 
                 val comparable = comparable0.map(_._2).flatMap { col =>
@@ -821,8 +818,7 @@ trait SliceTransforms[M[+_]]
                 }
             })
 
-        case (sta, stb) =>
-          SliceTransform1[(A, B)](
+        case (sta, stb) => SliceTransform1[(A, B)](
             (sta.initial, stb.initial),
             {
               case ((a0, b0), s0) =>
@@ -847,8 +843,7 @@ trait SliceTransforms[M[+_]]
         case (
               sta: SliceTransform1S[_],
               stb: SliceTransform1S[_],
-              stc: SliceTransform1S[_]) =>
-          SliceTransform1S(
+              stc: SliceTransform1S[_]) => SliceTransform1S(
             (sta.initial, stb.initial, stc.initial),
             {
               case ((a0, b0, c0), s0) =>
@@ -859,12 +854,10 @@ trait SliceTransforms[M[+_]]
             }
           )
 
-        case (sta, stb, stc) =>
-          SliceTransform1M(
+        case (sta, stb, stc) => SliceTransform1M(
             (sta.initial, stb.initial, stc.initial),
             {
-              case ((a0, b0, c0), s0) =>
-                for {
+              case ((a0, b0, c0), s0) => for {
                   resa <- sta.f(a0, s0)
                   resb <- stb.f(b0, s0)
                   resc <- stc.f(c0, s0)
@@ -1039,8 +1032,7 @@ trait SliceTransforms[M[+_]]
         extends SliceTransform1[A] {
       def advance(s: Slice): M[(SliceTransform1[A], Slice)] =
         apply(s) map {
-          case (next, slice) =>
-            (SliceTransform1M[A](next, f), slice)
+          case (next, slice) => (SliceTransform1M[A](next, f), slice)
         }
     }
 
@@ -1119,8 +1111,7 @@ trait SliceTransforms[M[+_]]
             }
           )
 
-        case (sta: SliceTransform2S[_], stb) =>
-          SliceTransform2M[(A, B)](
+        case (sta: SliceTransform2S[_], stb) => SliceTransform2M[(A, B)](
             (sta.initial, stb.initial),
             {
               case ((a0, b0), sl0, sr0) =>
@@ -1133,8 +1124,7 @@ trait SliceTransforms[M[+_]]
             }
           )
 
-        case (sta, stb: SliceTransform2S[_]) =>
-          SliceTransform2M[(A, B)](
+        case (sta, stb: SliceTransform2S[_]) => SliceTransform2M[(A, B)](
             (sta.initial, stb.initial),
             {
               case ((a0, b0), sl0, sr0) =>
@@ -1147,8 +1137,7 @@ trait SliceTransforms[M[+_]]
             }
           )
 
-        case (sta, stb) =>
-          SliceTransform2[(A, B)](
+        case (sta, stb) => SliceTransform2[(A, B)](
             (sta.initial, stb.initial),
             {
               case ((a0, b0), sl0, sr0) =>
@@ -1174,8 +1163,7 @@ trait SliceTransforms[M[+_]]
         case (
               sta: SliceTransform2S[_],
               stb: SliceTransform2S[_],
-              stc: SliceTransform2S[_]) =>
-          SliceTransform2S(
+              stc: SliceTransform2S[_]) => SliceTransform2S(
             (sta.initial, stb.initial, stc.initial),
             {
               case ((a0, b0, c0), sl0, sr0) =>
@@ -1186,12 +1174,10 @@ trait SliceTransforms[M[+_]]
             }
           )
 
-        case (sta, stb, stc) =>
-          SliceTransform2M(
+        case (sta, stb, stc) => SliceTransform2M(
             (sta.initial, stb.initial, stc.initial),
             {
-              case ((a0, b0, c0), sl0, sr0) =>
-                for {
+              case ((a0, b0, c0), sl0, sr0) => for {
                   resa <- sta.f(a0, sl0, sr0)
                   resb <- stb.f(b0, sl0, sr0)
                   resc <- stc.f(c0, sl0, sr0)
@@ -1346,8 +1332,7 @@ trait SliceTransforms[M[+_]]
         extends SliceTransform2[A] {
       def advance(sl: Slice, sr: Slice): M[(SliceTransform2[A], Slice)] =
         apply(sl, sr) map {
-          case (next, slice) =>
-            (SliceTransform2M[A](next, f), slice)
+          case (next, slice) => (SliceTransform2M[A](next, f), slice)
         }
     }
 

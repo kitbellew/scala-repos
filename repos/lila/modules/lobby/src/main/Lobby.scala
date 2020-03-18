@@ -69,8 +69,7 @@ private[lobby] final class Lobby(
     case CancelSeek(seekId, user) =>
       seekApi.removeBy(seekId, user.id) >>- { socket ! RemoveSeek(seekId) }
 
-    case BiteHook(hookId, uid, user) =>
-      NoPlayban(user) {
+    case BiteHook(hookId, uid, user) => NoPlayban(user) {
         lila.mon.lobby.hook.join()
         HookRepo byId hookId foreach { hook =>
           HookRepo byUid uid foreach remove
@@ -78,8 +77,7 @@ private[lobby] final class Lobby(
         }
       }
 
-    case BiteSeek(seekId, user) =>
-      NoPlayban(user.some) {
+    case BiteSeek(seekId, user) => NoPlayban(user.some) {
         lila.mon.lobby.seek.join()
         seekApi find seekId foreach {
           _ foreach { seek => Biter(seek, user) pipeTo self }
@@ -124,8 +122,7 @@ private[lobby] final class Lobby(
 
     case RemoveHooks(hooks) => hooks foreach remove
 
-    case Resync =>
-      socket ! HookIds(HookRepo.vector.map(_.id))
+    case Resync => socket ! HookIds(HookRepo.vector.map(_.id))
   }
 
   private def NoPlayban(user: Option[LobbyUser])(f: => Unit) {

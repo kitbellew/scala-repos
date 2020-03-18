@@ -60,8 +60,7 @@ trait TypeAdaptingTransformer {
           val tree1 = tree.tpe match {
             case ErasedValueType(clazz, _) =>
               New(clazz, cast(tree, underlyingOfValueClass(clazz)))
-            case _ =>
-              tree.tpe.typeSymbol match {
+            case _ => tree.tpe.typeSymbol match {
                 case UnitClass =>
                   if (treeInfo isExprSafeToInline tree) REF(BoxedUnit_UNIT)
                   else BLOCK(tree, REF(BoxedUnit_UNIT))
@@ -81,9 +80,9 @@ trait TypeAdaptingTransformer {
                       log(s"boxing an unbox: ${tree.symbol} -> ${arg.tpe}")
                       arg
                     case _ =>
-                      (REF(
-                        currentRun.runDefinitions.boxMethod(
-                          x)) APPLY tree) setPos (tree.pos) setType ObjectTpe
+                      (
+                        REF(currentRun.runDefinitions.boxMethod(x)) APPLY tree
+                      ) setPos (tree.pos) setType ObjectTpe
                   }
               }
           }
@@ -128,8 +127,7 @@ trait TypeAdaptingTransformer {
                       clazz.derivedValueClassUnbox),
                     List())
               cast(tree0, pt)
-            case _ =>
-              pt.typeSymbol match {
+            case _ => pt.typeSymbol match {
                 case UnitClass =>
                   if (treeInfo isExprSafeToInline tree) UNIT
                   else BLOCK(tree, UNIT)

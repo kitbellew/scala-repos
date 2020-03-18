@@ -273,8 +273,7 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
       offerAttributes: Map[String, GeneratedMessage]): Boolean = {
     slaveOfferConstraints.forall {
       // offer has the required attribute and subsumes the required values for that attribute
-      case (name, requiredValues) =>
-        offerAttributes.get(name) match {
+      case (name, requiredValues) => offerAttributes.get(name) match {
           case None => false
           case Some(_) if requiredValues.isEmpty =>
             true // empty value matches presence

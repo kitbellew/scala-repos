@@ -43,10 +43,8 @@ class FunctionTupleSyntacticSugarInspection extends LocalInspectionTool {
     new ScalaElementVisitor {
       override def visitElement(elem: ScalaPsiElement) {
         elem match {
-          case te: ScParameterizedTypeElement =>
-            te.typeElement match {
-              case s: ScSimpleTypeElement =>
-                s.reference match {
+          case te: ScParameterizedTypeElement => te.typeElement match {
+              case s: ScSimpleTypeElement => s.reference match {
                   case Some(ref) =>
                     if (ref.refName.startsWith("Tuple") || ref.refName
                           .startsWith("Function") && ref.isValid) {

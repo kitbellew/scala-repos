@@ -60,8 +60,7 @@ trait Buf {
     unsafeByteArrayBuf match {
       case Some(Buf.ByteArray.Owned(bytes, 0, end)) if end == bytes.length =>
         bytes
-      case _ =>
-        copiedByteArray
+      case _ => copiedByteArray
     }
 
   /** Definitely requires copying. */
@@ -263,10 +262,8 @@ object Buf {
           equalsBytes(other.bytes, other.begin)
         case other: Buf if other.length == length =>
           other.unsafeByteArrayBuf match {
-            case Some(other) =>
-              equalsBytes(other.bytes, other.begin)
-            case None =>
-              equalsBytes(other.copiedByteArray, 0)
+            case Some(other) => equalsBytes(other.bytes, other.begin)
+            case None        => equalsBytes(other.copiedByteArray, 0)
           }
         case _ => false
       }
@@ -288,8 +285,7 @@ object Buf {
     def coerce(buf: Buf): Buf.ByteArray =
       buf match {
         case buf: Buf.ByteArray => buf
-        case buf =>
-          buf.unsafeByteArrayBuf match {
+        case buf => buf.unsafeByteArrayBuf match {
             case Some(buf) => buf
             case None =>
               val bytes = buf.copiedByteArray
@@ -388,10 +384,9 @@ object Buf {
 
     override def equals(other: Any): Boolean =
       other match {
-        case ByteBuffer(otherBB) =>
-          underlying.equals(otherBB)
-        case buf: Buf => Buf.equals(this, buf)
-        case _        => false
+        case ByteBuffer(otherBB) => underlying.equals(otherBB)
+        case buf: Buf            => Buf.equals(this, buf)
+        case _                   => false
       }
 
     protected def unsafeByteArrayBuf: Option[Buf.ByteArray] =
@@ -417,8 +412,7 @@ object Buf {
           val bb = buf.unsafeByteArrayBuf match {
             case Some(ByteArray.Owned(bytes, begin, end)) =>
               java.nio.ByteBuffer.wrap(bytes, begin, end - begin)
-            case None =>
-              java.nio.ByteBuffer.wrap(buf.copiedByteArray)
+            case None => java.nio.ByteBuffer.wrap(buf.copiedByteArray)
           }
           new ByteBuffer(bb)
       }

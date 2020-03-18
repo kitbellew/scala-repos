@@ -221,8 +221,8 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] {
       case (Nanoseconds(0), Duration.Nanoseconds(0)) => Undefined
       case (Nanoseconds(num), Duration.Nanoseconds(0)) =>
         if (num < 0) Bottom else Top
-      case (Nanoseconds(num), Duration.Nanoseconds(denom)) =>
-        fromNanoseconds((num / denom) * denom)
+      case (Nanoseconds(num), Duration.Nanoseconds(denom)) => fromNanoseconds(
+          (num / denom) * denom)
       case (self, Duration.Nanoseconds(_)) => self
       case (_, _)                          => Undefined
     }
@@ -381,10 +381,8 @@ object Time extends TimeLikeOps[Time] {
     */
   def now: Time = {
     localGetTime() match {
-      case None =>
-        Time.fromMilliseconds(System.currentTimeMillis())
-      case Some(f) =>
-        f()
+      case None    => Time.fromMilliseconds(System.currentTimeMillis())
+      case Some(f) => f()
     }
   }
 
@@ -478,10 +476,8 @@ object Time extends TimeLikeOps[Time] {
     */
   def sleep(duration: Duration): Unit = {
     localGetTimer() match {
-      case None =>
-        Thread.sleep(duration.inMilliseconds)
-      case Some(timer) =>
-        Await.result(Future.sleep(duration)(timer))
+      case None        => Thread.sleep(duration.inMilliseconds)
+      case Some(timer) => Await.result(Future.sleep(duration)(timer))
     }
   }
 

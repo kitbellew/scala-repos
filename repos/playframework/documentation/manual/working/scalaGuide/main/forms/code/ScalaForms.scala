@@ -311,12 +311,9 @@ package scalaguide.forms.scalaforms {
       //#userForm-constraints-ad-hoc
       def validate(name: String, age: Int) = {
         name match {
-          case "bob" if age >= 18 =>
-            Some(UserData(name, age))
-          case "admin" =>
-            Some(UserData(name, age))
-          case _ =>
-            None
+          case "bob" if age >= 18 => Some(UserData(name, age))
+          case "admin"            => Some(UserData(name, age))
+          case _                  => None
         }
       }
 

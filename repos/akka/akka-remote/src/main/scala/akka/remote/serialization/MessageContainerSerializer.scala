@@ -53,8 +53,7 @@ class MessageContainerSerializer(val system: ExtendedActorSystem)
         val manifest = ser2.manifest(message)
         if (manifest != "")
           builder.setMessageManifest(ByteString.copyFromUtf8(manifest))
-      case _ ⇒
-        if (serializer.includeManifest)
+      case _ ⇒ if (serializer.includeManifest)
           builder.setMessageManifest(
             ByteString.copyFromUtf8(message.getClass.getName))
     }
@@ -64,8 +63,7 @@ class MessageContainerSerializer(val system: ExtendedActorSystem)
         builder.addPattern(buildPattern(Some(name), CHILD_NAME))
       case SelectChildPattern(patternStr) ⇒
         builder.addPattern(buildPattern(Some(patternStr), CHILD_PATTERN))
-      case SelectParent ⇒
-        builder.addPattern(buildPattern(None, PARENT))
+      case SelectParent ⇒ builder.addPattern(buildPattern(None, PARENT))
     }
 
     builder.build().toByteArray

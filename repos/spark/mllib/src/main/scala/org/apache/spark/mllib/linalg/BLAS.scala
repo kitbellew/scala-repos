@@ -44,12 +44,9 @@ private[spark] object BLAS extends Serializable with Logging {
   def axpy(a: Double, x: Vector, y: Vector): Unit = {
     require(x.size == y.size)
     y match {
-      case dy: DenseVector =>
-        x match {
-          case sx: SparseVector =>
-            axpy(a, sx, dy)
-          case dx: DenseVector =>
-            axpy(a, dx, dy)
+      case dy: DenseVector => x match {
+          case sx: SparseVector => axpy(a, sx, dy)
+          case dx: DenseVector  => axpy(a, dx, dy)
           case _ =>
             throw new UnsupportedOperationException(
               s"axpy doesn't support x type ${x.getClass}.")
@@ -110,14 +107,10 @@ private[spark] object BLAS extends Serializable with Logging {
       "BLAS.dot(x: Vector, y:Vector) was given Vectors with non-matching sizes:" +
         " x.size = " + x.size + ", y.size = " + y.size)
     (x, y) match {
-      case (dx: DenseVector, dy: DenseVector) =>
-        dot(dx, dy)
-      case (sx: SparseVector, dy: DenseVector) =>
-        dot(sx, dy)
-      case (dx: DenseVector, sy: SparseVector) =>
-        dot(sy, dx)
-      case (sx: SparseVector, sy: SparseVector) =>
-        dot(sx, sy)
+      case (dx: DenseVector, dy: DenseVector)   => dot(dx, dy)
+      case (sx: SparseVector, dy: DenseVector)  => dot(sx, dy)
+      case (dx: DenseVector, sy: SparseVector)  => dot(sy, dx)
+      case (sx: SparseVector, sy: SparseVector) => dot(sx, sy)
       case _ =>
         throw new IllegalArgumentException(
           s"dot doesn't support (${x.getClass}, ${y.getClass}).")
@@ -184,8 +177,7 @@ private[spark] object BLAS extends Serializable with Logging {
     val n = y.size
     require(x.size == n)
     y match {
-      case dy: DenseVector =>
-        x match {
+      case dy: DenseVector => x match {
           case sx: SparseVector =>
             val sxIndices = sx.indices
             val sxValues = sx.values
@@ -208,8 +200,7 @@ private[spark] object BLAS extends Serializable with Logging {
               dyValues(i) = 0.0
               i += 1
             }
-          case dx: DenseVector =>
-            Array.copy(dx.values, 0, dy.values, 0, n)
+          case dx: DenseVector => Array.copy(dx.values, 0, dy.values, 0, n)
         }
       case _ =>
         throw new IllegalArgumentException(
@@ -222,10 +213,8 @@ private[spark] object BLAS extends Serializable with Logging {
     */
   def scal(a: Double, x: Vector): Unit = {
     x match {
-      case sx: SparseVector =>
-        f2jBLAS.dscal(sx.values.length, a, sx.values, 1)
-      case dx: DenseVector =>
-        f2jBLAS.dscal(dx.values.length, a, dx.values, 1)
+      case sx: SparseVector => f2jBLAS.dscal(sx.values.length, a, sx.values, 1)
+      case dx: DenseVector  => f2jBLAS.dscal(dx.values.length, a, dx.values, 1)
       case _ =>
         throw new IllegalArgumentException(
           s"scal doesn't support vector type ${x.getClass}.")
@@ -255,8 +244,7 @@ private[spark] object BLAS extends Serializable with Logging {
   def spr(alpha: Double, v: Vector, U: Array[Double]): Unit = {
     val n = v.size
     v match {
-      case DenseVector(values) =>
-        NativeBLAS.dspr("U", n, alpha, values, 1, U)
+      case DenseVector(values) => NativeBLAS.dspr("U", n, alpha, values, 1, U)
       case SparseVector(size, indices, values) =>
         val nnz = indices.length
         var colStartIdx = 0

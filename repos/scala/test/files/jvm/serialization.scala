@@ -505,10 +505,7 @@ object Test5 {
 
     check(x1, y1)
     check(x2, y2)
-  } catch {
-    case e: Exception =>
-      println("Error in Test5: " + e)
-  }
+  } catch { case e: Exception => println("Error in Test5: " + e) }
 }
 
 //############################################################################
@@ -533,10 +530,7 @@ object Test6 {
     check(x1, y1)
     check(x2, y2)
     check(x3, y3)
-  } catch {
-    case e: Exception =>
-      println("Error in Test6: " + e)
-  }
+  } catch { case e: Exception => println("Error in Test6: " + e) }
 }
 
 //############################################################################
@@ -578,10 +572,7 @@ object Test8 {
   try {
     val y: WithTransient = read(write(x))
     y.test
-  } catch {
-    case e: Exception =>
-      println("Error in Test8: " + e)
-  }
+  } catch { case e: Exception => println("Error in Test8: " + e) }
 }
 
 //############################################################################

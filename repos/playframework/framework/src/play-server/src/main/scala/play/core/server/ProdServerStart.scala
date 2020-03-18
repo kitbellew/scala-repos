@@ -63,8 +63,7 @@ object ProdServerStart {
       }
       server
     } catch {
-      case ServerStartException(message, cause) =>
-        process.exit(message, cause)
+      case ServerStartException(message, cause) => process.exit(message, cause)
       case NonFatal(e) =>
         process.exit("Oops, cannot start the server.", cause = Some(e))
     }

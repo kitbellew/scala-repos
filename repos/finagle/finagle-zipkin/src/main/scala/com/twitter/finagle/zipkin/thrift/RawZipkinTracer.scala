@@ -261,8 +261,7 @@ private[thrift] class RawZipkinTracer(
         annotate(record, thrift.Constants.SERVER_SEND_FRAGMENT)
       case tracing.Annotation.ServerRecvFragment() =>
         annotate(record, thrift.Constants.SERVER_RECV_FRAGMENT)
-      case tracing.Annotation.Message(value) =>
-        annotate(record, value)
+      case tracing.Annotation.Message(value) => annotate(record, value)
       case tracing.Annotation.Rpc(name: String) =>
         spanMap.update(record.traceId)(_.setName(name))
       case tracing.Annotation.ServiceName(serviceName: String) =>
@@ -315,7 +314,8 @@ private[thrift] class RawZipkinTracer(
           key,
           ByteBuffer.wrap(value.getBytes),
           thrift.AnnotationType.STRING)
-      case tracing.Annotation.BinaryAnnotation(key: String, value) => // Throw error?
+      case tracing.Annotation
+            .BinaryAnnotation(key: String, value) => // Throw error?
       case tracing.Annotation.LocalAddr(ia: InetSocketAddress) =>
         setEndpoint(record, ia)
       case tracing.Annotation.ClientAddr(ia: InetSocketAddress) =>

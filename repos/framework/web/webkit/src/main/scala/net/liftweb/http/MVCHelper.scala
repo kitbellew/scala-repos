@@ -94,8 +94,7 @@ trait MVCHelper extends LiftRules.DispatchPF {
 
         () => resp
 
-      case _ =>
-        S.init(Box !! in, curSession.is) {
+      case _ => S.init(Box !! in, curSession.is) {
           val resp =
             dispatch.find(_.isDefinedAt(path)).get.apply(path).toResponse
 
@@ -122,8 +121,7 @@ trait MVCHelper extends LiftRules.DispatchPF {
     def tryIt(path: List[String]): Box[NodeSeq] =
       path match {
         case Nil => Empty
-        case xs =>
-          Templates(path) match {
+        case xs => Templates(path) match {
             case ret @ Full(_) => ret
             case _             => tryIt(path.dropRight(1))
           }
@@ -214,8 +212,7 @@ trait MVCHelper extends LiftRules.DispatchPF {
           Nil,
           code))
 
-      case Failure(msg, _, _) =>
-        Full(NotFoundResponse(msg))
+      case Failure(msg, _, _) => Full(NotFoundResponse(msg))
 
       case _ => Empty
     }

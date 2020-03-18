@@ -150,8 +150,7 @@ class LeaderProxyFilter @Inject() (
             val url: URL = buildUrl(leaderDataOpt.get, request)
             forwarder.forward(url, request, response)
           } catch {
-            case NonFatal(e) =>
-              throw new RuntimeException("while proxying", e)
+            case NonFatal(e) => throw new RuntimeException("while proxying", e)
           }
         }
       case _ =>
@@ -216,8 +215,7 @@ class JavaUrlConnectionRequestForwarder @Inject() (
         case httpsConnection: HttpsURLConnection =>
           httpsConnection.setSSLSocketFactory(sslContext.getSocketFactory)
           httpsConnection
-        case httpConnection: HttpURLConnection =>
-          httpConnection
+        case httpConnection: HttpURLConnection => httpConnection
         case connection: URLConnection =>
           throw new scala.RuntimeException(
             s"unexpected connection type: ${connection.getClass}")
@@ -266,8 +264,7 @@ class JavaUrlConnectionRequestForwarder @Inject() (
         leaderConnection: HttpURLConnection,
         request: HttpServletRequest): Unit = {
       request.getMethod match {
-        case "GET" | "HEAD" | "DELETE" =>
-          leaderConnection.setDoOutput(false)
+        case "GET" | "HEAD" | "DELETE" => leaderConnection.setDoOutput(false)
         case _ =>
           leaderConnection.setDoOutput(true)
 

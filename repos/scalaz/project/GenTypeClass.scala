@@ -342,8 +342,7 @@ object GenTypeClass {
             case es =>
               es.map(n => "To" + n + "Ops").mkString(" with ", " with ", "")
           })
-        case _ =>
-          extendsList match {
+        case _ => extendsList match {
             case Seq() => ""
             case es =>
               es.map(n => "To" + n + "Ops").mkString("extends ", " with ", "")

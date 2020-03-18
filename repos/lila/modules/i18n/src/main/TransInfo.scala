@@ -39,8 +39,7 @@ private[i18n] object TransInfos {
     TransInfos {
       val nbMessages = keys.count
       LangList.sortedList.filter(_._1 != defaultCode) map {
-        case (code, name) =>
-          TransInfo(
+        case (code, name) => TransInfo(
             lang = Lang(code),
             name = name,
             contributors = Contributors(code),

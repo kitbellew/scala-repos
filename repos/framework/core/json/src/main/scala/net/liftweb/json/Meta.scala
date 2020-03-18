@@ -129,8 +129,7 @@ private[json] object Meta {
           DeclaredConstructor(
             c,
             args.map {
-              case (name, t) =>
-                toArg(
+              case (name, t) => toArg(
                   unmangleName(name),
                   t,
                   visited,
@@ -401,8 +400,7 @@ private[json] object Meta {
               case 0 => clazz.getComponentType.asInstanceOf[Class[_]]
               case _ => fail("Arrays only have one type parameter")
             }
-          case clazz: GenericArrayType =>
-            i match {
+          case clazz: GenericArrayType => i match {
               case 0 => clazz.getGenericComponentType.asInstanceOf[Class[_]]
               case _ => fail("Arrays only have one type parameter")
             }

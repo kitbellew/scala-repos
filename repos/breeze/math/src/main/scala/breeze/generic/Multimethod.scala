@@ -98,9 +98,8 @@ trait Multimethod2[Method[AA, BB, RR] <: Function2[AA, BB, RR], A, B, R]
     val cached = cache.get(ac -> bc)
     if (cached != null) {
       cached match {
-        case None => bindingMissing(a, b)
-        case Some(m) =>
-          m.asInstanceOf[Method[A, B, R]].apply(a, b)
+        case None    => bindingMissing(a, b)
+        case Some(m) => m.asInstanceOf[Method[A, B, R]].apply(a, b)
       }
     } else {
       val options = resolve(ac, bc.asInstanceOf[Class[_ <: B]])
@@ -159,9 +158,8 @@ trait Multiproc2[Method[AA, BB] <: (AA, BB) => Unit, A <: AnyRef, B]
     val cached = cache.get(ac -> bc)
     if (cached != null) {
       cached match {
-        case None => bindingMissing(a, b)
-        case Some(m) =>
-          m.asInstanceOf[Method[A, B]].apply(a, b)
+        case None    => bindingMissing(a, b)
+        case Some(m) => m.asInstanceOf[Method[A, B]].apply(a, b)
       }
     } else {
       val m = resolve(

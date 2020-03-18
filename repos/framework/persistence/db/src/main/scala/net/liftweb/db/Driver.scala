@@ -89,8 +89,7 @@ abstract class DriverType(val name: String) {
       tableName: String,
       genKeyNames: List[String])(handler: Either[ResultSet, Int] => T): T =
     genKeyNames match {
-      case Nil =>
-        DB.prepareStatement(query, conn) { stmt =>
+      case Nil => DB.prepareStatement(query, conn) { stmt =>
           setter(stmt)
           handler(Right(stmt.executeUpdate))
         }
@@ -165,8 +164,7 @@ object DriverType {
       case (DerbyDriver.name, _, _) => DerbyDriver
       case (MySqlDriver.name, _, _) => MySqlDriver
       case (PostgreSqlDriver.name, major, minor)
-          if ((major == 8 && minor >= 2) || major > 8) =>
-        PostgreSqlDriver
+          if ((major == 8 && minor >= 2) || major > 8)       => PostgreSqlDriver
       case (PostgreSqlDriver.name, _, _)                     => PostgreSqlOldDriver
       case (H2Driver.name, _, _)                             => H2Driver
       case (SqlServerDriver.name, major, _) if major >= 9    => SqlServerDriver

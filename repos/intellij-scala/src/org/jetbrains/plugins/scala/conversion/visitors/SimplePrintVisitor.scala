@@ -58,8 +58,7 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
       case BinaryExpressionConstruction(
             firstPart,
             secondPart,
-            operation: String) =>
-        visitBinary(firstPart, secondPart, operation)
+            operation: String)           => visitBinary(firstPart, secondPart, operation)
       case ClassObjectAccess(expression) => visitClassObjAccess(expression)
       case InstanceOfConstruction(operand, mtype) =>
         visitInstanceOf(operand, mtype)
@@ -560,8 +559,7 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
     //to prevent situation where access modifiers print earlier then throw
     val sortModifiers = modifiers.collect {
       case m: Modifier
-          if !modifiersConstruction.accessModifiers.contains(m.modificator) =>
-        m
+          if !modifiersConstruction.accessModifiers.contains(m.modificator) => m
     } ++
       modifiers.collect {
         case m: Modifier

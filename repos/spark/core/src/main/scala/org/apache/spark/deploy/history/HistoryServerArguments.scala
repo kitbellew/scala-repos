@@ -43,16 +43,14 @@ private[history] class HistoryServerArguments(
           setLogDirectory(value)
           parse(tail)
 
-        case ("--help" | "-h") :: tail =>
-          printUsageAndExit(0)
+        case ("--help" | "-h") :: tail => printUsageAndExit(0)
 
         case ("--properties-file") :: value :: tail =>
           propertiesFile = value
           parse(tail)
 
         case Nil =>
-        case _ =>
-          printUsageAndExit(1)
+        case _   => printUsageAndExit(1)
       }
     }
   }

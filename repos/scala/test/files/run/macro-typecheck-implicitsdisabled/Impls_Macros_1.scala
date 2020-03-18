@@ -23,8 +23,7 @@ object Macros {
       val ttree2 = c.typecheck(tree2, withImplicitViewsDisabled = true)
       c.Expr[String](Literal(Constant(ttree2.toString)))
     } catch {
-      case ex: Throwable =>
-        c.Expr[String](Literal(Constant(ex.toString)))
+      case ex: Throwable => c.Expr[String](Literal(Constant(ex.toString)))
     }
   }
 

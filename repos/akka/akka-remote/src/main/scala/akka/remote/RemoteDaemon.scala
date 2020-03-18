@@ -173,8 +173,7 @@ private[akka] class RemoteSystemDaemon(
         message match {
           case DaemonMsgCreate(_, _, path, _) if untrustedMode ⇒
             log.debug("does not accept deployments (untrusted) for [{}]", path)
-          case DaemonMsgCreate(props, deploy, path, supervisor) ⇒
-            path match {
+          case DaemonMsgCreate(props, deploy, path, supervisor) ⇒ path match {
               case ActorPathExtractor(address, elems)
                   if elems.nonEmpty && elems.head == "remote" ⇒
                 // TODO RK currently the extracted “address” is just ignored, is that okay?
@@ -241,20 +240,17 @@ private[akka] class RemoteSystemDaemon(
               path / sel.elements.map(_.toString),
               system.eventStream)
             emptyRef.tell(sel, sender)
-          case child ⇒
-            child.tell(m, sender)
+          case child ⇒ child.tell(m, sender)
         }
 
       case Identify(messageId) ⇒ sender ! ActorIdentity(messageId, Some(this))
 
-      case TerminationHook ⇒
-        terminating.switchOn {
+      case TerminationHook ⇒ terminating.switchOn {
           terminationHookDoneWhenNoChildren()
           foreachChild { system.stop }
         }
 
-      case AddressTerminated(address) ⇒
-        foreachChild {
+      case AddressTerminated(address) ⇒ foreachChild {
           case a: InternalActorRef if a.getParent.path.address == address ⇒
             system.stop(a)
           case _ ⇒ // skip, this child doesn't belong to the terminated address

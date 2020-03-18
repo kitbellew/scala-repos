@@ -69,8 +69,7 @@ private[akka] final case class MaybePublisher[T](
           case Some(v) ⇒
             tryOnNext(subscriber, v)
             tryOnComplete(subscriber)
-          case None ⇒
-            tryOnComplete(subscriber)
+          case None ⇒ tryOnComplete(subscriber)
         }
       }
     }

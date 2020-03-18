@@ -124,8 +124,7 @@ trait ResolvableStableCodeReferenceElement
           resolveResultCount = count
           res
         }
-      case _ =>
-        elsebr(incomplete)
+      case _ => elsebr(incomplete)
     }
   }
 
@@ -242,8 +241,7 @@ trait ResolvableStableCodeReferenceElement
         classOf[ScImportsHolder])
       if (importHolder != null) {
         importHolder.getImportStatements.takeWhile(_ != importStmt).foreach {
-          case stmt: ScImportStmt =>
-            stmt.importExprs.foreach {
+          case stmt: ScImportStmt => stmt.importExprs.foreach {
               case expr: ScImportExpr if expr.singleWildcard =>
                 expr.reference match {
                   case Some(reference) => reference.resolve()
@@ -310,8 +308,9 @@ trait ResolvableStableCodeReferenceElement
                     lastParent,
                     ref)) return
               place match {
-                case (_: ScTemplateBody | _: ScExtendsBlock) => // template body and inherited members are at the same level.
-                case _                                       => if (!processor.changedLevel) return
+                case (_: ScTemplateBody |
+                    _: ScExtendsBlock) => // template body and inherited members are at the same level.
+                case _                 => if (!processor.changedLevel) return
               }
               treeWalkUp(place.getContext, place)
           }
@@ -330,8 +329,7 @@ trait ResolvableStableCodeReferenceElement
       case Some(q: ScDocResolvableCodeReference) =>
         q.multiResolve(incomplete = true)
           .foreach(processQualifierResolveResult(_, processor, ref))
-      case Some(q: ScStableCodeReferenceElement) =>
-        q.bind() match {
+      case Some(q: ScStableCodeReferenceElement) => q.bind() match {
           case Some(res) => processQualifierResolveResult(res, processor, ref)
           case _         =>
         }

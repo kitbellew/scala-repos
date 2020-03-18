@@ -75,8 +75,7 @@ object SessionVar {
       setIfUnset: Boolean = true)(implicit f: Format[T]): (State, Option[T]) =
     get(key, state) match {
       case s: Some[T] => (state, s)
-      case None =>
-        read(key, state)(f) match {
+      case None => read(key, state)(f) match {
           case s @ Some(t) =>
             val newState =
               if (setIfUnset && get(key, state).isDefined) state

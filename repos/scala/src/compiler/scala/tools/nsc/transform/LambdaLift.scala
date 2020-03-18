@@ -27,8 +27,7 @@ abstract class LambdaLift extends InfoTransform {
         case ClassInfoType(parents, decls, clazz) =>
           val parents1 = parents mapConserve this
           if (parents1 eq parents) tp else ClassInfoType(parents1, decls, clazz)
-        case _ =>
-          mapOver(tp)
+        case _ => mapOver(tp)
       }
   }
 
@@ -510,8 +509,7 @@ abstract class LambdaLift extends InfoTransform {
           }
           if (lzyVals.isEmpty) tree
           else treeCopy.Block(tree, lzyVals ::: rest, expr0)
-        case _ =>
-          tree
+        case _ => tree
       }
     }
 
@@ -524,8 +522,7 @@ abstract class LambdaLift extends InfoTransform {
           postTransform(preTransform(idt), isBoxedRef = false)
         case ReferenceToBoxed(idt) =>
           postTransform(preTransform(idt), isBoxedRef = true)
-        case _ =>
-          postTransform(preTransform(tree))
+        case _ => postTransform(preTransform(tree))
       }
 
     /** Transform statements and add lifted definitions to them. */
@@ -543,10 +540,8 @@ abstract class LambdaLift extends InfoTransform {
             deriveClassDef(stat)(impl => deriveTemplate(impl)(_ ::: lifted))
 
           case DefDef(_, _, _, _, _, Block(Nil, expr))
-              if !stat.symbol.isConstructor =>
-            deriveDefDef(stat)(_ => expr)
-          case _ =>
-            stat
+              if !stat.symbol.isConstructor => deriveDefDef(stat)(_ => expr)
+          case _                            => stat
         }
       super.transformStats(stats, exprOwner) map addLifted
     }

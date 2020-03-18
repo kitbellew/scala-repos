@@ -151,14 +151,10 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
                 case objRef: ObjectReference =>
                   val field = objRef.referenceType().fieldByName("elem")
                   objRef.setValue(field, value)
-                case _ =>
-                  frameProxy.setValue(myEvaluatedVariable, value)
+                case _ => frameProxy.setValue(myEvaluatedVariable, value)
               }
             } else { frameProxy.setValue(myEvaluatedVariable, value) }
-          } catch {
-            case e: EvaluateException =>
-              LOG.error(e)
-          }
+          } catch { case e: EvaluateException => LOG.error(e) }
         }
         def getExpectedType: Type = {
           try { myEvaluatedVariable.getType }

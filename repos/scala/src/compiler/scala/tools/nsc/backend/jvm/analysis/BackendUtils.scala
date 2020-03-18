@@ -147,9 +147,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
             case Array(_, _, _, flags: Integer, xs @ _*)
                 if (
                   flags.intValue & LambdaMetafactory.FLAG_SERIALIZABLE
-                ) != 0 =>
-              hasSerializableClosureInstantiation = true
-            case _ =>
+                ) != 0 => hasSerializableClosureInstantiation = true
+            case _     =>
           }
         case _ =>
       }
@@ -385,11 +384,9 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
           }
           internalNames foreach visitInternalName
 
-        case 'L' =>
-          visitInternalName(desc.substring(1, desc.length - 1))
+        case 'L' => visitInternalName(desc.substring(1, desc.length - 1))
 
-        case '[' =>
-          visitInternalNameOrArrayReference(desc)
+        case '[' => visitInternalNameOrArrayReference(desc)
 
         case _ => // skip over primitive types
       }
@@ -564,8 +561,7 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
                 v.`var` + longSize + 1
               ) // + 1 because local numbers are 0-based
 
-            case i: IincInsnNode =>
-              maxLocals = math.max(maxLocals, i.`var` + 1)
+            case i: IincInsnNode => maxLocals = math.max(maxLocals, i.`var` + 1)
 
             case _ =>
           }

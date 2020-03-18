@@ -41,8 +41,7 @@ object PresentingStore {
       presentingStore: Store[K, U])(
       fn: V => U): MergeableStore[(K, BatchID), V] =
     new SideEffectStore(onlineStore)({
-      case (k, _) =>
-        clientStore.get(k).flatMap { optV =>
+      case (k, _) => clientStore.get(k).flatMap { optV =>
           presentingStore.put(k -> optV.map(fn))
         }
     })

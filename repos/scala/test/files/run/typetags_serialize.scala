@@ -23,10 +23,7 @@ object Test extends App {
       fin.close()
 
       println(retag)
-    } catch {
-      case ex: Exception =>
-        println(ex)
-    }
+    } catch { case ex: Exception => println(ex) }
 
   test(implicitly[TypeTag[Int]])
   test(implicitly[TypeTag[String]])

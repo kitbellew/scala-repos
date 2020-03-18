@@ -56,8 +56,7 @@ trait GameHelper {
       case (Some(w), _, UnknownFinish)              => s"${playerText(w)} won"
       case (_, _, Draw | Stalemate | UnknownFinish) => "Game is a draw"
       case (_, _, Aborted)                          => "Game has been aborted"
-      case (_, _, VariantEnd) =>
-        game.variant match {
+      case (_, _, VariantEnd) => game.variant match {
           case chess.variant.KingOfTheHill => "King in the center"
           case chess.variant.ThreeCheck    => "Three checks"
           case chess.variant.Antichess     => "Lose all your pieces to win"
@@ -165,29 +164,25 @@ trait GameHelper {
     game.status match {
       case S.Aborted => trans.gameAborted()
       case S.Mate    => trans.checkmate()
-      case S.Resign =>
-        game.loser match {
+      case S.Resign => game.loser match {
           case Some(p) if p.color.white => trans.whiteResigned()
           case _                        => trans.blackResigned()
         }
       case S.UnknownFinish => trans.finished()
       case S.Stalemate     => trans.stalemate()
-      case S.Timeout =>
-        game.loser match {
+      case S.Timeout => game.loser match {
           case Some(p) if p.color.white => trans.whiteLeftTheGame()
           case Some(_)                  => trans.blackLeftTheGame()
           case None                     => trans.draw()
         }
       case S.Draw      => trans.draw()
       case S.Outoftime => trans.timeOut()
-      case S.NoStart =>
-        Html {
+      case S.NoStart => Html {
           val color = game.loser.fold(Color.white)(_.color).name.capitalize
           s"$color didn't move"
         }
       case S.Cheat => Html("Cheat detected")
-      case S.VariantEnd =>
-        game.variant match {
+      case S.VariantEnd => game.variant match {
           case chess.variant.KingOfTheHill => trans.kingInTheCenter()
           case chess.variant.ThreeCheck    => trans.threeChecks()
           case chess.variant.RacingKings   => trans.raceFinished()

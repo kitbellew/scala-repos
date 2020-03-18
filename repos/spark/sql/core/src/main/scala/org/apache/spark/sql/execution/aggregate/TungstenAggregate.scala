@@ -259,8 +259,7 @@ case class TungstenAggregate(
       BindReferences.bindReference(_, inputAttrs).gen(ctx))
     // aggregate buffer should be updated atomic
     val updates = aggVals.zipWithIndex.map {
-      case (ev, i) =>
-        s"""
+      case (ev, i) => s"""
          | ${bufVars(i).isNull} = ${ev.isNull};
          | ${bufVars(i).value} = ${ev.value};
        """.stripMargin
@@ -402,14 +401,12 @@ case class TungstenAggregate(
       ctx.currentVars = null
       ctx.INPUT_ROW = keyTerm
       val keyVars = groupingExpressions.zipWithIndex.map {
-        case (e, i) =>
-          BoundReference(i, e.dataType, e.nullable).gen(ctx)
+        case (e, i) => BoundReference(i, e.dataType, e.nullable).gen(ctx)
       }
       val evaluateKeyVars = evaluateVariables(keyVars)
       ctx.INPUT_ROW = bufferTerm
       val bufferVars = aggregateBufferAttributes.zipWithIndex.map {
-        case (e, i) =>
-          BoundReference(i, e.dataType, e.nullable).gen(ctx)
+        case (e, i) => BoundReference(i, e.dataType, e.nullable).gen(ctx)
       }
       val evaluateBufferVars = evaluateVariables(bufferVars)
       // evaluate the aggregation result

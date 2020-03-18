@@ -97,8 +97,7 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
               tparams0,
               tplTransformer.transformed)
           }
-        case _ =>
-          super.transform(tree)
+        case _ => super.transform(tree)
       }
     }
 
@@ -603,8 +602,7 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
             }
             super.transform(tree)
 
-          case _ =>
-            super.transform(tree)
+          case _ => super.transform(tree)
         }
 
       // Move tree into constructor, take care of changing owner from `oldOwner` to `newOwner` (the primary constructor symbol)

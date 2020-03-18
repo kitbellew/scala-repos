@@ -24,11 +24,9 @@ private final class KamonPusher(countUsers: () => Int) extends Actor {
 
   def receive = {
 
-    case NbMembers(nb) =>
-      lila.mon.socket.member(nb)
+    case NbMembers(nb) => lila.mon.socket.member(nb)
 
-    case NbRounds(nb) =>
-      lila.mon.round.actor.count(nb)
+    case NbRounds(nb) => lila.mon.round.actor.count(nb)
 
     case Tick =>
       lila.mon.jvm.thread(threadStats.getThreadCount)

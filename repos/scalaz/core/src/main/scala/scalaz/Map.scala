@@ -31,16 +31,11 @@ sealed abstract class ==>>[A, B] {
     * If the key is already present, its value is replaced by the provided value.  */
   def insert(kx: A, x: B)(implicit n: Order[A]): A ==>> B =
     this match {
-      case Tip() =>
-        singleton(kx, x)
-      case Bin(ky, y, l, r) =>
-        n.order(kx, ky) match {
-          case LT =>
-            balance(ky, y, l.insert(kx, x), r)
-          case GT =>
-            balance(ky, y, l, r.insert(kx, x))
-          case EQ =>
-            Bin(kx, x, l, r)
+      case Tip() => singleton(kx, x)
+      case Bin(ky, y, l, r) => n.order(kx, ky) match {
+          case LT => balance(ky, y, l.insert(kx, x), r)
+          case GT => balance(ky, y, l, r.insert(kx, x))
+          case EQ => Bin(kx, x, l, r)
         }
     }
 
@@ -62,16 +57,11 @@ sealed abstract class ==>>[A, B] {
   def insertWithKey(f: (A, B, B) => B, kx: A, x: B)(implicit
       o: Order[A]): A ==>> B =
     this match {
-      case Tip() =>
-        singleton(kx, x)
-      case Bin(ky, y, l, r) =>
-        o.order(kx, ky) match {
-          case LT =>
-            balance(ky, y, l.insertWithKey(f, kx, x), r)
-          case GT =>
-            balance(ky, y, l, r.insertWithKey(f, kx, x))
-          case EQ =>
-            Bin(kx, f(kx, x, y), l, r)
+      case Tip() => singleton(kx, x)
+      case Bin(ky, y, l, r) => o.order(kx, ky) match {
+          case LT => balance(ky, y, l.insertWithKey(f, kx, x), r)
+          case GT => balance(ky, y, l, r.insertWithKey(f, kx, x))
+          case EQ => Bin(kx, f(kx, x, y), l, r)
         }
     }
 
@@ -81,16 +71,11 @@ sealed abstract class ==>>[A, B] {
   /** removes a key/value pair - O(log n) */
   def delete(k: A)(implicit n: Order[A]): A ==>> B =
     this match {
-      case Tip() =>
-        empty
-      case Bin(kx, x, l, r) =>
-        n.order(k, kx) match {
-          case LT =>
-            balance(kx, x, l.delete(k), r)
-          case EQ =>
-            glue(l, r)
-          case GT =>
-            balance(kx, x, l, r.delete(k))
+      case Tip() => empty
+      case Bin(kx, x, l, r) => n.order(k, kx) match {
+          case LT => balance(kx, x, l.delete(k), r)
+          case EQ => glue(l, r)
+          case GT => balance(kx, x, l, r.delete(k))
         }
     }
 
@@ -112,20 +97,13 @@ sealed abstract class ==>>[A, B] {
   def updateWithKey(k: A, f: (A, B) => Option[B])(implicit
       o: Order[A]): A ==>> B =
     this match {
-      case Tip() =>
-        empty
-      case Bin(kx, x, l, r) =>
-        o.order(k, kx) match {
-          case LT =>
-            balance(kx, x, l.updateWithKey(k, f), r)
-          case GT =>
-            balance(kx, x, l, r.updateWithKey(k, f))
-          case EQ =>
-            f(kx, x) match {
-              case Some(v) =>
-                Bin(kx, v, l, r)
-              case None =>
-                glue(l, r)
+      case Tip() => empty
+      case Bin(kx, x, l, r) => o.order(k, kx) match {
+          case LT => balance(kx, x, l.updateWithKey(k, f), r)
+          case GT => balance(kx, x, l, r.updateWithKey(k, f))
+          case EQ => f(kx, x) match {
+              case Some(v) => Bin(kx, v, l, r)
+              case None    => glue(l, r)
             }
         }
     }
@@ -137,48 +115,34 @@ sealed abstract class ==>>[A, B] {
   def updateLookupWithKey(k: A, f: (A, B) => Option[B])(implicit
       o: Order[A]): (Option[B], A ==>> B) =
     this match {
-      case Tip() =>
-        (none, empty)
-      case Bin(kx, x, l, r) =>
-        o.order(k, kx) match {
+      case Tip() => (none, empty)
+      case Bin(kx, x, l, r) => o.order(k, kx) match {
           case LT =>
             val (found, ll) = l.updateLookupWithKey(k, f)
             (found, balance(kx, x, ll, r))
           case GT =>
             val (found, rr) = r.updateLookupWithKey(k, f)
             (found, balance(kx, x, l, rr))
-          case EQ =>
-            f(kx, x) match {
-              case Some(xx) =>
-                (some(xx), Bin(kx, xx, l, r))
-              case None =>
-                (some(x), glue(l, r))
+          case EQ => f(kx, x) match {
+              case Some(xx) => (some(xx), Bin(kx, xx, l, r))
+              case None     => (some(x), glue(l, r))
             }
         }
     }
 
   def alter(k: A, f: Option[B] => Option[B])(implicit o: Order[A]): A ==>> B =
     this match {
-      case Tip() =>
-        f(None) match {
-          case None =>
-            empty
-          case Some(x) =>
-            singleton(k, x)
+      case Tip() => f(None) match {
+          case None    => empty
+          case Some(x) => singleton(k, x)
         }
 
-      case Bin(kx, x, l, r) =>
-        o.order(k, kx) match {
-          case LT =>
-            balance(kx, x, l.alter(k, f), r)
-          case GT =>
-            balance(kx, x, l, r.alter(k, f))
-          case EQ =>
-            f(some(x)) match {
-              case None =>
-                glue(l, r)
-              case Some(xx) =>
-                Bin(kx, xx, l, r)
+      case Bin(kx, x, l, r) => o.order(k, kx) match {
+          case LT => balance(kx, x, l.alter(k, f), r)
+          case GT => balance(kx, x, l, r.alter(k, f))
+          case EQ => f(some(x)) match {
+              case None     => glue(l, r)
+              case Some(xx) => Bin(kx, xx, l, r)
             }
         }
     }
@@ -186,32 +150,22 @@ sealed abstract class ==>>[A, B] {
   @tailrec
   final def lookup(k: A)(implicit n: Order[A]): Option[B] =
     this match {
-      case Tip() =>
-        none
-      case Bin(kx, x, l, r) =>
-        n.order(k, kx) match {
-          case LT =>
-            l.lookup(k)
-          case GT =>
-            r.lookup(k)
-          case EQ =>
-            some(x)
+      case Tip() => none
+      case Bin(kx, x, l, r) => n.order(k, kx) match {
+          case LT => l.lookup(k)
+          case GT => r.lookup(k)
+          case EQ => some(x)
         }
     }
 
   @tailrec
   final def lookupAssoc(k: A)(implicit n: Order[A]): Option[(A, B)] =
     this match {
-      case Tip() =>
-        none
-      case Bin(kx, x, l, r) =>
-        n.order(k, kx) match {
-          case LT =>
-            l.lookupAssoc(k)
-          case GT =>
-            r.lookupAssoc(k)
-          case EQ =>
-            some((kx, x))
+      case Tip() => none
+      case Bin(kx, x, l, r) => n.order(k, kx) match {
+          case LT => l.lookupAssoc(k)
+          case GT => r.lookupAssoc(k)
+          case EQ => some((kx, x))
         }
     }
 
@@ -241,16 +195,11 @@ sealed abstract class ==>>[A, B] {
     @tailrec
     def go(n: Int, m: A ==>> B): Option[Int] =
       m match {
-        case Tip() =>
-          none
-        case Bin(kx, x, l, r) =>
-          o.order(k, kx) match {
-            case LT =>
-              go(n, l)
-            case GT =>
-              go(n + l.size + 1, r)
-            case EQ =>
-              some((n + l.size))
+        case Tip() => none
+        case Bin(kx, x, l, r) => o.order(k, kx) match {
+            case LT => go(n, l)
+            case GT => go(n + l.size + 1, r)
+            case EQ => some((n + l.size))
           }
       }
 
@@ -260,32 +209,22 @@ sealed abstract class ==>>[A, B] {
   @tailrec
   final def elemAt(i: Int): Option[(A, B)] =
     this match {
-      case Tip() =>
-        none
-      case Bin(kx, x, l, r) =>
-        implicitly[Order[Int]].order(i, l.size) match {
-          case LT =>
-            l.elemAt(i)
-          case GT =>
-            r.elemAt(i - l.size - 1)
-          case EQ =>
-            some((kx, x))
+      case Tip() => none
+      case Bin(kx, x, l, r) => implicitly[Order[Int]].order(i, l.size) match {
+          case LT => l.elemAt(i)
+          case GT => r.elemAt(i - l.size - 1)
+          case EQ => some((kx, x))
         }
     }
 
   // TODO: This should be a total function
   def updateAt(i: Int, f: (A, B) => Option[B]): A ==>> B =
     this match {
-      case Tip() =>
-        sys.error("updateAt")
-      case Bin(kx, x, l, r) =>
-        implicitly[Order[Int]].order(i, l.size) match {
-          case LT =>
-            balance(kx, x, l.updateAt(i, f), r)
-          case GT =>
-            balance(kx, x, l, r.updateAt(i - l.size - 1, f))
-          case EQ =>
-            f(kx, x) match {
+      case Tip() => sys.error("updateAt")
+      case Bin(kx, x, l, r) => implicitly[Order[Int]].order(i, l.size) match {
+          case LT => balance(kx, x, l.updateAt(i, f), r)
+          case GT => balance(kx, x, l, r.updateAt(i - l.size - 1, f))
+          case EQ => f(kx, x) match {
               case Some(y) => Bin(kx, y, l, r)
               case None    => glue(l, r)
             }
@@ -297,43 +236,31 @@ sealed abstract class ==>>[A, B] {
   @tailrec
   final def findMin: Option[(A, B)] =
     this match {
-      case Bin(kx, x, Tip(), _) =>
-        some((kx, x))
-      case Bin(_, _, l, _) =>
-        l.findMin
-      case Tip() =>
-        none
+      case Bin(kx, x, Tip(), _) => some((kx, x))
+      case Bin(_, _, l, _)      => l.findMin
+      case Tip()                => none
     }
 
   @tailrec
   final def findMax: Option[(A, B)] =
     this match {
-      case Bin(kx, x, _, Tip()) =>
-        some((kx, x))
-      case Bin(_, _, _, r) =>
-        r.findMax
-      case Tip() =>
-        none
+      case Bin(kx, x, _, Tip()) => some((kx, x))
+      case Bin(_, _, _, r)      => r.findMax
+      case Tip()                => none
     }
 
   def deleteMin: A ==>> B =
     this match {
-      case Bin(_, _, Tip(), r) =>
-        r
-      case Bin(kx, x, l, r) =>
-        balance(kx, x, l.deleteMin, r)
-      case Tip() =>
-        empty
+      case Bin(_, _, Tip(), r) => r
+      case Bin(kx, x, l, r)    => balance(kx, x, l.deleteMin, r)
+      case Tip()               => empty
     }
 
   def deleteMax: A ==>> B =
     this match {
-      case Bin(_, _, l, Tip()) =>
-        l
-      case Bin(kx, x, l, r) =>
-        balance(kx, x, l, r.deleteMax)
-      case Tip() =>
-        empty
+      case Bin(_, _, l, Tip()) => l
+      case Bin(kx, x, l, r)    => balance(kx, x, l, r.deleteMax)
+      case Tip()               => empty
     }
 
   def updateMin(f: B => Option[B]): A ==>> B =
@@ -341,34 +268,24 @@ sealed abstract class ==>>[A, B] {
 
   def updateMinWithKey(f: (A, B) => Option[B]): A ==>> B =
     this match {
-      case Bin(kx, x, Tip(), r) =>
-        f(kx, x) match {
-          case None =>
-            r
-          case Some(s) =>
-            Bin(kx, s, Tip(), r)
+      case Bin(kx, x, Tip(), r) => f(kx, x) match {
+          case None    => r
+          case Some(s) => Bin(kx, s, Tip(), r)
         }
-      case Bin(kx, x, l, r) =>
-        balance(kx, x, l.updateMinWithKey(f), r)
-      case Tip() =>
-        empty
+      case Bin(kx, x, l, r) => balance(kx, x, l.updateMinWithKey(f), r)
+      case Tip()            => empty
     }
 
   def updateMax(f: B => Option[B]) = updateMaxWithKey((_: A, b) => f(b))
 
   def updateMaxWithKey(f: (A, B) => Option[B]): A ==>> B =
     this match {
-      case Bin(kx, x, l, Tip()) =>
-        f(kx, x) match {
-          case None =>
-            l
-          case Some(s) =>
-            Bin(kx, s, l, Tip())
+      case Bin(kx, x, l, Tip()) => f(kx, x) match {
+          case None    => l
+          case Some(s) => Bin(kx, s, l, Tip())
         }
-      case Bin(kx, x, l, r) =>
-        balance(kx, x, l, r.updateMaxWithKey(f))
-      case Tip() =>
-        empty
+      case Bin(kx, x, l, r) => balance(kx, x, l, r.updateMaxWithKey(f))
+      case Tip()            => empty
     }
 
   /**
@@ -380,24 +297,19 @@ sealed abstract class ==>>[A, B] {
 
   def minViewWithKey: Option[((A, B), A ==>> B)] =
     this match {
-      case Tip() =>
-        none
-      case x @ Bin(_, _, _, _) =>
-        some(deleteFindMin(x))
+      case Tip()               => none
+      case x @ Bin(_, _, _, _) => some(deleteFindMin(x))
     }
 
   def maxViewWithKey: Option[((A, B), A ==>> B)] =
     this match {
-      case Tip() =>
-        none
-      case x @ Bin(_, _, _, _) =>
-        some(deleteFindMax(x))
+      case Tip()               => none
+      case x @ Bin(_, _, _, _) => some(deleteFindMax(x))
     }
 
   def minView: Option[(B, A ==>> B)] =
     this match {
-      case Tip() =>
-        none
+      case Tip() => none
       case x @ Bin(_, _, _, _) =>
         val r = deleteFindMin(x)
         some((r._1._2, r._2))
@@ -405,8 +317,7 @@ sealed abstract class ==>>[A, B] {
 
   def maxView: Option[(B, A ==>> B)] =
     this match {
-      case Tip() =>
-        none
+      case Tip() => none
       case x @ Bin(_, _, _, _) =>
         val r = deleteFindMax(x)
         some((r._1._2, r._2))
@@ -414,10 +325,8 @@ sealed abstract class ==>>[A, B] {
 
   protected def merge(other: A ==>> B): A ==>> B =
     (this, other) match {
-      case (Tip(), r) =>
-        r
-      case (l, Tip()) =>
-        l
+      case (Tip(), r) => r
+      case (l, Tip()) => l
       case (l @ Bin(kx, x, lx, rx), r @ Bin(ky, y, ly, ry)) =>
         if (delta * l.size <= r.size) balance(ky, y, l.merge(ly), ry)
         else if (delta * r.size <= l.size) balance(kx, x, lx, rx.merge(r))
@@ -440,8 +349,7 @@ sealed abstract class ==>>[A, B] {
 
   private def deleteFindMax(t: Bin[A, B]): ((A, B), A ==>> B) =
     t match {
-      case Bin(k, x, l, Tip()) =>
-        ((k, x), l)
+      case Bin(k, x, l, Tip()) => ((k, x), l)
       case Bin(k, x, l, r @ Bin(_, _, _, _)) =>
         val (km, r2) = deleteFindMax(r)
         (km, balance(k, x, l, r2))
@@ -449,8 +357,7 @@ sealed abstract class ==>>[A, B] {
 
   private def deleteFindMin(t: Bin[A, B]): ((A, B), A ==>> B) =
     t match {
-      case Bin(k, x, Tip(), r) =>
-        ((k, x), r)
+      case Bin(k, x, Tip(), r) => ((k, x), r)
       case Bin(k, x, l @ Bin(_, _, _, _), r) =>
         val (km, l2) = deleteFindMin(l)
         (km, balance(k, x, l2, r))
@@ -461,8 +368,7 @@ sealed abstract class ==>>[A, B] {
 
   def mapWithKey[C](f: (A, B) => C): A ==>> C =
     this match {
-      case Tip() =>
-        empty
+      case Tip() => empty
       case Bin(kx, x, l, r) =>
         Bin(kx, f(kx, x), l.mapWithKey(f), r.mapWithKey(f))
     }
@@ -475,8 +381,7 @@ sealed abstract class ==>>[A, B] {
 
   def mapAccumL[C](a: C)(f: (C, A, B) => (C, B)): (C, A ==>> B) =
     this match {
-      case Tip() =>
-        (a, empty)
+      case Tip() => (a, empty)
       case Bin(kx, x, l, r) =>
         val (a1, l2) = l.mapAccumL(a)(f)
         val (a2, x2) = f(a1, kx, x)
@@ -498,18 +403,14 @@ sealed abstract class ==>>[A, B] {
 
   def foldlWithKey[C](z: C)(f: (C, A, B) => C): C =
     this match {
-      case Tip() =>
-        z
-      case Bin(kx, x, l, r) =>
-        r.foldlWithKey(f(l.foldlWithKey(z)(f), kx, x))(f)
+      case Tip()            => z
+      case Bin(kx, x, l, r) => r.foldlWithKey(f(l.foldlWithKey(z)(f), kx, x))(f)
     }
 
   def foldrWithKey[C](z: C)(f: (A, B, C) => C): C =
     this match {
-      case Tip() =>
-        z
-      case Bin(kx, x, l, r) =>
-        l.foldrWithKey(f(kx, x, r.foldrWithKey(z)(f)))(f)
+      case Tip()            => z
+      case Bin(kx, x, l, r) => l.foldrWithKey(f(kx, x, r.foldrWithKey(z)(f)))(f)
     }
 
   /* Unions */
@@ -531,8 +432,7 @@ sealed abstract class ==>>[A, B] {
         a: A ==>> B,
         b: A ==>> B): A ==>> B =
       (a, b) match {
-        case (t1, Tip()) =>
-          t1
+        case (t1, Tip()) => t1
         case (Tip(), Bin(kx, x, l, r)) =>
           (l filterGt cmplo).join(kx, x, (r filterLt cmphi))
         case (Bin(kx, x, l, r), t2) =>
@@ -548,10 +448,8 @@ sealed abstract class ==>>[A, B] {
       }
 
     (this, other) match {
-      case (Tip(), t2) =>
-        t2
-      case (t1, Tip()) =>
-        t1
+      case (Tip(), t2) => t2
+      case (t1, Tip()) => t1
       case (t1, t2) =>
         hedgeUnionWithKey(Function const LT, Function const GT, t1, t2)
     }
@@ -562,8 +460,7 @@ sealed abstract class ==>>[A, B] {
       cmpHi: A => Ordering,
       other: A ==>> B)(implicit o: Order[A]): A ==>> B =
     (this, other) match {
-      case (t1, Tip()) =>
-        t1
+      case (t1, Tip()) => t1
       case (Tip(), Bin(kx, x, l, r)) =>
         (l filterGt cmpLo).join(kx, x, r filterLt cmpHi)
       case (Bin(kx, x, l, r), t2) =>
@@ -583,8 +480,7 @@ sealed abstract class ==>>[A, B] {
         a: A ==>> B,
         b: A ==>> B): A ==>> B =
       (a, b) match {
-        case (Tip(), _) =>
-          empty
+        case (Tip(), _) => empty
         case (Bin(kx, x, l, r), Tip()) =>
           (l filterGt cmplo).join(kx, x, (r filterLt cmphi))
         case (t, Bin(kx, _, l, r)) =>
@@ -595,12 +491,9 @@ sealed abstract class ==>>[A, B] {
       }
 
     (this, other) match {
-      case (Tip(), _) =>
-        empty
-      case (t1, Tip()) =>
-        t1
-      case (t1, t2) =>
-        hedgeDiff(Function const LT, Function const GT, t1, t2)
+      case (Tip(), _)  => empty
+      case (t1, Tip()) => t1
+      case (t1, t2)    => hedgeDiff(Function const LT, Function const GT, t1, t2)
     }
   }
 
@@ -616,8 +509,7 @@ sealed abstract class ==>>[A, B] {
         a: A ==>> B,
         b: A ==>> C): A ==>> B =
       (a, b) match {
-        case (Tip(), _) =>
-          empty
+        case (Tip(), _) => empty
         case (Bin(kx, x, l, r), Tip()) =>
           (l filterGt cmplo).join(kx, x, r filterLt cmphi)
         case (t, Bin(kx, x, l, r)) =>
@@ -628,23 +520,17 @@ sealed abstract class ==>>[A, B] {
           val tr = hedgeDiffWithKey(cmpkx, cmphi, gt, r)
 
           found match {
-            case None =>
-              tl merge tr
-            case Some((ky, y)) =>
-              f(ky, y, x) match {
-                case None =>
-                  tl merge tr
-                case Some(z) =>
-                  tl.join(kx, z, tr)
+            case None => tl merge tr
+            case Some((ky, y)) => f(ky, y, x) match {
+                case None    => tl merge tr
+                case Some(z) => tl.join(kx, z, tr)
               }
           }
       }
 
     (this, other) match {
-      case (Tip(), _) =>
-        empty
-      case (t1, Tip()) =>
-        t1
+      case (Tip(), _)  => empty
+      case (t1, Tip()) => t1
       case (t1, t2) =>
         hedgeDiffWithKey(Function const LT, Function const GT, t1, t2)
     }
@@ -661,30 +547,24 @@ sealed abstract class ==>>[A, B] {
   def intersectionWithKey[C, D](other: A ==>> C)(f: (A, B, C) => D)(implicit
       o: Order[A]): A ==>> D =
     (this, other) match {
-      case (Tip(), _) =>
-        empty
-      case (_, Tip()) =>
-        empty
+      case (Tip(), _) => empty
+      case (_, Tip()) => empty
       case (t1 @ Bin(k1, x1, l1, r1), t2 @ Bin(k2, x2, l2, r2)) =>
         if (t1.size >= t2.size) {
           val (lt, found, gt) = t1 splitLookupWithKey k2
           val tl = lt.intersectionWithKey(l2)(f)
           val tr = gt.intersectionWithKey(r2)(f)
           found match {
-            case None =>
-              tl merge tr
-            case Some((k, x)) =>
-              tl.join(k, f(k, x, x2), tr)
+            case None         => tl merge tr
+            case Some((k, x)) => tl.join(k, f(k, x, x2), tr)
           }
         } else {
           val (lt, found, gt) = t2 splitLookup k1
           val tl = l1.intersectionWithKey(lt)(f)
           val tr = r1.intersectionWithKey(gt)(f)
           found match {
-            case None =>
-              tl merge tr
-            case Some(x) =>
-              tl.join(k1, f(k1, x1, x), tr)
+            case None    => tl merge tr
+            case Some(x) => tl.join(k1, f(k1, x1, x), tr)
           }
         }
     }
@@ -699,17 +579,13 @@ sealed abstract class ==>>[A, B] {
   private[scalaz] def submap(a: A ==>> B, f: (B, B) => Boolean)(implicit
       o: Order[A]): Boolean =
     (this, a) match {
-      case (Tip(), _) =>
-        true
-      case (_, Tip()) =>
-        false
+      case (Tip(), _) => true
+      case (_, Tip()) => false
       case (Bin(kx, x, l, r), t) =>
         val (lt, found, gt) = t splitLookup kx
         found match {
-          case None =>
-            false
-          case Some(y) =>
-            f(x, y) && l.submap(lt, f) && r.submap(gt, f)
+          case None    => false
+          case Some(y) => f(x, y) && l.submap(lt, f) && r.submap(gt, f)
         }
     }
 
@@ -719,8 +595,7 @@ sealed abstract class ==>>[A, B] {
 
   def filterWithKey(p: (A, B) => Boolean)(implicit o: Order[A]): A ==>> B =
     this match {
-      case Tip() =>
-        empty
+      case Tip() => empty
       case Bin(kx, x, l, r) =>
         if (p(kx, x)) l.filterWithKey(p).join(kx, x, r.filterWithKey(p))
         else l.filterWithKey(p) merge r.filterWithKey(p)
@@ -733,8 +608,7 @@ sealed abstract class ==>>[A, B] {
   def partitionWithKey(p: (A, B) => Boolean)(implicit
       o: Order[A]): (A ==>> B, A ==>> B) =
     this match {
-      case Tip() =>
-        (empty, empty)
+      case Tip() => (empty, empty)
       case Bin(kx, x, l, r) =>
         val (l1, l2) = l partitionWithKey p
         val (r1, r2) = r partitionWithKey p
@@ -749,14 +623,11 @@ sealed abstract class ==>>[A, B] {
   def mapOptionWithKey[C](f: (A, B) => Option[C])(implicit
       o: Order[A]): A ==>> C =
     this match {
-      case Tip() =>
-        empty
-      case Bin(kx, x, l, r) =>
-        f(kx, x) match {
+      case Tip() => empty
+      case Bin(kx, x, l, r) => f(kx, x) match {
           case Some(y) =>
             l.mapOptionWithKey(f).join(kx, y, r.mapOptionWithKey(f))
-          case None =>
-            l.mapOptionWithKey(f).merge(r.mapOptionWithKey(f))
+          case None => l.mapOptionWithKey(f).merge(r.mapOptionWithKey(f))
         }
     }
 
@@ -766,70 +637,58 @@ sealed abstract class ==>>[A, B] {
   def mapEitherWithKey[C, D](f: (A, B) => C \/ D)(implicit
       o: Order[A]): (A ==>> C, A ==>> D) =
     this match {
-      case Tip() =>
-        (empty, empty)
+      case Tip() => (empty, empty)
       case Bin(kx, x, l, r) =>
         val (l1, l2) = l.mapEitherWithKey(f)
         val (r1, r2) = r.mapEitherWithKey(f)
 
         f(kx, x) match {
-          case -\/(y) =>
-            (l1.join(kx, y, r1), l2 merge r2)
-          case \/-(z) =>
-            (l1 merge r1, l2.join(kx, z, r2))
+          case -\/(y) => (l1.join(kx, y, r1), l2 merge r2)
+          case \/-(z) => (l1 merge r1, l2.join(kx, z, r2))
         }
     }
 
   // Split
   def split(k: A)(implicit o: Order[A]): (A ==>> B, A ==>> B) =
     this match {
-      case Tip() =>
-        (empty, empty)
-      case Bin(kx, x, l, r) =>
-        o.order(k, kx) match {
+      case Tip() => (empty, empty)
+      case Bin(kx, x, l, r) => o.order(k, kx) match {
           case LT =>
             val (lt, gt) = l.split(k)
             (lt, gt.join(kx, x, r))
           case GT =>
             val (lt, gt) = r.split(k)
             (l.join(kx, x, lt), gt)
-          case EQ =>
-            (l, r)
+          case EQ => (l, r)
         }
     }
 
   def splitLookup(k: A)(implicit o: Order[A]): (A ==>> B, Option[B], A ==>> B) =
     this match {
-      case Tip() =>
-        (empty, none, empty)
-      case Bin(kx, x, l, r) =>
-        o.order(k, kx) match {
+      case Tip() => (empty, none, empty)
+      case Bin(kx, x, l, r) => o.order(k, kx) match {
           case LT =>
             val (lt, z, gt) = l splitLookup k
             (lt, z, gt.join(kx, x, r))
           case GT =>
             val (lt, z, gt) = r splitLookup k
             (l.join(kx, x, lt), z, gt)
-          case EQ =>
-            (l, some(x), r)
+          case EQ => (l, some(x), r)
         }
     }
 
   def splitLookupWithKey(k: A)(implicit
       o: Order[A]): (A ==>> B, Option[(A, B)], A ==>> B) =
     this match {
-      case Tip() =>
-        (empty, none, empty)
-      case Bin(kx, x, l, r) =>
-        o.order(k, kx) match {
+      case Tip() => (empty, none, empty)
+      case Bin(kx, x, l, r) => o.order(k, kx) match {
           case LT =>
             val (lt, z, gt) = l splitLookupWithKey k
             (lt, z, gt.join(kx, x, r))
           case GT =>
             val (lt, z, gt) = r splitLookupWithKey k
             (l.join(kx, x, lt), z, gt)
-          case EQ =>
-            (l, some((kx, x)), r)
+          case EQ => (l, some((kx, x)), r)
         }
     }
 
@@ -837,12 +696,9 @@ sealed abstract class ==>>[A, B] {
   @tailrec
   final def trim(lo: A => Ordering, hi: A => Ordering): A ==>> B =
     this match {
-      case Tip() =>
-        empty
-      case t @ Bin(kx, _, l, r) =>
-        lo(kx) match {
-          case LT =>
-            hi(kx) match {
+      case Tip() => empty
+      case t @ Bin(kx, _, l, r) => lo(kx) match {
+          case LT => hi(kx) match {
               case GT => t
               case _  => l.trim(lo, hi)
             }
@@ -854,21 +710,14 @@ sealed abstract class ==>>[A, B] {
   final def trimLookupLo(lo: A, cmphi: A => Ordering)(implicit
       o: Order[A]): (Option[(A, B)], A ==>> B) =
     this match {
-      case Tip() =>
-        (none, empty)
-      case t @ Bin(kx, x, l, r) =>
-        o.order(lo, kx) match {
-          case LT =>
-            cmphi(kx) match {
-              case GT =>
-                (t lookupAssoc lo, t)
-              case _ =>
-                l.trimLookupLo(lo, cmphi)
+      case Tip() => (none, empty)
+      case t @ Bin(kx, x, l, r) => o.order(lo, kx) match {
+          case LT => cmphi(kx) match {
+              case GT => (t lookupAssoc lo, t)
+              case _  => l.trimLookupLo(lo, cmphi)
             }
-          case GT =>
-            r.trimLookupLo(lo, cmphi)
-          case EQ =>
-            (some((kx, x)), r.trim(a => o.order(lo, a), cmphi))
+          case GT => r.trimLookupLo(lo, cmphi)
+          case EQ => (some((kx, x)), r.trim(a => o.order(lo, a), cmphi))
         }
     }
 
@@ -876,8 +725,7 @@ sealed abstract class ==>>[A, B] {
     other match {
       case that: ==>>[A, B] =>
         ==>>.mapEqual[A, B](Equal.equalA, Equal.equalA).equal(this, that)
-      case _ =>
-        false
+      case _ => false
     }
 
   override final def hashCode: Int = toAscList.hashCode
@@ -885,41 +733,29 @@ sealed abstract class ==>>[A, B] {
   // filters on keys
   private def filterGt(f: A => Ordering)(implicit o: Order[A]): A ==>> B =
     this match {
-      case Tip() =>
-        empty
-      case Bin(kx, x, l, r) =>
-        f(kx) match {
-          case LT =>
-            l.filterGt(f).join(kx, x, r)
-          case GT =>
-            r filterGt f
-          case EQ =>
-            r
+      case Tip() => empty
+      case Bin(kx, x, l, r) => f(kx) match {
+          case LT => l.filterGt(f).join(kx, x, r)
+          case GT => r filterGt f
+          case EQ => r
         }
     }
 
   private def filterLt(f: A => Ordering)(implicit o: Order[A]): A ==>> B =
     this match {
-      case Tip() =>
-        empty
-      case Bin(kx, x, l, r) =>
-        f(kx) match {
-          case LT =>
-            l filterLt f
-          case GT =>
-            l.join(kx, x, r filterLt f)
-          case EQ =>
-            l
+      case Tip() => empty
+      case Bin(kx, x, l, r) => f(kx) match {
+          case LT => l filterLt f
+          case GT => l.join(kx, x, r filterLt f)
+          case EQ => l
         }
     }
 
   protected def join(kx: A, x: B, other: A ==>> B)(implicit
       o: Order[A]): A ==>> B =
     (this, other) match {
-      case (Tip(), r) =>
-        r.insertMin(kx, x)
-      case (l, Tip()) =>
-        l.insertMax(kx, x)
+      case (Tip(), r) => r.insertMin(kx, x)
+      case (l, Tip()) => l.insertMax(kx, x)
       case (l @ Bin(ky, y, ly, ry), r @ Bin(kz, z, lz, rz)) =>
         if (delta * l.size <= r.size) balance(kz, z, l.join(kx, x, lz), rz)
         else if (delta * r.size <= l.size) balance(ky, y, ly, ry.join(kx, x, r))
@@ -928,18 +764,14 @@ sealed abstract class ==>>[A, B] {
 
   private def insertMax(kx: A, x: B): A ==>> B =
     this match {
-      case Tip() =>
-        singleton(kx, x)
-      case Bin(ky, y, l, r) =>
-        balance(ky, y, l, r.insertMax(kx, x))
+      case Tip()            => singleton(kx, x)
+      case Bin(ky, y, l, r) => balance(ky, y, l, r.insertMax(kx, x))
     }
 
   private def insertMin(kx: A, x: B): A ==>> B =
     this match {
-      case Tip() =>
-        singleton(kx, x)
-      case Bin(ky, y, l, r) =>
-        balance(ky, y, l.insertMin(kx, x), r)
+      case Tip()            => singleton(kx, x)
+      case Bin(ky, y, l, r) => balance(ky, y, l.insertMin(kx, x), r)
     }
 }
 
@@ -1030,28 +862,20 @@ sealed abstract class MapInstances extends MapInstances0 {
     new Traverse[S ==>> ?] {
       override def findLeft[A](fa: S ==>> A)(f: A => Boolean) =
         fa match {
-          case Bin(_, x, l, r) =>
-            findLeft(l)(f) match {
-              case a @ Some(_) =>
-                a
-              case None =>
-                if (f(x)) Some(x) else findLeft(r)(f)
+          case Bin(_, x, l, r) => findLeft(l)(f) match {
+              case a @ Some(_) => a
+              case None        => if (f(x)) Some(x) else findLeft(r)(f)
             }
-          case Tip() =>
-            None
+          case Tip() => None
         }
 
       override def findRight[A](fa: S ==>> A)(f: A => Boolean) =
         fa match {
-          case Bin(_, x, l, r) =>
-            findRight(r)(f) match {
-              case a @ Some(_) =>
-                a
-              case None =>
-                if (f(x)) Some(x) else findRight(l)(f)
+          case Bin(_, x, l, r) => findRight(r)(f) match {
+              case a @ Some(_) => a
+              case None        => if (f(x)) Some(x) else findRight(l)(f)
             }
-          case Tip() =>
-            None
+          case Tip() => None
         }
 
       override def map[A, B](fa: S ==>> A)(f: A => B) = fa map f
@@ -1059,8 +883,7 @@ sealed abstract class MapInstances extends MapInstances0 {
       override def foldMap[A, B](fa: S ==>> A)(f: A => B)(implicit
           F: Monoid[B]): B =
         fa match {
-          case Tip() =>
-            F.zero
+          case Tip() => F.zero
           case Bin(k, x, l, r) =>
             F.append(foldMap(l)(f), F.append(f(x), foldMap(r)(f)))
         }
@@ -1076,8 +899,7 @@ sealed abstract class MapInstances extends MapInstances0 {
       def traverseImpl[F[_], A, B](fa: S ==>> A)(f: A => F[B])(implicit
           G: Applicative[F]): F[S ==>> B] =
         fa match {
-          case Tip() =>
-            G.point(Tip())
+          case Tip() => G.point(Tip())
           case Bin(kx, x, l, r) =>
             G.apply3(traverseImpl(l)(f), f(x), traverseImpl(r)(f)) {
               (l2, x2, r2) => Bin(kx, x2, l2, r2)
@@ -1088,16 +910,14 @@ sealed abstract class MapInstances extends MapInstances0 {
 
       override def any[A](fa: S ==>> A)(f: A => Boolean) =
         fa match {
-          case Tip() => false
-          case Bin(_, x, l, r) =>
-            any(l)(f) || f(x) || any(r)(f)
+          case Tip()           => false
+          case Bin(_, x, l, r) => any(l)(f) || f(x) || any(r)(f)
         }
 
       override def all[A](fa: S ==>> A)(f: A => Boolean) =
         fa match {
-          case Tip() => true
-          case Bin(_, x, l, r) =>
-            all(l)(f) && f(x) && all(r)(f)
+          case Tip()           => true
+          case Bin(_, x, l, r) => all(l)(f) && f(x) && all(r)(f)
         }
 
     }
@@ -1106,8 +926,7 @@ sealed abstract class MapInstances extends MapInstances0 {
     def bifoldMap[A, B, M](fa: A ==>> B)(f: A => M)(g: B => M)(implicit
         F: Monoid[M]): M =
       fa match {
-        case Tip() =>
-          F.zero
+        case Tip() => F.zero
         case Bin(k, x, l, r) =>
           F.append(
             bifoldMap(l)(f)(g),
@@ -1208,8 +1027,7 @@ object ==>> extends MapInstances {
       case r @ Bin(_, _, ly, ry) =>
         if (ly.size < ratio * ry.size) singleL(k, x, l, r)
         else doubleL(k, x, l, r)
-      case Tip() =>
-        sys.error("rotateL Tip")
+      case Tip() => sys.error("rotateL Tip")
     }
 
   private def singleL[A, B](
@@ -1217,10 +1035,7 @@ object ==>> extends MapInstances {
       x1: B,
       t1: A ==>> B,
       r: Bin[A, B]): A ==>> B =
-    r match {
-      case Bin(k2, x2, t2, t3) =>
-        Bin(k2, x2, Bin(k1, x1, t1, t2), t3)
-    }
+    r match { case Bin(k2, x2, t2, t3) => Bin(k2, x2, Bin(k1, x1, t1, t2), t3) }
 
   private def doubleL[A, B](
       k1: A,
@@ -1230,8 +1045,7 @@ object ==>> extends MapInstances {
     r match {
       case Bin(k2, x2, Bin(k3, x3, t2, t3), t4) =>
         Bin(k3, x3, Bin(k1, x1, t1, t2), Bin(k2, x2, t3, t4))
-      case _ =>
-        sys.error("doubleL")
+      case _ => sys.error("doubleL")
     }
 
   // Right rotations
@@ -1240,8 +1054,7 @@ object ==>> extends MapInstances {
       case l @ Bin(_, _, ly, ry) =>
         if (ry.size < ratio * ly.size) singleR(k, x, l, r)
         else doubleR(k, x, l, r)
-      case Tip() =>
-        sys.error("rotateR Tip")
+      case Tip() => sys.error("rotateR Tip")
     }
 
   private def singleR[A, B](
@@ -1249,10 +1062,7 @@ object ==>> extends MapInstances {
       x1: B,
       l: Bin[A, B],
       t3: A ==>> B): A ==>> B =
-    l match {
-      case Bin(k2, x2, t1, t2) =>
-        Bin(k2, x2, t1, Bin(k1, x1, t2, t3))
-    }
+    l match { case Bin(k2, x2, t1, t2) => Bin(k2, x2, t1, Bin(k1, x1, t2, t3)) }
 
   private def doubleR[A, B](
       k1: A,
@@ -1262,7 +1072,6 @@ object ==>> extends MapInstances {
     l match {
       case Bin(k2, x2, t1, Bin(k3, x3, t2, t3)) =>
         Bin(k3, x3, Bin(k2, x2, t1, t2), Bin(k1, x1, t3, t4))
-      case _ =>
-        sys.error("doubleR")
+      case _ => sys.error("doubleR")
     }
 }

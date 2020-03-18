@@ -57,8 +57,7 @@ object RowEncoder {
     inputType match {
       case NullType | BooleanType | ByteType | ShortType | IntegerType |
           LongType | FloatType | DoubleType | BinaryType |
-          CalendarIntervalType =>
-        inputObject
+          CalendarIntervalType => inputObject
 
       case p: PythonUserDefinedType => extractorsFor(inputObject, p.sqlType)
 
@@ -99,8 +98,7 @@ object RowEncoder {
           "fromString",
           inputObject :: Nil)
 
-      case t @ ArrayType(et, _) =>
-        et match {
+      case t @ ArrayType(et, _) => et match {
           case BooleanType | ByteType | ShortType | IntegerType | LongType |
               FloatType | DoubleType =>
             NewInstance(
@@ -199,8 +197,7 @@ object RowEncoder {
     input.dataType match {
       case NullType | BooleanType | ByteType | ShortType | IntegerType |
           LongType | FloatType | DoubleType | BinaryType |
-          CalendarIntervalType =>
-        input
+          CalendarIntervalType => input
 
       case udt: UserDefinedType[_] =>
         val obj = NewInstance(
@@ -231,8 +228,7 @@ object RowEncoder {
           "toJavaBigDecimal",
           ObjectType(classOf[java.math.BigDecimal]))
 
-      case StringType =>
-        Invoke(input, "toString", ObjectType(classOf[String]))
+      case StringType => Invoke(input, "toString", ObjectType(classOf[String]))
 
       case ArrayType(et, nullable) =>
         val arrayData = Invoke(

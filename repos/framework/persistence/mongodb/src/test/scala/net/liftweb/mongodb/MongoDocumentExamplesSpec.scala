@@ -547,8 +547,7 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
       Helpers.tryo(SessCollection.save(tc, db)).toOption must beSome
       SessCollection.save(tc2, db) must throwA[MongoException]
       Helpers.tryo(SessCollection.save(tc2, db)) must beLike {
-        case Failure(msg, _, _) =>
-          msg must contain("E11000")
+        case Failure(msg, _, _) => msg must contain("E11000")
       }
 
       Helpers.tryo(SessCollection.save(tc3, db)).toOption must beSome
@@ -730,8 +729,7 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
         sdd.save
 
         StringDateDoc.find(newId) must beLike {
-          case Some(sdd2) =>
-            sdd2.dt must_== sdd.dt
+          case Some(sdd2) => sdd2.dt must_== sdd.dt
         }
     }
   }

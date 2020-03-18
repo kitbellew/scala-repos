@@ -97,16 +97,11 @@ case class SegmentsWrapper(
       case BooleanSegment(_, _, defined, values, _) =>
         new ArrayBoolColumn(defined, values)
 
-      case NullSegment(_, _, ctype, defined, _) =>
-        ctype match {
-          case CNull =>
-            NullColumn(defined)
-          case CEmptyObject =>
-            new MutableEmptyObjectColumn(defined)
-          case CEmptyArray =>
-            new MutableEmptyArrayColumn(defined)
-          case CUndefined =>
-            sys.error("also impossible")
+      case NullSegment(_, _, ctype, defined, _) => ctype match {
+          case CNull        => NullColumn(defined)
+          case CEmptyObject => new MutableEmptyObjectColumn(defined)
+          case CEmptyArray  => new MutableEmptyArrayColumn(defined)
+          case CUndefined   => sys.error("also impossible")
         }
     }
 

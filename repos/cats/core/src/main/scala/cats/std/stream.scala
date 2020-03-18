@@ -76,8 +76,7 @@ trait StreamInstances {
         def loop(xs: Stream[A], ys: Stream[A]): Boolean =
           xs match {
             case Empty => ys.isEmpty
-            case a #:: xs =>
-              ys match {
+            case a #:: xs => ys match {
                 case Empty    => false
                 case b #:: ys => if (ev.neqv(a, b)) false else loop(xs, ys)
               }

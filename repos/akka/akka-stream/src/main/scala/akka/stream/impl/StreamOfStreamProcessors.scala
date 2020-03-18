@@ -205,8 +205,7 @@ private[akka] trait MultiStreamOutputProcessorLike
   }
 
   val outputSubstreamManagement: Receive = {
-    case SubstreamRequestMore(key, demand) ⇒
-      substreamOutputs.get(key) match {
+    case SubstreamRequestMore(key, demand) ⇒ substreamOutputs.get(key) match {
         case Some(sub) ⇒
           if (demand < 1) // According to Reactive Streams Spec 3.9, with non-positive demand must yield onError
             sub.error(
@@ -214,18 +213,15 @@ private[akka] trait MultiStreamOutputProcessorLike
           else sub.enqueueOutputDemand(demand)
         case _ ⇒ // ignore...
       }
-    case SubstreamSubscribe(key, subscriber) ⇒
-      substreamOutputs.get(key) match {
+    case SubstreamSubscribe(key, subscriber) ⇒ substreamOutputs.get(key) match {
         case Some(sub) ⇒ sub.attachSubscriber(subscriber)
         case _ ⇒ // ignore...
       }
-    case SubstreamSubscriptionTimeout(key) ⇒
-      substreamOutputs.get(key) match {
+    case SubstreamSubscriptionTimeout(key) ⇒ substreamOutputs.get(key) match {
         case Some(sub) if !sub.isAttached ⇒ subscriptionTimedOut(sub)
         case _ ⇒ // ignore...
       }
-    case SubstreamCancel(key) ⇒
-      invalidateSubstreamOutput(key)
+    case SubstreamCancel(key) ⇒ invalidateSubstreamOutput(key)
   }
 
   override protected def handleSubscriptionTimeout(

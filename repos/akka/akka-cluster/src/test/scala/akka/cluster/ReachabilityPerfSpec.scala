@@ -37,8 +37,9 @@ class ReachabilityPerfSpec extends WordSpec with Matchers {
     val observers = base.allObservers.take(count)
     val subjects = Stream.continually(base.allObservers).flatten.iterator
     (base /: observers) {
-      case (r, o) ⇒
-        (r /: (1 to 5)) { case (r, _) ⇒ r.unreachable(o, subjects.next()) }
+      case (r, o) ⇒ (r /: (1 to 5)) {
+          case (r, _) ⇒ r.unreachable(o, subjects.next())
+        }
     }
   }
 

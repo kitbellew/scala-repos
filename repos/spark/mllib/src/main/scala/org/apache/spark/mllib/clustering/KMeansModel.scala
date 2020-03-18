@@ -136,10 +136,7 @@ object KMeansModel extends Loader[KMeansModel] {
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
       val dataRDD = sc
         .parallelize(model.clusterCenters.zipWithIndex)
-        .map {
-          case (point, id) =>
-            Cluster(id, point)
-        }
+        .map { case (point, id) => Cluster(id, point) }
         .toDF()
       dataRDD.write.parquet(Loader.dataPath(path))
     }

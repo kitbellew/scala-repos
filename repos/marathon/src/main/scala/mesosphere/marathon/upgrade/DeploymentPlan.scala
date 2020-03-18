@@ -245,8 +245,7 @@ object DeploymentPlan {
           (newApp: AppDefinition) =>
             originalApps.get(newApp.id) match {
               // New app.
-              case None =>
-                Some(ScaleApplication(newApp, newApp.instances))
+              case None => Some(ScaleApplication(newApp, newApp.instances))
 
               // Scale-only change.
               case Some(oldApp) if oldApp.isOnlyScaleChange(newApp) =>
@@ -260,8 +259,7 @@ object DeploymentPlan {
                 Some(RestartApplication(newApp))
 
               // Other cases require no action.
-              case _ =>
-                None
+              case _ => None
             }
         }
 

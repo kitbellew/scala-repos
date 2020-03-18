@@ -127,9 +127,8 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
   def >>-[A >: A2 <: A1, C](f: B1 => State[A, C]): PState[A, C] =
     StateT(a =>
       get(a) match {
-        case None => (a, None)
-        case Some(w) =>
-          f(w) apply a match { case (y, x) => (y, Some(x)) }
+        case None    => (a, None)
+        case Some(w) => f(w) apply a match { case (y, x) => (y, Some(x)) }
       })
 
   def ->>-[A >: A2 <: A1, C](f: => State[A, C]): PState[A, C] = >>-(_ => f)
@@ -164,10 +163,8 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
   def sum[C1, C2](that: => PLensFamily[C1, C2, B1, B2])
       : PLensFamily[A1 \/ C1, A2 \/ C2, B1, B2] =
     plensFamily {
-      case -\/(a) =>
-        run(a) map (_ map (\/.left))
-      case \/-(c) =>
-        that run c map (_ map (\/.right))
+      case -\/(a) => run(a) map (_ map (\/.left))
+      case \/-(c) => that run c map (_ map (\/.right))
     }
 
   /** Alias for `sum` */
@@ -178,8 +175,7 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
   def product[C1, C2, D1, D2](that: PLensFamily[C1, C2, D1, D2])
       : PLensFamily[(A1, C1), (A2, C2), (B1, D1), (B2, D2)] =
     plensFamily {
-      case (a, c) =>
-        for {
+      case (a, c) => for {
           q <- run(a)
           r <- that run c
         } yield q *** r
@@ -632,10 +628,8 @@ private[scalaz] trait PLensCategory extends Choice[PLens] with Split[PLens] {
 
   def choice[A, B, C](f: => PLens[A, C], g: => PLens[B, C]): PLens[A \/ B, C] =
     PLensFamily.plens[A \/ B, C] {
-      case -\/(a) =>
-        f run a map (_ map (\/.left))
-      case \/-(b) =>
-        g run b map (_ map (\/.right))
+      case -\/(a) => f run a map (_ map (\/.left))
+      case \/-(b) => g run b map (_ map (\/.right))
     }
 
   def split[A, B, C, D](f: PLens[A, B], g: PLens[C, D]): PLens[(A, C), (B, D)] =

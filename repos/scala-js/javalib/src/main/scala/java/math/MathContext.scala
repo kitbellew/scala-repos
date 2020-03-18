@@ -100,8 +100,7 @@ class MathContext(setPrecision: Int, setRoundingMode: RoundingMode) {
       case that: MathContext =>
         this.precision == that.precision &&
           this.roundingMode == that.roundingMode
-      case _ =>
-        false
+      case _ => false
     }
 
   override def hashCode(): Int = (precision << 3) | roundingMode.ordinal()

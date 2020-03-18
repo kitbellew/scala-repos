@@ -30,9 +30,8 @@ object ClassDef {
     }
     //parsing type parameters
     builder.getTokenType match {
-      case ScalaTokenTypes.tLSQBRACKET =>
-        TypeParamClause parse builder
-      case _ => /*it could be without type parameters*/
+      case ScalaTokenTypes.tLSQBRACKET => TypeParamClause parse builder
+      case _                           => /*it could be without type parameters*/
     }
     val constructorMarker = builder.mark
     val annotationsMarker = builder.mark
@@ -46,8 +45,7 @@ object ClassDef {
       builder.getTokenType match {
         case ScalaTokenTypes.kPRIVATE | ScalaTokenTypes.kPROTECTED =>
           AccessModifier parse builder
-        case _ =>
-        /*it could be without acces modifier*/
+        case _ => /*it could be without acces modifier*/
       }
     }
     modifierMareker.done(ScalaElementTypes.MODIFIERS)

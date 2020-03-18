@@ -159,8 +159,7 @@ case class BaseBolt[I, O](
       }
 
     curResults.foreach {
-      case (tups, res) =>
-        res match {
+      case (tups, res) => res match {
           case Success(outs) => finish(tups, outs)
           case Failure(t)    => fail(tups, t)
         }
@@ -230,10 +229,7 @@ case class BaseBolt[I, O](
         try {
           val m = tupleClass.getDeclaredMethod("resetValues", null)
           Some({ t: Tuple => m.invoke(t) })
-        } catch {
-          case _: NoSuchMethodException =>
-            None
-        }
+        } catch { case _: NoSuchMethodException => None }
     }
   }
 

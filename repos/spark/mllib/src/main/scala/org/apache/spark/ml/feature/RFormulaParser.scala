@@ -36,14 +36,11 @@ private[ml] case class ParsedRFormula(label: ColumnRef, terms: Seq[Term]) {
     val dotTerms = expandDot(schema)
     var includedTerms = Seq[Seq[String]]()
     terms.foreach {
-      case col: ColumnRef =>
-        includedTerms :+= Seq(col.value)
+      case col: ColumnRef => includedTerms :+= Seq(col.value)
       case ColumnInteraction(cols) =>
         includedTerms ++= expandInteraction(schema, cols)
-      case Dot =>
-        includedTerms ++= dotTerms.map(Seq(_))
-      case Deletion(term: Term) =>
-        term match {
+      case Dot => includedTerms ++= dotTerms.map(Seq(_))
+      case Deletion(term: Term) => term match {
           case inner: ColumnRef =>
             includedTerms = includedTerms.filter(_ != Seq(inner.value))
           case ColumnInteraction(cols) =>
@@ -69,11 +66,9 @@ private[ml] case class ParsedRFormula(label: ColumnRef, terms: Seq[Term]) {
   def hasIntercept: Boolean = {
     var intercept = true
     terms.foreach {
-      case Intercept(enabled) =>
-        intercept = enabled
-      case Deletion(Intercept(enabled)) =>
-        intercept = !enabled
-      case _ =>
+      case Intercept(enabled)           => intercept = enabled
+      case Deletion(Intercept(enabled)) => intercept = !enabled
+      case _                            =>
     }
     intercept
   }
@@ -87,18 +82,17 @@ private[ml] case class ParsedRFormula(label: ColumnRef, terms: Seq[Term]) {
     val rest = expandInteraction(schema, terms.tail)
     val validInteractions =
       (terms.head match {
-        case Dot =>
-          expandDot(schema).flatMap { t => rest.map { r => Seq(t) ++ r } }
-        case ColumnRef(value) =>
-          rest.map(Seq(value) ++ _)
+        case Dot => expandDot(schema).flatMap { t =>
+            rest.map { r => Seq(t) ++ r }
+          }
+        case ColumnRef(value) => rest.map(Seq(value) ++ _)
       }).map(_.distinct)
 
     // Deduplicates feature interactions, for example, a:b is the same as b:a.
     var seen = mutable.Set[Set[String]]()
     validInteractions
       .flatMap {
-        case t if seen.contains(t.toSet) =>
-          None
+        case t if seen.contains(t.toSet) => None
         case t =>
           seen += t.toSet
           Some(t)
@@ -176,8 +170,7 @@ private[ml] object RFormulaParser extends RegexParsers {
 
   private val terms: Parser[List[Term]] =
     (term ~ rep("+" ~ term | "-" ~ term)) ^^ {
-      case op ~ list =>
-        list.foldLeft(List(op)) {
+      case op ~ list => list.foldLeft(List(op)) {
           case (left, "+" ~ right) => left ++ Seq(right)
           case (left, "-" ~ right) => left ++ Seq(Deletion(right))
         }

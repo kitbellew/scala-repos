@@ -362,26 +362,19 @@ object Infos {
         case ApplyStatic(ClassType(cls), method, _) =>
           builder.addStaticMethodCalled(cls, method.name)
 
-        case LoadModule(ClassType(cls)) =>
-          builder.addAccessedModule(cls)
+        case LoadModule(ClassType(cls)) => builder.addAccessedModule(cls)
 
-        case IsInstanceOf(_, tpe) =>
-          builder.addUsedInstanceTest(tpe)
-        case AsInstanceOf(_, tpe) =>
-          builder.addUsedInstanceTest(tpe)
+        case IsInstanceOf(_, tpe) => builder.addUsedInstanceTest(tpe)
+        case AsInstanceOf(_, tpe) => builder.addUsedInstanceTest(tpe)
 
-        case NewArray(tpe, _) =>
-          builder.addAccessedClassData(tpe)
-        case ArrayValue(tpe, _) =>
-          builder.addAccessedClassData(tpe)
-        case ClassOf(cls) =>
-          builder.addAccessedClassData(cls)
+        case NewArray(tpe, _)   => builder.addAccessedClassData(tpe)
+        case ArrayValue(tpe, _) => builder.addAccessedClassData(tpe)
+        case ClassOf(cls)       => builder.addAccessedClassData(cls)
 
         case LoadJSConstructor(cls) =>
           builder.addInstantiatedClass(cls.className)
 
-        case LoadJSModule(ClassType(cls)) =>
-          builder.addAccessedModule(cls)
+        case LoadJSModule(ClassType(cls)) => builder.addAccessedModule(cls)
 
         case _ =>
       }

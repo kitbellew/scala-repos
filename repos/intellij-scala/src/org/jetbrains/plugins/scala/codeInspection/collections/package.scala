@@ -179,9 +179,8 @@ package object collections {
         case MethodRepr(_, _, Some(ref), Seq(e)) if ref.refName == "Some" =>
           ref.resolve() match {
             case m: ScMember
-                if m.containingClass.qualifiedName == "scala.Some" =>
-              Some(e)
-            case _ => None
+                if m.containingClass.qualifiedName == "scala.Some" => Some(e)
+            case _                                                 => None
           }
         case _ => None
       }
@@ -210,8 +209,7 @@ package object collections {
   class FunctionExpressionWithReturnTypeTemplate(tp: ScType) {
     def unapply(expr: ScExpression): Boolean = {
       expr.getType(TypingContext.empty) match {
-        case Success(result, _) =>
-          result match {
+        case Success(result, _) => result match {
             case ScFunctionType(returnType, _) => returnType.conforms(tp)
             case _                             => false
           }
@@ -239,16 +237,14 @@ package object collections {
             case ScInfixExpr(left, oper, right) if checkResolve(left, right) =>
               Some(oper)
             case ScMethodCall(refExpr: ScReferenceExpression, Seq(left, right))
-                if checkResolve(left, right) =>
-              Some(refExpr)
-            case _ => None
+                if checkResolve(left, right) => Some(refExpr)
+            case _                           => None
           }
         case ScInfixExpr(underscore(), oper, underscore()) => Some(oper)
         case ScMethodCall(
               refExpr: ScReferenceExpression,
-              Seq(underscore(), underscore())) =>
-          Some(refExpr)
-        case _ => None
+              Seq(underscore(), underscore())) => Some(refExpr)
+        case _                                 => None
       }
       operRef.map(_.refName)
     }
@@ -257,8 +253,7 @@ package object collections {
   class BinaryOperationOnParameterAndExprTemplate(operName: String) {
     def unapply(expr: ScExpression): Option[ScExpression] = {
       stripped(expr) match {
-        case ScFunctionExpr(Seq(x), Some(result)) =>
-          stripped(result) match {
+        case ScFunctionExpr(Seq(x), Some(result)) => stripped(result) match {
             case ScInfixExpr(left, oper, right) if oper.refName == operName =>
               (stripped(left), stripped(right)) match {
                 case (leftRef: ScReferenceExpression, rightExpr)
@@ -274,12 +269,10 @@ package object collections {
             case _ => None
           }
         case ScInfixExpr(underscore(), oper, right)
-            if oper.refName == operName =>
-          Some(right)
+            if oper.refName == operName => Some(right)
         case ScInfixExpr(left, oper, underscore())
-            if oper.refName == operName =>
-          Some(left)
-        case _ => None
+            if oper.refName == operName => Some(left)
+        case _                          => None
       }
     }
   }
@@ -292,8 +285,7 @@ package object collections {
   object andCondition {
     def unapply(expr: ScExpression): Option[ScExpression] = {
       stripped(expr) match {
-        case ScFunctionExpr(Seq(x, y), Some(result)) =>
-          stripped(result) match {
+        case ScFunctionExpr(Seq(x, y), Some(result)) => stripped(result) match {
             case ScInfixExpr(left, oper, right) if oper.refName == "&&" =>
               (stripped(left), stripped(right)) match {
                 case (leftRef: ScReferenceExpression, right: ScExpression)
@@ -319,17 +311,14 @@ package object collections {
   class ParameterlessCallOnParameterTemplate(name: String) {
     def unapply(expr: ScExpression): Boolean = {
       stripped(expr) match {
-        case ScFunctionExpr(Seq(x), Some(result)) =>
-          stripped(result) match {
+        case ScFunctionExpr(Seq(x), Some(result)) => stripped(result) match {
             case MethodRepr(_, Some(ResolvesTo(`x`)), Some(ref), Seq())
-                if ref.refName == name =>
-              true
-            case _ => false
+                if ref.refName == name => true
+            case _                     => false
           }
         case MethodRepr(_, Some(underscore()), Some(ref), Seq())
-            if ref.refName == name =>
-          true
-        case _ => false
+            if ref.refName == name => true
+        case _                     => false
       }
     }
   }
@@ -344,10 +333,9 @@ package object collections {
       stripped(expr) match {
         case ScParenthesisedExpr(underscore()) => true
         case typed: ScTypedStmt
-            if typed.expr.isInstanceOf[ScUnderscoreSection] =>
-          true
-        case und: ScUnderscoreSection => true
-        case _                        => false
+            if typed.expr.isInstanceOf[ScUnderscoreSection] => true
+        case und: ScUnderscoreSection                       => true
+        case _                                              => false
       }
     }
   }
@@ -416,10 +404,9 @@ package object collections {
   def implicitParameterExistsFor(expr: ScExpression): Boolean = {
     expr.findImplicitParameters match {
       case Some(Seq(srr: ScalaResolveResult))
-          if srr.element.name == InferUtil.notFoundParameterName =>
-        false
-      case Some(Seq(srr: ScalaResolveResult, _*)) => true
-      case _                                      => false
+          if srr.element.name == InferUtil.notFoundParameterName => false
+      case Some(Seq(srr: ScalaResolveResult, _*))                => true
+      case _                                                     => false
     }
   }
 
@@ -451,10 +438,8 @@ package object collections {
 
   def checkResolve(expr: ScExpression, patterns: Array[String]): Boolean = {
     expr match {
-      case ref: ScReferenceExpression =>
-        ref.resolve() match {
-          case obj: ScObject =>
-            nameFitToPatterns(obj.qualifiedName, patterns)
+      case ref: ScReferenceExpression => ref.resolve() match {
+          case obj: ScObject => nameFitToPatterns(obj.qualifiedName, patterns)
           case member: ScMember =>
             val clazz = member.containingClass
             if (clazz == null || clazz.qualifiedName == null) false
@@ -472,9 +457,8 @@ package object collections {
       case Success(tp, _) =>
         ScType.extractDesignatorSingletonType(tp).getOrElse(tp) match {
           case ExtractClass(cl)
-              if nameFitToPatterns(cl.qualifiedName, patterns) =>
-            true
-          case _ => false
+              if nameFitToPatterns(cl.qualifiedName, patterns) => true
+          case _                                               => false
         }
       case _ => false
     }
@@ -570,9 +554,8 @@ package object collections {
         def unapply(ref: ScReferenceElement): Option[PsiElement] =
           ref match {
             case ResolvesTo(elem: PsiElement)
-                if !PsiTreeUtil.isAncestor(expr, elem, false) =>
-              Some(elem)
-            case _ => None
+                if !PsiTreeUtil.isAncestor(expr, elem, false) => Some(elem)
+            case _                                            => None
           }
       }
 
@@ -580,9 +563,8 @@ package object collections {
         case `expr`                                                     => true
         case (ScFunctionExpr(_, _) | (_: ScCaseClauses)) childOf `expr` => true
         case (e: ScExpression) childOf `expr`
-            if ScUnderScoreSectionUtil.underscores(e).nonEmpty =>
-          true
-        case fun: ScFunctionDefinition => false
+            if ScUnderScoreSectionUtil.underscores(e).nonEmpty => true
+        case fun: ScFunctionDefinition                         => false
         case elem: PsiElement =>
           !ScalaEvaluatorBuilderUtil.isGenerateClass(elem)
       }
@@ -592,16 +574,13 @@ package object collections {
       sameLevelIterator.collect {
         case assign @ ScAssignStmt(
               definedOutside(ScalaPsiUtil.inNameContext(_: ScVariable)),
-              _) =>
-          assign
+              _) => assign
         case assign @ ScAssignStmt(mc @ ScMethodCall(definedOutside(_), _), _)
-            if mc.isUpdateCall =>
-          assign
+            if mc.isUpdateCall => assign
         case infix @ ScInfixExpr(
               definedOutside(ScalaPsiUtil.inNameContext(v: ScVariable)),
               _,
-              _) if infix.isAssignmentOperator =>
-          infix
+              _) if infix.isAssignmentOperator => infix
         case MethodRepr(
               itself,
               Some(
@@ -611,11 +590,9 @@ package object collections {
               Some(ref),
               _)
             if isSideEffectCollectionMethod(ref) || isSetter(
-              ref) || hasUnitReturnType(ref) =>
-          itself
+              ref) || hasUnitReturnType(ref) => itself
         case MethodRepr(itself, None, Some(ref @ definedOutside(_)), _)
-            if hasUnitReturnType(ref) =>
-          itself
+            if hasUnitReturnType(ref) => itself
       }.toSeq
     }
   }
@@ -644,8 +621,8 @@ package object collections {
   @tailrec
   def refNameId(expr: ScExpression): Option[PsiElement] =
     stripped(expr) match {
-      case MethodRepr(itself: ScMethodCall, Some(base), None, _) =>
-        refNameId(base)
+      case MethodRepr(itself: ScMethodCall, Some(base), None, _) => refNameId(
+          base)
       case MethodRepr(_, _, Some(ref), _) => Some(ref.nameId)
       case _                              => None
     }

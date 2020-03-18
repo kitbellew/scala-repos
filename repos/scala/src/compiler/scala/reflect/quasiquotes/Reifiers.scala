@@ -233,8 +233,7 @@ trait Reifiers {
               earlyDefs,
               parents,
               selfdef,
-              body) =>
-          mirrorBuildCall(
+              body) => mirrorBuildCall(
             nme.SyntacticClassDef,
             reify(mods),
             reify(name),
@@ -293,8 +292,7 @@ trait Reifiers {
           reifyBuildCall(nme.SyntacticValFrom, pat, rhs)
         case SyntacticValEq(pat, rhs) =>
           reifyBuildCall(nme.SyntacticValEq, pat, rhs)
-        case SyntacticFilter(cond) =>
-          reifyBuildCall(nme.SyntacticFilter, cond)
+        case SyntacticFilter(cond) => reifyBuildCall(nme.SyntacticFilter, cond)
         case SyntacticFor(enums, body) =>
           reifyBuildCall(nme.SyntacticFor, enums, body)
         case SyntacticForYield(enums, body) =>
@@ -309,8 +307,8 @@ trait Reifiers {
           reifyBuildCall(nme.SyntacticAppliedType, tpt, targs)
         case SyntacticFunction(args, body) =>
           reifyBuildCall(nme.SyntacticFunction, args, body)
-        case SyntacticEmptyTypeTree() =>
-          reifyBuildCall(nme.SyntacticEmptyTypeTree)
+        case SyntacticEmptyTypeTree() => reifyBuildCall(
+            nme.SyntacticEmptyTypeTree)
         case SyntacticImport(expr, selectors) =>
           reifyBuildCall(nme.SyntacticImport, expr, selectors)
         case SyntacticPartialFunction(cases) =>
@@ -333,14 +331,12 @@ trait Reifiers {
           reifyBuildCall(nme.SyntacticExistentialType, tpt, where)
         case Q(tree) if fillListHole.isDefinedAt(tree) =>
           mirrorBuildCall(nme.SyntacticBlock, fillListHole(tree))
-        case Q(other) =>
-          reifyTree(other)
+        case Q(other) => reifyTree(other)
         // Syntactic block always matches so we have to be careful
         // not to cause infinite recursion.
         case block @ SyntacticBlock(stats) if block.isInstanceOf[Block] =>
           reifyBuildCall(nme.SyntacticBlock, stats)
-        case SyntheticUnit() =>
-          reifyBuildCall(nme.SyntacticBlock, Nil)
+        case SyntheticUnit() => reifyBuildCall(nme.SyntacticBlock, Nil)
         case Try(block, catches, finalizer) =>
           reifyBuildCall(nme.SyntacticTry, block, catches, finalizer)
         case CaseDef(pat, guard, body) if fillListHole.isDefinedAt(body) =>
@@ -354,15 +350,13 @@ trait Reifiers {
         // members; we need to preserve this symbol to preserve
         // correctness of the trees produced by quasiquotes
         case Select(id @ Ident(nme.scala_), name)
-            if id.symbol == ScalaPackage =>
-          reifyBuildCall(nme.ScalaDot, name)
+            if id.symbol == ScalaPackage => reifyBuildCall(nme.ScalaDot, name)
         case Select(qual, name) =>
           val ctor =
             if (name.isTypeName) nme.SyntacticSelectType
             else nme.SyntacticSelectTerm
           reifyBuildCall(ctor, qual, name)
-        case _ =>
-          super.reifyTreeSyntactically(tree)
+        case _ => super.reifyTreeSyntactically(tree)
       }
 
     override def reifyName(name: Name): Tree =
@@ -382,8 +376,7 @@ trait Reifiers {
           else
             result(
               nameMap.get(name).map { _.head }.getOrElse { introduceName() })
-        case _ =>
-          super.reifyName(name)
+        case _ => super.reifyName(name)
       }
 
     def reifyTuple(args: List[Tree]) =

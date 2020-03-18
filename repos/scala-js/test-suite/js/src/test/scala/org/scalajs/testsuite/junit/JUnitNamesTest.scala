@@ -22,8 +22,7 @@ class JUnitNamesTestCheck {
       boot.invoke(boot.newInstance(), "$times")
       boot.invoke(boot.newInstance(), "$u2206ƒ")
     } catch {
-      case _: Throwable =>
-        fail("Could not invoke method on JUnitNamesTest.")
+      case _: Throwable => fail("Could not invoke method on JUnitNamesTest.")
     }
   }
 }

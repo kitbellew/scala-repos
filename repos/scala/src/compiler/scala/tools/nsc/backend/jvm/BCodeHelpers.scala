@@ -432,8 +432,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
             (possibles exists definitions.isJavaMainMethod) || {
               possibles exists { m =>
                 m.info match {
-                  case PolyType(_, _) =>
-                    fail("main methods cannot be generic.")
+                  case PolyType(_, _) => fail("main methods cannot be generic.")
                   case MethodType(params, res) =>
                     if (res.typeSymbol :: params exists (_.isAbstractType))
                       fail(
@@ -443,8 +442,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
                       definitions.isJavaMainMethod(m) || fail(
                         "main method must have exact signature (Array[String])Unit",
                         m.pos)
-                  case tp =>
-                    fail(s"don't know what this is: $tp", m.pos)
+                  case tp => fail(s"don't know what this is: $tp", m.pos)
                 }
               }
             }
@@ -464,8 +462,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         // entry point among the classes going into the jar.
         if (settings.mainClass.isDefault) {
           entryPoints map (_.fullName('.')) match {
-            case Nil =>
-              log("No Main-Class designated or discovered.")
+            case Nil => log("No Main-Class designated or discovered.")
             case name :: Nil =>
               log(s"Unique entry point: setting Main-Class to $name")
               settings.mainClass.value = name
@@ -621,8 +618,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
           currentRun.symData -= sym
           currentRun.symData -= sym.companionSymbol
           Some(scalaAnnot)
-        case _ =>
-          None
+        case _ => None
       }
     }
 

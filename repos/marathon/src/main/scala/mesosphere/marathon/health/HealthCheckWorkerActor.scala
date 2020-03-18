@@ -51,27 +51,23 @@ class HealthCheckWorkerActor extends Actor with ActorLogging {
       launched: Task.Launched,
       check: HealthCheck): Future[Option[HealthResult]] =
     check.hostPort(launched) match {
-      case None =>
-        Future.successful {
+      case None => Future.successful {
           Some(Unhealthy(
             task.taskId,
             launched.appVersion,
             "Missing/invalid port index and no explicit port specified"))
         }
-      case Some(port) =>
-        check.protocol match {
+      case Some(port) => check.protocol match {
           case HTTP  => http(app, task, launched, check, port)
           case TCP   => tcp(app, task, launched, check, port)
           case HTTPS => https(app, task, launched, check, port)
-          case COMMAND =>
-            Future.failed {
+          case COMMAND => Future.failed {
               val message = s"COMMAND health checks can only be performed " +
                 "by the Mesos executor."
               log.warning(message)
               new UnsupportedOperationException(message)
             }
-          case _ =>
-            Future.failed {
+          case _ => Future.failed {
               val message =
                 s"Unknown health check protocol: [${check.protocol}]"
               log.warning(message)

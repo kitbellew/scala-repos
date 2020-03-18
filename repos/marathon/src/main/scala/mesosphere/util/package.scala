@@ -17,8 +17,7 @@ package object util {
       @tailrec
       def loop(unit: TimeUnit, res: String = ""): String = {
         unit match {
-          case DAYS =>
-            loop(HOURS, appendIfPositive(d.toDays, unit, res))
+          case DAYS => loop(HOURS, appendIfPositive(d.toDays, unit, res))
           case HOURS =>
             loop(MINUTES, appendIfPositive(d.toHours % 24, unit, res))
           case MINUTES =>
@@ -29,10 +28,8 @@ package object util {
             val value = d.toMillis % 1000
             if (res.isEmpty) { s"$value milliseconds" }
             else { appendIfPositive(value, unit, res) }
-          case MICROSECONDS =>
-            loop(MILLISECONDS, res)
-          case NANOSECONDS =>
-            loop(MILLISECONDS, res)
+          case MICROSECONDS => loop(MILLISECONDS, res)
+          case NANOSECONDS  => loop(MILLISECONDS, res)
         }
       }
 

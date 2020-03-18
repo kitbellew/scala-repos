@@ -250,11 +250,9 @@ object StreamRef {
   implicit val decomposer: Decomposer[StreamRef] = new Decomposer[StreamRef] {
     def decompose(streamRef: StreamRef) =
       streamRef match {
-        case Create(uuid, terminal) =>
-          JObject(
+        case Create(uuid, terminal) => JObject(
             "create" -> JObject("uuid" -> uuid.jv, "terminal" -> terminal.jv))
-        case Replace(uuid, terminal) =>
-          JObject(
+        case Replace(uuid, terminal) => JObject(
             "replace" -> JObject("uuid" -> uuid.jv, "terminal" -> terminal.jv))
         case Append => JString("append")
       }

@@ -265,8 +265,7 @@ private[kafka] class KafkaTestUtils extends Logging {
           Request.isValidBrokerId(leaderAndInSyncReplicas.leader) &&
           leaderAndInSyncReplicas.isr.size >= 1
 
-        case _ =>
-          false
+        case _ => false
       }
     eventually(Time(10000), Time(100)) {
       assert(

@@ -21,9 +21,8 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
       case SexpList(
             SexpSymbol(":return") ::
             SexpList(SexpSymbol(":ok") :: payload :: Nil) ::
-            SexpNumber(callId) :: Nil) if callId == 666 =>
-        payload
-      case payload => payload
+            SexpNumber(callId) :: Nil) if callId == 666 => payload
+      case payload                                      => payload
     }
     via match {
       case None => println(s"$value = ${sexp.compactPrint}")

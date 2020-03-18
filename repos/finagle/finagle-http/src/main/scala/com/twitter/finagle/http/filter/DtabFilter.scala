@@ -15,11 +15,9 @@ abstract class DtabFilter[Req <: Message, Rep <: Message]
 
   def apply(req: Req, service: Service[Req, Rep]): Future[Rep] =
     HttpDtab.read(req) match {
-      case Throw(e) =>
-        respondToInvalid(req, e.getMessage)
+      case Throw(e) => respondToInvalid(req, e.getMessage)
 
-      case Return(dtab) if dtab.isEmpty =>
-        service(req)
+      case Return(dtab) if dtab.isEmpty => service(req)
 
       case Return(dtab) =>
         HttpDtab.clear(req)

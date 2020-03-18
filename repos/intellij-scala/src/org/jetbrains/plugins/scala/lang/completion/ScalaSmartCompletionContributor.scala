@@ -272,16 +272,14 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
               case ScProjectionType(
                     proj,
                     _: ScTypeAlias | _: ScClass | _: ScTrait,
-                    _) =>
-                ScType.extractClass(proj) match {
+                    _) => ScType.extractClass(proj) match {
                   case Some(o: ScObject)
                       if ResolveUtils.isAccessible(
                         o,
                         place,
                         forCompletion = true) && ScalaPsiUtil.hasStablePath(
-                        o) =>
-                    checkObject(o)
-                  case _ =>
+                        o) => checkObject(o)
+                  case _   =>
                 }
               case _ =>
             }
@@ -304,9 +302,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                         o,
                         place,
                         forCompletion = true) && ScalaPsiUtil.hasStablePath(
-                        o) =>
-                    checkObject(o)
-                  case _ => //do nothing
+                        o) => checkObject(o)
+                  case _   => //do nothing
                 }
               case Some(p: PsiClass)
                   if ResolveUtils.isAccessible(
@@ -360,7 +357,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           var foundClazz = false
           while (parent != null) {
             parent match {
-              case t: ScNewTemplateDefinition if foundClazz => //do nothing, impossible to invoke
+              case t: ScNewTemplateDefinition
+                  if foundClazz => //do nothing, impossible to invoke
               case t: ScTemplateDefinition =>
                 t.getTypeWithProjections(
                   TypingContext.empty,
@@ -559,8 +557,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                   if (!end) { presentation.setItemText(s"... $arrowText ") }
                 } else presentation.setItemText(text)
                 presentation.setIcon(Icons.LAMBDA)
-              case _ =>
-                presentation.setItemText(text)
+              case _ => presentation.setItemText(text)
             }
           }
         }
@@ -989,10 +986,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
         val reverseRenamesMap = new mutable.HashMap[String, PsiNamedElement]()
 
         refElement match {
-          case ref: PsiReference =>
-            ref.getVariants.foreach {
-              case s: ScalaLookupItem =>
-                s.isRenamed match {
+          case ref: PsiReference => ref.getVariants.foreach {
+              case s: ScalaLookupItem => s.isRenamed match {
                   case Some(name) =>
                     renamesMap += ((s.element.name, (name, s.element)))
                     reverseRenamesMap += ((name, s.element))
@@ -1044,8 +1039,7 @@ private[completion] object ScalaSmartCompletionContributor {
     parent match {
       case refExpr: ScReferenceExpression =>
         (refExpr, parent.getContext.asInstanceOf[T])
-      case _ =>
-        (reference, parent.asInstanceOf[T])
+      case _ => (reference, parent.asInstanceOf[T])
     }
   }
 

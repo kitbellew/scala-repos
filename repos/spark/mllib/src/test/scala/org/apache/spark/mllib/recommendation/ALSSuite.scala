@@ -172,8 +172,7 @@ class ALSSuite extends SparkFunSuite with MLlibTestSparkContext {
   test("negative ids") {
     val data = ALSSuite.generateRatings(50, 50, 2, 0.7, false, false)
     val ratings = sc.parallelize(data._1.map {
-      case Rating(u, p, r) =>
-        Rating(u - 25, p - 25, r)
+      case Rating(u, p, r) => Rating(u - 25, p - 25, r)
     })
     val correct = data._2
     val model = ALS.train(ratings, 5, 15)

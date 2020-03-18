@@ -35,19 +35,13 @@ class BufAsByteBufTest extends FunSuite with BeforeAndAfter {
 
   test("reader index boundary check 1") {
     try { buffer.writerIndex(0) }
-    catch {
-      case e: IndexOutOfBoundsException =>
-        fail()
-    }
+    catch { case e: IndexOutOfBoundsException => fail() }
     intercept[IndexOutOfBoundsException] { buffer.readerIndex(-1) }
   }
 
   test("reader index boundary check 2") {
     try { buffer.writerIndex(buffer.capacity) }
-    catch {
-      case e: IndexOutOfBoundsException =>
-        fail()
-    }
+    catch { case e: IndexOutOfBoundsException => fail() }
     intercept[IndexOutOfBoundsException] {
       buffer.readerIndex(buffer.capacity + 1)
     }
@@ -55,10 +49,7 @@ class BufAsByteBufTest extends FunSuite with BeforeAndAfter {
 
   test("reader index boundary check 3") {
     try { buffer.writerIndex(Capacity / 2) }
-    catch {
-      case e: IndexOutOfBoundsException =>
-        fail()
-    }
+    catch { case e: IndexOutOfBoundsException => fail() }
     intercept[IndexOutOfBoundsException] {
       buffer.readerIndex(Capacity * 3 / 2)
     }
@@ -79,10 +70,7 @@ class BufAsByteBufTest extends FunSuite with BeforeAndAfter {
     try {
       buffer.writerIndex(Capacity)
       buffer.readerIndex(Capacity)
-    } catch {
-      case e: IndexOutOfBoundsException =>
-        fail()
-    }
+    } catch { case e: IndexOutOfBoundsException => fail() }
     intercept[IndexOutOfBoundsException] {
       buffer.writerIndex(buffer.capacity + 1)
     }
@@ -92,10 +80,7 @@ class BufAsByteBufTest extends FunSuite with BeforeAndAfter {
     try {
       buffer.writerIndex(Capacity)
       buffer.readerIndex(Capacity / 2)
-    } catch {
-      case e: IndexOutOfBoundsException =>
-        fail()
-    }
+    } catch { case e: IndexOutOfBoundsException => fail() }
     intercept[IndexOutOfBoundsException] { buffer.writerIndex(Capacity / 4) }
   }
 

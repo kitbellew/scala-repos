@@ -86,28 +86,17 @@ private[hive] class SparkExecuteStatementOperation(
       to: ArrayBuffer[Any],
       ordinal: Int) {
     dataTypes(ordinal) match {
-      case StringType =>
-        to += from.getString(ordinal)
-      case IntegerType =>
-        to += from.getInt(ordinal)
-      case BooleanType =>
-        to += from.getBoolean(ordinal)
-      case DoubleType =>
-        to += from.getDouble(ordinal)
-      case FloatType =>
-        to += from.getFloat(ordinal)
-      case DecimalType() =>
-        to += from.getDecimal(ordinal)
-      case LongType =>
-        to += from.getLong(ordinal)
-      case ByteType =>
-        to += from.getByte(ordinal)
-      case ShortType =>
-        to += from.getShort(ordinal)
-      case DateType =>
-        to += from.getAs[Date](ordinal)
-      case TimestampType =>
-        to += from.getAs[Timestamp](ordinal)
+      case StringType    => to += from.getString(ordinal)
+      case IntegerType   => to += from.getInt(ordinal)
+      case BooleanType   => to += from.getBoolean(ordinal)
+      case DoubleType    => to += from.getDouble(ordinal)
+      case FloatType     => to += from.getFloat(ordinal)
+      case DecimalType() => to += from.getDecimal(ordinal)
+      case LongType      => to += from.getLong(ordinal)
+      case ByteType      => to += from.getByte(ordinal)
+      case ShortType     => to += from.getShort(ordinal)
+      case DateType      => to += from.getAs[Date](ordinal)
+      case TimestampType => to += from.getAs[Timestamp](ordinal)
       case BinaryType | _: ArrayType | _: StructType | _: MapType =>
         val hiveString = HiveContext.toHiveString(
           (from.get(ordinal), dataTypes(ordinal)))

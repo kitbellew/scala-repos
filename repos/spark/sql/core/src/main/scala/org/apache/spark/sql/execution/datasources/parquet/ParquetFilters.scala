@@ -337,14 +337,12 @@ private[sql] object ParquetFilters {
           rhsFilter <- createFilter(schema, rhs)
         } yield FilterApi.and(lhsFilter, rhsFilter)
 
-      case sources.Or(lhs, rhs) =>
-        for {
+      case sources.Or(lhs, rhs) => for {
           lhsFilter <- createFilter(schema, lhs)
           rhsFilter <- createFilter(schema, rhs)
         } yield FilterApi.or(lhsFilter, rhsFilter)
 
-      case sources.Not(pred) =>
-        createFilter(schema, pred).map(FilterApi.not)
+      case sources.Not(pred) => createFilter(schema, pred).map(FilterApi.not)
 
       case _ => None
     }

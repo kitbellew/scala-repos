@@ -138,8 +138,8 @@ class ByteCodeRepository[BT <: BTypes](
     def fieldNodeImpl(parent: InternalName)
         : Either[FieldNotFound, (FieldNode, InternalName)] = {
       classNode(parent) match {
-        case Left(e) =>
-          Left(FieldNotFound(name, descriptor, classInternalName, Some(e)))
+        case Left(e) => Left(
+            FieldNotFound(name, descriptor, classInternalName, Some(e)))
         case Right(c) =>
           c.fields.asScala.find(f =>
             f.name == name && f.desc == descriptor) match {
@@ -239,8 +239,8 @@ class ByteCodeRepository[BT <: BTypes](
       classNode
     } match {
       case Some(node) => Right(node)
-      case None =>
-        Left(ClassNotFound(internalName, javaDefinedClasses(internalName)))
+      case None => Left(
+          ClassNotFound(internalName, javaDefinedClasses(internalName)))
     }
   }
 }

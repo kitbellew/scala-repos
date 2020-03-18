@@ -110,8 +110,7 @@ final class UUID private (
     that match {
       case that: UUID =>
         i1 == that.i1 && i2 == that.i2 && i3 == that.i3 && i4 == that.i4
-      case _ =>
-        false
+      case _ => false
     }
 
   def compareTo(that: UUID): Int = {

@@ -51,8 +51,7 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
           path match {
             // Don't capture system paths.
             case Path.Utf8("$", _*) => Activity.value(NameTree.Neg)
-            case p @ Path.Utf8(elems @ _*) =>
-              acts.get(p) match {
+            case p @ Path.Utf8(elems @ _*) => acts.get(p) match {
                 case Some((a, _)) => a map { tree => tree.map(Name(_)) }
                 case None =>
                   val (act, _) = addPath(p)
@@ -69,8 +68,8 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
 
   def assertEval(res: Activity[NameTree[Name.Bound]], expected: Name.Bound*) =
     res.sample().eval match {
-      case Some(actual) =>
-        assert(actual.map(_.addr.sample) == expected.map(_.addr.sample).toSet)
+      case Some(actual) => assert(
+          actual.map(_.addr.sample) == expected.map(_.addr.sample).toSet)
       case _ => assert(false)
     }
 
@@ -162,8 +161,8 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
 
   def assertLookup(path: String, addrs: Address*) {
     Namer.global.lookup(Path.read(path)).sample() match {
-      case NameTree.Leaf(Name.Bound(addr)) =>
-        assert(addr.sample() == Addr.Bound(addrs.toSet))
+      case NameTree.Leaf(Name.Bound(addr)) => assert(
+          addr.sample() == Addr.Bound(addrs.toSet))
       case _ => fail()
     }
   }
@@ -238,13 +237,11 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
                 val rsp = Await.result(svc(Path.Utf8("yodles")))
                 assert(rsp == Path.Utf8("foo", "yodles"))
 
-              case addr =>
-                fail(s"$addr not a exp.Address.ServiceFactory")
+              case addr => fail(s"$addr not a exp.Address.ServiceFactory")
             }
           case x => throw new MatchError(x)
         }
-      case nt =>
-        fail(s"$nt is not NameTree.Leaf")
+      case nt => fail(s"$nt is not NameTree.Leaf")
     }
   }
 
@@ -263,13 +260,11 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
                 val svc = Await.result(sf())
                 intercept[ClassCastException] { val rsp = Await.result(svc(3)) }
 
-              case addr =>
-                fail(s"$addr not a exp.Address.ServiceFactory")
+              case addr => fail(s"$addr not a exp.Address.ServiceFactory")
             }
           case x => throw new MatchError(x)
         }
-      case nt =>
-        fail(s"$nt is not NameTree.Leaf")
+      case nt => fail(s"$nt is not NameTree.Leaf")
     }
   }
 

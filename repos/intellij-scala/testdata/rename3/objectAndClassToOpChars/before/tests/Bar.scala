@@ -18,8 +18,6 @@ object Test {
   def main(args: Array[String]) {
     /*caret*/
     Bar()
-    1 match {
-      case Bar /*caret*/ (i) =>
-    }
+    1 match { case Bar /*caret*/ (i) => }
   }
 }

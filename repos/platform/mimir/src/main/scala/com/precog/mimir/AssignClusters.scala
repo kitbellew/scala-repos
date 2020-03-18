@@ -95,8 +95,7 @@ trait AssignClusterModule[M[+_]]
             }
 
             val modelsByCluster = modelTuples map {
-              case (modelId, models) =>
-                (modelId, models.groupBy(_._2))
+              case (modelId, models) => (modelId, models.groupBy(_._2))
             }
 
             { (i: Int) =>

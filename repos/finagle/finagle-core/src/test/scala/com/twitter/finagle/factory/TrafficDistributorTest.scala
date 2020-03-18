@@ -28,8 +28,8 @@ private object TrafficDistributorTest {
 
     def unapply(addr: Address): Option[(Int, Double)] =
       addr match {
-        case Address.Inet(ia, metadata) =>
-          Some((ia.getPort, metadata(key).asInstanceOf[Double]))
+        case Address.Inet(ia, metadata) => Some(
+            (ia.getPort, metadata(key).asInstanceOf[Double]))
         case _ => None
       }
   }
@@ -72,8 +72,7 @@ private object TrafficDistributorTest {
     balancers.flatMap { b =>
       val endpoints = b.endpoints.sample()
       endpoints.map {
-        case s: ServiceFactoryProxy[_, _] =>
-          s.self match {
+        case s: ServiceFactoryProxy[_, _] => s.self match {
             case AddressFactory(WeightedTestAddr(_, w)) =>
               (w * endpoints.size, endpoints.size, b.offeredLoad)
           }

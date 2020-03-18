@@ -108,8 +108,7 @@ private[akka] class Mailboxes(
     */
   def getRequiredType(actorClass: Class[_ <: Actor]): Class[_] =
     Reflect.findMarker(actorClass, rmqClass) match {
-      case t: ParameterizedType ⇒
-        t.getActualTypeArguments.head match {
+      case t: ParameterizedType ⇒ t.getActualTypeArguments.head match {
           case c: Class[_] ⇒ c
           case x ⇒
             throw new IllegalArgumentException(
@@ -132,8 +131,7 @@ private[akka] class Mailboxes(
     if (!pmqClass.isAssignableFrom(mailboxType.getClass)) classOf[MessageQueue]
     else
       Reflect.findMarker(mailboxType.getClass, pmqClass) match {
-        case t: ParameterizedType ⇒
-          t.getActualTypeArguments.head match {
+        case t: ParameterizedType ⇒ t.getActualTypeArguments.head match {
             case c: Class[_] ⇒ c
             case x ⇒
               throw new IllegalArgumentException(

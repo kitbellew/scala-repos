@@ -54,8 +54,7 @@ class ZookeeperSystemCoordinationSpec extends Specification {
 
       result must beLike {
         case Success(
-              EventRelayState(0, 10001, IdSequenceBlock(0, 10001, 20000))) =>
-          ok
+              EventRelayState(0, 10001, IdSequenceBlock(0, 10001, 20000))) => ok
       }
     }
 
@@ -70,8 +69,7 @@ class ZookeeperSystemCoordinationSpec extends Specification {
 
         result1 must beLike {
           case Success(
-                EventRelayState(123, 456, IdSequenceBlock(0, 1, 10000))) =>
-            ok
+                EventRelayState(123, 456, IdSequenceBlock(0, 1, 10000))) => ok
         }
 
         sc1.close
@@ -85,8 +83,7 @@ class ZookeeperSystemCoordinationSpec extends Specification {
 
         result2 must beLike {
           case Success(
-                EventRelayState(123, 456, IdSequenceBlock(0, 1, 10000))) =>
-            ok
+                EventRelayState(123, 456, IdSequenceBlock(0, 1, 10000))) => ok
         }
     }
 
@@ -108,8 +105,7 @@ class ZookeeperSystemCoordinationSpec extends Specification {
 
         result must beLike {
           case Success(
-                EventRelayState(123, 456, IdSequenceBlock(0, 1, 10000))) =>
-            ok
+                EventRelayState(123, 456, IdSequenceBlock(0, 1, 10000))) => ok
         }
     }
 
@@ -167,8 +163,7 @@ class ZookeeperSystemCoordinationSpec extends Specification {
         checkpoints must beLike {
           case Some(
                 Failure(
-                  blueeyes.json.serialization.Extractor.Invalid(_, None))) =>
-            ok
+                  blueeyes.json.serialization.Extractor.Invalid(_, None))) => ok
         }
     }
 
@@ -191,10 +186,7 @@ class ZookeeperSystemCoordinationSpec extends Specification {
 
         val result = sc2.loadYggCheckpoint("bifrost")
 
-        result must beLike {
-          case Some(Success(out)) =>
-            in must_== out
-        }
+        result must beLike { case Some(Success(out)) => in must_== out }
     }
 
     "distinguish between normal and abnormal bifrost/checkpoints shutdown" in {

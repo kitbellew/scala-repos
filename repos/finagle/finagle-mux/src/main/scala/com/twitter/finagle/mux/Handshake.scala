@@ -80,10 +80,8 @@ private[finagle] object Handshake {
   def canTinit(trans: Transport[Message, Message]): Future[Boolean] =
     trans.write(Message.Rerr(TinitTag, CanTinitMsg)).before {
       trans.read().transform {
-        case Return(Message.Rerr(`TinitTag`, `CanTinitMsg`)) =>
-          Future.True
-        case _ =>
-          Future.False
+        case Return(Message.Rerr(`TinitTag`, `CanTinitMsg`)) => Future.True
+        case _                                               => Future.False
       }
     }
 
@@ -136,8 +134,7 @@ private[finagle] object Handshake {
         // implement handshaking.
         case Return(false) => Future.value(msgTrans)
 
-        case t @ Throw(_) =>
-          Future.const(t.cast[Transport[Message, Message]])
+        case t @ Throw(_) => Future.const(t.cast[Transport[Message, Message]])
       }
 
     handshake.onFailure { _ => msgTrans.close() }

@@ -201,10 +201,8 @@ class AggregatorSpec
       1,
       Set(Savings))
     receiveOne(10.seconds) match {
-      case result: List[_] ⇒
-        result should have size 1
-      case result ⇒
-        assert(false, s"Expect List, got ${result.getClass}")
+      case result: List[_] ⇒ result should have size 1
+      case result ⇒ assert(false, s"Expect List, got ${result.getClass}")
     }
   }
 
@@ -212,10 +210,8 @@ class AggregatorSpec
     system.actorOf(Props[AccountBalanceRetriever]) !
       GetCustomerAccountBalances(1, Set(Checking, Savings, MoneyMarket))
     receiveOne(10.seconds) match {
-      case result: List[_] ⇒
-        result should have size 3
-      case result ⇒
-        assert(false, s"Expect List, got ${result.getClass}")
+      case result: List[_] ⇒ result should have size 3
+      case result ⇒ assert(false, s"Expect List, got ${result.getClass}")
     }
   }
 }
@@ -368,8 +364,7 @@ class WorkListSpec extends FunSuiteLike {
   }
 
   val fn2: PartialFunction[Any, Unit] = {
-    case s: String ⇒
-      workList2.add(fn1, permanent = true)
+    case s: String ⇒ workList2.add(fn1, permanent = true)
   }
 
   test("Reentrant insert") {

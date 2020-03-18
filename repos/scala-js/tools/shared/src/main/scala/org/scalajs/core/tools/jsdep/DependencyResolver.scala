@@ -93,15 +93,12 @@ object DependencyResolver {
       origins: List[Origin],
       relPaths: Traversable[String]): Either[Problem, String] = {
     val candidates = (relPaths collect {
-      case relPath if ("/" + relPath).endsWith("/" + resourceName) =>
-        relPath
+      case relPath if ("/" + relPath).endsWith("/" + resourceName) => relPath
     }).toList
 
     candidates match {
-      case relPath :: Nil =>
-        Right(relPath)
-      case _ =>
-        Left(new Problem(resourceName, candidates, origins))
+      case relPath :: Nil => Right(relPath)
+      case _              => Left(new Problem(resourceName, candidates, origins))
     }
   }
 

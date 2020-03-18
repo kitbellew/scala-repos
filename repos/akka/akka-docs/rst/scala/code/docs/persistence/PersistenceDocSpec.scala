@@ -76,12 +76,8 @@ object PersistenceDocSpec {
       override def persistenceId = "my-stable-persistence-id"
       //#persistence-id-override
 
-      override def receiveRecover: Receive = {
-        case _ =>
-      }
-      override def receiveCommand: Receive = {
-        case _ =>
-      }
+      override def receiveRecover: Receive = { case _ => }
+      override def receiveCommand: Receive = { case _ => }
     }
   }
 
@@ -373,8 +369,7 @@ object PersistenceDocSpec {
         case c: String =>
           println(c)
           persist(s"handle-$c") { println(_) }
-        case Shutdown =>
-          context.stop(self)
+        case Shutdown => context.stop(self)
       }
 
       override def receiveRecover: Receive = {

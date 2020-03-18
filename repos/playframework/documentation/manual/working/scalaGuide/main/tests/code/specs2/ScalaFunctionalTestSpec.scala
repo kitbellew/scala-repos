@@ -85,8 +85,7 @@ class ScalaFunctionalTestSpec extends ExampleSpecification {
     def applicationWithBrowser =
       new GuiceApplicationBuilder()
         .router(Router.from {
-          case GET(p"/") =>
-            Action {
+          case GET(p"/") => Action {
               Ok("""
               |<html>
               |<body>
@@ -96,8 +95,7 @@ class ScalaFunctionalTestSpec extends ExampleSpecification {
               |</html>
             """.stripMargin) as "text/html"
             }
-          case GET(p"/login") =>
-            Action {
+          case GET(p"/login") => Action {
               Ok("""
               |<html>
               |<body>

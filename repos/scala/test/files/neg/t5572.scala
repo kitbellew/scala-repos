@@ -13,10 +13,7 @@ class Test {
 
   def foo {
     val (b, a) = bar()
-    Z.transf(a, b) match {
-      case sth =>
-        run(sth, b)
-    }
+    Z.transf(a, b) match { case sth => run(sth, b) }
   }
 
   def run(x: X, z: B): Unit = ()

@@ -165,8 +165,7 @@ object M5 {
     def afterDelay(delay: Int)(action: Action): Unit = {
       def insert(ag: Agenda, time: Int): Agenda =
         ag match {
-          case List() =>
-            List((time, action))
+          case List() => List((time, action))
           case (t, act) :: ag1 =>
             if (time < t) (time, action) :: ag
             else (t, act) :: insert(ag1, time)
@@ -417,8 +416,7 @@ class Simulator() {
   def afterDelay(delay: Int)(action: Action) = {
     def insert(ag: Agenda, time: Int): Agenda =
       ag match {
-        case List() =>
-          List((time, action))
+        case List() => List((time, action))
         case (t, act) :: ag1 =>
           if (time < t) (time, action) :: ag else (t, act) :: insert(ag1, time)
       }

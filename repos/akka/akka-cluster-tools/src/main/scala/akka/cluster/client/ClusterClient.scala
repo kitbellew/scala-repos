@@ -68,8 +68,8 @@ object ClusterClientSettings {
       bufferSize = config.getInt("buffer-size"),
       reconnectTimeout = config.getString("reconnect-timeout") match {
         case "off" ⇒ None
-        case _ ⇒
-          Some(config.getDuration("reconnect-timeout", MILLISECONDS).millis)
+        case _ ⇒ Some(
+            config.getDuration("reconnect-timeout", MILLISECONDS).millis)
       })
   }
 
@@ -346,15 +346,14 @@ final class ClusterClient(settings: ClusterClientSettings)
         connectTimerCancelable.foreach(_.cancel())
         failureDetector.heartbeat()
       case ActorIdentity(_, None) ⇒ // ok, use another instead
-      case HeartbeatTick ⇒
-        failureDetector.heartbeat()
+      case HeartbeatTick ⇒ failureDetector.heartbeat()
       case RefreshContactsTick ⇒ sendGetContacts()
-      case Send(path, msg, localAffinity) ⇒
-        buffer(DistributedPubSubMediator.Send(path, msg, localAffinity))
-      case SendToAll(path, msg) ⇒
-        buffer(DistributedPubSubMediator.SendToAll(path, msg))
-      case Publish(topic, msg) ⇒
-        buffer(DistributedPubSubMediator.Publish(topic, msg))
+      case Send(path, msg, localAffinity) ⇒ buffer(
+          DistributedPubSubMediator.Send(path, msg, localAffinity))
+      case SendToAll(path, msg) ⇒ buffer(
+          DistributedPubSubMediator.SendToAll(path, msg))
+      case Publish(topic, msg) ⇒ buffer(
+          DistributedPubSubMediator.Publish(topic, msg))
       case ReconnectTimeout ⇒
         log.warning(
           "Receptionist reconnect not successful within {} stopping cluster client",
@@ -383,10 +382,8 @@ final class ClusterClient(settings: ClusterClientSettings)
         context.become(establishing)
         failureDetector.heartbeat()
       } else receptionist ! Heartbeat
-    case HeartbeatRsp ⇒
-      failureDetector.heartbeat()
-    case RefreshContactsTick ⇒
-      receptionist ! GetContacts
+    case HeartbeatRsp ⇒ failureDetector.heartbeat()
+    case RefreshContactsTick ⇒ receptionist ! GetContacts
     case Contacts(contactPoints) ⇒
       // refresh of contacts
       if (contactPoints.nonEmpty)

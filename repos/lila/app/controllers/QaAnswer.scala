@@ -43,8 +43,7 @@ object QaAnswer extends QaController {
         err => fuccess(BadRequest),
         v =>
           api.answer.vote(answerId, me, v == 1) map {
-            case Some(vote) =>
-              Ok(html.qa.vote(
+            case Some(vote) => Ok(html.qa.vote(
                 routes.QaAnswer.vote(questionId, answerId).url,
                 vote,
                 true))
@@ -62,8 +61,7 @@ object QaAnswer extends QaController {
           body =>
             api.answer.edit(body, a.id) map {
               case None => NotFound
-              case Some(a2) =>
-                Redirect(
+              case Some(a2) => Redirect(
                   routes.QaQuestion.show(q.id, q.slug) + "#answer-" + a2.id)
             }
         )
@@ -89,10 +87,10 @@ object QaAnswer extends QaController {
             case "question" =>
               api.answer.moveToQuestionComment(a, q) inject
                 Redirect(routes.QaQuestion.show(q.id, q.slug))
-            case str =>
-              parseIntOption(str).fold(renderQuestion(q)) { answerId =>
-                api.answer.moveToAnswerComment(a, answerId) inject
-                  Redirect(routes.QaQuestion.show(q.id, q.slug))
+            case str => parseIntOption(str).fold(renderQuestion(q)) {
+                answerId =>
+                  api.answer.moveToAnswerComment(a, answerId) inject
+                    Redirect(routes.QaQuestion.show(q.id, q.slug))
               }
           }
         )

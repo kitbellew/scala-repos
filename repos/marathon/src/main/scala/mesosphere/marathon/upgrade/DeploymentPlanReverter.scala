@@ -151,8 +151,7 @@ private[upgrade] object DeploymentPlanReverter {
     }
 
     sortedGroupChanges.foldLeft(group) {
-      case (result, groupUpdate) =>
-        groupUpdate match {
+      case (result, groupUpdate) => groupUpdate match {
           case (Some(oldGroup), None) =>
             result.update(oldGroup.id, revertGroupRemoval(oldGroup), version)
 
@@ -162,8 +161,7 @@ private[upgrade] object DeploymentPlanReverter {
               revertDependencyChanges(oldGroup, newGroup),
               version)
 
-          case (None, Some(newGroup)) =>
-            revertGroupAddition(result, newGroup)
+          case (None, Some(newGroup)) => revertGroupAddition(result, newGroup)
 
           case (None, None) =>
             log.warn("processing unexpected NOOP in group changes")
@@ -184,17 +182,14 @@ private[upgrade] object DeploymentPlanReverter {
       g: Group): Group = {
 
     changes.foldLeft(g) {
-      case (result, appUpdate) =>
-        appUpdate match {
+      case (result, appUpdate) => appUpdate match {
           case (Some(oldApp), _) => //removal or change
             log.debug("revert to old app definition {}", oldApp.id)
             result.updateApp(oldApp.id, _ => oldApp, version)
           case (None, Some(newApp)) =>
             log.debug("remove app definition {}", newApp.id)
-            result.update(
-              newApp.id.parent,
-              _.removeApplication(newApp.id),
-              version)
+            result
+              .update(newApp.id.parent, _.removeApplication(newApp.id), version)
           case (None, None) =>
             log.warn("processing unexpected NOOP in app changes")
             result

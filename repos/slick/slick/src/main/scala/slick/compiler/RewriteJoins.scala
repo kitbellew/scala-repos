@@ -131,8 +131,8 @@ class RewriteJoins extends Phase {
           Pure(StructNode(ConstArray.empty)).infer(),
           sel1.replace(
             {
-              case FwdPath(s :: rest) if s == s1 =>
-                rest.foldLeft(f1) { case (n, s) => n.select(s) }
+              case FwdPath(s :: rest)
+                  if s == s1 => rest.foldLeft(f1) { case (n, s) => n.select(s) }
             },
             keepType = true)) :@ n.nodeType
         logger.debug("Inlined Pure 'from' in:", res)
@@ -185,8 +185,8 @@ class RewriteJoins extends Phase {
         logger.debug("Hoisting Filter out of Bind from:", b)
         val sRefs = pred1.collect(
           {
-            case p @ FwdPath(s :: rest) if s == fs1 =>
-              (p, FwdPath(b.generator :: rest))
+            case p @ FwdPath(s :: rest)
+                if s == fs1 => (p, FwdPath(b.generator :: rest))
           },
           stopOnMatch = true)
         val Bind(_, _, Pure(StructNode(struct1), pts)) = b
@@ -284,8 +284,8 @@ class RewriteJoins extends Phase {
         def rebase(n: Node): Node =
           n.replace(
             {
-              case (p @ FwdPath(s :: _)) :@ tpe if s == ok =>
-                Ref(replacements(p)) :@ tpe
+              case (p @ FwdPath(s :: _)) :@ tpe
+                  if s == ok => Ref(replacements(p)) :@ tpe
             },
             keepType = true)
         val rebasedIllegalDefs = illegalDefs.map {
@@ -320,11 +320,9 @@ class RewriteJoins extends Phase {
         .replace(
           {
             case p @ FwdPath(r1 :: rest)
-                if r1 == j.leftGen && l1m.contains(rest) =>
-              l1m(rest)
+                if r1 == j.leftGen && l1m.contains(rest) => l1m(rest)
             case p @ FwdPath(r1 :: rest)
-                if r1 == j.rightGen && r1m.contains(rest) =>
-              r1m(rest)
+                if r1 == j.rightGen && r1m.contains(rest) => r1m(rest)
           },
           keepType = true,
           bottomUp = true

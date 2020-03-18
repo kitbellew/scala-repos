@@ -26,9 +26,7 @@ class HighlightingPerformanceTest extends ScalaFixtureTestCase {
         def run() {
           try {
             myFixture.testHighlighting(false, false, false, file.getVirtualFile)
-          } catch {
-            case e: RuntimeException =>
-          }
+          } catch { case e: RuntimeException => }
         }
       }
     )

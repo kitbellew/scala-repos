@@ -67,8 +67,7 @@ final class DefaultPicklerRegistry(generator: RuntimePicklerGenerator)
       case None                  =>
         // Now we use the typeConstructor registry
         AppliedType.parseFull(key) match {
-          case Some(a) =>
-            unpicklerGenMap.get(a.typename) match {
+          case Some(a) => unpicklerGenMap.get(a.typename) match {
               case Some(gen) =>
                 // Genereate the pickler, register it with ourselves for future lookup, and return it.
                 val up = gen(a)
@@ -88,8 +87,7 @@ final class DefaultPicklerRegistry(generator: RuntimePicklerGenerator)
       case None                =>
         // TODO - fix AppliedType for a `parseAll` string or some such.
         AppliedType.parseFull(key) match {
-          case Some(a) =>
-            picklerGenMap.get(a.typename) match {
+          case Some(a) => picklerGenMap.get(a.typename) match {
               case Some(gen) =>
                 // Genereate the pickler, register it with ourselves for future lookup, and return it.
                 val up = gen(a)

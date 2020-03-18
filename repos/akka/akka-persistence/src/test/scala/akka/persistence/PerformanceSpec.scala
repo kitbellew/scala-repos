@@ -53,8 +53,7 @@ object PerformanceSpec {
       extends PerformanceTestPersistentActor(name) {
 
     override val receiveCommand: Receive = controlBehavior orElse {
-      case cmd ⇒
-        persistAsync(cmd) { _ ⇒
+      case cmd ⇒ persistAsync(cmd) { _ ⇒
           if (lastSequenceNr % 1000 == 0) print(".")
           if (lastSequenceNr == failAt) throw new TestException("boom")
         }
@@ -65,8 +64,7 @@ object PerformanceSpec {
       extends PerformanceTestPersistentActor(name) {
 
     override val receiveCommand: Receive = controlBehavior orElse {
-      case cmd ⇒
-        persist(cmd) { _ ⇒
+      case cmd ⇒ persist(cmd) { _ ⇒
           if (lastSequenceNr % 1000 == 0) print(".")
           if (lastSequenceNr == failAt) throw new TestException("boom")
         }

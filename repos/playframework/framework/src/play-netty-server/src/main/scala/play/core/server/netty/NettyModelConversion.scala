@@ -308,8 +308,7 @@ private[server] class NettyModelConversion(
           case HttpChunk.LastChunk(trailers) =>
             val lastChunk = new DefaultLastHttpContent()
             trailers.headers.foreach {
-              case (name, value) =>
-                lastChunk.trailingHeaders().add(name, value)
+              case (name, value) => lastChunk.trailingHeaders().add(name, value)
             }
             lastChunk
         }
@@ -355,8 +354,7 @@ private[server] class NettyModelConversion(
     val currentTimeSeconds = currentTimeMillis / 1000
     cachedDateHeader match {
       case (cachedSeconds, dateHeaderString)
-          if cachedSeconds == currentTimeSeconds =>
-        dateHeaderString
+          if cachedSeconds == currentTimeSeconds => dateHeaderString
       case _ =>
         val dateHeaderString = ResponseHeader.httpDateFormat.print(
           currentTimeMillis)

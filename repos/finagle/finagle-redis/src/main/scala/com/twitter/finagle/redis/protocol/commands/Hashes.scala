@@ -118,10 +118,8 @@ case class HMSet(key: ChannelBuffer, fv: Map[ChannelBuffer, ChannelBuffer])
     extends StrictKeyCommand {
   def command = Commands.HMSET
 
-  val fvList: Seq[ChannelBuffer] = fv.flatMap {
-    case (f, v) =>
-      f :: v :: Nil
-  }(collection.breakOut)
+  val fvList: Seq[ChannelBuffer] = fv
+    .flatMap { case (f, v) => f :: v :: Nil }(collection.breakOut)
 
   def toChannelBuffer =
     RedisCodec.toUnifiedFormat(Seq(CommandBytes.HMSET, key) ++ fvList)

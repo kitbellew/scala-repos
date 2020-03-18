@@ -59,11 +59,9 @@ class ScUnderscoreSectionImpl(node: ASTNode)
         }
         ref.bind() match {
           case Some(ScalaResolveResult(f: ScFunction, _))
-              if f.paramClauses.clauses.length == 0 =>
-            fun()
+              if f.paramClauses.clauses.length == 0 => fun()
           case Some(ScalaResolveResult(c: ScClassParameter, _))
-              if c.isVal | c.isVar =>
-            fun()
+              if c.isVal | c.isVar => fun()
           case Some(ScalaResolveResult(b: ScBindingPattern, _)) =>
             b.nameContext match {
               case _: ScValue | _: ScVariable if b.isClassMember    => fun()
@@ -71,17 +69,14 @@ class ScUnderscoreSectionImpl(node: ASTNode)
               case _                                                => ref.getNonValueType(TypingContext.empty)
             }
           case Some(ScalaResolveResult(p: ScParameter, _))
-              if p.isCallByNameParameter =>
-            fun()
-          case _ => ref.getNonValueType(TypingContext.empty)
+              if p.isCallByNameParameter => fun()
+          case _                         => ref.getNonValueType(TypingContext.empty)
         }
       case Some(expr) => expr.getNonValueType(TypingContext.empty)
       case None =>
         getContext match {
-          case typed: ScTypedStmt =>
-            overExpr match {
-              case Some(`typed`) =>
-                typed.typeElement match {
+          case typed: ScTypedStmt => overExpr match {
+              case Some(`typed`) => typed.typeElement match {
                   case Some(te) => return te.getType(TypingContext.empty)
                   case _ =>
                     return Failure(

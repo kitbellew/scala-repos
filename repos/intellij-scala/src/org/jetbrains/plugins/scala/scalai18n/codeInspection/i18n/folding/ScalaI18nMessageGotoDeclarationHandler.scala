@@ -52,9 +52,8 @@ class ScalaI18nMessageGotoDeclarationHandler
             case literal: ScLiteral
                 if ScalaI18nUtil.isI18nProperty(
                   expression.getProject,
-                  literal) =>
-              return resolve(expression)
-            case _ =>
+                  literal) => return resolve(expression)
+            case _         =>
           }
         }
       case _ =>

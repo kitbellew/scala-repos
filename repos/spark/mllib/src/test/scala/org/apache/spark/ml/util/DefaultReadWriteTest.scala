@@ -111,8 +111,7 @@ trait DefaultReadWriteTest extends TempDirectory {
       checkModelData: (M, M) => Unit): Unit = {
     // Set some Params to make sure set Params are serialized.
     testParams.foreach {
-      case (p, v) =>
-        estimator.set(estimator.getParam(p), v)
+      case (p, v) => estimator.set(estimator.getParam(p), v)
     }
     val model = estimator.fit(dataset)
 

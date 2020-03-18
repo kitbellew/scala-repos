@@ -101,14 +101,12 @@ object RelationSpecs
       }
       (in.relations.values.map(_.toList)) must beLike {
         case (DynamicProvenance(_) :: Nil) :: (StaticProvenance(
-              "/foo") :: Nil) :: Nil =>
-          ok
+              "/foo") :: Nil) :: Nil => ok
       }
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -151,8 +149,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -186,8 +183,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -224,8 +220,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -260,8 +255,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -295,8 +289,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -314,8 +307,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case CoproductProvenance(
               StaticProvenance("/foo"),
-              StaticProvenance("/bar")) =>
-          ok
+              StaticProvenance("/bar")) => ok
       }
       tree.errors must beEmpty
     }
@@ -325,8 +317,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case CoproductProvenance(
               StaticProvenance("foo"),
-              StaticProvenance("bar")) =>
-          ok
+              StaticProvenance("bar")) => ok
       }
       tree.errors must beEmpty
     }
@@ -336,8 +327,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case CoproductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -425,8 +415,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -460,8 +449,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -495,8 +483,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -530,8 +517,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -565,8 +551,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -600,8 +585,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -635,8 +619,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -670,8 +653,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -705,8 +687,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -740,8 +721,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -759,8 +739,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              StaticProvenance("/bar")) =>
-          ok
+              StaticProvenance("/bar")) => ok
       }
       tree.errors must beEmpty
     }
@@ -770,8 +749,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("foo"),
-              StaticProvenance("bar")) =>
-          ok
+              StaticProvenance("bar")) => ok
       }
       tree.errors must beEmpty
     }
@@ -781,8 +759,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }
@@ -800,8 +777,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              StaticProvenance("/bar")) =>
-          ok
+              StaticProvenance("/bar")) => ok
       }
       tree.errors must beEmpty
     }
@@ -811,8 +787,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("foo"),
-              StaticProvenance("bar")) =>
-          ok
+              StaticProvenance("bar")) => ok
       }
       tree.errors must beEmpty
     }
@@ -822,8 +797,7 @@ object RelationSpecs
       tree.provenance must beLike {
         case ProductProvenance(
               StaticProvenance("/foo"),
-              DynamicProvenance(_)) =>
-          ok
+              DynamicProvenance(_)) => ok
       }
       tree.errors must beEmpty
     }

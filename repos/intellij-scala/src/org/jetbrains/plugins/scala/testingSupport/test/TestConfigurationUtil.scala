@@ -118,8 +118,7 @@ object TestConfigurationUtil {
         Some(literal.getValue)
       case p: ScParenthesisedExpr =>
         p.expr.flatMap(getStaticTestNameRaw(_, allowSymbolLiterals))
-      case infixExpr: ScInfixExpr =>
-        infixExpr.getInvokedExpr match {
+      case infixExpr: ScInfixExpr => infixExpr.getInvokedExpr match {
           case refExpr: ScReferenceExpression if refExpr.refName == "+" =>
             getStaticTestNameElement(infixExpr.lOp, allowSymbolLiterals)
               .flatMap(left =>
@@ -127,8 +126,7 @@ object TestConfigurationUtil {
                   .map(left + _.toString))
           case _ => None
         }
-      case methodCall: ScMethodCall =>
-        methodCall.getInvokedExpr match {
+      case methodCall: ScMethodCall => methodCall.getInvokedExpr match {
           case refExpr: ScReferenceExpression
               if noArgMethods.contains(refExpr.refName) &&
                 methodCall.argumentExpressions.isEmpty =>
@@ -138,12 +136,12 @@ object TestConfigurationUtil {
                 methodCall.argumentExpressions.size == 1 =>
             def helper(anyExpr: Any, arg: Any): Option[Any] =
               (anyExpr, refExpr.refName, arg) match {
-                case (expr: String, "stripSuffix", string: String) =>
-                  Some(expr.stripSuffix(string))
-                case (expr: String, "stripPrefix", string: String) =>
-                  Some(expr.stripPrefix(string))
-                case (expr: String, "substring", integer: Int) =>
-                  Some(expr.substring(integer))
+                case (expr: String, "stripSuffix", string: String) => Some(
+                    expr.stripSuffix(string))
+                case (expr: String, "stripPrefix", string: String) => Some(
+                    expr.stripPrefix(string))
+                case (expr: String, "substring", integer: Int) => Some(
+                    expr.substring(integer))
                 case _ => None
               }
             methodCall.argumentExpressions.headOption
@@ -157,10 +155,10 @@ object TestConfigurationUtil {
                 methodCall.argumentExpressions.size == 2 =>
             def helper(anyExpr: Any, arg1: Any, arg2: Any): Option[Any] =
               (anyExpr, refExpr.refName, arg1, arg2) match {
-                case (expr: String, "replace", s1: String, s2: String) =>
-                  Some(expr.replace(s1, s2))
-                case (expr: String, "substring", begin: Int, end: Int) =>
-                  Some(expr.substring(begin, end))
+                case (expr: String, "replace", s1: String, s2: String) => Some(
+                    expr.replace(s1, s2))
+                case (expr: String, "substring", begin: Int, end: Int) => Some(
+                    expr.substring(begin, end))
                 case _ => None
               }
             val arg1Opt = getStaticTestNameElement(

@@ -99,11 +99,9 @@ object Msg extends DispatchSnippet {
       (S.messagesById(id)(S.warnings), MsgWarningMeta.get.get(id)),
       (S.messagesById(id)(S.notices), MsgNoticeMeta.get.get(id))
     ).flatMap {
-      case (msg, style) =>
-        msg.toList match {
+      case (msg, style) => msg.toList match {
           case Nil => Nil
-          case msgList =>
-            style match {
+          case msgList => style match {
               case Some(s) =>
                 msgList.flatMap(t => <span>{t}</span> % ("class" -> s))
               case _ => msgList flatMap (n => n)
@@ -114,8 +112,9 @@ object Msg extends DispatchSnippet {
     // Join multiple messages together with a comma
     msgs match {
       case Nil => Text("")
-      case spans =>
-        spans.reduceLeft { (output, span) => output ++ Text(", ") ++ span }
+      case spans => spans.reduceLeft { (output, span) =>
+          output ++ Text(", ") ++ span
+        }
     }
   }
 

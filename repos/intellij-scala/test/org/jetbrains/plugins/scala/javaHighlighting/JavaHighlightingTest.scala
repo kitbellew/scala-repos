@@ -582,9 +582,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   }
 
   def assertNoErrors(messages: List[Message]): Unit = {
-    assertMatches(messages) {
-      case Nil =>
-    }
+    assertMatches(messages) { case Nil => }
   }
 
   val CannotResolveMethod = ContainsPattern("Cannot resolve method")

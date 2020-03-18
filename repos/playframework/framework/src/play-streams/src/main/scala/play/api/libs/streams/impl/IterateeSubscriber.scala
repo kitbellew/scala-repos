@@ -102,26 +102,19 @@ private[streams] class IterateeSubscriber[T, R, S](iter0: Iteratee[T, R])
     */
   def result: Iteratee[T, R] =
     state match {
-      case NotSubscribedNoStep(result) =>
-        promiseToIteratee(result)
-      case SubscribedNoStep(subs, result) =>
-        promiseToIteratee(result)
-      case NotSubscribedWithCont(cont, result) =>
-        promiseToIteratee(result)
-      case SubscribedWithCont(subs, cont, result) =>
-        promiseToIteratee(result)
-      case CompletedNoStep(result) =>
-        promiseToIteratee(result)
-      case Finished(resultIteratee) =>
-        resultIteratee
+      case NotSubscribedNoStep(result)            => promiseToIteratee(result)
+      case SubscribedNoStep(subs, result)         => promiseToIteratee(result)
+      case NotSubscribedWithCont(cont, result)    => promiseToIteratee(result)
+      case SubscribedWithCont(subs, cont, result) => promiseToIteratee(result)
+      case CompletedNoStep(result)                => promiseToIteratee(result)
+      case Finished(resultIteratee)               => resultIteratee
     }
 
   // Streams methods
 
   override def onSubscribe(subs: Subscription): Unit =
     exclusive {
-      case NotSubscribedNoStep(result) =>
-        state = SubscribedNoStep(subs, result)
+      case NotSubscribedNoStep(result) => state = SubscribedNoStep(subs, result)
       case SubscribedNoStep(subs, result) =>
         throw new IllegalStateException("Can't subscribe twice")
       case NotSubscribedWithCont(cont, result) =>
@@ -131,40 +124,32 @@ private[streams] class IterateeSubscriber[T, R, S](iter0: Iteratee[T, R])
         throw new IllegalStateException("Can't subscribe twice")
       case CompletedNoStep(result) =>
         throw new IllegalStateException("Can't subscribe once completed")
-      case Finished(resultIteratee) =>
-        subs.cancel()
+      case Finished(resultIteratee) => subs.cancel()
     }
 
   override def onComplete(): Unit =
     exclusive {
-      case NotSubscribedNoStep(result) =>
-        state = CompletedNoStep(result)
-      case SubscribedNoStep(subs, result) =>
-        state = CompletedNoStep(result)
+      case NotSubscribedNoStep(result)    => state = CompletedNoStep(result)
+      case SubscribedNoStep(subs, result) => state = CompletedNoStep(result)
       case NotSubscribedWithCont(cont, result) =>
         finishWithCompletedCont(cont, result)
       case SubscribedWithCont(subs, cont, result) =>
         finishWithCompletedCont(cont, result)
       case CompletedNoStep(result) =>
         throw new IllegalStateException("Can't complete twice")
-      case Finished(resultIteratee) =>
-        ()
+      case Finished(resultIteratee) => ()
     }
 
   override def onError(cause: Throwable): Unit =
     exclusive {
-      case NotSubscribedNoStep(result) =>
-        finishWithError(cause, result)
-      case SubscribedNoStep(subs, result) =>
-        finishWithError(cause, result)
-      case NotSubscribedWithCont(cont, result) =>
-        finishWithError(cause, result)
+      case NotSubscribedNoStep(result)         => finishWithError(cause, result)
+      case SubscribedNoStep(subs, result)      => finishWithError(cause, result)
+      case NotSubscribedWithCont(cont, result) => finishWithError(cause, result)
       case SubscribedWithCont(subs, cont, result) =>
         finishWithError(cause, result)
       case CompletedNoStep(result) =>
         throw new IllegalStateException("Can't receive error once completed")
-      case Finished(resultIteratee) =>
-        ()
+      case Finished(resultIteratee) => ()
     }
 
   override def onNext(element: T): Unit =
@@ -179,8 +164,7 @@ private[streams] class IterateeSubscriber[T, R, S](iter0: Iteratee[T, R])
         continueWithNext(subs, cont, element, result)
       case CompletedNoStep(result) =>
         throw new IllegalStateException("Can't receive error once completed")
-      case Finished(resultIteratee) =>
-        ()
+      case Finished(resultIteratee) => ()
     }
 
   private def continueWithNext(
@@ -208,10 +192,8 @@ private[streams] class IterateeSubscriber[T, R, S](iter0: Iteratee[T, R])
         throw new IllegalStateException("Can't get cont twice")
       case SubscribedWithCont(subs, cont, result) =>
         throw new IllegalStateException("Can't get cont twice")
-      case CompletedNoStep(result) =>
-        finishWithCompletedCont(cont, result)
-      case Finished(resultIteratee) =>
-        ()
+      case CompletedNoStep(result)  => finishWithCompletedCont(cont, result)
+      case Finished(resultIteratee) => ()
     }
   }
 
@@ -234,8 +216,7 @@ private[streams] class IterateeSubscriber[T, R, S](iter0: Iteratee[T, R])
           "Can't get done or error while has cont")
       case CompletedNoStep(result) =>
         finishWithDoneOrErrorStep(doneOrError, result)
-      case Finished(resultIteratee) =>
-        ()
+      case Finished(resultIteratee) => ()
     }
 
   /**

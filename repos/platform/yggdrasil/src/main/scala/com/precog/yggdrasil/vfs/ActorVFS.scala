@@ -429,8 +429,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
               ResourceError.notFound(
                 "Cannot return metadata for path %s".format(path.path))
             }
-          case PathOpFailure(_, error) =>
-            \/.left(error)
+          case PathOpFailure(_, error) => \/.left(error)
         }
       }
     }
@@ -980,8 +979,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
         io.map(requestor ! _).unsafePerformIO
 
-      case CurrentVersion(_) =>
-        sender ! versionLog.current
+      case CurrentVersion(_) => sender ! versionLog.current
     }
   }
 }

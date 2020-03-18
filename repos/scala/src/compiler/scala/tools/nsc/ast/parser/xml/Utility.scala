@@ -112,10 +112,8 @@ object Utility {
               "hex char not allowed in decimal char ref\n" +
                 "Did you mean to write &#x ?")
           else i = i * base + ch().asDigit
-        case SU =>
-          reportTruncatedError("")
-        case _ =>
-          reportSyntaxError(
+        case SU => reportTruncatedError("")
+        case _ => reportSyntaxError(
             "character '" + ch() + "' not allowed in char ref\n")
       }
       nextch()
@@ -144,9 +142,8 @@ object Utility {
 
     isNameStart(ch) || (getType(ch).toByte match {
       case COMBINING_SPACING_MARK | ENCLOSING_MARK | NON_SPACING_MARK |
-          MODIFIER_LETTER | DECIMAL_DIGIT_NUMBER =>
-        true
-      case _ => ".-:" contains ch
+          MODIFIER_LETTER | DECIMAL_DIGIT_NUMBER => true
+      case _                                     => ".-:" contains ch
     })
   }
 
@@ -164,9 +161,8 @@ object Utility {
 
     getType(ch).toByte match {
       case LOWERCASE_LETTER | UPPERCASE_LETTER | OTHER_LETTER |
-          TITLECASE_LETTER | LETTER_NUMBER =>
-        true
-      case _ => ch == '_'
+          TITLECASE_LETTER | LETTER_NUMBER => true
+      case _                               => ch == '_'
     }
   }
 }

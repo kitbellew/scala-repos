@@ -155,9 +155,8 @@ abstract class Queue[T] {
     def loop(size: Int, acc: List[T] = Nil): List[T] = {
       if (size > maxLength) {
         pollNonBlocking match {
-          case None => acc.reverse // someone else cleared us out
-          case Some(item) =>
-            loop(count.decrementAndGet, item :: acc)
+          case None       => acc.reverse // someone else cleared us out
+          case Some(item) => loop(count.decrementAndGet, item :: acc)
         }
       } else acc.reverse
     }

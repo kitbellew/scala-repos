@@ -303,8 +303,7 @@ object Enumerator {
           .map(_.flatMap(_.pureFold(any => ())(dec)))
 
         Future.sequence(ps).onComplete {
-          case Success(_) =>
-            redeemResultIfNotYet(iter.single())
+          case Success(_) => redeemResultIfNotYet(iter.single())
           case Failure(e) => result.failure(e)
 
         }
@@ -381,8 +380,7 @@ object Enumerator {
         val r1 = e1 |>>| itE1
         val r2 = e2 |>>| itE2
         r1.flatMap(_ => r2).onComplete {
-          case Success(_) =>
-            redeemResultIfNotYet(iter.single())
+          case Success(_) => redeemResultIfNotYet(iter.single())
           case Failure(e) => result.failure(e)
 
         }
@@ -599,16 +597,14 @@ object Enumerator {
           }(dec)
 
           next.onFailure {
-            case reason: Exception =>
-              onError(reason.getMessage(), Input.Empty)
+            case reason: Exception => onError(reason.getMessage(), Input.Empty)
           }(dec)
 
           next.onComplete {
             case Success(Some(i)) => step(i)
 
             case Success(None) => Future(onComplete())(pec)
-            case Failure(e) =>
-              iterateeP.failure(e)
+            case Failure(e)    => iterateeP.failure(e)
           }(dec)
         }
         step(it, true)

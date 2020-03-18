@@ -352,8 +352,7 @@ private[remote] class ReliableDeliverySupervisor(
       writer ! FlushAndStop
       context.become(flushWait)
     case IsIdle ⇒ // Do not reply, we will Terminate soon, or send a GotUid
-    case s: Send ⇒
-      handleSend(s)
+    case s: Send ⇒ handleSend(s)
     case ack: Ack ⇒
       // If we are not sure about the UID just ignore the ack. Ignoring is fine.
       if (uidConfirmed) {
@@ -372,8 +371,7 @@ private[remote] class ReliableDeliverySupervisor(
 
         resendNacked()
       }
-    case AttemptSysMsgRedelivery ⇒
-      if (uidConfirmed) resendAll()
+    case AttemptSysMsgRedelivery ⇒ if (uidConfirmed) resendAll()
     case Terminated(_) ⇒
       currentHandle = None
       context.parent ! StoppedReading(self)
@@ -392,8 +390,7 @@ private[remote] class ReliableDeliverySupervisor(
       uid = Some(receivedUid)
       resendAll()
 
-    case s: EndpointWriter.StopReading ⇒
-      writer forward s
+    case s: EndpointWriter.StopReading ⇒ writer forward s
   }
 
   def gated(
@@ -429,8 +426,8 @@ private[remote] class ReliableDeliverySupervisor(
         goToActive()
       } else goToIdle()
     case AttemptSysMsgRedelivery ⇒ // Ignore
-    case s @ Send(msg: SystemMessage, _, _, _) ⇒
-      tryBuffer(s.copy(seqOpt = Some(nextSeq())))
+    case s @ Send(msg: SystemMessage, _, _, _) ⇒ tryBuffer(
+        s.copy(seqOpt = Some(nextSeq())))
     case s: Send ⇒ context.system.deadLetters ! s
     case EndpointWriter.FlushAndStop ⇒ context.stop(self)
     case EndpointWriter.StopReading(w, replyTo) ⇒
@@ -710,8 +707,7 @@ private[remote] class EndpointWriter(
 
   override def preStart(): Unit = {
     handle match {
-      case Some(h) ⇒
-        reader = startReadEndpoint(h)
+      case Some(h) ⇒ reader = startReadEndpoint(h)
       case None ⇒
         transport.associate(remoteAddress, refuseUid).map(Handle(_)) pipeTo self
     }
@@ -732,8 +728,7 @@ private[remote] class EndpointWriter(
   def receive = if (handle.isEmpty) initializing else writing
 
   def initializing: Receive = {
-    case s: Send ⇒
-      enqueueInBuffer(s)
+    case s: Send ⇒ enqueueInBuffer(s)
     case Status.Failure(e: InvalidAssociationException) ⇒
       publishAndThrow(
         new InvalidAssociation(localAddress, remoteAddress, e),
@@ -817,8 +812,7 @@ private[remote] class EndpointWriter(
 
     def delegate(msg: Any): Boolean =
       msg match {
-        case s: Send ⇒
-          writeSend(s)
+        case s: Send ⇒ writeSend(s)
         case FlushAndStop ⇒
           flushAndStop()
           false
@@ -920,11 +914,9 @@ private[remote] class EndpointWriter(
       }
 
     // We are in Writing state, so buffer is empty, safe to stop here
-    case FlushAndStop ⇒
-      flushAndStop()
+    case FlushAndStop ⇒ flushAndStop()
 
-    case AckIdleCheckTimer if ackDeadline.isOverdue() ⇒
-      trySendPureAck()
+    case AckIdleCheckTimer if ackDeadline.isOverdue() ⇒ trySendPureAck()
   }
 
   def writeSend(s: Send): Boolean =
@@ -973,8 +965,7 @@ private[remote] class EndpointWriter(
       case e: NotSerializableException ⇒
         log.error(e, "Transient association error (association remains live)")
         true
-      case e: EndpointException ⇒
-        publishAndThrow(e, Logging.ErrorLevel)
+      case e: EndpointException ⇒ publishAndThrow(e, Logging.ErrorLevel)
       case NonFatal(e) ⇒
         publishAndThrow(
           new EndpointException("Failed to write message to the transport", e),
@@ -986,8 +977,7 @@ private[remote] class EndpointWriter(
       reader = startReadEndpoint(handle.get)
       becomeWritingOrSendBufferedMessages()
 
-    case s: Send ⇒
-      enqueueInBuffer(s)
+    case s: Send ⇒ enqueueInBuffer(s)
   }
 
   override def unhandled(message: Any): Unit =
@@ -996,10 +986,8 @@ private[remote] class EndpointWriter(
         publishAndThrow(
           new EndpointDisassociatedException("Disassociated"),
           Logging.DebugLevel)
-      case s @ StopReading(_, replyTo) ⇒
-        reader match {
-          case Some(r) ⇒
-            r.tell(s, replyTo)
+      case s @ StopReading(_, replyTo) ⇒ reader match {
+          case Some(r) ⇒ r.tell(s, replyTo)
           case None ⇒
             // initializing, buffer and take care of it later when buffer is sent
             enqueueInBuffer(s)
@@ -1189,8 +1177,7 @@ private[remote] class EndpointReader(
         case None ⇒
       }
 
-    case InboundPayload(oversized) ⇒
-      log.error(
+    case InboundPayload(oversized) ⇒ log.error(
         new OversizedPayloadException(
           s"Discarding oversized payload received: " +
             s"max allowed size [${transport.maximumPayloadBytes}] bytes, actual size [${oversized.size}] bytes."),
@@ -1207,8 +1194,7 @@ private[remote] class EndpointReader(
   def notReading: Receive = {
     case Disassociated(info) ⇒ handleDisassociated(info)
 
-    case StopReading(writer, replyTo) ⇒
-      replyTo ! StoppedReading(writer)
+    case StopReading(writer, replyTo) ⇒ replyTo ! StoppedReading(writer)
 
     case InboundPayload(p) ⇒
       val (ackOption, _) = tryDecodeMessageAndAck(p)
@@ -1220,8 +1206,7 @@ private[remote] class EndpointReader(
 
   private def handleDisassociated(info: DisassociateInfo): Unit =
     info match {
-      case AssociationHandle.Unknown ⇒
-        context.stop(self)
+      case AssociationHandle.Unknown ⇒ context.stop(self)
       case AssociationHandle.Shutdown ⇒
         throw ShutDownAssociation(
           localAddress,

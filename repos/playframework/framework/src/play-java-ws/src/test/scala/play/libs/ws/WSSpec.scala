@@ -17,8 +17,7 @@ object WSSpec extends PlaySpecification {
   "WS.url().post(InputStream)" should {
 
     val uploadApp = FakeApplication(withRoutes = {
-      case ("POST", "/") =>
-        Action { request =>
+      case ("POST", "/") => Action { request =>
           request.body.asRaw.fold[Result](BadRequest) { raw =>
             val size = raw.size
             Ok(s"size=$size")

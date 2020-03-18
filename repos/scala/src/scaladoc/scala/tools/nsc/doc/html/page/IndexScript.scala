@@ -76,8 +76,7 @@ class IndexScript(universe: doc.Universe) extends Page {
       key -> key.templates.collect {
         case t: DocTemplateEntity
             if !t.isPackage && !universe.settings.hardcoded.isExcluded(
-              t.qualifiedName) =>
-          t
+              t.qualifiedName) => t
       }
     }): _*)
   }
@@ -134,8 +133,7 @@ class IndexScript(universe: doc.Universe) extends Page {
     mbr match {
       case d: Def => jsonObject(d)
       case v: Val => jsonObject(v)
-      case m: MemberEntity =>
-        JSONObject(
+      case m: MemberEntity => JSONObject(
           Map("member" -> m.definitionName, "error" -> "unsupported entity"))
     }
   }

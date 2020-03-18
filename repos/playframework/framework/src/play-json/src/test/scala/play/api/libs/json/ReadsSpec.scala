@@ -52,8 +52,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                 _,
                 ValidationError(
                   "error.expected.date.isoformat" :: Nil,
-                  _) :: Nil) :: Nil) =>
-          ok
+                  _) :: Nil) :: Nil) => ok
       }
     }
 
@@ -90,8 +89,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                   _,
                   ValidationError(
                     "error.expected.date.isoformat" :: Nil,
-                    _) :: Nil) :: Nil) =>
-            ok
+                    _) :: Nil) :: Nil) => ok
         }
       }
 
@@ -102,8 +100,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                   _,
                   ValidationError(
                     "error.expected.date.isoformat" :: Nil,
-                    _) :: Nil) :: Nil) =>
-            ok
+                    _) :: Nil) :: Nil) => ok
         }
       }
     }
@@ -150,8 +147,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                   _,
                   ValidationError(
                     "error.expected.date.isoformat" :: Nil,
-                    _) :: Nil) :: Nil) =>
-            ok
+                    _) :: Nil) :: Nil) => ok
         }
       }
 
@@ -161,8 +157,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                 (
                   _,
                   ValidationError(
-                    "error.expected.date" :: Nil) :: Nil) :: Nil) =>
-            ok
+                    "error.expected.date" :: Nil) :: Nil) :: Nil) => ok
         }
       }
     }
@@ -189,8 +184,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                   _,
                   ValidationError(
                     "error.expected.date.isoformat" :: Nil,
-                    _) :: Nil) :: Nil) =>
-            ok
+                    _) :: Nil) :: Nil) => ok
         }
       }
 
@@ -201,8 +195,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                   _,
                   ValidationError(
                     "error.expected.date.isoformat" :: Nil,
-                    _) :: Nil) :: Nil) =>
-            ok
+                    _) :: Nil) :: Nil) => ok
         }
       }
     }
@@ -254,8 +247,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                 _,
                 ValidationError(
                   "error.expected.date.isoformat" :: Nil,
-                  _) :: Nil) :: Nil) =>
-          ok
+                  _) :: Nil) :: Nil) => ok
       }
     }
 
@@ -288,8 +280,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                   _,
                   ValidationError(
                     "error.expected.date.isoformat" :: Nil,
-                    _) :: Nil) :: Nil) =>
-            ok
+                    _) :: Nil) :: Nil) => ok
         }
       }
 
@@ -300,8 +291,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                   _,
                   ValidationError(
                     "error.expected.date.isoformat" :: Nil,
-                    _) :: Nil) :: Nil) =>
-            ok
+                    _) :: Nil) :: Nil) => ok
         }
       }
     }
@@ -355,8 +345,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                 _,
                 ValidationError(
                   "error.expected.date.isoformat" :: Nil,
-                  _) :: Nil) :: Nil) =>
-          ok
+                  _) :: Nil) :: Nil) => ok
       }
     }
 
@@ -379,8 +368,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                   _,
                   ValidationError(
                     "error.expected.date.isoformat" :: Nil,
-                    _) :: Nil) :: Nil) =>
-            ok
+                    _) :: Nil) :: Nil) => ok
         }
       }
 
@@ -391,8 +379,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                   _,
                   ValidationError(
                     "error.expected.date.isoformat" :: Nil,
-                    _) :: Nil) :: Nil) =>
-            ok
+                    _) :: Nil) :: Nil) => ok
         }
       }
     }
@@ -442,8 +429,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                 _,
                 ValidationError(
                   "error.expected.date.isoformat" :: Nil,
-                  _) :: Nil) :: Nil) =>
-          ok
+                  _) :: Nil) :: Nil) => ok
       }
     }
 
@@ -497,8 +483,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                   _,
                   ValidationError(
                     "error.expected.date.isoformat" :: Nil,
-                    _) :: Nil) :: Nil) =>
-            ok
+                    _) :: Nil) :: Nil) => ok
         }
       }
 
@@ -509,8 +494,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
                   _,
                   ValidationError(
                     "error.expected.date.isoformat" :: Nil,
-                    _) :: Nil) :: Nil) =>
-            ok
+                    _) :: Nil) :: Nil) => ok
         }
       }
     }

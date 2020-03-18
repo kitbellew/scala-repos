@@ -639,8 +639,7 @@ class IMain(
     }
     val cat = code + script
     compile(cat, false) match {
-      case Left(result) =>
-        result match {
+      case Left(result) => result match {
           case IR.Incomplete => {
             code = cat + "\n"
             new CompiledScript {
@@ -869,8 +868,7 @@ class IMain(
 
     def evalEither =
       callEither(resultName) match {
-        case Left(ex) =>
-          ex match {
+        case Left(ex) => ex match {
             case ex: NullPointerException => Right(null)
             case ex                       => Left(unwrap(ex))
           }

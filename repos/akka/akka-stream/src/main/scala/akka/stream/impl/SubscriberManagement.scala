@@ -162,7 +162,9 @@ private[akka] trait SubscriberManagement[T]
                 subscription.totalDemand = x
                 requestFromUpstreamIfRequired()
             }
-          case ErrorCompleted(_) ⇒ // ignore, the Subscriber might not have seen our error event yet
+          case ErrorCompleted(
+                _
+              ) ⇒ // ignore, the Subscriber might not have seen our error event yet
         }
       }
     }

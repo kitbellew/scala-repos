@@ -255,10 +255,7 @@ class DurationTest extends {
         "Duration.Top" -> Duration.Top,
         "Duration.Undefined" -> Duration.Undefined,
         "duration.TOP" -> Duration.Top
-      ) foreach {
-        case (s, d) =>
-          assert(Duration.parse(s) == d)
-      }
+      ) foreach { case (s, d) => assert(Duration.parse(s) == d) }
     }
 
     "reject obvious human impostors" in {

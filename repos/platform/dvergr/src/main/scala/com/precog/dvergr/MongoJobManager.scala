@@ -244,8 +244,7 @@ final class MongoJobManager(
   protected def transition(jobId: JobId)(
       t: JobState => Either[String, JobState]): Future[Either[String, Job]] = {
     findJob(jobId) flatMap {
-      case Some(job) =>
-        t(job.state) match {
+      case Some(job) => t(job.state) match {
           case Right(newState) =>
             val newJob = job.copy(state = newState)
             database {
@@ -254,12 +253,10 @@ final class MongoJobManager(
                 .where("id" === job.id)
             } map { _ => Right(newJob) }
 
-          case Left(error) =>
-            Future { Left(error) }
+          case Left(error) => Future { Left(error) }
         }
 
-      case None =>
-        Future { Left("Cannot find job with ID '%s'." format jobId) }
+      case None => Future { Left("Cannot find job with ID '%s'." format jobId) }
     }
   }
 }

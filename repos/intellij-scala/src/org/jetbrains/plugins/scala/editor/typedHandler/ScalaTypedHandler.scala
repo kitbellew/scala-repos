@@ -91,8 +91,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
     } else if (file.findElementAt(offset - 2) match {
                  case i: PsiElement
                      if !ScalaNamesUtil.isOperatorName(
-                       i.getText) && i.getText != "=" =>
-                   c == '>' || c == '/'; case _       => false
+                       i.getText) && i.getText != "=" => c == '>' || c == '/';
+                 case _                               => false
                }) { chooseXmlTask(withAttr = false) }
     else if (element.getPrevSibling != null && element.getPrevSibling.getNode.getElementType == ScalaElementTypes.CASE_CLAUSES) {
       val ltIndex = element.getPrevSibling.getText.indexOf("<")
@@ -437,9 +437,9 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       _ => true,
       elem =>
         Option(elem.getParent).map(_.getParent).exists {
-          case _: ScFunction | _: ScVariable | _: ScValue | _: ScTypeAlias =>
-            true
-          case _ => false
+          case _: ScFunction | _: ScVariable | _: ScValue |
+              _: ScTypeAlias => true
+          case _             => false
         }
     )
   }
@@ -519,8 +519,7 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       offset: Int) {
     if (CodeInsightSettings.getInstance().AUTO_POPUP_COMPLETION_LOOKUP) {
       element.getParent match {
-        case l: ScLiteral =>
-          element.getNode.getElementType match {
+        case l: ScLiteral => element.getNode.getElementType match {
             case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tMULTILINE_STRING =>
               if (l.getText.filter(_ == '$').length == 1)
                 scheduleAutopopup(file, editor, project)
@@ -553,8 +552,7 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       offset: Int) {
     if (CodeInsightSettings.getInstance().AUTO_POPUP_COMPLETION_LOOKUP) {
       element.getParent match {
-        case l: ScLiteral =>
-          element.getNode.getElementType match {
+        case l: ScLiteral => element.getNode.getElementType match {
             case ScalaTokenTypes.tINTERPOLATED_STRING |
                 ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING =>
               file.findElementAt(offset).getPrevSibling match {
@@ -576,8 +574,7 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       offset: Int) {
     if (ScalaApplicationSettings.getInstance().UPGRADE_TO_INTERPOLATED) {
       element.getParent match {
-        case l: ScLiteral =>
-          element.getNode.getElementType match {
+        case l: ScLiteral => element.getNode.getElementType match {
             case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tMULTILINE_STRING =>
               if (l.getText.filter(_ == '$').length == 1 && file.getText.charAt(
                     offset - 2) == '$') {

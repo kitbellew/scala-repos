@@ -72,19 +72,16 @@ object CreateFromUsageUtil {
 
   def parametersText(ref: ScReferenceElement) = {
     ref.getParent match {
-      case p: ScPattern =>
-        paramsText(patternArgs(p))
+      case p: ScPattern              => paramsText(patternArgs(p))
       case MethodRepr(_, _, _, args) => paramsText(args) //for case class
       case _ =>
         val fromConstrArguments =
           PsiTreeUtil.getParentOfType(ref, classOf[ScConstructor]) match {
             case ScConstructor(simple: ScSimpleTypeElement, args)
-                if ref.getParent == simple =>
-              args
+                if ref.getParent == simple => args
             case ScConstructor(pt: ScParameterizedTypeElement, args)
-                if ref.getParent == pt.typeElement =>
-              args
-            case _ => Seq.empty
+                if ref.getParent == pt.typeElement => args
+            case _                                 => Seq.empty
           }
         fromConstrArguments.map(argList => paramsText(argList.exprs)).mkString
     }

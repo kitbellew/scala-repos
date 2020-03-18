@@ -146,21 +146,17 @@ trait Config[T] extends (() => T) {
               !name.endsWith("$outer") && // no loops!
               interestingReturnTypes.exists(_.isAssignableFrom(rt))) {
             method.invoke(config) match {
-              case Unspecified =>
-                buf += (prefix + name)
-              case specified: Specified[_] =>
-                specified match {
+              case Unspecified => buf += (prefix + name)
+              case specified: Specified[_] => specified match {
                   case Specified(sub: Config[_]) =>
                     collect(prefix + name + ".", sub)
                   case Specified(Some(sub: Config[_])) =>
                     collect(prefix + name + ".", sub)
                   case _ =>
                 }
-              case sub: Config[_] =>
-                collect(prefix + name + ".", sub)
-              case Some(sub: Config[_]) =>
-                collect(prefix + name + ".", sub)
-              case _ =>
+              case sub: Config[_]       => collect(prefix + name + ".", sub)
+              case Some(sub: Config[_]) => collect(prefix + name + ".", sub)
+              case _                    =>
             }
           }
         }

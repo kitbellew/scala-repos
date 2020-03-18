@@ -81,8 +81,7 @@ object ExtractValue {
         val errorMsg = otherType match {
           case StructType(_) =>
             s"Field name should be String Literal, but it's $extraction"
-          case other =>
-            s"Can't extract value from $child"
+          case other => s"Can't extract value from $child"
         }
         throw new AnalysisException(errorMsg)
     }

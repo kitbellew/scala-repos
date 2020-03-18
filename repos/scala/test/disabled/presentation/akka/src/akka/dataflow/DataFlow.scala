@@ -93,8 +93,7 @@ object DataFlow {
       self.timeout = timeoutMs
       private var readerFuture: Option[CompletableFuture[Any]] = None
       def receive = {
-        case Get =>
-          dataFlow.value.get match {
+        case Get => dataFlow.value.get match {
             case Some(value) => self reply value
             case None        => readerFuture = self.senderFuture
           }

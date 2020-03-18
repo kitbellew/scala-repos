@@ -121,8 +121,7 @@ class PrepareRenameScalaMethodProcessor extends RenamePsiElementProcessor {
     for (elem <- ScalaOverridingMemberSearcher.search(function, deep = true)) {
       allRenames.put(elem, newName)
       elem match {
-        case fun: ScFunction =>
-          fun.getGetterOrSetterFunction match {
+        case fun: ScFunction => fun.getGetterOrSetterFunction match {
             case Some(function2) => buff += function2
             case _               =>
           }

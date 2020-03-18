@@ -49,9 +49,7 @@ class ClassfileWatcher(
         new ApachePollingFileWatcher(dir, selector, rec, listeners)
       }
 
-  override def receive: Receive = {
-    case _ =>
-  }
+  override def receive: Receive = { case _ => }
 
   override def postStop(): Unit = { impls.foreach(_.shutdown()) }
 

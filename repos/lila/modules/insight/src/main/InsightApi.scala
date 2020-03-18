@@ -20,8 +20,7 @@ final class InsightApi(
   def userCache(user: User): Fu[UserCache] =
     userCacheApi find user.id flatMap {
       case Some(c) => fuccess(c)
-      case None =>
-        for {
+      case None => for {
           count <- storage count user.id
           ecos <- storage ecos user.id
           c = UserCache(user.id, count, ecos, DateTime.now)

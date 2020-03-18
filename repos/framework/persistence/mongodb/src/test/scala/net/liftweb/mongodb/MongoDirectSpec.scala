@@ -252,8 +252,7 @@ class MongoDirectSpec extends Specification with MongoTestKit {
       Helpers.tryo(coll.save(doc, WriteConcern.SAFE)).toOption must beSome
       coll.save(doc2, WriteConcern.SAFE) must throwA[MongoException]
       Helpers.tryo(coll.save(doc2, WriteConcern.SAFE)) must beLike {
-        case Failure(msg, _, _) =>
-          msg must contain("E11000")
+        case Failure(msg, _, _) => msg must contain("E11000")
       }
       Helpers.tryo(coll.save(doc3, WriteConcern.SAFE)).toOption must beSome
 

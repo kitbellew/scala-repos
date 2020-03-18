@@ -48,8 +48,7 @@ sealed trait BufferSetterGetterUtils {
     var i = 0
     while (i < getters.length) {
       getters(i) = dataTypes(i) match {
-        case NullType =>
-          (row: InternalRow, ordinal: Int) => null
+        case NullType => (row: InternalRow, ordinal: Int) => null
 
         case BooleanType =>
           (row: InternalRow, ordinal: Int) =>

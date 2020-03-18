@@ -269,8 +269,7 @@ class MigrationTo0_13(taskRepository: TaskRepository, store: PersistentStore) {
           source.readFully(bytes)
           Some(MarathonTask.parseFrom(bytes))
         } catch {
-          case e: com.google.protobuf.InvalidProtocolBufferException =>
-            None
+          case e: com.google.protobuf.InvalidProtocolBufferException => None
         }
       } else { None }
     }

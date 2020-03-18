@@ -90,8 +90,7 @@ object ISetTest extends SpecLite {
 
   "splitRoot" ! forAll { a: ISet[Int] =>
     a match {
-      case Tip() =>
-        a.splitRoot must_=== List.empty[ISet[Int]]
+      case Tip() => a.splitRoot must_=== List.empty[ISet[Int]]
       case s @ Bin(_, _, _) =>
         val List(l, x, r) = s.splitRoot
         structurallySound(l)
@@ -135,8 +134,7 @@ object ISetTest extends SpecLite {
         c.findMax must_=== Option(b)
         Foldable[ISet].all(d)(_ > i) must_=== true
         a.filter(x => b < x && x < i) must_=== ISet.empty
-      case None =>
-        a.split(i)._1 must_=== ISet.empty
+      case None => a.split(i)._1 must_=== ISet.empty
     }
   }
 
@@ -145,8 +143,7 @@ object ISetTest extends SpecLite {
       case Some(b) =>
         (i < b) must_=== true
         a.split(i)._2.findMin must_=== Option(b)
-      case None =>
-        a.split(i)._2 must_=== ISet.empty
+      case None => a.split(i)._2 must_=== ISet.empty
     }
   }
 

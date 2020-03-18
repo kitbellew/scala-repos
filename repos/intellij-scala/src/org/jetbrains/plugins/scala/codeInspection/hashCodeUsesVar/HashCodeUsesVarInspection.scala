@@ -23,8 +23,7 @@ class HashCodeUsesVarInspection extends AbstractInspection {
             exp: ScReferenceExpression): Unit = {
           super.visitReferenceExpression(exp)
           exp.resolve() match {
-            case field: ScReferencePattern =>
-              field.nameContext match {
+            case field: ScReferencePattern => field.nameContext match {
                 case variable: ScVariable if !variable.isLocal =>
                   holder.registerProblem(
                     exp,

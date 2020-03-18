@@ -118,10 +118,8 @@ class MapWithStateRDDSuite
           "mapping func called with wrong time")
 
         data match {
-          case Some("noop") =>
-            None
-          case Some("get-state") =>
-            Some(state.getOption().getOrElse(-1))
+          case Some("noop")      => None
+          case Some("get-state") => Some(state.getOption().getOrElse(-1))
           case Some("update-state") =>
             if (state.exists) state.update(state.get + 1) else state.update(0)
             None
@@ -135,8 +133,7 @@ class MapWithStateRDDSuite
               "State is not timing out when data = None")
             timingOutStates += state.get()
             None
-          case _ =>
-            fail("Unexpected test data")
+          case _ => fail("Unexpected test data")
         }
       }
 
@@ -317,9 +314,8 @@ class MapWithStateRDDSuite
             case Some(1) =>
               if (state.exists()) { state.update(state.get + 1) }
               else state.update(0)
-            case Some(2) =>
-              state.remove()
-            case _ =>
+            case Some(2) => state.remove()
+            case _       =>
           }
           None.asInstanceOf[Option[
             Int

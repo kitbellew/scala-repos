@@ -28,8 +28,5 @@ object Test extends App {
     )
     val ttree2 = toolbox.typecheck(tree2, withImplicitViewsDisabled = true)
     println(ttree2)
-  } catch {
-    case ex: Throwable =>
-      println(ex)
-  }
+  } catch { case ex: Throwable => println(ex) }
 }

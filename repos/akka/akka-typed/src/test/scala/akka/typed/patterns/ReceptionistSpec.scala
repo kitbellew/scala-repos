@@ -129,8 +129,7 @@ class ReceptionistSpec extends TypedSpec {
                   s
               }
               .expectMessage(1.second) {
-                case (msg, s) ⇒
-                  msg should be(Registered(ServiceKeyA, s))
+                case (msg, s) ⇒ msg should be(Registered(ServiceKeyA, s))
               }
         }
       })

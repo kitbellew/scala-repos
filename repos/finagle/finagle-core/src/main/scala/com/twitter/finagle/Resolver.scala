@@ -145,8 +145,7 @@ private[finagle] class InetResolver(
     val elapsed = Stopwatch.start()
     Future
       .collectToTry(hp.map {
-        case (host, port, meta) =>
-          resolveHost(host).map { inetAddrs =>
+        case (host, port, meta) => resolveHost(host).map { inetAddrs =>
             inetAddrs.map { inetAddr =>
               Address.Inet(new InetSocketAddress(inetAddr, port), meta)
             }
@@ -193,8 +192,7 @@ private[finagle] class InetResolver(
           timer.schedule(pollInterval.fromNow, pollInterval) {
             FuturePool.unboundedPool(updater(()))
           }
-        case None =>
-          Closable.nop
+        case None => Closable.nop
       }
     }
   }
@@ -204,13 +202,10 @@ private[finagle] class InetResolver(
     */
   def bind(hosts: String): Var[Addr] =
     Try(parseHostPorts(hosts)) match {
-      case Return(hp) =>
-        bindHostPortsToAddr(hp.map {
-          case (host, port) =>
-            (host, port, Addr.Metadata.empty)
+      case Return(hp) => bindHostPortsToAddr(hp.map {
+          case (host, port) => (host, port, Addr.Metadata.empty)
         })
-      case Throw(exc) =>
-        Var.value(Addr.Failed(exc))
+      case Throw(exc) => Var.value(Addr.Failed(exc))
     }
 }
 
@@ -354,8 +349,7 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
       case Name.Path(_) =>
         Throw(new IllegalArgumentException(
           "Resolver.resolve does not support logical names"))
-      case bound @ Name.Bound(_) =>
-        Return(NameGroup(bound))
+      case bound @ Name.Bound(_) => Return(NameGroup(bound))
     }
 
   /**
@@ -380,8 +374,7 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
     if (name startsWith "/") Name(name)
     else {
       val (resolver, arg) = lex(name) match {
-        case (Eq :: _) | (Bang :: _) =>
-          throw new ResolverAddressInvalid(name)
+        case (Eq :: _) | (Bang :: _) => throw new ResolverAddressInvalid(name)
 
         case El(scheme) :: Bang :: name =>
           resolvers.find(_.scheme == scheme) match {

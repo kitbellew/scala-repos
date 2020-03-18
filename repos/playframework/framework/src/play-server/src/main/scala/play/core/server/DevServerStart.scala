@@ -83,9 +83,7 @@ object DevServerStart {
 
         // First delete the default log file for a fresh start (only in Dev Mode)
         try { new File(path, "logs/application.log").delete() }
-        catch {
-          case NonFatal(_) =>
-        }
+        catch { case NonFatal(_) => }
 
         // Configure the logger for the first time.
         // This is usually done by Application itself when it's instantiated, which for other types of ApplicationProviders,

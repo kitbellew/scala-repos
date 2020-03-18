@@ -33,8 +33,7 @@ class ANNSuite extends SparkFunSuite with MLlibTestSparkContext {
       Array(1.0, 1.0))
     val outputs = Array(0.0, 1.0, 1.0, 0.0)
     val data = inputs.zip(outputs).map {
-      case (features, label) =>
-        (Vectors.dense(features), Vectors.dense(label))
+      case (features, label) => (Vectors.dense(features), Vectors.dense(label))
     }
     val rddData = sc.parallelize(data, 1)
     val hiddenLayersTopology = Array(5)
@@ -48,15 +47,9 @@ class ANNSuite extends SparkFunSuite with MLlibTestSparkContext {
     trainer.LBFGSOptimizer.setNumIterations(20)
     val model = trainer.train(rddData)
     val predictionAndLabels = rddData
-      .map {
-        case (input, label) =>
-          (model.predict(input)(0), label(0))
-      }
+      .map { case (input, label) => (model.predict(input)(0), label(0)) }
       .collect()
-    predictionAndLabels.foreach {
-      case (p, l) =>
-        assert(math.round(p) === l)
-    }
+    predictionAndLabels.foreach { case (p, l) => assert(math.round(p) === l) }
   }
 
   test(
@@ -72,8 +65,7 @@ class ANNSuite extends SparkFunSuite with MLlibTestSparkContext {
       Array(0.0, 1.0),
       Array(1.0, 0.0))
     val data = inputs.zip(outputs).map {
-      case (features, label) =>
-        (Vectors.dense(features), Vectors.dense(label))
+      case (features, label) => (Vectors.dense(features), Vectors.dense(label))
     }
     val rddData = sc.parallelize(data, 1)
     val hiddenLayersTopology = Array(5)
@@ -87,14 +79,8 @@ class ANNSuite extends SparkFunSuite with MLlibTestSparkContext {
     trainer.setWeights(initialWeights)
     val model = trainer.train(rddData)
     val predictionAndLabels = rddData
-      .map {
-        case (input, label) =>
-          (model.predict(input), label)
-      }
+      .map { case (input, label) => (model.predict(input), label) }
       .collect()
-    predictionAndLabels.foreach {
-      case (p, l) =>
-        assert(p ~== l absTol 0.5)
-    }
+    predictionAndLabels.foreach { case (p, l) => assert(p ~== l absTol 0.5) }
   }
 }

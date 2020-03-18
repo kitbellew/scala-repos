@@ -46,10 +46,9 @@ trait ExecutionDirectives {
         if (iterationsLeft > 0) {
           handler(rejections) match {
             case Some(route) ⇒
-              recoverRejectionsWith(handle(
-                _,
-                originalRejections,
-                iterationsLeft - 1))(route)(ctx.withAcceptAll)
+              recoverRejectionsWith(
+                handle(_, originalRejections, iterationsLeft - 1))(route)(
+                ctx.withAcceptAll)
             case None ⇒ FastFuture.successful(RouteResult.Rejected(rejections))
           }
         } else

@@ -245,8 +245,7 @@ trait MethodSynthesis {
               // Soldier on for the sake of the presentation compiler
               List(cd)
           }
-        case _ =>
-          stat :: Nil
+        case _ => stat :: Nil
       }
 
     def standardAccessors(vd: ValDef): List[DerivedFromValDef] =

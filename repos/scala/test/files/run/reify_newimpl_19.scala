@@ -13,8 +13,5 @@ object Test extends App {
     new C {
       val T = Int
     }
-  } catch {
-    case ex: Throwable =>
-      println(ex)
-  }
+  } catch { case ex: Throwable => println(ex) }
 }

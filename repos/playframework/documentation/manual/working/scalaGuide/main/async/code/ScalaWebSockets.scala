@@ -181,8 +181,7 @@ object Samples {
 
     class MyWebSocketActor(out: ActorRef) extends Actor {
       def receive = {
-        case msg: String =>
-          out ! ("I received your message: " + msg)
+        case msg: String => out ! ("I received your message: " + msg)
       }
     }
     //#example-actor
@@ -212,10 +211,7 @@ object Samples {
 
     class MyWebSocketActor(out: ActorRef) extends Actor {
       import play.api.libs.json.JsValue
-      def receive = {
-        case msg: JsValue =>
-          out ! msg
-      }
+      def receive = { case msg: JsValue => out ! msg }
     }
 
     object MyWebSocketActor {
@@ -243,10 +239,7 @@ object Samples {
     case class OutEvent(bar: String)
 
     class MyWebSocketActor(out: ActorRef) extends Actor {
-      def receive = {
-        case InEvent(foo) =>
-          out ! OutEvent(foo)
-      }
+      def receive = { case InEvent(foo) => out ! OutEvent(foo) }
     }
 
     object MyWebSocketActor {

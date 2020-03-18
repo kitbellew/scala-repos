@@ -28,8 +28,7 @@ object Macros {
                   DefDef(mods, name1, tparams, vparamss, tpt1, body1)
               }
               Template(Nil, emptyValDef, ctor +: defs ::: defs1)
-            case _ =>
-              super.transform(tree)
+            case _ => super.transform(tree)
           }
       } transform cdef
     c.Expr[Unit](Block(cdef1 :: Nil, Literal(Constant(()))))

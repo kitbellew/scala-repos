@@ -101,8 +101,7 @@ class VectorSlicerSuite
 
     def validateResults(df: DataFrame): Unit = {
       df.select("result", "expected").collect().foreach {
-        case Row(vec1: Vector, vec2: Vector) =>
-          assert(vec1 === vec2)
+        case Row(vec1: Vector, vec2: Vector) => assert(vec1 === vec2)
       }
       val resultMetadata = AttributeGroup.fromStructField(df.schema("result"))
       val expectedMetadata = AttributeGroup.fromStructField(
@@ -110,10 +109,7 @@ class VectorSlicerSuite
       assert(resultMetadata.numAttributes === expectedMetadata.numAttributes)
       resultMetadata.attributes.get
         .zip(expectedMetadata.attributes.get)
-        .foreach {
-          case (a, b) =>
-            assert(a === b)
-        }
+        .foreach { case (a, b) => assert(a === b) }
     }
 
     vectorSlicer.setIndices(Array(1, 4)).setNames(Array.empty)

@@ -72,12 +72,9 @@ abstract class TreeInfo {
   def isPureDef(tree: Tree): Boolean =
     tree match {
       case EmptyTree | ClassDef(_, _, _, _) | TypeDef(_, _, _, _) |
-          Import(_, _) | DefDef(_, _, _, _, _, _) =>
-        true
-      case ValDef(mods, _, _, rhs) =>
-        !mods.isMutable && isExprSafeToInline(rhs)
-      case _ =>
-        false
+          Import(_, _) | DefDef(_, _, _, _, _, _) => true
+      case ValDef(mods, _, _, rhs)                => !mods.isMutable && isExprSafeToInline(rhs)
+      case _                                      => false
     }
 
   /** Is `tree` a path, defined as follows? (Spec: 3.1 Paths)
@@ -190,18 +187,14 @@ abstract class TreeInfo {
     */
   def isExprSafeToInline(tree: Tree): Boolean =
     tree match {
-      case EmptyTree | This(_) | Super(_, _) | Literal(_) =>
-        true
-      case Ident(_) =>
-        tree.symbol.isStable
+      case EmptyTree | This(_) | Super(_, _) | Literal(_) => true
+      case Ident(_)                                       => tree.symbol.isStable
       // this case is mostly to allow expressions like -5 and +7, but any
       // member of an anyval should be safely pure
       case Select(Literal(const), name) =>
         const.isAnyVal && (const.tpe.member(name) != NoSymbol)
-      case Select(qual, _) =>
-        tree.symbol.isStable && isExprSafeToInline(qual)
-      case TypeApply(fn, _) =>
-        isExprSafeToInline(fn)
+      case Select(qual, _)  => tree.symbol.isStable && isExprSafeToInline(qual)
+      case TypeApply(fn, _) => isExprSafeToInline(fn)
       case Apply(Select(free @ Ident(_), nme.apply), _)
           if free.symbol.name endsWith nme.REIFY_FREE_VALUE_SUFFIX =>
         // see a detailed explanation of this trick in `GenSymbols.reifyFreeTerm`
@@ -215,12 +208,10 @@ abstract class TreeInfo {
         // The callee might also be a Block, which has a null symbol, so we guard against that (SI-7185)
         fn.symbol != null && fn.symbol.isMethod && !fn.symbol.isLazy && isExprSafeToInline(
           fn)
-      case Typed(expr, _) =>
-        isExprSafeToInline(expr)
+      case Typed(expr, _) => isExprSafeToInline(expr)
       case Block(stats, expr) =>
         (stats forall isPureDef) && isExprSafeToInline(expr)
-      case _ =>
-        false
+      case _ => false
     }
 
   /** As if the name of the method didn't give it away,
@@ -354,10 +345,8 @@ abstract class TreeInfo {
     */
   def stripNamedApplyBlock(tree: Tree) =
     tree match {
-      case Block(stats, expr) if stats.forall(_.isInstanceOf[ValDef]) =>
-        expr
-      case _ =>
-        tree
+      case Block(stats, expr) if stats.forall(_.isInstanceOf[ValDef]) => expr
+      case _                                                          => tree
     }
 
   /** Strips layers of `.asInstanceOf[T]` / `_.$asInstanceOf[T]()` from an expression */
@@ -366,10 +355,8 @@ abstract class TreeInfo {
       case TypeApply(sel @ Select(inner, _), _) if isCastSymbol(sel.symbol) =>
         stripCast(inner)
       case Apply(TypeApply(sel @ Select(inner, _), _), Nil)
-          if isCastSymbol(sel.symbol) =>
-        stripCast(inner)
-      case t =>
-        t
+          if isCastSymbol(sel.symbol) => stripCast(inner)
+      case t                          => t
     }
 
   object StripCast {
@@ -559,9 +546,8 @@ abstract class TreeInfo {
         true
       case AppliedTypeTree(
             Select(_, tpnme.JAVA_REPEATED_PARAM_CLASS_NAME),
-            _) =>
-        true
-      case _ => false
+            _) => true
+      case _   => false
     }
 
   /** Is tpt a by-name parameter type of the form => T? */
@@ -684,8 +670,7 @@ abstract class TreeInfo {
         isSimpleThrowable(tpt.tpe)
       case CaseDef(Bind(_, Typed(Ident(nme.WILDCARD), tpt)), EmptyTree, _) =>
         isSimpleThrowable(tpt.tpe)
-      case _ =>
-        isDefaultCase(cdef)
+      case _ => isDefaultCase(cdef)
     }
 
   private def isSimpleThrowable(tp: Type): Boolean =
@@ -693,8 +678,7 @@ abstract class TreeInfo {
       case TypeRef(pre, sym, args) =>
         (pre == NoPrefix || pre.widen.typeSymbol.isStatic) &&
           (sym isNonBottomSubClass ThrowableClass) && /* bq */ !sym.isTrait
-      case _ =>
-        false
+      case _ => false
     }
 
   /* If we have run-time types, and these are used for pattern matching,
@@ -903,10 +887,9 @@ abstract class TreeInfo {
         case Apply(
               fun,
               (Ident(nme.SELECTOR_DUMMY) |
-              Select(Ident(nme.SELECTOR_DUMMY), _)) :: Nil) =>
-          Some(fun)
-        case Apply(fun, _) => unapply(fun)
-        case _             => None
+              Select(Ident(nme.SELECTOR_DUMMY), _)) :: Nil) => Some(fun)
+        case Apply(fun, _)                                  => unapply(fun)
+        case _                                              => None
       }
   }
 
@@ -985,12 +968,10 @@ abstract class TreeInfo {
               List(Literal(Constant(name)))) if nameTest(oper) =>
           Some((qual, name))
         case Apply(Select(qual, oper), List(Literal(Constant(name))))
-            if nameTest(oper) =>
-          Some((qual, name))
+            if nameTest(oper) => Some((qual, name))
         case Apply(Ident(oper), List(Literal(Constant(name))))
-            if nameTest(oper) =>
-          Some((EmptyTree, name))
-        case _ => None
+            if nameTest(oper) => Some((EmptyTree, name))
+        case _                => None
       }
   }
   object DynamicUpdate

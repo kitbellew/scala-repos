@@ -99,8 +99,7 @@ object ForwarderService {
 
   def main(args: Array[String]) {
     val service = args(0) match {
-      case "helloApp" =>
-        createHelloApp(args.tail: _*)
+      case "helloApp" => createHelloApp(args.tail: _*)
       case "forwarder" =>
         createForwarder(forwardToPort = args(1).toInt, args.drop(2): _*)
     }

@@ -126,8 +126,7 @@ class TemplateExample
           "Scalatra: Session Example",
           <pre>You have logged in as: {first + "-" + last}</pre>
           <pre>Route: /login</pre>)
-      case x =>
-        displayPage(
+      case x => displayPage(
           "Scalatra: Session Example" + x.toString,
           <form action={url("/login")} method='POST'>
             First Name:<input name="first" type='text'/>

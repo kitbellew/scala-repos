@@ -24,8 +24,7 @@ object ActorRefBackpressureSinkSpec {
       case `initMessage` ⇒
         sender() ! ackMessage
         ref forward initMessage
-      case `completeMessage` ⇒
-        ref forward completeMessage
+      case `completeMessage` ⇒ ref forward completeMessage
       case msg: Int ⇒
         sender() ! ackMessage
         ref forward msg
@@ -38,8 +37,7 @@ object ActorRefBackpressureSinkSpec {
     var actorRef: ActorRef = Actor.noSender
 
     def receive = {
-      case TriggerAckMessage ⇒
-        actorRef ! ackMessage
+      case TriggerAckMessage ⇒ actorRef ! ackMessage
       case msg ⇒
         actorRef = sender()
         ref forward msg

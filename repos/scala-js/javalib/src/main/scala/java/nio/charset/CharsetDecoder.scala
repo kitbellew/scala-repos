@@ -116,8 +116,7 @@ abstract class CharsetDecoder protected (
               in.position(in.position + result2.length)
               loop()
             }
-          case CodingErrorAction.REPORT =>
-            result2
+          case CodingErrorAction.REPORT => result2
           case CodingErrorAction.IGNORE =>
             in.position(in.position + result2.length)
             loop()
@@ -134,10 +133,8 @@ abstract class CharsetDecoder protected (
         val result = implFlush(out)
         if (result.isUnderflow) status = FLUSHED
         result
-      case FLUSHED =>
-        CoderResult.UNDERFLOW
-      case _ =>
-        throw new IllegalStateException
+      case FLUSHED => CoderResult.UNDERFLOW
+      case _       => throw new IllegalStateException
     }
   }
 

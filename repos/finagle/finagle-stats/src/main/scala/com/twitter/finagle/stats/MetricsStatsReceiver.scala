@@ -113,8 +113,8 @@ object MetricsStatsReceiver {
               CounterIncrData(name, value))
             Try(Buf.Utf8(Json.serialize(env)))
 
-          case _ =>
-            Throw(new IllegalArgumentException("unknown format: " + event))
+          case _ => Throw(
+              new IllegalArgumentException("unknown format: " + event))
         }
 
       def deserialize(buf: Buf) =
@@ -161,8 +161,8 @@ object MetricsStatsReceiver {
               StatAddData(name, delta))
             Try(Buf.Utf8(Json.serialize(env)))
 
-          case _ =>
-            Throw(new IllegalArgumentException("unknown format: " + event))
+          case _ => Throw(
+              new IllegalArgumentException("unknown format: " + event))
         }
 
       def deserialize(buf: Buf) =

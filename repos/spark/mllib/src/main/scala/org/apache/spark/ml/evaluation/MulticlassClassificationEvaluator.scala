@@ -90,8 +90,7 @@ class MulticlassClassificationEvaluator @Since("1.5.0") (
       .select($(predictionCol), $(labelCol))
       .rdd
       .map {
-        case Row(prediction: Double, label: Double) =>
-          (prediction, label)
+        case Row(prediction: Double, label: Double) => (prediction, label)
       }
     val metrics = new MulticlassMetrics(predictionAndLabels)
     val metric = $(metricName) match {

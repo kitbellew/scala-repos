@@ -209,8 +209,7 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       val setterArgTypes = method.getGenericParameterTypes.toList
       val listenerCls: Class[_] = setterArgTypes.collectFirst {
         case c: Class[_]
-            if c.getName.matches(".+(Listener|Manager|Observer|Watcher).*") =>
-          c
+            if c.getName.matches(".+(Listener|Manager|Observer|Watcher).*") => c
       } match {
         case Some(c) => c
         case None    => classOf[Any] // Failed to find listener argument by type

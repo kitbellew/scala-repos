@@ -262,8 +262,7 @@ trait Extractors {
             ttpe.tpe,
             rtpe,
             tagFlavor == nme.TypeTag))
-        case _ =>
-          None
+        case _ => None
       }
   }
 
@@ -329,8 +328,7 @@ trait Extractors {
             ttpe.tpe,
             rtpe,
             tagFlavor == nme.TypeTag))
-        case _ =>
-          None
+        case _ => None
       }
   }
 
@@ -342,8 +340,7 @@ trait Extractors {
         case Select(splicee, _)
             if tree.symbol != NoSymbol && tree.symbol == ExprSplice =>
           Some(splicee)
-        case _ =>
-          None
+        case _ => None
       }
   }
 
@@ -386,8 +383,7 @@ trait Extractors {
               freeTermFactory) &&
               uref2.name == nme.UNIVERSE_SHORT && internal2 == nme.internal && rs2 == nme.reificationSupport && flagsRepr == nme.FlagsRepr =>
           Some((uref1, name, reifyBinding(tree), flags, origin))
-        case _ =>
-          None
+        case _ => None
       }
     }
   }
@@ -405,10 +401,8 @@ trait Extractors {
               Select(Select(Select(uref @ Ident(_), internal), rs), mkIdent),
               List(Ident(name: TermName)))
             if internal == nme.internal && rs == nme.reificationSupport && mkIdent == nme.mkIdent && name
-              .startsWith(nme.REIFY_FREE_PREFIX) =>
-          Some((uref, name))
-        case _ =>
-          None
+              .startsWith(nme.REIFY_FREE_PREFIX) => Some((uref, name))
+        case _                                   => None
       }
   }
 
@@ -436,8 +430,7 @@ trait Extractors {
             if uref1.name == nme.UNIVERSE_SHORT && internal1 == nme.internal && rs1 == nme.reificationSupport && newNestedSymbol == nme.newNestedSymbol &&
               uref2.name == nme.UNIVERSE_SHORT && internal2 == nme.internal && rs2 == nme.reificationSupport && flagsRepr == nme.FlagsRepr =>
           Some((uref1, name, flags, isClass))
-        case _ =>
-          None
+        case _ => None
       }
   }
 
@@ -448,38 +441,28 @@ trait Extractors {
               Select(Select(uref @ Ident(_), typeRef), apply),
               List(Select(_, noSymbol), Ident(freeType: TermName), nil))
             if (uref.name == nme.UNIVERSE_SHORT && typeRef == nme.TypeRef && noSymbol == nme.NoSymbol && freeType
-              .startsWith(nme.REIFY_FREE_PREFIX)) =>
-          Some(freeType)
-        case _ =>
-          None
+              .startsWith(nme.REIFY_FREE_PREFIX)) => Some(freeType)
+        case _                                    => None
       }
   }
 
   object BoundTerm {
     def unapply(tree: Tree): Option[Tree] =
       tree match {
-        case Select(_, name) if name.isTermName =>
-          Some(tree)
-        case Ident(name) if name.isTermName =>
-          Some(tree)
-        case This(_) =>
-          Some(tree)
-        case _ =>
-          None
+        case Select(_, name) if name.isTermName => Some(tree)
+        case Ident(name) if name.isTermName     => Some(tree)
+        case This(_)                            => Some(tree)
+        case _                                  => None
       }
   }
 
   object BoundType {
     def unapply(tree: Tree): Option[RefTree] =
       tree match {
-        case tree @ Select(_, name) if name.isTypeName =>
-          Some(tree)
-        case tree @ SelectFromTypeTree(_, _) =>
-          Some(tree)
-        case tree @ Ident(name) if name.isTypeName =>
-          Some(tree)
-        case _ =>
-          None
+        case tree @ Select(_, name) if name.isTypeName => Some(tree)
+        case tree @ SelectFromTypeTree(_, _)           => Some(tree)
+        case tree @ Ident(name) if name.isTypeName     => Some(tree)
+        case _                                         => None
       }
   }
 }

@@ -229,8 +229,7 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
             def extract(rs: ResultSet, rowId: Int) =
               rs.getObject(index) match {
-                case pgo: PGobject =>
-                  pgo.getType match {
+                case pgo: PGobject => pgo.getType match {
                     case "hstore" =>
                       pgo.getValue
                         .split(",|=>")
@@ -255,8 +254,7 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                               "Invalid pair in hstore value: " + invalid)
                         }
 
-                    case "json" =>
-                      JParser.parseFromString(pgo.getValue) match {
+                    case "json" => JParser.parseFromString(pgo.getValue) match {
                         case Success(jv) =>
                           buildColumns = Slice.withIdsAndValues(
                             jv,
@@ -367,8 +365,7 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
         Table(
           StreamT.unfoldM[Future, Slice, LoadState](InitialLoad(paths.toList)) {
-            case InLoad(connGen, query, skip, remaining) =>
-              M.point {
+            case InLoad(connGen, query, skip, remaining) => M.point {
                 val (slice, nextSkip) = makeSlice(connGen, query, skip)
                 Some((
                   slice,
@@ -377,10 +374,8 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                     .getOrElse(InitialLoad(remaining))))
               }
 
-            case InitialLoad(path :: xs) =>
-              path.elements.toList match {
-                case dbName :: tableName :: Nil =>
-                  M.point {
+            case InitialLoad(path :: xs) => path.elements.toList match {
+                case dbName :: tableName :: Nil => M.point {
                     try {
                       databaseMap.get(dbName).map {
                         url =>
@@ -425,8 +420,7 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                     "JDBC path " + path.path + " does not have the form /dbName/tableName; rollups not yet supported.")
               }
 
-            case InitialLoad(Nil) =>
-              M.point(None)
+            case InitialLoad(Nil) => M.point(None)
           },
           UnknownSize
         ).transform(idSpec) //.printer("JDBC Table")

@@ -123,8 +123,7 @@ class LotsOfDataBot extends Actor with ActorLogging {
   }
 
   def passive: Receive = {
-    case Tick ⇒
-      if (!tickTask.isCancelled) replicator ! GetKeyIds
+    case Tick ⇒ if (!tickTask.isCancelled) replicator ! GetKeyIds
     case GetKeyIdsResult(keys) ⇒
       if (keys.size >= maxEntries) {
         tickTask.cancel()

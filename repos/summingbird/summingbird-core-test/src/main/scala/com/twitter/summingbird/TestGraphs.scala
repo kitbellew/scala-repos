@@ -300,8 +300,9 @@ object TestGraphs {
       }
       .toIterable
       .flatMap {
-        case (time, lv) =>
-          lv.map { case (k, (optju, ju)) => (time, (k, (optju, ju))) }
+        case (time, lv) => lv.map {
+            case (k, (optju, ju)) => (time, (k, (optju, ju)))
+          }
       }
 
     // zip the left and right streams
@@ -343,8 +344,9 @@ object TestGraphs {
       .toList
       .flatMap { case (k, lv) => lv.map { case ((_, optuju)) => (k, optuju) } }
       .flatMap {
-        case (k, opt) =>
-          opt.map { case (time, u, optju) => (time, (k, (u, optju))) }
+        case (k, opt) => opt.map {
+            case (time, u, optju) => (time, (k, (u, optju)))
+          }
       }
 
     // compute the final store result after join

@@ -692,8 +692,9 @@ final case class Select(in: Node, field: TermSymbol)
   override def getDumpInfo =
     Path.unapply(this) match {
       case Some(l) =>
-        super.getDumpInfo
-          .copy(name = "Path", mainInfo = l.reverseIterator.mkString("."))
+        super.getDumpInfo.copy(
+          name = "Path",
+          mainInfo = l.reverseIterator.mkString("."))
       case None => super.getDumpInfo
     }
   protected def buildType = in.nodeType.select(field)

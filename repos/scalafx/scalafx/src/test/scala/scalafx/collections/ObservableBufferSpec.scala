@@ -597,8 +597,7 @@ class ObservableBufferSpec[T]
     buffer onChange { (list, changes) =>
       {
         for (change <- changes) change match {
-          case Add(pos, addedBuffer) =>
-            addedValues ++= addedBuffer.toBuffer
+          case Add(pos, addedBuffer) => addedValues ++= addedBuffer.toBuffer
           case Remove(pos, removedBuffer) =>
             removedValues ++= removedBuffer.toBuffer
           case Reorder(start, end, permutation) =>

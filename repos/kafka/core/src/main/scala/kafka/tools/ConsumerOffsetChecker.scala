@@ -42,8 +42,7 @@ object ConsumerOffsetChecker extends Logging {
       bid: Int): Option[SimpleConsumer] = {
     try {
       zkUtils.readDataMaybeNull(ZkUtils.BrokerIdsPath + "/" + bid)._1 match {
-        case Some(brokerInfoString) =>
-          Json.parseFull(brokerInfoString) match {
+        case Some(brokerInfoString) => Json.parseFull(brokerInfoString) match {
             case Some(m) =>
               val brokerInfo = m.asInstanceOf[Map[String, Any]]
               val host = brokerInfo.get("host").get.asInstanceOf[String]
@@ -113,15 +112,13 @@ object ConsumerOffsetChecker extends Logging {
               }))
           case None => // ignore
         }
-      case None =>
-        println("No broker for partition %s - %s".format(topic, pid))
+      case None => println("No broker for partition %s - %s".format(topic, pid))
     }
   }
 
   private def processTopic(zkUtils: ZkUtils, group: String, topic: String) {
     topicPidMap.get(topic) match {
-      case Some(pids) =>
-        pids.sorted.foreach { pid =>
+      case Some(pids) => pids.sorted.foreach { pid =>
           processPartition(zkUtils, group, topic, pid)
         }
       case None => // ignore
@@ -131,8 +128,8 @@ object ConsumerOffsetChecker extends Logging {
   private def printBrokerInfo() {
     println("BROKER INFO")
     for ((bid, consumerOpt) <- consumerMap) consumerOpt match {
-      case Some(consumer) =>
-        println("%s -> %s:%d".format(bid, consumer.host, consumer.port))
+      case Some(consumer) => println(
+          "%s -> %s:%d".format(bid, consumer.host, consumer.port))
       case None => // ignore
     }
   }
@@ -287,8 +284,7 @@ object ConsumerOffsetChecker extends Logging {
         case None           => // ignore
       }
     } catch {
-      case t: Throwable =>
-        println("Exiting due to: %s.".format(t.getMessage))
+      case t: Throwable => println("Exiting due to: %s.".format(t.getMessage))
     } finally {
       for (consumerOpt <- consumerMap.values) {
         consumerOpt match {

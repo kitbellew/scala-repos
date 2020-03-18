@@ -19,8 +19,7 @@ object Formatter {
       case Nil => (Eponymous -> value)
       case head +: tail => {
         head -> (old.get(head) match {
-          case None =>
-            if (tail.isEmpty) value else makeMap(tail, value)
+          case None => if (tail.isEmpty) value else makeMap(tail, value)
 
           // we can't prove that this is anything better than a Map[_, _], but that's OK
           case Some(map: Map[_, _]) =>

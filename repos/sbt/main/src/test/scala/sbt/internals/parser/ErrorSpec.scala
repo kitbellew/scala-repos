@@ -73,8 +73,7 @@ class ErrorSpec extends AbstractSpec with ScalaCheck {
       case exception: MessageOnlyException =>
         val error = exception.getMessage
         """(\d+)""".r.findFirstIn(error) match {
-          case Some(x) =>
-            true
+          case Some(x) => true
           case None =>
             println(s"Number not found in $error")
             false

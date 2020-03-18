@@ -127,8 +127,7 @@ private[appinfo] class DefaultInfoService(
 
     apps
       .foldLeft(Future.successful(Seq.newBuilder[AppInfo])) {
-        case (builderFuture, app) =>
-          builderFuture.flatMap { builder =>
+        case (builderFuture, app) => builderFuture.flatMap { builder =>
             baseData.appInfoFuture(app, embed).map { appInfo =>
               builder += appInfo
               builder

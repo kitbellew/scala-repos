@@ -42,8 +42,7 @@ object JDBCUtil {
         f: (PreparedStatement) => T): T = {
       using(conn.prepareStatement(sql)) { stmt =>
         params.zipWithIndex.foreach {
-          case (p, i) =>
-            p match {
+          case (p, i) => p match {
               case x: Int    => stmt.setInt(i + 1, x)
               case x: String => stmt.setString(i + 1, x)
             }

@@ -42,8 +42,7 @@ object HttpBinApplication {
           Json.obj("json" -> JsNull, "data" -> "", "form" -> JsObject(Nil)) ++ (
           r.body match {
             // Json Body
-            case e: JsValue =>
-              Json.obj("json" -> e)
+            case e: JsValue => Json.obj("json" -> e)
             // X-WWW-Form-Encoded
             case f: Map[String, Seq[String]] @unchecked =>
               Json.obj(
@@ -61,54 +60,55 @@ object HttpBinApplication {
                     .map(v => FileUtils.readFileToString(v.ref.file))
                     .getOrElse(""))
               )
-            case b =>
-              Json.obj("data" -> JsString(b.toString))
+            case b => Json.obj("data" -> JsString(b.toString))
           }
         )
     }
 
   val getIp: Routes = {
-    case GET(p"/ip") =>
-      Action { request => Ok(Json.obj("origin" -> request.remoteAddress)) }
+    case GET(p"/ip") => Action { request =>
+        Ok(Json.obj("origin" -> request.remoteAddress))
+      }
   }
 
   val getUserAgent: Routes = {
-    case GET(p"/user-agent") =>
-      Action { request =>
+    case GET(p"/user-agent") => Action { request =>
         Ok(Json.obj("user-agent" -> request.headers.get("User-Agent")))
       }
   }
 
   val getHeaders: Routes = {
-    case GET(p"/headers") =>
-      Action { request =>
+    case GET(p"/headers") => Action { request =>
         Ok(Json.obj("headers" -> request.headers.toSimpleMap))
       }
   }
 
   val get: Routes = {
-    case GET(p"/get") =>
-      Action { request => Ok(requestHeaderWriter.writes(request)) }
+    case GET(p"/get") => Action { request =>
+        Ok(requestHeaderWriter.writes(request))
+      }
   }
 
   val patch: Routes = {
-    case PATCH(p"/patch") =>
-      Action { request => Ok(requestWriter.writes(request)) }
+    case PATCH(p"/patch") => Action { request =>
+        Ok(requestWriter.writes(request))
+      }
   }
 
   val post: Routes = {
-    case POST(p"/post") =>
-      Action { request => Ok(requestWriter.writes(request)) }
+    case POST(p"/post") => Action { request =>
+        Ok(requestWriter.writes(request))
+      }
   }
 
   val put: Routes = {
-    case PUT(p"/put") =>
-      Action { request => Ok(requestWriter.writes(request)) }
+    case PUT(p"/put") => Action { request => Ok(requestWriter.writes(request)) }
   }
 
   val delete: Routes = {
-    case DELETE(p"/delete") =>
-      Action { request => Ok(requestHeaderWriter.writes(request)) }
+    case DELETE(p"/delete") => Action { request =>
+        Ok(requestHeaderWriter.writes(request))
+      }
   }
 
   private def gzipFilter(mat: Materializer) = new GzipFilter()(mat)
@@ -129,31 +129,28 @@ object HttpBinApplication {
       .reduceLeft((a, b) => a.orElse(b))
 
   val status: Routes = {
-    case GET(p"/status/$status<[0-9]+>") =>
-      Action {
+    case GET(p"/status/$status<[0-9]+>") => Action {
         val code = status.toInt
         Results.Status(code)
       }
   }
 
   val responseHeaders: Routes = {
-    case GET(p"/response-header") =>
-      Action { request =>
+    case GET(p"/response-header") => Action { request =>
         Ok("").withHeaders(
           request.queryString.mapValues(_.mkString(",")).toSeq: _*)
       }
   }
 
   val redirect: Routes = {
-    case GET(p"/redirect/0") =>
-      Action { Redirect("/get") }
-    case GET(p"/redirect/$param<([0-9]+)>") =>
-      Action { Redirect("redirect/" + param) }
+    case GET(p"/redirect/0") => Action { Redirect("/get") }
+    case GET(p"/redirect/$param<([0-9]+)>") => Action {
+        Redirect("redirect/" + param)
+      }
   }
 
   val redirectTo: Routes = {
-    case GET(p"/redirect-to") =>
-      Action { request =>
+    case GET(p"/redirect-to") => Action { request =>
         request.queryString.get("url").map { u => Redirect(u.head) }.getOrElse {
           BadRequest("")
         }
@@ -161,8 +158,7 @@ object HttpBinApplication {
   }
 
   val cookies: Routes = {
-    case GET(p"/cookies") =>
-      Action { request =>
+    case GET(p"/cookies") => Action { request =>
         Ok(Json.obj(
           "cookies" -> JsObject(request.cookies.toSeq.map(x =>
             x.name -> JsString(x.value)))))
@@ -170,8 +166,7 @@ object HttpBinApplication {
   }
 
   val cookiesSet: Routes = {
-    case GET(p"/cookies/set") =>
-      Action { request =>
+    case GET(p"/cookies/set") => Action { request =>
         Redirect("/cookies").withCookies(
           request.queryString.mapValues(_.head).toSeq.map {
             case (k, v) => Cookie(k, v)
@@ -180,16 +175,14 @@ object HttpBinApplication {
   }
 
   val cookiesDelete: Routes = {
-    case GET(p"/cookies/delete") =>
-      Action { request =>
+    case GET(p"/cookies/delete") => Action { request =>
         Redirect("/cookies").discardingCookies(
           request.queryString.keys.toSeq.map(DiscardingCookie(_)): _*)
       }
   }
 
   val basicAuth: Routes = {
-    case GET(p"/basic-auth/$username/$password") =>
-      Action { request =>
+    case GET(p"/basic-auth/$username/$password") => Action { request =>
         request.headers
           .get("Authorization")
           .flatMap { authorization =>
@@ -214,8 +207,7 @@ object HttpBinApplication {
   }
 
   val stream: Routes = {
-    case GET(p"/stream/$param<[0-9]+>") =>
-      Action { request =>
+    case GET(p"/stream/$param<[0-9]+>") => Action { request =>
         val body = requestHeaderWriter.writes(request).as[JsObject]
 
         val content = 0.to(param.toInt).map { index =>
@@ -227,8 +219,7 @@ object HttpBinApplication {
   }
 
   val delay: Routes = {
-    case GET(p"/delay/$duration<[0-9+]") =>
-      Action.async { request =>
+    case GET(p"/delay/$duration<[0-9+]") => Action.async { request =>
         import scala.concurrent.Await
         import scala.concurrent.Promise
         import scala.concurrent.Future
@@ -247,8 +238,7 @@ object HttpBinApplication {
   }
 
   val html: Routes = {
-    case GET(p"/html") =>
-      Action {
+    case GET(p"/html") => Action {
         Ok("""
 <!DOCTYPE html>
 <html>
@@ -310,10 +300,8 @@ object HttpBinApplication {
   }
 
   val robots: Routes = {
-    case GET(p"/robots.txt") =>
-      Action { Ok("User-agent: *\nDisallow: /deny") }
-    case GET(p"deny") =>
-      Action {
+    case GET(p"/robots.txt") => Action { Ok("User-agent: *\nDisallow: /deny") }
+    case GET(p"deny") => Action {
         Ok("""
             .-''''''-.
           .' _      _ '.

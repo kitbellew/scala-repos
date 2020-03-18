@@ -47,8 +47,7 @@ class HttpServerDispatcher(
               Response(
                 from(badReq.httpVersion),
                 Status.RequestHeaderFieldsTooLarge)
-          case _ =>
-            Response(from(badReq.httpVersion), Status.BadRequest)
+          case _ => Response(from(badReq.httpVersion), Status.BadRequest)
         }
         // The connection in unusable so we close it here.
         // Note that state != Idle while inside dispatch

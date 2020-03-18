@@ -28,9 +28,6 @@ private class MonitorOutput(val inStream: InputStream, broadcaster: ActorRef)
         broadcaster ! DebugOutputEvent(new String(buf, 0, i))
         i = in.read(buf, 0, buf.length)
       }
-    } catch {
-      case t: Throwable =>
-        log.info("Exception during execution", t)
-    }
+    } catch { case t: Throwable => log.info("Exception during execution", t) }
   }
 }

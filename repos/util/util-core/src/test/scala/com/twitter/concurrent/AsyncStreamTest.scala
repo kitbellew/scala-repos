@@ -305,15 +305,13 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
   test("take") {
     forAll(genListAndN) {
-      case (as, n) =>
-        assert(toSeq(fromSeq(as).take(n)) == as.take(n))
+      case (as, n) => assert(toSeq(fromSeq(as).take(n)) == as.take(n))
     }
   }
 
   test("drop") {
     forAll(genListAndN) {
-      case (as, n) =>
-        assert(toSeq(fromSeq(as).drop(n)) == as.drop(n))
+      case (as, n) => assert(toSeq(fromSeq(as).drop(n)) == as.drop(n))
     }
   }
 

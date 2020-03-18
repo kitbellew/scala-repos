@@ -152,8 +152,7 @@ private[internal] trait GlbLubs {
               log(
                 s"Breaking recursion in lublist, advancing frontier and discaring merged prefix/args from $tp")
               loop(pretypes, tails)
-            case tp =>
-              loop(tp :: pretypes, tails)
+            case tp => loop(tp :: pretypes, tails)
           }
         } else {
           // frontier is not uniform yet, move it beyond the current minimal symbol;
@@ -239,8 +238,7 @@ private[internal] trait GlbLubs {
     }
     def stripType(tp: Type): Type =
       tp match {
-        case ExistentialType(_, res) =>
-          res
+        case ExistentialType(_, res) => res
         case tv @ TypeVar(_, constr) =>
           if (tv.instValid) stripType(constr.inst)
           else if (tv.untouchable) tv
@@ -311,8 +309,7 @@ private[internal] trait GlbLubs {
               logResult(
                 s"Stripping type args from lub because $res is not consistent with $ts")(
                 res.typeConstructor)
-            case _ =>
-              res
+            case _ => res
           }
         } finally {
           lubResults.clear()
@@ -333,18 +330,16 @@ private[internal] trait GlbLubs {
           PolyType(tparams1, lub0(matchingInstTypes(ts, tparams1)))
         case ts @ (mt @ MethodType(params, _)) :: rest =>
           MethodType(params, lub0(matchingRestypes(ts, mt.paramTypes)))
-        case ts @ NullaryMethodType(_) :: rest =>
-          NullaryMethodType(lub0(matchingRestypes(ts, Nil)))
+        case ts @ NullaryMethodType(_) :: rest => NullaryMethodType(
+            lub0(matchingRestypes(ts, Nil)))
         case ts @ TypeBounds(_, _) :: rest =>
           TypeBounds(
             glb(ts map (_.bounds.lo), depth),
             lub(ts map (_.bounds.hi), depth))
         case ts @ AnnotatedType(annots, tpe) :: rest =>
           annotationsLub(lub0(ts map (_.withoutAnnotations)), ts)
-        case ts =>
-          lubResults get ((depth, ts)) match {
-            case Some(lubType) =>
-              lubType
+        case ts => lubResults get ((depth, ts)) match {
+            case Some(lubType) => lubType
             case None =>
               lubResults((depth, ts)) = AnyTpe
               val res = if (depth.isNegative) AnyTpe else lub1(ts)
@@ -416,9 +411,7 @@ private[internal] trait GlbLubs {
             try lubsym(sym) andAlso (
               addMember(lubThisType, lubRefined, _, depth)
             )
-            catch {
-              case ex: NoCommonType =>
-            }
+            catch { case ex: NoCommonType => }
           }
           if (lubRefined.decls.isEmpty) lubBase
           else if (!verifyLubs) lubRefined
@@ -510,16 +503,14 @@ private[internal] trait GlbLubs {
           MethodType(
             params,
             glbNorm(matchingRestypes(ts, mt.paramTypes), depth))
-        case ts @ NullaryMethodType(_) :: rest =>
-          NullaryMethodType(glbNorm(matchingRestypes(ts, Nil), depth))
+        case ts @ NullaryMethodType(_) :: rest => NullaryMethodType(
+            glbNorm(matchingRestypes(ts, Nil), depth))
         case ts @ TypeBounds(_, _) :: rest =>
           TypeBounds(
             lub(ts map (_.bounds.lo), depth),
             glb(ts map (_.bounds.hi), depth))
-        case ts =>
-          glbResults get ((depth, ts)) match {
-            case Some(glbType) =>
-              glbType
+        case ts => glbResults get ((depth, ts)) match {
+            case Some(glbType) => glbType
             case _ =>
               glbResults((depth, ts)) = NothingTpe
               val res = if (depth.isNegative) NothingTpe else glb1(ts)
@@ -592,9 +583,7 @@ private[internal] trait GlbLubs {
                       sym,
                       depth)) try {
                   addMember(glbThisType, glbRefined, glbsym(sym), depth)
-                } catch {
-                  case ex: NoCommonType =>
-                }
+                } catch { case ex: NoCommonType => }
             } finally { globalGlbDepth = globalGlbDepth.decr }
             if (glbRefined.decls.isEmpty) glbBase else glbRefined
           }
@@ -655,9 +644,7 @@ private[internal] trait GlbLubs {
     tps map {
       case mt @ MethodType(params1, res) if isSameTypes(mt.paramTypes, pts) =>
         res
-      case NullaryMethodType(res) if pts.isEmpty =>
-        res
-      case _ =>
-        throw new NoCommonType(tps)
+      case NullaryMethodType(res) if pts.isEmpty => res
+      case _                                     => throw new NoCommonType(tps)
     }
 }

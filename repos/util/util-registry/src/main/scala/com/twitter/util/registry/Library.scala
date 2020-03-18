@@ -30,8 +30,7 @@ object Library {
         None
       case None =>
         params.foreach {
-          case (key, value) =>
-            registry.put(prefix :+ key, value)
+          case (key, value) => registry.put(prefix :+ key, value)
         }
         Some(new Roster(prefix, params.keySet, log))
     }

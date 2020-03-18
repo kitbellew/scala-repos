@@ -48,8 +48,7 @@ trait RandomForestSpecs extends EvalStackSpecs {
             case SObject(obj) =>
               obj.keySet mustEqual Set("model1")
               obj("model1") must beLike {
-                case SString(str) =>
-                  categories must contain(str)
+                case SString(str) => categories must contain(str)
               }
           }
       }
@@ -116,8 +115,7 @@ trait RandomForestSpecs extends EvalStackSpecs {
                 case SObject(pred) =>
                   pred.keySet mustEqual Set("species")
                   pred("species") must beLike {
-                    case SString(str) =>
-                      categories must contain(str)
+                    case SString(str) => categories must contain(str)
                   }
               }
           }
@@ -159,8 +157,7 @@ trait RandomForestSpecs extends EvalStackSpecs {
             case SObject(obj) =>
               obj.keySet mustEqual Set("model1")
               obj("model1") must beLike {
-                case SDecimal(d) =>
-                  d.toDouble mustEqual (0.25)
+                case SDecimal(d) => d.toDouble mustEqual (0.25)
               }
           }
       }

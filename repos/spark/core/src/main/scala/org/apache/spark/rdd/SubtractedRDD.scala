@@ -76,10 +76,8 @@ private[spark] class SubtractedRDD[K: ClassTag, V: ClassTag, W: ClassTag](
       array(i) = new CoGroupPartition(
         i,
         Seq(rdd1, rdd2).zipWithIndex.map {
-          case (rdd, j) =>
-            dependencies(j) match {
-              case s: ShuffleDependency[_, _, _] =>
-                None
+          case (rdd, j) => dependencies(j) match {
+              case s: ShuffleDependency[_, _, _] => None
               case _ =>
                 Some(new NarrowCoGroupSplitDep(rdd, i, rdd.partitions(i)))
             }

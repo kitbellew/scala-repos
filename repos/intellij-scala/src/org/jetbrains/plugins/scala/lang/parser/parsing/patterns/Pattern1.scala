@@ -42,8 +42,7 @@ object Pattern1 {
               pattern1Marker.done(ScalaElementTypes.TYPED_PATTERN)
               return true
 
-            case _ =>
-              backupMarker.rollbackTo()
+            case _ => backupMarker.rollbackTo()
           }
         }
       case ScalaTokenTypes.tUNDER =>
@@ -57,11 +56,9 @@ object Pattern1 {
             }
             pattern1Marker.done(ScalaElementTypes.TYPED_PATTERN)
             return true
-          case _ =>
-            backupMarker.rollbackTo()
+          case _ => backupMarker.rollbackTo()
         }
-      case _ =>
-        backupMarker.drop()
+      case _ => backupMarker.drop()
     }
     pattern1Marker.drop()
     Pattern2.parse(builder, forDef = false)

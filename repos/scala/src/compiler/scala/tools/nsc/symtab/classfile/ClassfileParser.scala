@@ -199,8 +199,7 @@ abstract class ClassfileParser {
             in skip 2
           case CONSTANT_METHODHANDLE => in skip 3
           case CONSTANT_FIELDREF | CONSTANT_METHODREF |
-              CONSTANT_INTFMETHODREF =>
-            in skip 4
+              CONSTANT_INTFMETHODREF => in skip 4
           case CONSTANT_NAMEANDTYPE | CONSTANT_INTEGER | CONSTANT_FLOAT =>
             in skip 4
           case CONSTANT_INVOKEDYNAMIC          => in skip 4
@@ -624,16 +623,14 @@ abstract class ClassfileParser {
                   params.head.tpe.typeSymbol == clazz.owner || clazz.owner.hasPackageFlag,
                   params.head.tpe.typeSymbol + ": " + clazz.owner)
                 params.tail
-              case _ =>
-                params
+              case _ => params
             }
             val newParams = paramsNoOuter match {
               case (init :+ tail) if jflags.isSynthetic =>
                 // SI-7455 strip trailing dummy argument ("access constructor tag") from synthetic constructors which
                 // are added when an inner class needs to access a private constructor.
                 init
-              case _ =>
-                paramsNoOuter
+              case _ => paramsNoOuter
             }
 
             info = MethodType(newParams, clazz.tpe)
@@ -681,8 +678,7 @@ abstract class ClassfileParser {
             tp match {
               case TypeRef(pre, sym, args) if (!sym.isStatic) =>
                 typeRef(processInner(pre.widen), sym, args)
-              case _ =>
-                tp
+              case _ => tp
             }
           def processClassType(tp: Type): Type =
             tp match {
@@ -714,8 +710,7 @@ abstract class ClassfileParser {
                         existentials += newtparam
                         xs += newtparam.tpeHK
                         i += 1
-                      case _ =>
-                        xs += sig2type(tparams, skiptvs)
+                      case _ => xs += sig2type(tparams, skiptvs)
                     }
                   }
                   accept('>')
@@ -908,8 +903,7 @@ abstract class ClassfileParser {
             unpickler.unpickle(in.buf, in.bp, clazz, staticModule, in.file.name)
           }
           in.skip(attrLen)
-        case tpnme.ScalaATTR =>
-          isScalaRaw = true
+        case tpnme.ScalaATTR => isScalaRaw = true
         // Attribute on methods of java annotation classes when that method has a default
         case tpnme.AnnotationDefaultATTR =>
           sym.addAnnotation(AnnotationDefaultAttr)
@@ -940,8 +934,7 @@ abstract class ClassfileParser {
         // TODO 2: also parse RuntimeInvisibleAnnotation / RuntimeInvisibleParamAnnotation,
         // i.e. java annotations with RetentionPolicy.CLASS?
 
-        case tpnme.ExceptionsATTR if (!isScala) =>
-          parseExceptions(attrLen)
+        case tpnme.ExceptionsATTR if (!isScala) => parseExceptions(attrLen)
 
         case tpnme.SourceFileATTR =>
           val srcfileLeaf = readName().toString.trim
@@ -960,8 +953,7 @@ abstract class ClassfileParser {
             log(s"$sym in ${sym.owner} is a java8+ default method.")
           }
           in.skip(attrLen)
-        case _ =>
-          in.skip(attrLen)
+        case _ => in.skip(attrLen)
       }
     }
 
@@ -969,13 +961,12 @@ abstract class ClassfileParser {
       val tag = u1
       val index = u2
       tag match {
-        case STRING_TAG =>
-          Some(LiteralAnnotArg(Constant(pool.getName(index).toString)))
+        case STRING_TAG => Some(
+            LiteralAnnotArg(Constant(pool.getName(index).toString)))
         case BOOL_TAG | BYTE_TAG | CHAR_TAG | SHORT_TAG | INT_TAG | LONG_TAG |
-            FLOAT_TAG | DOUBLE_TAG =>
-          Some(LiteralAnnotArg(pool.getConstant(index)))
-        case CLASS_TAG =>
-          Some(LiteralAnnotArg(Constant(pool.getType(index))))
+            FLOAT_TAG | DOUBLE_TAG => Some(
+            LiteralAnnotArg(pool.getConstant(index)))
+        case CLASS_TAG => Some(LiteralAnnotArg(Constant(pool.getType(index))))
         case ENUM_TAG =>
           val t = pool.getType(index)
           val n = readName()
@@ -996,8 +987,7 @@ abstract class ClassfileParser {
             case None    => hasError = true
           }
           if (hasError) None else Some(ArrayAnnotArg(arr.toArray))
-        case ANNOTATION_TAG =>
-          parseAnnotation(index) map (NestedAnnotArg(_))
+        case ANNOTATION_TAG => parseAnnotation(index) map (NestedAnnotArg(_))
       }
     }
 
@@ -1097,9 +1087,8 @@ abstract class ClassfileParser {
         case Some(scalaSig)
             if (scalaSig.atp == ScalaLongSignatureAnnotation.tpe) =>
           scalaSigAnnot = Some(scalaSig)
-        case Some(annot) =>
-          sym.addAnnotation(annot)
-        case None =>
+        case Some(annot) => sym.addAnnotation(annot)
+        case None        =>
       }
       scalaSigAnnot
     }
@@ -1182,8 +1171,7 @@ abstract class ClassfileParser {
       val attrName = readTypeName()
       val attrLen = u4
       attrName match {
-        case tpnme.SignatureATTR =>
-          in.skip(attrLen)
+        case tpnme.SignatureATTR => in.skip(attrLen)
         case tpnme.ScalaSignatureATTR =>
           isScala = true
           val pbuf = new PickleBuffer(in.buf, in.bp, in.bp + attrLen)
@@ -1191,8 +1179,7 @@ abstract class ClassfileParser {
           if (pbuf.readNat == 0) // a scala signature attribute with no entries means that the actual scala signature
             isScalaAnnot = true // is in a ScalaSignature annotation.
           in.skip(attrLen)
-        case tpnme.ScalaATTR =>
-          isScalaRaw = true
+        case tpnme.ScalaATTR => isScalaRaw = true
         case tpnme.InnerClassesATTR if !isScala =>
           val entries = u2
           for (i <- 0 until entries) {
@@ -1205,8 +1192,7 @@ abstract class ClassfileParser {
                 nameIndex,
                 jflags)
           }
-        case _ =>
-          in.skip(attrLen)
+        case _ => in.skip(attrLen)
       }
     }
     in.bp = oldbp

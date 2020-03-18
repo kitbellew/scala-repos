@@ -205,10 +205,8 @@ trait JavaScanners extends ast.parser.ScannersCommon {
         case _ =>
           try ("`" + tokenName(token) + "'")
           catch {
-            case _: ArrayIndexOutOfBoundsException =>
-              "`<" + token + ">'"
-            case _: NullPointerException =>
-              "`<(" + token + ")>'"
+            case _: ArrayIndexOutOfBoundsException => "`<" + token + ">'"
+            case _: NullPointerException           => "`<(" + token + ")>'"
           }
       }
   }
@@ -274,8 +272,7 @@ trait JavaScanners extends ast.parser.ScannersCommon {
       lastPos = in.cpos - 1
       while (true) {
         in.ch match {
-          case ' ' | '\t' | CR | LF | FF =>
-            in.next()
+          case ' ' | '\t' | CR | LF | FF => in.next()
           case _ =>
             pos = in.cpos
             (in.ch: @switch) match {
@@ -811,26 +808,16 @@ trait JavaScanners extends ast.parser.ScannersCommon {
 
     override def toString() =
       token match {
-        case IDENTIFIER =>
-          "id(" + name + ")"
-        case CHARLIT =>
-          "char(" + intVal + ")"
-        case INTLIT =>
-          "int(" + intVal + ")"
-        case LONGLIT =>
-          "long(" + intVal + ")"
-        case FLOATLIT =>
-          "float(" + floatVal + ")"
-        case DOUBLELIT =>
-          "double(" + floatVal + ")"
-        case STRINGLIT =>
-          "string(" + name + ")"
-        case SEMI =>
-          ";"
-        case COMMA =>
-          ","
-        case _ =>
-          JavaScannerConfiguration.token2string(token)
+        case IDENTIFIER => "id(" + name + ")"
+        case CHARLIT    => "char(" + intVal + ")"
+        case INTLIT     => "int(" + intVal + ")"
+        case LONGLIT    => "long(" + intVal + ")"
+        case FLOATLIT   => "float(" + floatVal + ")"
+        case DOUBLELIT  => "double(" + floatVal + ")"
+        case STRINGLIT  => "string(" + name + ")"
+        case SEMI       => ";"
+        case COMMA      => ","
+        case _          => JavaScannerConfiguration.token2string(token)
       }
 
     /** INIT: read lookahead character and token.

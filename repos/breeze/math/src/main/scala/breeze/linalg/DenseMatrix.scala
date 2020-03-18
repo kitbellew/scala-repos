@@ -213,10 +213,8 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
           throw new UnsupportedOperationException(
             "Cannot make a view of this matrix.")
         else DenseVector.create(data, offset, 1, rows * cols)
-      case View.Copy =>
-        toDenseVector
-      case View.Prefer =>
-        flatten(canFlattenView)
+      case View.Copy   => toDenseVector
+      case View.Prefer => flatten(canFlattenView)
     }
 
   private def canFlattenView =
@@ -266,8 +264,7 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
           ArrayUtil.newArrayLike(data, size))
         result := this
         result.reshape(rows, _cols, View.Require)
-      case View.Prefer =>
-        reshape(rows, cols, canReshapeView)
+      case View.Prefer => reshape(rows, cols, canReshapeView)
     }
   }
 

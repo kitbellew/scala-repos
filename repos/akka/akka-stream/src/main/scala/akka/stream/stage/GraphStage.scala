@@ -660,8 +660,7 @@ abstract class GraphStageLogic private[stream] (
     */
   final protected def abortReading(in: Inlet[_]): Unit =
     getHandler(in) match {
-      case r: Reading[_] ⇒
-        setHandler(in, r.previous)
+      case r: Reading[_] ⇒ setHandler(in, r.previous)
       case _ ⇒
     }
 

@@ -811,8 +811,9 @@ class RichPipe(val pipe: Pipe)
 
     FlowStateMap.get(flowDef).foreach { fstm =>
       fstm.flowConfigUpdates.foreach {
-        case (k, v) =>
-          allPipes.foreach { p => p.getStepConfigDef().setProperty(k, v) }
+        case (k, v) => allPipes.foreach { p =>
+            p.getStepConfigDef().setProperty(k, v)
+          }
       }
     }
     pipe

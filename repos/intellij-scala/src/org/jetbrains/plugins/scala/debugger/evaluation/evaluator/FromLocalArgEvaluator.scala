@@ -26,8 +26,7 @@ case class FromLocalArgEvaluator(delegate: Evaluator) extends Evaluator {
       case _: ScalaFieldEvaluator => None
       case ScalaDuplexEvaluator(
             first: ScalaFieldEvaluator,
-            second: ScalaFieldEvaluator) =>
-        None
+            second: ScalaFieldEvaluator) => None
       case ScalaDuplexEvaluator(first: ScalaFieldEvaluator, second)
           if Try(first.evaluate(context)).isFailure =>
         Some(second.evaluate(context))

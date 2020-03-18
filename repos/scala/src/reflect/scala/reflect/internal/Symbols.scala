@@ -2032,10 +2032,9 @@ trait Symbols extends api.Symbols {
       */
     def makeSerializable() {
       info match {
-        case ci @ ClassInfoType(_, _, _) =>
-          setInfo(ci.copy(parents = ci.parents :+ SerializableTpe))
-        case i =>
-          abort("Only ClassInfoTypes can be made serializable: " + i)
+        case ci @ ClassInfoType(_, _, _) => setInfo(
+            ci.copy(parents = ci.parents :+ SerializableTpe))
+        case i => abort("Only ClassInfoTypes can be made serializable: " + i)
       }
     }
 
@@ -2591,8 +2590,7 @@ trait Symbols extends api.Symbols {
       def loop(xs: List[Symbol]): List[Symbol] =
         xs match {
           case Nil => Nil
-          case x :: xs =>
-            overriddenSymbol(x) match {
+          case x :: xs => overriddenSymbol(x) match {
               case NoSymbol => loop(xs)
               case sym      => sym :: loop(xs)
             }

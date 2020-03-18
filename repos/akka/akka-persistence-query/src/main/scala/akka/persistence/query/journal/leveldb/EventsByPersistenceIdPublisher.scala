@@ -85,11 +85,9 @@ private[akka] abstract class AbstractEventsByPersistenceIdPublisher(
     case Continue | _: LeveldbJournal.EventAppended ⇒
       if (timeForReplay) replay()
 
-    case _: Request ⇒
-      receiveIdleRequest()
+    case _: Request ⇒ receiveIdleRequest()
 
-    case Cancel ⇒
-      context.stop(self)
+    case Cancel ⇒ context.stop(self)
   }
 
   def receiveIdleRequest(): Unit
@@ -139,13 +137,11 @@ private[akka] abstract class AbstractEventsByPersistenceIdPublisher(
       deliverBuf()
       onErrorThenStop(cause)
 
-    case _: Request ⇒
-      deliverBuf()
+    case _: Request ⇒ deliverBuf()
 
     case Continue | _: LeveldbJournal.EventAppended ⇒ // skip during replay
 
-    case Cancel ⇒
-      context.stop(self)
+    case Cancel ⇒ context.stop(self)
   }
 
   def receiveRecoverySuccess(highestSeqNr: Long): Unit

@@ -19,16 +19,13 @@ class FilterOtherContainsInspection extends OperationOnCollectionInspection {
 object `.contains _` {
   def unapply(expr: ScExpression): Option[ScExpression] = {
     stripped(expr) match {
-      case ScFunctionExpr(Seq(x), Some(result)) =>
-        stripped(result) match {
+      case ScFunctionExpr(Seq(x), Some(result)) => stripped(result) match {
           case qual `.contains`(stripped(ResolvesTo(`x`)))
-              if isIndependentOf(qual, x) =>
-            Some(qual)
-          case _ => None
+              if isIndependentOf(qual, x) => Some(qual)
+          case _                          => None
         }
       case qual `.contains`(underscore()) => Some(qual)
-      case undSect: ScUnderscoreSection =>
-        undSect.bindingExpr match {
+      case undSect: ScUnderscoreSection => undSect.bindingExpr match {
           case Some(qual `.contains` ()) => Some(qual)
           case _                         => None
         }
@@ -41,12 +38,10 @@ object `.contains _` {
 object `!.contains _` {
   def unapply(expr: ScExpression): Option[ScExpression] = {
     stripped(expr) match {
-      case ScFunctionExpr(Seq(x), Some(result)) =>
-        stripped(result) match {
+      case ScFunctionExpr(Seq(x), Some(result)) => stripped(result) match {
           case !(qual `.contains`(stripped(ResolvesTo(`x`))))
-              if isIndependentOf(qual, x) =>
-            Some(qual)
-          case _ => None
+              if isIndependentOf(qual, x) => Some(qual)
+          case _                          => None
         }
       case _ => None
     }

@@ -100,9 +100,7 @@ class ScalaTestConfigurationProducer extends {
     try {
       val module = ScalaPsiUtil.getModule(element)
       if (module != null) { runConfiguration.setModule(module) }
-    } catch {
-      case e: Exception =>
-    }
+    } catch { case e: Exception => }
     JavaRunConfigurationExtensionManager.getInstance
       .extendCreatedConfiguration(runConfiguration, location)
     Some((testClass, settings))
@@ -126,8 +124,7 @@ class ScalaTestConfigurationProducer extends {
     configuration match {
       case configuration: ScalaTestRunConfiguration
           if configuration.getTestKind == TestKind.CLASS &&
-            testName == null =>
-        testClassPath == configuration.getTestClassPath
+            testName == null => testClassPath == configuration.getTestClassPath
       case configuration: ScalaTestRunConfiguration
           if configuration.getTestKind == TestKind.TEST_NAME =>
         testClassPath == configuration.getTestClassPath && testName != null &&
@@ -183,8 +180,7 @@ class ScalaTestConfigurationProducer extends {
           if (resolve != null) {
             val containingClass = resolve match {
               case fun: ScMember => fun.containingClass
-              case p: ScBindingPattern =>
-                p.nameContext match {
+              case p: ScBindingPattern => p.nameContext match {
                   case v: ScMember => v.containingClass
                   case _           => null
                 }
@@ -202,8 +198,7 @@ class ScalaTestConfigurationProducer extends {
                       import org.jetbrains.plugins.scala.lang.psi.types.Unit
                       params(0).getType(TypingContext.empty) match {
                         case Success(Unit, _) => failedToCheck = false
-                        case Success(tp, _) =>
-                          ScType.extractClass(tp) match {
+                        case Success(tp, _) => ScType.extractClass(tp) match {
                             case Some(psiClass)
                                 if psiClass.qualifiedName == "java.lang.String" =>
                               call.argumentExpressions.apply(0) match {
@@ -258,9 +253,8 @@ class ScalaTestConfigurationProducer extends {
 
     def endupWithLitral(literal: ScExpression): Option[String] = {
       literal match {
-        case l: ScLiteral if l.isString =>
-          Some(l.getValue.asInstanceOf[String])
-        case _ => None
+        case l: ScLiteral if l.isString => Some(l.getValue.asInstanceOf[String])
+        case _                          => None
       }
     }
 
@@ -284,12 +278,9 @@ class ScalaTestConfigurationProducer extends {
         namesSet: Map[String, Set[String]],
         checkFirstArgIsUnitOrString: Boolean = false) = {
       val inv: (MethodInvocation) => Option[String] = {
-        case i: ScInfixExpr =>
-          endupWithLitral(i.getBaseExpr)
-        case call: MethodInvocation =>
-          call.getInvokedExpr match {
-            case ref: ScReferenceExpression =>
-              ref.qualifier match {
+        case i: ScInfixExpr => endupWithLitral(i.getBaseExpr)
+        case call: MethodInvocation => call.getInvokedExpr match {
+            case ref: ScReferenceExpression => ref.qualifier match {
                 case Some(qual) => endupWithLitral(qual)
                 case _          => None
               }
@@ -321,8 +312,7 @@ class ScalaTestConfigurationProducer extends {
                   if (clazz != null && fqn.contains(clazz.qualifiedName)) {
                     m match {
                       case i: ScInfixExpr => endupWithLitral(i.getBaseExpr)
-                      case _ =>
-                        m.getInvokedExpr match {
+                      case _ => m.getInvokedExpr match {
                           case ref: ScReferenceExpression =>
                             ref.qualifier match {
                               case Some(qual) => endupWithLitral(qual)
@@ -337,17 +327,12 @@ class ScalaTestConfigurationProducer extends {
           }
         }
         m match {
-          case i: ScInfixExpr =>
-            i.getBaseExpr match {
-              case m: MethodInvocation =>
-                checkTagged(m)
-              case base =>
-                endupWithLitral(base)
+          case i: ScInfixExpr => i.getBaseExpr match {
+              case m: MethodInvocation => checkTagged(m)
+              case base                => endupWithLitral(base)
             }
-          case call: MethodInvocation =>
-            call.getInvokedExpr match {
-              case ref: ScReferenceExpression =>
-                ref.qualifier match {
+          case call: MethodInvocation => call.getInvokedExpr match {
+              case ref: ScReferenceExpression => ref.qualifier match {
                   case Some(qual: MethodInvocation) => checkTagged(qual)
                   case Some(qual)                   => endupWithLitral(qual)
                   case _                            => None
@@ -521,8 +506,7 @@ class ScalaTestConfigurationProducer extends {
                 case SuccessResult(invoc, tName, refName) =>
                   call = invoc
                   testName = tName + " " + refName + " " + testName
-                case _ =>
-                  (checkInfixResult, checkInfixResult) match {
+                case _ => (checkInfixResult, checkInfixResult) match {
                     case (_, SuccessResult(invoc, tName, refName)) =>
                       call = invoc
                       testName = tName + " " + refName + " " + testName
@@ -553,12 +537,9 @@ class ScalaTestConfigurationProducer extends {
       var result: Option[String] = null
 
       val infix: (MethodInvocation) => Option[String] = {
-        case i: ScInfixExpr =>
-          endupWithLitral(i.getBaseExpr)
-        case call: MethodInvocation =>
-          call.getInvokedExpr match {
-            case ref: ScReferenceExpression =>
-              ref.qualifier match {
+        case i: ScInfixExpr => endupWithLitral(i.getBaseExpr)
+        case call: MethodInvocation => call.getInvokedExpr match {
+            case ref: ScReferenceExpression => ref.qualifier match {
                 case Some(qual) => endupWithLitral(qual)
                 case _          => None
               }
@@ -574,8 +555,7 @@ class ScalaTestConfigurationProducer extends {
       val visitor = new ScalaRecursiveElementVisitor {
         override def visitReferenceExpression(ref: ScReferenceExpression) {
           ref.refName match {
-            case "should" =>
-              ref.resolve() match {
+            case "should" => ref.resolve() match {
                 case fun: ScFunction
                     if fun.containingClass != null &&
                       fun.containingClass.qualifiedName == shouldFqn || fun.containingClass.qualifiedName == shouldFqn2 =>
@@ -587,8 +567,7 @@ class ScalaTestConfigurationProducer extends {
                   }
                 case _ =>
               }
-            case "must" =>
-              ref.resolve() match {
+            case "must" => ref.resolve() match {
                 case fun: ScFunction
                     if fun.containingClass != null &&
                       fun.containingClass.qualifiedName == mustFqn || fun.containingClass.qualifiedName == mustFqn2 =>
@@ -600,8 +579,7 @@ class ScalaTestConfigurationProducer extends {
                   }
                 case _ =>
               }
-            case "can" =>
-              ref.resolve() match {
+            case "can" => ref.resolve() match {
                 case fun: ScFunction
                     if fun.containingClass != null &&
                       fun.containingClass.qualifiedName == canFqn || fun.containingClass.qualifiedName == canFqn2 =>
@@ -613,8 +591,7 @@ class ScalaTestConfigurationProducer extends {
                   }
                 case _ =>
               }
-            case "of" =>
-              ref.resolve() match {
+            case "of" => ref.resolve() match {
                 case fun: ScFunction
                     if fun.containingClass != null &&
                       fun.containingClass.qualifiedName == "org.scalatest.FlatSpec.BehaviorWord" =>
@@ -645,18 +622,14 @@ class ScalaTestConfigurationProducer extends {
         namesSet: Map[String, Set[String]],
         checkFirstArgIsUnitOrString: Boolean = false) = {
       val inv: (MethodInvocation) => Option[String] = {
-        case i: ScInfixExpr =>
-          i.getBaseExpr match {
+        case i: ScInfixExpr => i.getBaseExpr match {
             case ref: ScReferenceExpression
                 if ref.refName == "it" || ref.refName == "ignore" || ref.refName == "they" =>
               endupWithIt(ref)
-            case _ =>
-              endupWithLitral(i.getBaseExpr)
+            case _ => endupWithLitral(i.getBaseExpr)
           }
-        case call: MethodInvocation =>
-          call.getInvokedExpr match {
-            case ref: ScReferenceExpression =>
-              ref.qualifier match {
+        case call: MethodInvocation => call.getInvokedExpr match {
+            case ref: ScReferenceExpression => ref.qualifier match {
                 case Some(ref: ScReferenceExpression)
                     if ref.refName == "it" || ref.refName == "ignore" || ref.refName == "they" =>
                   endupWithIt(ref)
@@ -720,10 +693,8 @@ class ScalaTestConfigurationProducer extends {
           var call = _call
           while (call != null) {
             val base = call match {
-              case i: ScInfixExpr =>
-                i.getBaseExpr
-              case m: MethodInvocation =>
-                m.getInvokedExpr match {
+              case i: ScInfixExpr => i.getBaseExpr
+              case m: MethodInvocation => m.getInvokedExpr match {
                   case ref: ScReferenceExpression => ref.qualifier.orNull
                   case _                          => null
                 }

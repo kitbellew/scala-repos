@@ -4,9 +4,8 @@ object Test {
       { throw T; Symbol }.apply("a")
       assert(false, "exception not thrown")
     } catch {
-      case T => // ok
-      case t: Throwable =>
-        assert(false, "wrong not thrown: " + t)
+      case T            => // ok
+      case t: Throwable => assert(false, "wrong not thrown: " + t)
     }
   }
 }

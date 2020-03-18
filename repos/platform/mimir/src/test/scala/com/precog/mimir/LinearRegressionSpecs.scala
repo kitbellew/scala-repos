@@ -268,35 +268,28 @@ trait LinearRegressionSpecs[M[+_]]
 
           val (SDecimal(theta1), SDecimal(error1)) =
             (arr(0): @unchecked) match {
-              case SObject(map) =>
-                (map("bar"): @unchecked) match {
-                  case SObject(obj) =>
-                    returnValues(obj)
+              case SObject(map) => (map("bar"): @unchecked) match {
+                  case SObject(obj) => returnValues(obj)
                 }
             }
 
           val (SDecimal(theta2), SDecimal(error2)) =
             (arr(0): @unchecked) match {
-              case SObject(map) =>
-                (map("baz"): @unchecked) match {
-                  case SObject(obj) =>
-                    returnValues(obj)
+              case SObject(map) => (map("baz"): @unchecked) match {
+                  case SObject(obj) => returnValues(obj)
                 }
             }
 
           val (SDecimal(theta3), SDecimal(error3)) =
             (arr(0): @unchecked) match {
-              case SObject(map) =>
-                (map("foo"): @unchecked) match {
-                  case SObject(obj) =>
-                    returnValues(obj)
+              case SObject(map) => (map("foo"): @unchecked) match {
+                  case SObject(obj) => returnValues(obj)
                 }
             }
 
           val (SDecimal(theta0), SDecimal(error0)) =
             (arr(1): @unchecked) match {
-              case SObject(obj) =>
-                returnValues(obj)
+              case SObject(obj) => returnValues(obj)
             }
 
           (
@@ -412,29 +405,23 @@ trait LinearRegressionSpecs[M[+_]]
 
             val (SDecimal(theta1), SDecimal(error1)) =
               (arr(0): @unchecked) match {
-                case SObject(map) =>
-                  (map("bar"): @unchecked) match {
-                    case SObject(map) =>
-                      (map("baz"): @unchecked) match {
-                        case SArray(Vector(SObject(obj))) =>
-                          returnValues(obj)
+                case SObject(map) => (map("bar"): @unchecked) match {
+                    case SObject(map) => (map("baz"): @unchecked) match {
+                        case SArray(Vector(SObject(obj))) => returnValues(obj)
                       }
                   }
               }
 
             val (SDecimal(theta2), SDecimal(error2)) =
               (arr(0): @unchecked) match {
-                case SObject(map) =>
-                  (map("foo"): @unchecked) match {
-                    case SObject(obj) =>
-                      returnValues(obj)
+                case SObject(map) => (map("foo"): @unchecked) match {
+                    case SObject(obj) => returnValues(obj)
                   }
               }
 
             val (SDecimal(theta0), SDecimal(error0)) =
               (arr(1): @unchecked) match {
-                case SObject(obj) =>
-                  returnValues(obj)
+                case SObject(obj) => returnValues(obj)
               }
 
             (

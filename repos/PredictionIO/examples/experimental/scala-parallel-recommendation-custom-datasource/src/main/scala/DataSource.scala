@@ -29,8 +29,7 @@ class DataSource(val dsp: DataSourceParams)
     // CHANGED
     val data = sc.textFile(dsp.filepath)
     val ratings: RDD[Rating] = data.map(_.split("::") match {
-      case Array(user, item, rate) =>
-        Rating(user, item, rate.toDouble)
+      case Array(user, item, rate) => Rating(user, item, rate.toDouble)
     })
     new TrainingData(ratings)
   }

@@ -17,8 +17,6 @@ trait Bar /*caret*/ {
 object Test {
   def main(args: Array[String]) {
     Bar /*caret*/ ()
-    1 match {
-      case /*caret*/ Bar(i) =>
-    }
+    1 match { case /*caret*/ Bar(i) => }
   }
 }

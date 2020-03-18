@@ -54,8 +54,7 @@ object ResultExpr {
           psm.done(ScalaElementTypes.PARAM_CLAUSES)
 
           return parseFunctionEnd()
-        case _ =>
-          builder error ErrMsg("fun.sign.expected")
+        case _ => builder error ErrMsg("fun.sign.expected")
       }
       parseFunctionEnd()
     }
@@ -68,8 +67,7 @@ object ResultExpr {
         val pmarker = builder.mark()
         builder.advanceLexer() //ate implicit
         builder.getTokenType match {
-          case ScalaTokenTypes.tIDENTIFIER =>
-            return parseFunction(pmarker)
+          case ScalaTokenTypes.tIDENTIFIER => return parseFunction(pmarker)
           case _ =>
             resultMarker.drop()
             backupMarker.rollbackTo()
@@ -78,8 +76,7 @@ object ResultExpr {
       case ScalaTokenTypes.tIDENTIFIER | ScalaTokenTypes.tUNDER =>
         val pmarker = builder.mark
         return parseFunction(pmarker)
-      case _ =>
-        backupMarker.drop()
+      case _ => backupMarker.drop()
     }
     resultMarker.drop()
     false

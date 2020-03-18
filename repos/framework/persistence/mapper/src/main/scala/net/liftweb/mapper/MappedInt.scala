@@ -160,8 +160,7 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
         inst,
         accessor,
         {
-          case f: MappedEnum[T, ENUM] =>
-            f.st(
+          case f: MappedEnum[T, ENUM] => f.st(
               if (v eq null) defaultValue
               else fromInt(Helpers.toInt(v.toString)))
         })

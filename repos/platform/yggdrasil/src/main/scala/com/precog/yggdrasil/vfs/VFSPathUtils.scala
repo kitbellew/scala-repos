@@ -63,9 +63,8 @@ object VFSPathUtils extends Logging {
     Path(path.elements.map {
       case needsEscape
           if toEscape.contains(needsEscape) || needsEscape.endsWith(
-            escapeSuffix) =>
-        needsEscape + escapeSuffix
-      case fine => fine
+            escapeSuffix) => needsEscape + escapeSuffix
+      case fine           => fine
     }.toList)
 
   def unescapePath(path: Path) =
@@ -158,8 +157,7 @@ object VFSPathUtils extends Logging {
                             path.path)))
                     }
 
-                  case otherError =>
-                    IO(\/.left(otherError))
+                  case otherError => IO(\/.left(otherError))
                 },
                 {
                   case VersionEntry(uuid, dataType, timestamp) =>

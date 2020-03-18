@@ -159,8 +159,7 @@ final class PersistencePluginProxy(config: Config)
       context.become(initTimedOut)
       unstashAll() // will trigger appropriate failures
     case Terminated(_) ⇒
-    case msg ⇒
-      stash()
+    case msg ⇒ stash()
   }
 
   def becomeIdentifying(address: Address): Unit = {
@@ -186,8 +185,7 @@ final class PersistencePluginProxy(config: Config)
         context.become(active(target, address == selfAddress))
       case _: ActorIdentity ⇒ // will retry after ReceiveTimeout
       case Terminated(_) ⇒
-      case ReceiveTimeout ⇒
-        sendIdentify(address)
+      case ReceiveTimeout ⇒ sendIdentify(address)
     }: Receive).orElse(init)
 
   def active(targetJournal: ActorRef, targetAtThisNode: Boolean): Receive = {
@@ -198,19 +196,16 @@ final class PersistencePluginProxy(config: Config)
       context.become(initTimedOut)
     case Terminated(_) ⇒
     case InitTimeout ⇒
-    case msg ⇒
-      targetJournal forward msg
+    case msg ⇒ targetJournal forward msg
   }
 
   def initTimedOut: Receive = {
 
-    case req: JournalProtocol.Request ⇒
-      req match { // exhaustive match
+    case req: JournalProtocol.Request ⇒ req match { // exhaustive match
         case WriteMessages(messages, persistentActor, actorInstanceId) ⇒
           persistentActor ! WriteMessagesFailed(timeoutException)
           messages.foreach {
-            case a: AtomicWrite ⇒
-              a.payload.foreach { p ⇒
+            case a: AtomicWrite ⇒ a.payload.foreach { p ⇒
                 persistentActor ! WriteMessageFailure(
                   p,
                   timeoutException,
@@ -232,8 +227,7 @@ final class PersistencePluginProxy(config: Config)
             toSequenceNr)
       }
 
-    case req: SnapshotProtocol.Request ⇒
-      req match { // exhaustive match
+    case req: SnapshotProtocol.Request ⇒ req match { // exhaustive match
         case LoadSnapshot(persistenceId, criteria, toSequenceNr) ⇒
           sender() ! LoadSnapshotResult(None, toSequenceNr)
         case SaveSnapshot(metadata, snapshot) ⇒
@@ -244,8 +238,7 @@ final class PersistencePluginProxy(config: Config)
           sender() ! DeleteSnapshotsFailure(criteria, timeoutException)
       }
 
-    case TargetLocation(address) ⇒
-      becomeIdentifying(address)
+    case TargetLocation(address) ⇒ becomeIdentifying(address)
 
     case Terminated(_) ⇒
     case other ⇒

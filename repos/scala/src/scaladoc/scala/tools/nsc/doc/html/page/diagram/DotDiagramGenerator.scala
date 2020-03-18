@@ -472,8 +472,7 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
                     scope,
                     true,
                     (children ++ imageNode): _*))
-                case _ =>
-                  g \ "a"
+                case _ => g \ "a"
               }
               res = new Elem(prefix, "g", attribs, scope, true, anchorNode: _*)
               DiagramStats.addFixedImage()
@@ -487,8 +486,7 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
         } else res
       }
       // remove titles
-      case <title>{_*}</title> =>
-        scala.xml.Text("")
+      case <title>{_*}</title> => scala.xml.Text("")
       // apply recursively
       case Elem(prefix, label, attribs, scope, child @ _*) =>
         Elem(

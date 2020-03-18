@@ -207,8 +207,7 @@ class ForkRun(sbt: ActorRef, configKey: String, args: Seq[String], log: Logger)
   }
 
   def settingUp: Receive = {
-    case Response(`configKey`, result) =>
-      result.result[ForkConfig] match {
+    case Response(`configKey`, result) => result.result[ForkConfig] match {
         case Success(config) => run(config)
         case Failure(error)  => fail(error)
       }
@@ -246,8 +245,7 @@ class ForkRun(sbt: ActorRef, configKey: String, args: Seq[String], log: Logger)
       server: PlayDevServer,
       reloadKey: String,
       replyTo: ActorRef): Receive = {
-    case Response(`reloadKey`, result) =>
-      result.result[CompileResult] match {
+    case Response(`reloadKey`, result) => result.result[CompileResult] match {
         case Success(result) =>
           replyTo ! result
           context become running(server, reloadKey)

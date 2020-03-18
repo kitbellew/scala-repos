@@ -102,17 +102,11 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
         .prepareIndex(index, estype, accessKey.key)
         .setSource(write(accessKey))
         .get()
-    } catch {
-      case e: ElasticsearchException =>
-        error(e.getMessage)
-    }
+    } catch { case e: ElasticsearchException => error(e.getMessage) }
   }
 
   def delete(key: String): Unit = {
     try { client.prepareDelete(index, estype, key).get }
-    catch {
-      case e: ElasticsearchException =>
-        error(e.getMessage)
-    }
+    catch { case e: ElasticsearchException => error(e.getMessage) }
   }
 }

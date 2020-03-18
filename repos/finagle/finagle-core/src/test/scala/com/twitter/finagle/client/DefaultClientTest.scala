@@ -37,8 +37,7 @@ class DefaultClientTest
 
     val transporter
         : (SocketAddress, StatsReceiver) => Future[Transport[Int, Int]] = {
-      case (_, _) =>
-        Future.value(new QueueTransport(qIn, qOut))
+      case (_, _) => Future.value(new QueueTransport(qIn, qOut))
     }
   }
 

@@ -149,8 +149,7 @@ object ScalaI18nUtil {
     if (idx == -1) return false
     val grParent: PsiElement = parent.getParent
     grParent match {
-      case methodCall: ScMethodCall =>
-        methodCall.getInvokedExpr match {
+      case methodCall: ScMethodCall => methodCall.getInvokedExpr match {
           case refExpr: ScReferenceExpression =>
             val method = refExpr.resolve()
             method match {
@@ -204,9 +203,8 @@ object ScalaI18nUtil {
       val parent: ScExpression = expression.getParent.asInstanceOf[ScExpression]
       parent match {
         case condExpr: PsiConditionalExpression
-            if condExpr.getCondition == expression =>
-          flag = false
-        case _ =>
+            if condExpr.getCondition == expression => flag = false
+        case _                                     =>
       }
       expression = parent
       if (expression.isInstanceOf[PsiAssignmentExpression]) flag = false

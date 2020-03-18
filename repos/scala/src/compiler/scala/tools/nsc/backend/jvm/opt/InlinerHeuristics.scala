@@ -65,8 +65,7 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
                 _,
                 pos,
                 _,
-                _) =>
-            inlineRequest(callsite) match {
+                _) => inlineRequest(callsite) match {
               case Some(Right(req)) => requests += req
               case Some(Left(w)) =>
                 if ((

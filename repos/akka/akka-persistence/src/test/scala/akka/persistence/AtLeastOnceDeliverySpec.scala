@@ -130,11 +130,10 @@ object AtLeastOnceDeliverySpec {
     }
 
     def receiveRecover: Receive = {
-      case evt: Evt ⇒
-        updateState(evt)
+      case evt: Evt ⇒ updateState(evt)
 
-      case SnapshotOffer(_, Snap(deliverySnapshot)) ⇒
-        setDeliverySnapshot(deliverySnapshot)
+      case SnapshotOffer(_, Snap(deliverySnapshot)) ⇒ setDeliverySnapshot(
+          deliverySnapshot)
     }
   }
 

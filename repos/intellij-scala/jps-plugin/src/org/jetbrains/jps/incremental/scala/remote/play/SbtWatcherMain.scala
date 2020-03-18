@@ -56,8 +56,7 @@ object SbtWatcherMain {
           case _ => run()
         }
       case STOP => currentExec.foreach(a => a._1.endSbtExec())
-      case IS_RUNNING =>
-        messageConsumer.consume(currentExec.map { a =>
+      case IS_RUNNING => messageConsumer.consume(currentExec.map { a =>
           toMessage(a._1.isRunning)
         } getOrElse FALSE)
       case _ =>

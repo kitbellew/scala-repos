@@ -64,9 +64,8 @@ class parsersTest extends FunSuite {
     }
 
     "foo:bar:baz" match {
-      case list(elems @ _*) =>
-        assert(elems == Seq("foo", "bar", "baz"))
-      case _ => fail()
+      case list(elems @ _*) => assert(elems == Seq("foo", "bar", "baz"))
+      case _                => fail()
     }
   }
 }

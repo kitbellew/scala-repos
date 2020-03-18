@@ -46,16 +46,14 @@ class ShoppingCart(userId: String) extends Actor {
 
   //#get-cart
   def receiveGetCart: Receive = {
-    case GetCart ⇒
-      replicator ! Get(DataKey, readMajority, Some(sender()))
+    case GetCart ⇒ replicator ! Get(DataKey, readMajority, Some(sender()))
 
     case g @ GetSuccess(DataKey, Some(replyTo: ActorRef)) ⇒
       val data = g.get(DataKey)
       val cart = Cart(data.entries.values.toSet)
       replyTo ! cart
 
-    case NotFound(DataKey, Some(replyTo: ActorRef)) ⇒
-      replyTo ! Cart(Set.empty)
+    case NotFound(DataKey, Some(replyTo: ActorRef)) ⇒ replyTo ! Cart(Set.empty)
 
     case GetFailure(DataKey, Some(replyTo: ActorRef)) ⇒
       // ReadMajority failure, try again with local read

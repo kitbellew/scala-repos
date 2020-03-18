@@ -194,8 +194,7 @@ object Plugin {
       case Success((pd, loader)) =>
         seen += pd.classname
         Plugin.load(pd.classname, loader)
-      case Failure(e) =>
-        Failure(e)
+      case Failure(e) => Failure(e)
     }
     enabled // distinct and not disabled
   }

@@ -12,8 +12,7 @@ private final class DelegateIndex0(refs: Map[ProjectRef, ProjectDelegates])
     refs.get(ref) match { case Some(pd) => pd.refs; case None => Nil }
   def config(ref: ProjectRef, conf: ConfigKey): Seq[ScopeAxis[ConfigKey]] =
     refs.get(ref) match {
-      case Some(pd) =>
-        pd.confs.get(conf) match {
+      case Some(pd) => pd.confs.get(conf) match {
           case Some(cs) => cs; case None => Select(conf) :: Global :: Nil
         }
       case None => Select(conf) :: Global :: Nil

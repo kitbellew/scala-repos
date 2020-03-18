@@ -48,8 +48,7 @@ object Printers {
       tree match {
         case Skip() =>
         // do not print anything
-        case Block(stats) =>
-          for (stat <- stats) printTopLevelTree(stat)
+        case Block(stats) => for (stat <- stats) printTopLevelTree(stat)
         case _ =>
           print(tree)
           println()
@@ -91,8 +90,7 @@ object Printers {
 
     protected def printBlock(tree: Tree): Unit = {
       tree match {
-        case Block(trees) =>
-          printColumn(trees, "{", ";", "}")
+        case Block(trees) => printColumn(trees, "{", ";", "}")
 
         case _ =>
           print('{'); indent(); println()
@@ -116,8 +114,7 @@ object Printers {
 
     def print(tree: Tree): Unit = {
       tree match {
-        case EmptyTree =>
-          print("<empty>")
+        case EmptyTree => print("<empty>")
 
         // Definitions
 
@@ -140,11 +137,9 @@ object Printers {
 
         // Control flow constructs
 
-        case Skip() =>
-          print("/*<skip>*/")
+        case Skip() => print("/*<skip>*/")
 
-        case tree: Block =>
-          printBlock(tree)
+        case tree: Block => printBlock(tree)
 
         case Labeled(label, tpe, body) =>
           print(label)
@@ -264,8 +259,7 @@ object Printers {
           }
           undent; println(); print('}')
 
-        case Debugger() =>
-          print("debugger")
+        case Debugger() => print("debugger")
 
         // Scala expressions
 
@@ -529,8 +523,7 @@ object Printers {
               print(fun)
               print(')')
 
-            case _ =>
-              print(fun)
+            case _ => print(fun)
           }
           printArgs(args)
 
@@ -636,11 +629,9 @@ object Printers {
           print(rhs)
           print(')')
 
-        case JSArrayConstr(items) =>
-          printRow(items, "[", ", ", "]")
+        case JSArrayConstr(items) => printRow(items, "[", ", ", "]")
 
-        case JSObjectConstr(Nil) =>
-          print("{}")
+        case JSObjectConstr(Nil) => print("{}")
 
         case JSObjectConstr(fields) =>
           print('{'); indent; println()
@@ -657,19 +648,15 @@ object Printers {
           }
           undent; println(); print('}')
 
-        case JSLinkingInfo() =>
-          print("<linkinginfo>")
+        case JSLinkingInfo() => print("<linkinginfo>")
 
         // Literals
 
-        case Undefined() =>
-          print("(void 0)")
+        case Undefined() => print("(void 0)")
 
-        case Null() =>
-          print("null")
+        case Null() => print("null")
 
-        case BooleanLiteral(value) =>
-          print(if (value) "true" else "false")
+        case BooleanLiteral(value) => print(if (value) "true" else "false")
 
         case IntLiteral(value) =>
           if (value >= 0) { print(value.toString) }
@@ -715,16 +702,13 @@ object Printers {
 
         // Specials
 
-        case UndefinedParam() =>
-          print("<undefined param>")
+        case UndefinedParam() => print("<undefined param>")
 
         // Atomic expressions
 
-        case VarRef(ident) =>
-          print(ident)
+        case VarRef(ident) => print(ident)
 
-        case This() =>
-          print("this")
+        case This() => print("this")
 
         case Closure(captureParams, params, body, captureValues) =>
           print("(lambda")
@@ -807,8 +791,7 @@ object Printers {
           printEscapeJS(fullName, out)
           print('\"')
 
-        case _ =>
-          print(s"<error, elem of class ${tree.getClass()}>")
+        case _ => print(s"<error, elem of class ${tree.getClass()}>")
       }
     }
 

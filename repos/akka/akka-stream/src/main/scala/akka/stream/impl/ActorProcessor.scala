@@ -231,8 +231,8 @@ private[akka] class SimpleOutputs(val actor: ActorRef, val pump: Pump)
   }
 
   protected def downstreamRunning: Actor.Receive = {
-    case SubscribePending ⇒
-      subscribePending(exposedPublisher.takePendingSubscribers())
+    case SubscribePending ⇒ subscribePending(
+        exposedPublisher.takePendingSubscribers())
     case RequestMore(subscription, elements) ⇒
       if (elements < 1) {
         error(

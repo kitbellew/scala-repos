@@ -67,8 +67,7 @@ case class JavaArrayType(arg: ScType) extends ValueType {
     }
     update(this) match {
       case (true, res) => res
-      case _ =>
-        JavaArrayType(arg.recursiveUpdate(update, visited + this))
+      case _           => JavaArrayType(arg.recursiveUpdate(update, visited + this))
     }
   }
 
@@ -78,8 +77,8 @@ case class JavaArrayType(arg: ScType) extends ValueType {
       variance: Int = 1): ScType = {
     update(this, variance, data) match {
       case (true, res, _) => res
-      case (_, _, newData) =>
-        JavaArrayType(arg.recursiveVarianceUpdateModifiable(newData, update, 0))
+      case (_, _, newData) => JavaArrayType(
+          arg.recursiveVarianceUpdateModifiable(newData, update, 0))
     }
   }
 
@@ -223,8 +222,7 @@ class ScParameterizedType private (
       case (_, _, newData) =>
         val des =
           ScType.extractDesignated(designator, withoutAliases = false) match {
-            case Some((n: ScTypeParametersOwner, _)) =>
-              n.typeParameters.map {
+            case Some((n: ScTypeParametersOwner, _)) => n.typeParameters.map {
                 case tp if tp.isContravariant => -1
                 case tp if tp.isCovariant     => 1
                 case _                        => 0
@@ -289,8 +287,7 @@ class ScParameterizedType private (
             ScParameterizedType(
               ScDesignatorType(a: ScTypeAliasDefinition),
               args),
-            _) =>
-        isAliasType match {
+            _) => isAliasType match {
           case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
             Equivalence.equivInner(
               lower match {
@@ -334,8 +331,8 @@ class ScParameterizedType private (
     */
   def getPartialFunctionType: Option[(ScType, ScType, ScType)] = {
     getStandardType("scala.PartialFunction") match {
-      case Some((typeDef, Seq(param, ret))) =>
-        Some((ScDesignatorType(typeDef), param, ret))
+      case Some((typeDef, Seq(param, ret))) => Some(
+          (ScDesignatorType(typeDef), param, ret))
       case None => None
     }
   }
@@ -357,9 +354,8 @@ class ScParameterizedType private (
           case Success(t, _) =>
             val substituted = (sub followed substitutor).subst(t)
             substituted match {
-              case pt: ScParameterizedType =>
-                Some((clazz, pt.typeArgs))
-              case _ => None
+              case pt: ScParameterizedType => Some((clazz, pt.typeArgs))
+              case _                       => None
             }
           case _ => None
         }
@@ -403,8 +399,7 @@ object ScParameterizedType {
   def apply(designator: ScType, typeArgs: Seq[ScType]): ValueType = {
     val res = new ScParameterizedType(designator, typeArgs)
     designator match {
-      case ScProjectionType(_: ScCompoundType, _, _) =>
-        res.isAliasType match {
+      case ScProjectionType(_: ScCompoundType, _, _) => res.isAliasType match {
           case Some(AliasType(_: ScTypeAliasDefinition, _, upper)) =>
             upper.getOrElse(res) match {
               case v: ValueType => v
@@ -445,8 +440,9 @@ case class ScTypeParameterType(
         case _               => ptp.name
       },
       ptp match {
-        case tp: ScTypeParam =>
-          tp.typeParameters.toList.map { new ScTypeParameterType(_, s) }
+        case tp: ScTypeParam => tp.typeParameters.toList.map {
+            new ScTypeParameterType(_, s)
+          }
         case _ =>
           ptp.getTypeParameters.toList.map(new ScTypeParameterType(_, s))
       },

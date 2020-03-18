@@ -98,8 +98,7 @@ class CSVIngestProcessing(
           val written0 = chan.write(ByteBuffer.wrap(bytes))
           writeChannel(chan, tail, written + written0)
 
-        case None =>
-          M.point { chan.close(); written }
+        case None => M.point { chan.close(); written }
       }
     }
 
@@ -151,14 +150,11 @@ class CSVIngestProcessing(
 
       positions.toList
         .flatMap {
-          case (h, Nil) =>
-            Nil
-          case (h, pos :: Nil) =>
-            (pos -> JPath(JPathField(h))) :: Nil
+          case (h, Nil)        => Nil
+          case (h, pos :: Nil) => (pos -> JPath(JPathField(h))) :: Nil
           case (h, ps) =>
             ps.reverse.zipWithIndex map {
-              case (pos, i) =>
-                (pos -> JPath(JPathField(h), JPathIndex(i)))
+              case (pos, i) => (pos -> JPath(JPathField(h), JPathIndex(i)))
             }
         }
         .sortBy(_._1)

@@ -19,8 +19,7 @@ class LocalSbtWatcherExec extends SbtWatcherExec {
     builder.directory(new File(args.head))
 
     descriptor = Option(builder.start()) map {
-      case p =>
-        createDescriptor(p, consumer).startListening()
+      case p => createDescriptor(p, consumer).startListening()
     }
 
     if (isRunning) state = true

@@ -52,8 +52,7 @@ object TempFile {
 
   private[this] def fromStream(path: String, stream: InputStream): File =
     stream match {
-      case null =>
-        throw new FileNotFoundException(path)
+      case null => throw new FileNotFoundException(path)
       case stream =>
         val (basename, ext) = parsePath(path)
         val file = File.createTempFile(basename, "." + ext)

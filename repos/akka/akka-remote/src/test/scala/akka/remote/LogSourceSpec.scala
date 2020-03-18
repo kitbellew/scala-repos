@@ -15,10 +15,7 @@ import akka.actor.ExtendedActorSystem
 
 object LogSourceSpec {
   class Reporter extends Actor with ActorLogging {
-    def receive = {
-      case s: String ⇒
-        log.info(s)
-    }
+    def receive = { case s: String ⇒ log.info(s) }
   }
 }
 
@@ -38,8 +35,8 @@ class LogSourceSpec
     system.actorOf(
       Props(new Actor {
         def receive = {
-          case i @ Info(_, _, msg: String) if msg contains "hello" ⇒
-            logProbe.ref ! i
+          case i @ Info(_, _, msg: String)
+              if msg contains "hello" ⇒ logProbe.ref ! i
           case _ ⇒
         }
       }).withDeploy(Deploy.local),

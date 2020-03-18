@@ -252,8 +252,7 @@ object Analysis {
             log(
               level,
               s"$verb from ... er ... nowhere!? (this is a bug in dce)")
-          case Some(from) =>
-            from match {
+          case Some(from) => from match {
               case FromMethod(methodInfo) =>
                 log(level, s"$verb from ${methodInfo.fullDisplayName}")
                 if (onlyOnce(level, methodInfo)) {

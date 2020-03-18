@@ -84,8 +84,7 @@ object Collections {
     }
 
     list match {
-      case _: RandomAccess =>
-        binarySearch(0, list.size, list(_))
+      case _: RandomAccess => binarySearch(0, list.size, list(_))
 
       case _ =>
         def getFrom(iter: ListIterator[E])(index: Int): E = {
@@ -158,8 +157,7 @@ object Collections {
 
   def fill[T](list: List[_ >: T], obj: T): Unit = {
     list match {
-      case list: RandomAccess =>
-        (0 until list.size).foreach(list(_) = obj)
+      case list: RandomAccess => (0 until list.size).foreach(list(_) = obj)
 
       case _ =>
         val iter = list.listIterator
@@ -344,8 +342,7 @@ object Collections {
     list match {
       case _: RandomAccess =>
         new UnmodifiableList[T](list.asInstanceOf[List[T]]) with RandomAccess
-      case _ =>
-        new UnmodifiableList[T](list.asInstanceOf[List[T]])
+      case _ => new UnmodifiableList[T](list.asInstanceOf[List[T]])
     }
   }
 

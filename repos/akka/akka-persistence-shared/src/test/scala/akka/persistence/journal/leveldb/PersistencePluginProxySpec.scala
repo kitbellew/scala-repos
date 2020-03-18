@@ -68,12 +68,10 @@ object PersistencePluginProxySpec {
       extends NamedPersistentActor(name) {
     override def receiveRecover = {
       case RecoveryCompleted ⇒ // ignore
-      case payload ⇒
-        probe ! payload
+      case payload ⇒ probe ! payload
     }
     override def receiveCommand = {
-      case payload ⇒
-        persist(payload) { _ ⇒ probe ! payload }
+      case payload ⇒ persist(payload) { _ ⇒ probe ! payload }
     }
   }
 

@@ -59,10 +59,8 @@ object LambdaDeserializer {
         // 1. Add receiver for non-static impl methods
         val withReceiver = getImplMethodKind match {
           case MethodHandleInfo.REF_invokeStatic |
-              MethodHandleInfo.REF_newInvokeSpecial =>
-            implMethodSig
-          case _ =>
-            implMethodSig.insertParameterTypes(0, implClass)
+              MethodHandleInfo.REF_newInvokeSpecial => implMethodSig
+          case _                                    => implMethodSig.insertParameterTypes(0, implClass)
         }
         // 2. Remove lambda parameters, leaving only captures. Note: the receiver may be a lambda parameter,
         //    such as in `Function<Object, String> s = Object::toString`

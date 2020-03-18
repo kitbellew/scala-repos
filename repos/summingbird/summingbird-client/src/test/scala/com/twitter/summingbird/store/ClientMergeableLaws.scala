@@ -45,8 +45,7 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
       implicit val batcher = Batcher.ofHours(2)
       val machine = Machine.empty[Int, Int]
       init.foreach {
-        case (k, v) =>
-          machine.offline.put((k, Some((BatchID(0), v))))
+        case (k, v) => machine.offline.put((k, Some((BatchID(0), v))))
       }
       toMerge.forall {
         case (k, (v1, v2)) =>
@@ -80,12 +79,10 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
       implicit val batcher = Batcher.ofHours(2)
       val machine = Machine.empty[Int, Int]
       init.foreach {
-        case (k, v) =>
-          machine.offline.put((k, Some((BatchID(0), v))))
+        case (k, v) => machine.offline.put((k, Some((BatchID(0), v))))
       }
       val keys: Map[(Int, BatchID), Int] = toMerge.flatMap {
-        case (k, (v1, v2)) =>
-          Map((k, BatchID(1)) -> v1, (k, BatchID(2)) -> v2)
+        case (k, (v1, v2)) => Map((k, BatchID(1)) -> v1, (k, BatchID(2)) -> v2)
       }
 
       Await.result(
@@ -106,12 +103,10 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
       implicit val batcher = Batcher.ofHours(2)
       val machine = Machine.empty[Int, Int]
       init.foreach {
-        case (k, v) =>
-          machine.offline.put((k, Some((BatchID(0), v))))
+        case (k, v) => machine.offline.put((k, Some((BatchID(0), v))))
       }
       val keys: List[((Int, BatchID), Int)] = toMerge.toList.flatMap {
-        case (k, (v1, v2)) =>
-          Map((k, BatchID(1)) -> v1, (k, BatchID(2)) -> v2)
+        case (k, (v1, v2)) => Map((k, BatchID(1)) -> v1, (k, BatchID(2)) -> v2)
       }
 
       val merged = keys.map { kbv => (kbv._1, machine.mergeable.merge(kbv)) }

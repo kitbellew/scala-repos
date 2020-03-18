@@ -129,8 +129,7 @@ class HashMap[K, V] protected (inner: mutable.Map[Box[K], V])
         case Some(key) =>
           inner.remove(key)
           lastKey = None
-        case None =>
-          throw new IllegalStateException
+        case None => throw new IllegalStateException
       }
     }
   }

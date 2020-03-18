@@ -25,8 +25,7 @@ class ScalaClassesCompletionWeigher extends CompletionWeigher {
     if (!ScalaProjectSettings.getInstance(location.getProject).isScalaPriority)
       return null
     ScalaLookupItem.original(element) match {
-      case s: ScalaLookupItem =>
-        s.element match {
+      case s: ScalaLookupItem => s.element match {
           case o: ScObject         => 1
           case s: ScTypeDefinition => 3
           case ta: ScTypeAlias     => 2

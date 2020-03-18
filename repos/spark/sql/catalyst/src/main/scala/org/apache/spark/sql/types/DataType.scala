@@ -142,14 +142,12 @@ object DataType {
   // NOTE: Map fields must be sorted in alphabetical order to keep consistent with the Python side.
   private[sql] def parseDataType(json: JValue): DataType =
     json match {
-      case JString(name) =>
-        nameToType(name)
+      case JString(name) => nameToType(name)
 
       case JSortedObject(
             ("containsNull", JBool(n)),
             ("elementType", t: JValue),
-            ("type", JString("array"))) =>
-        ArrayType(parseDataType(t), n)
+            ("type", JString("array"))) => ArrayType(parseDataType(t), n)
 
       case JSortedObject(
             ("keyType", k: JValue),
@@ -160,8 +158,8 @@ object DataType {
 
       case JSortedObject(
             ("fields", JArray(fields)),
-            ("type", JString("struct"))) =>
-        StructType(fields.map(parseStructField))
+            ("type", JString("struct"))) => StructType(
+          fields.map(parseStructField))
 
       // Scala/Java UDT
       case JSortedObject(
@@ -208,13 +206,10 @@ object DataType {
       prefix: String,
       builder: StringBuilder): Unit = {
     dataType match {
-      case array: ArrayType =>
-        array.buildFormattedString(prefix, builder)
-      case struct: StructType =>
-        struct.buildFormattedString(prefix, builder)
-      case map: MapType =>
-        map.buildFormattedString(prefix, builder)
-      case _ =>
+      case array: ArrayType   => array.buildFormattedString(prefix, builder)
+      case struct: StructType => struct.buildFormattedString(prefix, builder)
+      case map: MapType       => map.buildFormattedString(prefix, builder)
+      case _                  =>
     }
   }
 

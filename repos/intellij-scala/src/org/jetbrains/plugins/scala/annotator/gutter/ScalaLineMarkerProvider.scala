@@ -95,9 +95,8 @@ class ScalaLineMarkerProvider(
         def test(x: PsiElement) =
           x match {
             case _: ScFunction | _: ScValue | _: ScVariable |
-                _: ScTypeDefinition | _: ScTypeAlias =>
-              true
-            case _ => false
+                _: ScTypeDefinition | _: ScTypeAlias => true
+            case _                                   => false
           }
         while (e != null && !test(e)) e = e.getParent
         e

@@ -117,8 +117,7 @@ object TerminateJson {
         if (stack.isEmpty) { anyValue() }
         else {
           stack.head match {
-            case SkipChar =>
-              stack.pop()
+            case SkipChar => stack.pop()
             case ExpectValue =>
               if (!isWhitespace(c)) stack.pop()
               anyValue()
@@ -143,10 +142,8 @@ object TerminateJson {
                 stack.push(FieldDelim)
                 stack.push(CloseString)
               } else anyValue()
-            case FieldDelim =>
-              if (c == ':') stack.pop()
-            case _ =>
-              anyValue()
+            case FieldDelim => if (c == ':') stack.pop()
+            case _          => anyValue()
           }
         }
       }

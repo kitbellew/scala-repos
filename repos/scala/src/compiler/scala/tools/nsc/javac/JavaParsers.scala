@@ -62,20 +62,15 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       var nbraces = 0
       while (true) {
         in.token match {
-          case EOF =>
-            return
-          case SEMI =>
-            if (nparens == 0 && nbraces == 0) return
-          case RPAREN =>
-            nparens -= 1
+          case EOF    => return
+          case SEMI   => if (nparens == 0 && nbraces == 0) return
+          case RPAREN => nparens -= 1
           case RBRACE =>
             if (nbraces == 0) return
             nbraces -= 1
-          case LPAREN =>
-            nparens += 1
-          case LBRACE =>
-            nbraces += 1
-          case _ =>
+          case LPAREN => nparens += 1
+          case LBRACE => nbraces += 1
+          case _      =>
         }
         in.nextToken()
       }
@@ -149,19 +144,15 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       var nbraces = 0
       do {
         in.token match {
-          case LPAREN =>
-            nparens += 1
-          case LBRACE =>
-            nbraces += 1
-          case _ =>
+          case LPAREN => nparens += 1
+          case LBRACE => nbraces += 1
+          case _      =>
         }
         in.nextToken()
         in.token match {
-          case RPAREN =>
-            nparens -= 1
-          case RBRACE =>
-            nbraces -= 1
-          case _ =>
+          case RPAREN => nparens -= 1
+          case RBRACE => nbraces -= 1
+          case _      =>
         }
       } while (in.token != EOF && (nparens > 0 || nbraces > 0))
     }
@@ -228,11 +219,9 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
     def convertToTypeId(tree: Tree): Tree =
       gen.convertToTypeName(tree) match {
         case Some(t) => t setPos tree.pos
-        case _ =>
-          tree match {
+        case _ => tree match {
             case AppliedTypeTree(_, _) | ExistentialTypeTree(_, _) |
-                SelectFromTypeTree(_, _) =>
-              tree
+                SelectFromTypeTree(_, _) => tree
             case _ =>
               syntaxError(tree.pos, "identifier expected", skipIt = false)
               errorTypeTree
@@ -392,8 +381,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           case VOLATILE =>
             addAnnot(VolatileAttr)
             in.nextToken()
-          case SYNCHRONIZED | STRICTFP =>
-            in.nextToken()
+          case SYNCHRONIZED | STRICTFP => in.nextToken()
           case _ =>
             val privateWithin: TypeName =
               if (isPackageAccess && !inInterface) thisPackageName
@@ -621,11 +609,9 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
 
     def memberDecl(mods: Modifiers, parentToken: Int): List[Tree] =
       in.token match {
-        case CLASS | ENUM | INTERFACE | AT =>
-          typeDecl(
+        case CLASS | ENUM | INTERFACE | AT => typeDecl(
             if (definesInterface(parentToken)) mods | Flags.STATIC else mods)
-        case _ =>
-          termDecl(mods, parentToken)
+        case _ => termDecl(mods, parentToken)
       }
 
     def makeCompanionObject(cdef: ClassDef, statics: List[Tree]): Tree =
@@ -793,8 +779,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
             if (!tparams1.isEmpty)
               rhs = AppliedTypeTree(rhs, tparams1 map (tp => Ident(tp.name)))
             List(TypeDef(Modifiers(Flags.PROTECTED), name, tparams1, rhs))
-          case _ =>
-            List()
+          case _ => List()
         }
       val sdefs = statics.toList
       val idefs = members.toList ::: (sdefs flatMap forwarders)

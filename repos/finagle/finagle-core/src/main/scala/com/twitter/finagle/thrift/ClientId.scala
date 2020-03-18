@@ -37,8 +37,8 @@ object ClientId {
         buf match {
           case buf if buf.isEmpty => Return.None
           case Buf.Utf8(name)     => Return(Some(ClientId(name)))
-          case invalid =>
-            Throw(new IllegalArgumentException("client id not a utf8 string"))
+          case invalid => Throw(
+              new IllegalArgumentException("client id not a utf8 string"))
         }
     }
 

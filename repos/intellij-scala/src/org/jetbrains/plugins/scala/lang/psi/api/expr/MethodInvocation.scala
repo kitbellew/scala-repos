@@ -290,12 +290,12 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
 
     def checkApplication(tpe: ScType, args: Seq[Expression]): Option[ScType] =
       tpe match {
-        case ScMethodType(retType, params, _) =>
-          Some(checkConformance(retType, args, params))
+        case ScMethodType(retType, params, _) => Some(
+            checkConformance(retType, args, params))
         case ScTypePolymorphicType(
               ScMethodType(retType, params, _),
-              typeParams) =>
-          Some(checkConformanceWithInference(retType, args, typeParams, params))
+              typeParams) => Some(
+            checkConformanceWithInference(retType, args, typeParams, params))
         case ScTypePolymorphicType(
               ScFunctionType(retType, params),
               typeParams) =>
@@ -324,8 +324,7 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
       if (isNamedDynamic) {
         default.map { expr =>
           val actualExpr = expr match {
-            case a: ScAssignStmt =>
-              a.getLExpression match {
+            case a: ScAssignStmt => a.getLExpression match {
                 case ref: ScReferenceExpression if ref.qualifier.isEmpty =>
                   a.getRExpression.getOrElse(expr)
                 case _ => expr

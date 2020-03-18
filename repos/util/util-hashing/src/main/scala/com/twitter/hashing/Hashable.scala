@@ -134,10 +134,7 @@ object Hashable extends LowPriorityHashable {
     try {
       MessageDigestMd5.clone()
       true
-    } catch {
-      case _: CloneNotSupportedException =>
-        false
-    }
+    } catch { case _: CloneNotSupportedException => false }
   private[this] def newMd5MessageDigest(): MessageDigest = {
     if (Md5SupportsClone) MessageDigestMd5.clone().asInstanceOf[MessageDigest]
     else MessageDigest.getInstance("MD5")

@@ -41,8 +41,8 @@ abstract class RefactoringEnvironment(file: String, start: Int, end: Int) {
             }
           case Left(error) => Left(RefactorFailure(procId, error.cause))
         }
-      case None =>
-        Left(RefactorFailure(procId, "Compilation unit not found: " + af))
+      case None => Left(
+          RefactorFailure(procId, "Compilation unit not found: " + af))
     }
 
   }
@@ -63,8 +63,7 @@ trait RefactoringHandler {
         effects += procedureId -> effect
         effect
 
-      case Left(failure) =>
-        failure
+      case Left(failure) => failure
     }
   }
 
@@ -82,8 +81,7 @@ trait RefactoringHandler {
           case Left(err) => RefactorFailure(effect.procedureId, err.toString)
         }
       }
-      case Left(failure) =>
-        failure
+      case Left(failure) => failure
     }
   }
 
@@ -114,8 +112,7 @@ trait RefactoringHandler {
         AstSelector.expandSelection(contents, selectionRange) match {
           case Some(range) =>
             FileRange(file.getPath, range.offset, range.offset + range.length)
-          case _ =>
-            FileRange(file.getPath, start, stop)
+          case _ => FileRange(file.getPath, start, stop)
         }
       case Left(e) => throw e
     }

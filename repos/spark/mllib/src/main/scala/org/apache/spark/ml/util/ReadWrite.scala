@@ -229,8 +229,7 @@ private[ml] object DefaultParamsWriter {
       .toSeq
       .asInstanceOf[Seq[ParamPair[Any]]]
     val jsonParams = paramMap.getOrElse(render(params.map {
-      case ParamPair(p, v) =>
-        p.name -> parse(p.jsonEncode(v))
+      case ParamPair(p, v) => p.name -> parse(p.jsonEncode(v))
     }.toList))
     val basicMetadata = ("class" -> cls) ~
       ("timestamp" -> System.currentTimeMillis()) ~
@@ -238,10 +237,8 @@ private[ml] object DefaultParamsWriter {
       ("uid" -> uid) ~
       ("paramMap" -> jsonParams)
     val metadata = extraMetadata match {
-      case Some(jObject) =>
-        basicMetadata ~ jObject
-      case None =>
-        basicMetadata
+      case Some(jObject) => basicMetadata ~ jObject
+      case None          => basicMetadata
     }
     val metadataPath = new Path(path, "metadata").toString
     val metadataJson = compact(render(metadata))
@@ -297,10 +294,7 @@ private[ml] object DefaultParamsReader {
       params match {
         case JObject(pairs) =>
           val values = pairs
-            .filter {
-              case (pName, jsonValue) =>
-                pName == paramName
-            }
+            .filter { case (pName, jsonValue) => pName == paramName }
             .map(_._2)
           assert(
             values.length == 1,
@@ -360,8 +354,7 @@ private[ml] object DefaultParamsReader {
   def getAndSetParams(instance: Params, metadata: Metadata): Unit = {
     implicit val format = DefaultFormats
     metadata.params match {
-      case JObject(pairs) =>
-        pairs.foreach {
+      case JObject(pairs) => pairs.foreach {
           case (paramName, jsonValue) =>
             val param = instance.getParam(paramName)
             val value = param.jsonDecode(compact(render(jsonValue)))

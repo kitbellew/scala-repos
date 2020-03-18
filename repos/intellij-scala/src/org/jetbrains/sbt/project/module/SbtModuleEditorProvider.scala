@@ -12,16 +12,14 @@ class SbtModuleEditorProvider extends ModuleConfigurationEditorProvider {
     val module = state.getRootModel.getModule
 
     ModuleType.get(module) match {
-      case _: SbtModuleType =>
-        Array(
+      case _: SbtModuleType => Array(
           new ContentEntriesEditor(module.getName, state),
           new DefaultModuleConfigurationEditorFactoryImpl()
             .createOutputEditor(state),
           new ClasspathEditor(state),
           new SbtModuleSettingsEditor(state)
         )
-      case _ =>
-        ModuleConfigurationEditor.EMPTY
+      case _ => ModuleConfigurationEditor.EMPTY
     }
   }
 }

@@ -48,10 +48,7 @@ object MergeOperations {
       m1: Map[K, Future[Seq[Option[(BatchID, V)]]]],
       m2: Map[K, Future[Seq[Option[(BatchID, V)]]]])
       : Map[K, Future[Option[(BatchID, V)]]] =
-    Semigroup.plus(m1, m2).map {
-      case (k, v) =>
-        k -> v.map(sortedSum(_))
-    }
+    Semigroup.plus(m1, m2).map { case (k, v) => k -> v.map(sortedSum(_)) }
 
   def dropBatches[K, V](
       m: Map[K, Future[Option[(BatchID, V)]]]): Map[K, Future[Option[V]]] =

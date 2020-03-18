@@ -31,10 +31,8 @@ trait GenTypes {
       Select(Select(reify(tsym), nme.asType), nme.toTypeConstructor)
     else
       tpe match {
-        case tpe: NoType.type =>
-          reifyMirrorObject(tpe)
-        case tpe: NoPrefix.type =>
-          reifyMirrorObject(tpe)
+        case tpe: NoType.type   => reifyMirrorObject(tpe)
+        case tpe: NoPrefix.type => reifyMirrorObject(tpe)
         case tpe @ ThisType(root) if root.isRoot =>
           mirrorBuildCall(nme.thisPrefix, mirrorMirrorSelect(nme.RootClass))
         case tpe @ ThisType(empty) if empty.isEmptyPackageClass =>
@@ -47,8 +45,7 @@ trait GenTypes {
             Select(module, nme.asModule),
             nme.moduleClass)
           mirrorBuildCall(nme.ThisType, moduleClass)
-        case tpe @ ThisType(sym) =>
-          reifyBuildCall(nme.ThisType, sym)
+        case tpe @ ThisType(sym) => reifyBuildCall(nme.ThisType, sym)
         case tpe @ SuperType(thistpe, supertpe) =>
           reifyBuildCall(nme.SuperType, thistpe, supertpe)
         case tpe @ SingleType(pre, sym) =>
@@ -57,14 +54,11 @@ trait GenTypes {
           mirrorBuildCall(nme.ConstantType, reifyProduct(value))
         case tpe @ TypeRef(pre, sym, args) =>
           reifyBuildCall(nme.TypeRef, pre, sym, args)
-        case tpe @ TypeBounds(lo, hi) =>
-          reifyBuildCall(nme.TypeBounds, lo, hi)
+        case tpe @ TypeBounds(lo, hi) => reifyBuildCall(nme.TypeBounds, lo, hi)
         case tpe @ NullaryMethodType(restpe) =>
           reifyBuildCall(nme.NullaryMethodType, restpe)
-        case tpe @ AnnotatedType(anns, underlying) =>
-          reifyAnnotatedType(tpe)
-        case _ =>
-          reifyToughType(tpe)
+        case tpe @ AnnotatedType(anns, underlying) => reifyAnnotatedType(tpe)
+        case _                                     => reifyToughType(tpe)
       }
   }
 
@@ -151,8 +145,7 @@ trait GenTypes {
           Select(
             Apply(Select(tagTree, nme.in), List(Ident(nme.MIRROR_SHORT))),
             nme.tpe)
-        case _ =>
-          EmptyTree
+        case _ => EmptyTree
       }
     val result = typer.silent(silentTyper =>
       silentTyper.context.withMacrosDisabled(searchForManifest(silentTyper)))

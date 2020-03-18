@@ -45,7 +45,8 @@ private[api] final class RoundApiBalancer(
           val futureTimeout = 20.seconds
           val logger = RoundApiBalancer.this.logger
           def process = {
-            case Player(pov, apiVersion, ctx) => {
+            case Player(pov, apiVersion, ctx) =>
+              {
                 api.player(pov, apiVersion)(ctx) addFailureEffect { e =>
                   logger.error(pov.toString, e)
                 }

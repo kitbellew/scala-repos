@@ -53,8 +53,7 @@ class NaiveBayesSuite
 
   def validatePrediction(predictionAndLabels: DataFrame): Unit = {
     val numOfErrorPredictions = predictionAndLabels.collect().count {
-      case Row(prediction: Double, label: Double) =>
-        prediction != label
+      case Row(prediction: Double, label: Double) => prediction != label
     }
     // At least 80% of the predictions should be on.
     assert(numOfErrorPredictions < predictionAndLabels.count() / 5)
@@ -105,12 +104,9 @@ class NaiveBayesSuite
       case Row(features: Vector, probability: Vector) => {
         assert(probability.toArray.sum ~== 1.0 relTol 1.0e-10)
         val expected = modelType match {
-          case Multinomial =>
-            expectedMultinomialProbabilities(model, features)
-          case Bernoulli =>
-            expectedBernoulliProbabilities(model, features)
-          case _ =>
-            throw new UnknownError(s"Invalid modelType: $modelType.")
+          case Multinomial => expectedMultinomialProbabilities(model, features)
+          case Bernoulli   => expectedBernoulliProbabilities(model, features)
+          case _           => throw new UnknownError(s"Invalid modelType: $modelType.")
         }
         assert(probability ~== expected relTol 1.0e-10)
       }

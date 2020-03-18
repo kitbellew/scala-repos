@@ -369,9 +369,7 @@ object TestLogCleaning {
             TestRecord(topic, item.key.toInt, value, delete).toString)
           consumedWriter.newLine()
         }
-      } catch {
-        case e: ConsumerTimeoutException =>
-      }
+      } catch { case e: ConsumerTimeoutException => }
     }
     consumedWriter.close()
     connector.shutdown()

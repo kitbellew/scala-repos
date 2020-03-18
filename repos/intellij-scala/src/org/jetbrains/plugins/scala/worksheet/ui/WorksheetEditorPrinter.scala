@@ -297,8 +297,7 @@ class WorksheetEditorPrinter(
                             group,
                             limit)
                       } foreach {
-                        case region =>
-                          viewerFolding addFoldRegion region
+                        case region => viewerFolding addFoldRegion region
                       }
 
                       WorksheetFoldGroup.save(file, group)
@@ -608,8 +607,7 @@ object WorksheetEditorPrinter {
         }
 
       if (parent.getComponentCount > 1) parent.getComponent(1) match {
-        case splitter: Splitter =>
-          preserveFocus {
+        case splitter: Splitter => preserveFocus {
             parent.remove(1)
             parent.add(diffPane, 1)
           }

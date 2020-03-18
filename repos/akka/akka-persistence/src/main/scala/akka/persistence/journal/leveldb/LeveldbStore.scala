@@ -71,8 +71,7 @@ private[persistence] trait LeveldbStore
               a.payload.foreach {
                 p ⇒
                   val (p2, tags) = p.payload match {
-                    case Tagged(payload, tags) ⇒
-                      (p.withPayload(payload), tags)
+                    case Tagged(payload, tags) ⇒ (p.withPayload(payload), tags)
                     case _ ⇒ (p, Set.empty[String])
                   }
                   if (tags.nonEmpty && hasTagSubscribers)

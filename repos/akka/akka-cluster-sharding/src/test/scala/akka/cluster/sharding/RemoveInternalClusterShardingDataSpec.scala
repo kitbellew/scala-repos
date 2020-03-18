@@ -54,8 +54,7 @@ object RemoveInternalClusterShardingDataSpec {
     var hasSnapshots = false
 
     override def receiveRecover: Receive = {
-      case SnapshotOffer(_, _) ⇒
-        hasSnapshots = true
+      case SnapshotOffer(_, _) ⇒ hasSnapshots = true
       case RecoveryCompleted ⇒
         replyTo ! hasSnapshots
         context.stop(self)
@@ -63,9 +62,7 @@ object RemoveInternalClusterShardingDataSpec {
       case _ ⇒
     }
 
-    override def receiveCommand: Receive = {
-      case _ ⇒
-    }
+    override def receiveCommand: Receive = { case _ ⇒ }
   }
 
   class HasEvents(override val persistenceId: String, replyTo: ActorRef)
@@ -77,16 +74,13 @@ object RemoveInternalClusterShardingDataSpec {
       Recovery(fromSnapshot = SnapshotSelectionCriteria.None)
 
     override def receiveRecover: Receive = {
-      case event: ShardCoordinator.Internal.DomainEvent ⇒
-        hasEvents = true
+      case event: ShardCoordinator.Internal.DomainEvent ⇒ hasEvents = true
       case RecoveryCompleted ⇒
         replyTo ! hasEvents
         context.stop(self)
     }
 
-    override def receiveCommand: Receive = {
-      case _ ⇒
-    }
+    override def receiveCommand: Receive = { case _ ⇒ }
   }
 
 }

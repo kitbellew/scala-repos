@@ -135,8 +135,7 @@ class ConsumerFetcherThread(
   protected def fetch(fetchRequest: FetchRequest)
       : collection.Map[TopicAndPartition, PartitionData] =
     simpleConsumer.fetch(fetchRequest.underlying).data.map {
-      case (key, value) =>
-        key -> new PartitionData(value)
+      case (key, value) => key -> new PartitionData(value)
     }
 
 }

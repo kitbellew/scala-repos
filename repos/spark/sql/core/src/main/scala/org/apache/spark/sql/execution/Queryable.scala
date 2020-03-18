@@ -47,8 +47,7 @@ private[sql] trait Queryable {
       }
       builder.append("]").toString()
     } catch {
-      case NonFatal(e) =>
-        s"Invalid tree; ${e.getMessage}:\n$queryExecution"
+      case NonFatal(e) => s"Invalid tree; ${e.getMessage}:\n$queryExecution"
     }
   }
 

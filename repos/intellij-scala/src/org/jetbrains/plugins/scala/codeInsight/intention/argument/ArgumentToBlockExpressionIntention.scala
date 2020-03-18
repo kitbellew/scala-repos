@@ -26,9 +26,8 @@ class ArgumentToBlockExpressionIntention extends PsiElementBaseIntentionAction {
       case Parent(list: ScArgumentExprList)
           if list.exprs.size == 1 && !list
             .exprs(0)
-            .isInstanceOf[ScUnderscoreSection] =>
-        true
-      case _ => false
+            .isInstanceOf[ScUnderscoreSection] => true
+      case _                                   => false
     })
   }
 

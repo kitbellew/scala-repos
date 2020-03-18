@@ -212,10 +212,8 @@ class LogSegment(
         if (validBytes - lastIndexEntry > indexIntervalBytes) {
           // we need to decompress the message, if required, to get the offset of the first uncompressed message
           val startOffset = entry.message.compressionCodec match {
-            case NoCompressionCodec =>
-              entry.offset
-            case _ =>
-              ByteBufferMessageSet.deepIterator(entry).next().offset
+            case NoCompressionCodec => entry.offset
+            case _                  => ByteBufferMessageSet.deepIterator(entry).next().offset
           }
           index.append(startOffset, validBytes)
           lastIndexEntry = validBytes

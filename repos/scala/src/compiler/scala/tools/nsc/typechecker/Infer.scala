@@ -181,8 +181,7 @@ trait Infer extends Checkable {
     */
   def normalize(tp: Type): Type =
     tp match {
-      case PolyType(_, restpe) =>
-        logResult(sm"""|Normalizing PolyType in infer:
+      case PolyType(_, restpe)                         => logResult(sm"""|Normalizing PolyType in infer:
                      |  was: $restpe
                      |  now""")(normalize(restpe))
       case mt @ MethodType(_, restpe) if mt.isImplicit => normalize(restpe)
@@ -682,8 +681,7 @@ trait Infer extends Checkable {
       }
       def argumentPosition(idx: Int): Position =
         context.tree match {
-          case x: ValOrDefDef =>
-            x.rhs match {
+          case x: ValOrDefDef => x.rhs match {
               case Apply(fn, args) if idx < args.size => args(idx).pos
               case _                                  => context.tree.pos
             }
@@ -692,8 +690,7 @@ trait Infer extends Checkable {
       if (settings.warnInferAny && context.reportErrors && canWarnAboutAny) {
         foreachWithIndex(targs)((targ, idx) =>
           targ.typeSymbol match {
-            case sym @ (AnyClass | AnyValClass) =>
-              reporter.warning(
+            case sym @ (AnyClass | AnyValClass) => reporter.warning(
                 argumentPosition(idx),
                 s"a type was inferred to be `${sym.name}`; this may indicate a programming error.")
             case _ =>
@@ -1059,8 +1056,7 @@ trait Infer extends Checkable {
       tpe1 match {
         case PolyType(tparams1, rtpe1) =>
           isAsSpecificValueType(rtpe1, tpe2, undef1 ::: tparams1, undef2)
-        case _ =>
-          tpe2 match {
+        case _ => tpe2 match {
             case PolyType(tparams2, rtpe2) =>
               isAsSpecificValueType(tpe1, rtpe2, undef1, undef2 ::: tparams2)
             case _ =>
@@ -1113,8 +1109,7 @@ trait Infer extends Checkable {
 
     private def covariantReturnOverride(ftpe1: Type, ftpe2: Type): Boolean =
       ftpe1 match {
-        case MethodType(_, rtpe1) =>
-          ftpe2 match {
+        case MethodType(_, rtpe1) => ftpe2 match {
             case MethodType(_, rtpe2) =>
               rtpe1 <:< rtpe2 || rtpe2.typeSymbol == ObjectClass
             case _ => false
@@ -1156,8 +1151,7 @@ trait Infer extends Checkable {
         pre: Type,
         owner: Symbol): List[String] = {
       checkKindBounds0(tparams, targs, pre, owner, explainErrors = true) map {
-        case (targ, tparam, kindErrors) =>
-          kindErrors.errorMessage(targ, tparam)
+        case (targ, tparam, kindErrors) => kindErrors.errorMessage(targ, tparam)
       }
     }
 
@@ -1487,8 +1481,7 @@ trait Infer extends Checkable {
         val reduced2 = tp2 match {
           case rtp @ RefinedType(parents2, decls2) =>
             copyRefinedType(rtp, parents2 filterNot (tp1 <:< _), decls2)
-          case _ =>
-            tp2
+          case _ => tp2
         }
         intersectionType(List(tp1, reduced2))
       }
@@ -1645,8 +1638,7 @@ trait Infer extends Checkable {
                   competing,
                   pt,
                   isSecondTry)
-            case _ =>
-              if (bests.isEmpty || alts0.isEmpty)
+            case _ => if (bests.isEmpty || alts0.isEmpty)
                 NoBestExprAlternativeError(tree, pt, isSecondTry)
           }
         }

@@ -91,8 +91,7 @@ object Receptionist {
         val set = map get f.key
         f.replyTo ! Listing(f.key, set)
         Same
-      case Sig(ctx, Terminated(ref)) ⇒
-        behavior(map valueRemoved ref)
+      case Sig(ctx, Terminated(ref)) ⇒ behavior(map valueRemoved ref)
     }
 }
 

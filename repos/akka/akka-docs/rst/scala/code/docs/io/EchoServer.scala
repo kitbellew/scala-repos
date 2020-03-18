@@ -107,8 +107,7 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
       connection ! Write(data, Ack(currentOffset))
       buffer(data)
 
-    case Ack(ack) =>
-      acknowledge(ack)
+    case Ack(ack) => acknowledge(ack)
 
     case CommandFailed(Write(_, Ack(ack))) =>
       connection ! ResumeWriting

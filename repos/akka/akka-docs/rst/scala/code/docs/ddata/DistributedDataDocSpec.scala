@@ -246,10 +246,8 @@ class DistributedDataDocSpec extends AkkaSpec(DistributedDataDocSpec.config) {
       case g @ GetSuccess(Counter1Key, Some(replyTo: ActorRef)) =>
         val value = g.get(Counter1Key).value.longValue
         replyTo ! value
-      case GetFailure(Counter1Key, Some(replyTo: ActorRef)) =>
-        replyTo ! -1L
-      case NotFound(Counter1Key, Some(replyTo: ActorRef)) =>
-        replyTo ! 0L
+      case GetFailure(Counter1Key, Some(replyTo: ActorRef)) => replyTo ! -1L
+      case NotFound(Counter1Key, Some(replyTo: ActorRef))   => replyTo ! 0L
     }
     //#get-request-context
   }
@@ -268,9 +266,8 @@ class DistributedDataDocSpec extends AkkaSpec(DistributedDataDocSpec.config) {
     var currentValue = BigInt(0)
 
     def receive: Receive = {
-      case c @ Changed(Counter1Key) =>
-        currentValue = c.get(Counter1Key).value
-      case "get-count" =>
+      case c @ Changed(Counter1Key) => currentValue = c.get(Counter1Key).value
+      case "get-count"              =>
         // incoming request to retrieve current value of the counter
         sender() ! currentValue
     }

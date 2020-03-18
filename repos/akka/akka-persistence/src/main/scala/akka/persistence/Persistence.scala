@@ -295,8 +295,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
       fallbackPath: String): PluginHolder = {
     val extensionIdMap = pluginExtensionId.get
     extensionIdMap.get(configPath) match {
-      case Some(extensionId) ⇒
-        extensionId(system)
+      case Some(extensionId) ⇒ extensionId(system)
       case None ⇒
         val extensionId = new PluginHolderExtensionId(configPath, fallbackPath)
         pluginExtensionId.compareAndSet(

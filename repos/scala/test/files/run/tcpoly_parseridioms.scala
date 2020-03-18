@@ -18,8 +18,7 @@ trait Parsers {
     new Parser[Tuple2[T, U]] {
       def apply(in: Input): ParseResult[Tuple2[T, U]] =
         a(in) match {
-          case Success(next, x) =>
-            b(next) match {
+          case Success(next, x) => b(next) match {
               case Success(next2, y) => Success(next2, (x, y))
               case Failure(_, msg)   => Failure(in, msg)
             }
@@ -33,8 +32,7 @@ trait Parsers {
       def apply(in: Input): ParseResult[T] =
         a(in) match {
           case Success(next, x) => Success(next, x)
-          case Failure(_, _) =>
-            b(in) match {
+          case Failure(_, _) => b(in) match {
               case Success(next, y) => Success(next, y)
               case Failure(_, msg)  => Failure(in, msg)
             }

@@ -60,8 +60,7 @@ object TcpHelper {
       case ClientWrite(bytes) if !writePending ⇒
         writePending = true
         connection ! Tcp.Write(bytes, WriteAck)
-      case ClientWrite(bytes) ⇒
-        queuedWrites = queuedWrites.enqueue(bytes)
+      case ClientWrite(bytes) ⇒ queuedWrites = queuedWrites.enqueue(bytes)
       case WriteAck if queuedWrites.nonEmpty ⇒
         val (next, remaining) = queuedWrites.dequeue
         queuedWrites = remaining

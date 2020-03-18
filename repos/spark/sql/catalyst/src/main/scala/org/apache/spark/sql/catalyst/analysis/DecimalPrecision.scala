@@ -257,8 +257,7 @@ object DecimalPrecision extends Rule[LogicalPlan] {
           b.makeCopy(Array(left, Cast(right, DoubleType)))
         case (DecimalType.Fixed(p, s), t) if isFloat(t) =>
           b.makeCopy(Array(Cast(left, DoubleType), right))
-        case _ =>
-          b
+        case _ => b
       }
   }
 }

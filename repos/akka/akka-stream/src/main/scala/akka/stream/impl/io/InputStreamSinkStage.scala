@@ -163,8 +163,7 @@ private[akka] class InputStreamAdapter(
             } catch {
               case ex: InterruptedException ⇒ throw new IOException(ex)
             }
-          case Some(data) ⇒
-            readBytes(a, begin, length)
+          case Some(data) ⇒ readBytes(a, begin, length)
         }
       } else -1)
   }
@@ -221,8 +220,7 @@ private[akka] class InputStreamAdapter(
 
   private[this] def grabDataChunk(): Option[ByteString] = {
     detachedChunk match {
-      case None ⇒
-        sharedBuffer.poll() match {
+      case None ⇒ sharedBuffer.poll() match {
           case Data(data) ⇒
             detachedChunk = Some(data)
             detachedChunk

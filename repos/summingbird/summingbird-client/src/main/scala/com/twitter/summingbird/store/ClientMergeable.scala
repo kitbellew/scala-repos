@@ -133,8 +133,7 @@ class ClientMergeable[K, V: Semigroup](
           (batch, mm.plus(existing, preMerge))
       }
       .flatMap {
-        case (b, kvs) =>
-          kvs.iterator.map { case (k, v) => ((k, b), v) }
+        case (b, kvs) => kvs.iterator.map { case (k, v) => ((k, b), v) }
       }
       .toMap
     // Since the type is a subclass, we need to jump through this hoop:

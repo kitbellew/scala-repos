@@ -136,8 +136,7 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
         s"Server ($serverWhich) Client ($clientWhich) clientId $clientId protocolFactory $pf") {
         val resp = clientIface.show_me_your_dtab()
         clientId match {
-          case Some(cId) =>
-            assert(cId.name == Await.result(resp))
+          case Some(cId) => assert(cId.name == Await.result(resp))
           case None =>
             val ex = intercept[TApplicationException] { Await.result(resp) }
             assert(ex.getMessage.contains(missingClientIdEx.toString))
@@ -332,8 +331,7 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
             Ssl.clientWithoutCertificateValidation(
               inet.getHostName,
               inet.getPort)
-          case _ =>
-            Ssl.clientWithoutCertificateValidation()
+          case _ => Ssl.clientWithoutCertificateValidation()
         })))
         .newIface[B.ServiceIface](server)
 
@@ -387,8 +385,7 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
 
   private val classifier: ResponseClassifier = {
     case ReqRep(Echo.Echo.Args(x), Throw(_: InvalidQueryException))
-        if x == "ok" =>
-      ResponseClass.Success
+        if x == "ok" => ResponseClass.Success
     case ReqRep(_, Throw(_: InvalidQueryException)) =>
       ResponseClass.NonRetryableFailure
     case ReqRep(_, Return(s: String)) => ResponseClass.NonRetryableFailure

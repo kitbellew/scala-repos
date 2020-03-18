@@ -110,9 +110,8 @@ class NewHadoopRDD[K, V](
   override def getPartitions: Array[Partition] = {
     val inputFormat = inputFormatClass.newInstance
     inputFormat match {
-      case configurable: Configurable =>
-        configurable.setConf(_conf)
-      case _ =>
+      case configurable: Configurable => configurable.setConf(_conf)
+      case _                          =>
     }
     val jobContext = new JobContextImpl(_conf, jobId)
     val rawSplits = inputFormat.getSplits(jobContext).toArray
@@ -160,9 +159,8 @@ class NewHadoopRDD[K, V](
 
       val format = inputFormatClass.newInstance
       format match {
-        case configurable: Configurable =>
-          configurable.setConf(conf)
-        case _ =>
+        case configurable: Configurable => configurable.setConf(conf)
+        case _                          =>
       }
       val attemptId =
         new TaskAttemptID(jobTrackerId, id, TaskType.MAP, split.index, 0)

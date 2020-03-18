@@ -44,8 +44,9 @@ trait HeadActionSpec
   "HEAD requests" should {
 
     val chunkedResponse: Routes = {
-      case GET(p"/chunked") =>
-        Action { request => Results.Ok.chunked(Source(List("a", "b", "c"))) }
+      case GET(p"/chunked") => Action { request =>
+          Results.Ok.chunked(Source(List("a", "b", "c")))
+        }
     }
 
     val routes = get // GET /get

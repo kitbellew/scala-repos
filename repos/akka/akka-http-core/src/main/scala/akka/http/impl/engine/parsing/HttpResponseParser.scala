@@ -65,8 +65,7 @@ private[http] class HttpResponseParser(
       val code = intValue(0) * 100 + intValue(1) * 10 + intValue(2)
       statusCode = code match {
         case 200 ⇒ StatusCodes.OK
-        case _ ⇒
-          StatusCodes.getForKey(code) match {
+        case _ ⇒ StatusCodes.getForKey(code) match {
             case Some(x) ⇒ x
             case None ⇒ customStatusCodes(code) getOrElse badStatusCode
           }
@@ -147,8 +146,7 @@ private[http] class HttpResponseParser(
           contextForCurrentResponse.get.requestMethod != HttpMethods.HEAD
         )) {
       teh match {
-        case None ⇒
-          clh match {
+        case None ⇒ clh match {
             case Some(`Content-Length`(contentLength)) ⇒
               if (contentLength == 0) finishEmptyResponse()
               else if (contentLength <= input.size - bodyStart) {

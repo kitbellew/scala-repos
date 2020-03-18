@@ -86,8 +86,7 @@ trait CookedBlockFormatSpecs
       case Success(_) =>
         val in = new InMemoryReadableByteChannel(out.toArray)
         format.readCookedBlock(in) must beLike {
-          case Success(segments1) =>
-            segments1 must_== segments0
+          case Success(segments1) => segments1 must_== segments0
         }
     }
   }

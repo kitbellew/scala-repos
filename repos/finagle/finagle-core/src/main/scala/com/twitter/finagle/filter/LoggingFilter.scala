@@ -25,10 +25,8 @@ trait LoggingFilter[Req, Rep] extends SimpleFilter[Req, Rep] {
     val elapsed = Stopwatch.start()
     val future = service(request)
     future respond {
-      case Return(reply) =>
-        log(elapsed(), request, reply)
-      case Throw(throwable) =>
-        logException(elapsed(), request, throwable)
+      case Return(reply)    => log(elapsed(), request, reply)
+      case Throw(throwable) => logException(elapsed(), request, throwable)
     }
     future
   }

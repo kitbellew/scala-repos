@@ -212,8 +212,7 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
                     blocking = blockOnCleanupTasks)
                 case CleanAccum(accId) =>
                   doCleanupAccum(accId, blocking = blockOnCleanupTasks)
-                case CleanCheckpoint(rddId) =>
-                  doCleanCheckpoint(rddId)
+                case CleanCheckpoint(rddId) => doCleanCheckpoint(rddId)
               }
             }
           }

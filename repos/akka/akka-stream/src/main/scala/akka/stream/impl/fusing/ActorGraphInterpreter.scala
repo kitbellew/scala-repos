@@ -340,10 +340,8 @@ private[stream] object ActorGraphInterpreter {
     def exposedPublisher(publisher: ActorPublisher[Any]): Unit = {
       exposedPublisher = publisher
       upstreamFailed match {
-        case _: Some[_] ⇒
-          publisher.shutdown(upstreamFailed)
-        case _ ⇒
-          if (upstreamCompleted) publisher.shutdown(None)
+        case _: Some[_] ⇒ publisher.shutdown(upstreamFailed)
+        case _ ⇒ if (upstreamCompleted) publisher.shutdown(None)
       }
     }
 
@@ -596,9 +594,8 @@ private[stream] final class GraphInterpreterShell(
       inputs.foreach(_.onInternalError(ex))
       interpreter.execute(abortLimit)
       interpreter.finish()
-    } catch {
-      case NonFatal(_) ⇒
-    } finally {
+    } catch { case NonFatal(_) ⇒ }
+    finally {
       _isTerminated = true
       // Will only have an effect if the above call to the interpreter failed to emit a proper failure to the downstream
       // otherwise this will have no effect

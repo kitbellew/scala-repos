@@ -11,9 +11,7 @@ object Test extends App {
   val lb1 = newLB
 
   try { lb1.insert(9, 'x) }
-  catch {
-    case ex: IndexOutOfBoundsException =>
-  }
+  catch { case ex: IndexOutOfBoundsException => }
 
   val replStr = scala.runtime.ScalaRunTime.replStringOf(lb1, 100)
   if (replStr == "ListBuffer('a, 'b, 'c, 'd, 'e)\n") println("replStringOf OK")

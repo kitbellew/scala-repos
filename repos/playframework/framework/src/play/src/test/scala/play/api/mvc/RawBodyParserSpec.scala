@@ -48,8 +48,7 @@ object RawBodyParserSpec extends Specification with AfterAll {
       parse(body) must beRight.like {
         case rawBuffer =>
           rawBuffer.asBytes() must beSome.like {
-            case outBytes =>
-              outBytes mustEqual body
+            case outBytes => outBytes mustEqual body
           }
       }
     }

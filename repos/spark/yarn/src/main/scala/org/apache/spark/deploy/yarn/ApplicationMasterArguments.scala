@@ -76,8 +76,7 @@ class ApplicationMasterArguments(val args: Array[String]) {
           propertiesFile = value
           args = tail
 
-        case _ =>
-          printUsageAndExit(1, args)
+        case _ => printUsageAndExit(1, args)
       }
     }
 

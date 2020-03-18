@@ -29,8 +29,7 @@ final class JUnitExecuteTest(
         false
       } catch {
         case _: AssumptionViolatedException |
-            _: internal.AssumptionViolatedException =>
-          true
+            _: internal.AssumptionViolatedException => true
       }
 
     if (assumptionViolated) {
@@ -50,8 +49,7 @@ final class JUnitExecuteTest(
               logFormattedInfo(method.name, "ignored")
               ignoreTest(method.name)
 
-            case None =>
-              executeTestMethod(classMetadata, method)
+            case None => executeTestMethod(classMetadata, method)
           }
         }
       }

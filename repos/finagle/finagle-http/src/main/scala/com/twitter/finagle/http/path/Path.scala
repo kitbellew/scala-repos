@@ -58,8 +58,8 @@ object ~ {
   def unapply(fileName: String): Option[(String, String)] = {
     fileName.lastIndexOf('.') match {
       case -1 => Some((fileName, ""))
-      case index =>
-        Some((fileName.substring(0, index), fileName.substring(index + 1)))
+      case index => Some(
+          (fileName.substring(0, index), fileName.substring(index + 1)))
     }
   }
 }
@@ -125,10 +125,7 @@ protected class Numeric[A <: AnyVal](cast: String => A) {
     if (!str.isEmpty &&
         (str.head == '-' || Character.isDigit(str.head)) &&
         str.drop(1).forall(Character.isDigit)) try { Some(cast(str)) }
-    catch {
-      case _: NumberFormatException =>
-        None
-    }
+    catch { case _: NumberFormatException => None }
     else None
   }
 }
@@ -178,10 +175,7 @@ abstract class IntParamMatcher(name: String) {
   def unapply(params: ParamMap): Option[Int] =
     params.get(name) flatMap { value =>
       try { Some(value.toInt) }
-      catch {
-        case ex: NumberFormatException =>
-          None
-      }
+      catch { case ex: NumberFormatException => None }
     }
 }
 
@@ -195,10 +189,7 @@ abstract class LongParamMatcher(name: String) {
   def unapply(params: ParamMap): Option[Long] =
     params.get(name) flatMap { value =>
       try { Some(value.toLong) }
-      catch {
-        case ex: NumberFormatException =>
-          None
-      }
+      catch { case ex: NumberFormatException => None }
     }
 }
 
@@ -212,9 +203,6 @@ abstract class DoubleParamMatcher(name: String) {
   def unapply(params: ParamMap): Option[Double] =
     params.get(name) flatMap { value =>
       try { Some(value.toDouble) }
-      catch {
-        case ex: NumberFormatException =>
-          None
-      }
+      catch { case ex: NumberFormatException => None }
     }
 }

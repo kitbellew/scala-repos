@@ -126,10 +126,8 @@ object HLists {
       */
     def length: Int = {
       hlist match {
-        case HNil =>
-          0
-        case head :+: rest =>
-          1 + rest.length
+        case HNil          => 0
+        case head :+: rest => 1 + rest.length
       }
     }
   }

@@ -76,13 +76,12 @@ class ScalaFunctionParameterInfoHandler
 
   def getActualParameters(elem: PsiElement): Array[ScExpression] = {
     elem match {
-      case argExprList: ScArgumentExprList =>
-        argExprList.exprs.toArray
-      case u: ScUnitExpr          => Array.empty
-      case p: ScParenthesisedExpr => p.expr.toArray
-      case t: ScTuple             => t.exprs.toArray
-      case e: ScExpression        => Array(e)
-      case _                      => Array.empty
+      case argExprList: ScArgumentExprList => argExprList.exprs.toArray
+      case u: ScUnitExpr                   => Array.empty
+      case p: ScParenthesisedExpr          => p.expr.toArray
+      case t: ScTuple                      => t.exprs.toArray
+      case e: ScExpression                 => Array(e)
+      case _                               => Array.empty
     }
   }
 
@@ -109,9 +108,8 @@ class ScalaFunctionParameterInfoHandler
       p: Any,
       context: ParameterInfoContext): Array[Object] = {
     p match {
-      case x: ScFunction =>
-        x.parameters.toArray
-      case _ => ArrayUtil.EMPTY_OBJECT_ARRAY
+      case x: ScFunction => x.parameters.toArray
+      case _             => ArrayUtil.EMPTY_OBJECT_ARRAY
     }
   }
 
@@ -234,8 +232,7 @@ class ScalaFunctionParameterInfoHandler
                           case _ => isGrey = true
                         }
                       }
-                    case expr: ScExpression =>
-                      doNoNamed(expr)
+                    case expr: ScExpression => doNoNamed(expr)
                   }
                 }
               } else {
@@ -532,20 +529,17 @@ class ScalaFunctionParameterInfoHandler
     if (argsOption.isEmpty) return null
     val args = argsOption.get
     context match {
-      case context: CreateParameterInfoContext =>
-        args.parent match {
+      case context: CreateParameterInfoContext => args.parent match {
           case call: MethodInvocation =>
             val res: ArrayBuffer[Object] = new ArrayBuffer[Object]
             def collectResult() {
               val canBeUpdate = call.getParent match {
                 case assignStmt: ScAssignStmt
-                    if call == assignStmt.getLExpression =>
-                  true
+                    if call == assignStmt.getLExpression => true
                 case notExpr
                     if !notExpr.isInstanceOf[ScExpression] || notExpr
-                      .isInstanceOf[ScBlockExpr] =>
-                  true
-                case _ => false
+                      .isInstanceOf[ScBlockExpr] => true
+                case _                           => false
               }
               val count = args.invocationCount
               val gen = args.callGeneric.getOrElse(null: ScGenericCall)
@@ -657,8 +651,7 @@ class ScalaFunctionParameterInfoHandler
                       }
                     }
                   }
-                case None =>
-                  call match {
+                case None => call match {
                     case call: ScMethodCall =>
                       for (typez <- call.getEffectiveInvokedExpr.getType(
                              TypingContext.empty)) { //todo: implicit conversions
@@ -691,9 +684,8 @@ class ScalaFunctionParameterInfoHandler
                             val map = new collection.mutable.HashMap[
                               (String, PsiElement),
                               ScType]
-                            for (i <- 0 to Math.min(
-                                   tp.length,
-                                   typeArgs.length) - 1) {
+                            for (i <- 0 to Math
+                                   .min(tp.length, typeArgs.length) - 1) {
                               map += ((tp(i), typeArgs(i).calcType))
                             }
                             val substitutor = new ScSubstitutor(
@@ -743,9 +735,8 @@ class ScalaFunctionParameterInfoHandler
                           val map = new collection.mutable.HashMap[
                             (String, PsiElement),
                             ScType]
-                          for (i <- 0 to Math.min(
-                                 tp.length,
-                                 typeArgs.length) - 1) {
+                          for (i <- 0 to Math
+                                 .min(tp.length, typeArgs.length) - 1) {
                             map += ((tp(i), typeArgs(i).calcType))
                           }
                           val substitutor = new ScSubstitutor(
@@ -773,10 +764,8 @@ class ScalaFunctionParameterInfoHandler
           case self: ScSelfInvocation =>
             val res: ArrayBuffer[Object] = new ArrayBuffer[Object]
             val i = self.arguments.indexOf(args.element)
-            val clazz = PsiTreeUtil.getParentOfType(
-              self,
-              classOf[ScClass],
-              true)
+            val clazz = PsiTreeUtil
+              .getParentOfType(self, classOf[ScClass], true)
             clazz match {
               case clazz: ScClass =>
                 clazz.constructor match {

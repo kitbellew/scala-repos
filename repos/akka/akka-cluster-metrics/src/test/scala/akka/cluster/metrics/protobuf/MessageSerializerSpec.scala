@@ -24,10 +24,7 @@ class MessageSerializerSpec
   def checkSerialization(obj: AnyRef): Unit = {
     val blob = serializer.toBinary(obj)
     val ref = serializer.fromBinary(blob, serializer.manifest(obj))
-    obj match {
-      case _ ⇒
-        ref should ===(obj)
-    }
+    obj match { case _ ⇒ ref should ===(obj) }
 
   }
 

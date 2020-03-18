@@ -19,8 +19,7 @@ object SetUtil {
               val next = nthLoop(tail, i - 1)
               next #::: next.map(_ + a)
             }
-          case _ =>
-            done
+          case _ => done
         }
       val nth = nthLoop(as, i)
       if (nth.isEmpty) nth else nth #::: powerLoop(as, i + 1)

@@ -131,8 +131,7 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
 
         val parentBlockNeedBraces: Boolean = doStmtParent match {
           case _: ScalaFile => false
-          case block: ScBlock =>
-            block.getParent match {
+          case block: ScBlock => block.getParent match {
               case _: ScCaseClause => false
               case _               => true
             }

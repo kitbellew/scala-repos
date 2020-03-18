@@ -229,19 +229,16 @@ object Dimension {
 
   def filtersOf[X](d: Dimension[X], selected: List[X]): BSONDocument =
     d match {
-      case Dimension.MovetimeRange =>
-        selected match {
+      case Dimension.MovetimeRange => selected match {
           case Nil => BSONDocument()
-          case xs =>
-            BSONDocument(
+          case xs => BSONDocument(
               d.dbKey -> BSONDocument("$in" -> xs.flatMap(_.tenths.list)))
         }
-      case _ =>
-        selected map d.bson.write match {
+      case _ => selected map d.bson.write match {
           case Nil     => BSONDocument()
           case List(x) => BSONDocument(d.dbKey -> x)
-          case xs =>
-            BSONDocument(d.dbKey -> BSONDocument("$in" -> BSONArray(xs)))
+          case xs => BSONDocument(
+              d.dbKey -> BSONDocument("$in" -> BSONArray(xs)))
         }
     }
 }

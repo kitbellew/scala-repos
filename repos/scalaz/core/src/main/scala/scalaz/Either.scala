@@ -235,13 +235,11 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
   def +++[AA >: A, BB >: B](
       x: => AA \/ BB)(implicit M1: Semigroup[BB], M2: Semigroup[AA]): AA \/ BB =
     this match {
-      case -\/(a1) =>
-        x match {
+      case -\/(a1) => x match {
           case -\/(a2) => -\/(M2.append(a1, a2))
           case \/-(_)  => this
         }
-      case \/-(b1) =>
-        x match {
+      case \/-(b1) => x match {
           case b2 @ -\/(_) => b2
           case \/-(b2)     => \/-(M1.append(b1, b2))
         }
@@ -273,13 +271,11 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
   def ===[AA >: A, BB >: B](
       x: AA \/ BB)(implicit EA: Equal[AA], EB: Equal[BB]): Boolean =
     this match {
-      case -\/(a1) =>
-        x match {
+      case -\/(a1) => x match {
           case -\/(a2) => Equal[AA].equal(a1, a2)
           case \/-(_)  => false
         }
-      case \/-(b1) =>
-        x match {
+      case \/-(b1) => x match {
           case \/-(b2) => Equal[BB].equal(b1, b2)
           case -\/(_)  => false
         }
@@ -289,13 +285,11 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
   def compare[AA >: A, BB >: B](
       x: AA \/ BB)(implicit EA: Order[AA], EB: Order[BB]): Ordering =
     this match {
-      case -\/(a1) =>
-        x match {
+      case -\/(a1) => x match {
           case -\/(a2) => Order[AA].apply(a1, a2)
           case \/-(_)  => Ordering.LT
         }
-      case \/-(b1) =>
-        x match {
+      case \/-(b1) => x match {
           case \/-(b2) => Order[BB].apply(b1, b2)
           case -\/(_)  => Ordering.GT
         }
@@ -383,8 +377,7 @@ object \/ extends DisjunctionInstances {
       right: B => X \/ (A \/ B)): X =
     d match {
       case -\/(a) => left(a)
-      case \/-(b) =>
-        right(b) match {
+      case \/-(b) => right(b) match {
           case -\/(x) => x
           case \/-(q) => loopRight(q, left, right)
         }
@@ -397,8 +390,7 @@ object \/ extends DisjunctionInstances {
       left: A => X \/ (A \/ B),
       right: B => X): X =
     d match {
-      case -\/(a) =>
-        left(a) match {
+      case -\/(a) => left(a) match {
           case -\/(x) => x
           case \/-(q) => loopLeft(q, left, right)
         }
@@ -475,8 +467,7 @@ sealed abstract class DisjunctionInstances1 extends DisjunctionInstances2 {
       def cozip[A, B](x: L \/ (A \/ B)) =
         x match {
           case l @ -\/(_) => -\/(l)
-          case \/-(e) =>
-            e match {
+          case \/-(e) => e match {
               case -\/(a)     => -\/(\/-(a))
               case b @ \/-(_) => \/-(b)
             }

@@ -27,12 +27,10 @@ object ScalaSyntheticProvider {
     typeComponent match {
       case m: Method
           if m.isConstructor && ScalaPositionManager.isAnonfunType(
-            m.declaringType()) =>
-        true
+            m.declaringType()) => true
       case m: Method
           if m.name() == "apply" && hasSpecializationMethod(
-            m.declaringType()) && !isMacroDefined(m) =>
-        true
+            m.declaringType()) && !isMacroDefined(m)         => true
       case m: Method if isDefaultArg(m)                      => true
       case m: Method if isTraitForwarder(m)                  => true
       case m: Method if m.name().endsWith("$adapted")        => true

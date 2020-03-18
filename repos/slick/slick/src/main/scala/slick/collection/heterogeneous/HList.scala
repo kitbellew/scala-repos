@@ -138,10 +138,8 @@ sealed abstract class HList extends Product {
     val b = new StringBuffer
     foreach { v =>
       v match {
-        case h: HList =>
-          b.append("(").append(v).append(")")
-        case _ =>
-          b.append(v)
+        case h: HList => b.append("(").append(v).append(")")
+        case _        => b.append(v)
       }
       b.append(" :: ")
     }
@@ -193,8 +191,7 @@ final object HListMacros {
     n.tree match {
       case t @ Literal(Constant(v: Int)) =>
         val tt = (1 to v).foldLeft[Tree](SingletonTypeTree(_Zero)) {
-          case (z, _) =>
-            AppliedTypeTree(Ident(_Succ), List(z))
+          case (z, _) => AppliedTypeTree(Ident(_Succ), List(z))
         }
         ctx.Expr(Apply(
           TypeApply(

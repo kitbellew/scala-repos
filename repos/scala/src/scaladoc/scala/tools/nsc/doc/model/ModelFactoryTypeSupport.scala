@@ -32,9 +32,8 @@ trait ModelFactoryTypeSupport {
         private var refBuffer = new immutable.TreeMap[Int, (LinkTo, Int)]
         private def appendTypes0(types: List[Type], sep: String): Unit =
           types match {
-            case Nil =>
-            case tp :: Nil =>
-              appendType0(tp)
+            case Nil       =>
+            case tp :: Nil => appendType0(tp)
             case tp :: tps =>
               appendType0(tp)
               nameBuffer append sep
@@ -133,8 +132,7 @@ trait ModelFactoryTypeSupport {
                         sym.info match {
                           case OverloadedType(owner, alternatives) =>
                             return alternatives.contains(bSym)
-                          case _ =>
-                            return true
+                          case _ => return true
                         }
                   }
                 }
@@ -222,8 +220,7 @@ trait ModelFactoryTypeSupport {
                     case _ =>
                   }
                   tp.resultType match {
-                    case rt @ TypeBounds(_, _) =>
-                      appendType0(rt)
+                    case rt @ TypeBounds(_, _) => appendType0(rt)
                     case rt =>
                       nameBuffer append " <: "
                       appendType0(rt)
@@ -272,8 +269,7 @@ trait ModelFactoryTypeSupport {
                       case TypeRef(_, sym, _) if (qset contains sym) =>
                         nameBuffer append "_"
                         appendInfoStringReduced(sym, sym.info)
-                      case arg =>
-                        appendType0(arg)
+                      case arg => appendType0(arg)
                     }
                   }
                   nameBuffer append "]"
@@ -317,8 +313,7 @@ trait ModelFactoryTypeSupport {
               appendType0(typeRef(pre, sym, Nil))
               if (!tpen.underlying.typeSymbol.skipPackageObject.isOmittablePrefix)
                 nameBuffer append ".type"
-            case tpen =>
-              nameBuffer append tpen.toString
+            case tpen => nameBuffer append tpen.toString
           }
         appendType0(aType)
         val refEntity = refBuffer

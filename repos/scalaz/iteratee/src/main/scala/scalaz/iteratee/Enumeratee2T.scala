@@ -68,8 +68,7 @@ trait Enumeratee2TFunctions {
                           rbuf).value))
                     } yield a
 
-                  case (Some(left), Some(right)) =>
-                    for {
+                  case (Some(left), Some(right)) => for {
                       _ <- lift[J, K, F, Option[K]](head[K, F])
                       a <- step(
                         s,
@@ -139,8 +138,7 @@ trait Enumeratee2TFunctions {
                         contf(elInput(right)) >>== (step(_).value))
                     } yield a
 
-                  case (Some(left), _) =>
-                    for {
+                  case (Some(left), _) => for {
                       _ <- head[E, IterateeM]
                       a <- iterateeT[E, IterateeM, StepM[A]](
                         contf(elInput(left)) >>== (step(_).value))

@@ -33,8 +33,7 @@ object Test extends DirectTest {
             Ident(TermName("$qmark$qmark$qmark")))
           newNamer(typer.context).enterSym(derived)
           List(derived)
-        case _ =>
-          Nil
+        case _ => Nil
       }
 
     object macroPlugin1 extends MacroPlugin {

@@ -17,8 +17,7 @@ class JUnitAssumptionsTest {
       assumption
       if (!shouldPass) fail("Assumption should have failed")
     } catch {
-      case assVio: AssumptionViolatedException =>
-        if (shouldPass) throw assVio
+      case assVio: AssumptionViolatedException => if (shouldPass) throw assVio
     }
   }
 

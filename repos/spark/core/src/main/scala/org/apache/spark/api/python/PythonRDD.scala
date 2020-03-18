@@ -129,8 +129,7 @@ private[spark] class PythonRunner(
       if (!reuse_worker || !released) {
         try { worker.close() }
         catch {
-          case e: Exception =>
-            logWarning("Failed to close worker socket", e)
+          case e: Exception => logWarning("Failed to close worker socket", e)
         }
       }
     }
@@ -479,15 +478,12 @@ private[spark] object PythonRDD extends Logging {
 
     def write(obj: Any): Unit =
       obj match {
-        case null =>
-          dataOut.writeInt(SpecialLengths.NULL)
+        case null => dataOut.writeInt(SpecialLengths.NULL)
         case arr: Array[Byte] =>
           dataOut.writeInt(arr.length)
           dataOut.write(arr)
-        case str: String =>
-          writeUTF(str, dataOut)
-        case stream: PortableDataStream =>
-          write(stream.toArray())
+        case str: String                => writeUTF(str, dataOut)
+        case stream: PortableDataStream => write(stream.toArray())
         case (key, value) =>
           write(key)
           write(value)
@@ -727,8 +723,7 @@ private[spark] object PythonRDD extends Logging {
             out.close()
           }
         } catch {
-          case NonFatal(e) =>
-            logError(s"Error while sending iterator", e)
+          case NonFatal(e) => logError(s"Error while sending iterator", e)
         } finally { serverSocket.close() }
       }
     }.start()

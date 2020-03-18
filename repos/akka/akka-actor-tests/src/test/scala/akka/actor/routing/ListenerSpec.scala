@@ -26,8 +26,7 @@ class ListenerSpec extends AkkaSpec {
             case "bar" ⇒
               barCount.incrementAndGet
               barLatch.countDown()
-            case "foo" ⇒
-              fooLatch.countDown()
+            case "foo" ⇒ fooLatch.countDown()
           }
         }))
 

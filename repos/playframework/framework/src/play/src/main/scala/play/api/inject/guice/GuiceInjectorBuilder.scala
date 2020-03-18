@@ -205,8 +205,7 @@ abstract class GuiceBuilder[Self] protected (
       val guiceInjector = Guice.createInjector(stage, applicationModule())
       guiceInjector.getInstance(classOf[PlayInjector])
     } catch {
-      case e: CreationException =>
-        e.getCause match {
+      case e: CreationException => e.getCause match {
           case p: PlayException => throw p
           case _ => {
             e.getErrorMessages.asScala.foreach(_.getCause match {

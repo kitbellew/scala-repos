@@ -129,11 +129,9 @@ class Pipeline @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     // Search for the last estimator.
     var indexOfLastEstimator = -1
     theStages.view.zipWithIndex.foreach {
-      case (stage, index) =>
-        stage match {
-          case _: Estimator[_] =>
-            indexOfLastEstimator = index
-          case _ =>
+      case (stage, index) => stage match {
+          case _: Estimator[_] => indexOfLastEstimator = index
+          case _               =>
         }
     }
     var curDataset = dataset
@@ -142,10 +140,8 @@ class Pipeline @Since("1.4.0") (@Since("1.4.0") override val uid: String)
       case (stage, index) =>
         if (index <= indexOfLastEstimator) {
           val transformer = stage match {
-            case estimator: Estimator[_] =>
-              estimator.fit(curDataset)
-            case t: Transformer =>
-              t
+            case estimator: Estimator[_] => estimator.fit(curDataset)
+            case t: Transformer          => t
             case _ =>
               throw new IllegalArgumentException(
                 s"Do not support stage $stage of type ${stage.getClass}")

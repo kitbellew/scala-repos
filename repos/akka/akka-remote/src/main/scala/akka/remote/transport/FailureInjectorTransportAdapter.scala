@@ -138,8 +138,7 @@ private[remote] class FailureInjectorTransportAdapter(
     ev match {
       case InboundAssociation(handle)
           if shouldDropInbound(handle.remoteAddress, ev, "notify") ⇒ //Ignore
-      case _ ⇒
-        upstreamListener match {
+      case _ ⇒ upstreamListener match {
           case Some(listener) ⇒ listener notify interceptInboundAssociation(ev)
           case None ⇒
         }
@@ -147,8 +146,8 @@ private[remote] class FailureInjectorTransportAdapter(
 
   def interceptInboundAssociation(ev: AssociationEvent): AssociationEvent =
     ev match {
-      case InboundAssociation(handle) ⇒
-        InboundAssociation(FailureInjectorHandle(handle, this))
+      case InboundAssociation(handle) ⇒ InboundAssociation(
+          FailureInjectorHandle(handle, this))
       case _ ⇒ ev
     }
 

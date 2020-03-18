@@ -54,16 +54,16 @@ object PersistentActorStashingSpec {
   class UserStashWithinHandlerPersistentActor(name: String)
       extends UserStashPersistentActor(name: String) {
     override def unstashBehavior: Receive = {
-      case Cmd("c") ⇒
-        persist(Evt("c")) { evt ⇒ sender() ! evt.data; unstashAll() }
+      case Cmd("c") ⇒ persist(Evt("c")) { evt ⇒
+          sender() ! evt.data; unstashAll()
+        }
     }
   }
 
   class UserStashManyPersistentActor(name: String)
       extends StashExamplePersistentActor(name) {
     val receiveCommand: Receive = commonBehavior orElse {
-      case Cmd("a") ⇒
-        persist(Evt("a")) { evt ⇒
+      case Cmd("a") ⇒ persist(Evt("a")) { evt ⇒
           updateState(evt)
           context.become(processC)
         }
@@ -83,8 +83,7 @@ object PersistentActorStashingSpec {
   class UserStashWithinHandlerManyPersistentActor(name: String)
       extends UserStashManyPersistentActor(name) {
     override def unstashBehavior: Receive = {
-      case Cmd("c") ⇒
-        persist(Evt("c")) { evt ⇒
+      case Cmd("c") ⇒ persist(Evt("c")) { evt ⇒
           updateState(evt); context.unbecome(); unstashAll()
         }
     }
@@ -118,8 +117,7 @@ object PersistentActorStashingSpec {
   class UserStashWithinHandlerFailureCallbackPersistentActor(name: String)
       extends UserStashFailurePersistentActor(name) {
     override def unstashBehavior: Receive = {
-      case Cmd("c") ⇒
-        persist(Evt("c")) { evt ⇒
+      case Cmd("c") ⇒ persist(Evt("c")) { evt ⇒
           updateState(evt)
           context.unbecome()
           unstashAll()
@@ -145,8 +143,9 @@ object PersistentActorStashingSpec {
   class AsyncStashingWithinHandlerPersistentActor(name: String)
       extends AsyncStashingPersistentActor(name) {
     override def unstashBehavior: Receive = {
-      case Cmd("c") ⇒
-        persistAsync(Evt("c")) { evt ⇒ updateState(evt); unstashAll() }
+      case Cmd("c") ⇒ persistAsync(Evt("c")) { evt ⇒
+          updateState(evt); unstashAll()
+        }
     }
   }
 

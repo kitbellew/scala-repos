@@ -54,9 +54,8 @@ class DocResolver(
                 case JavadocComment(version: String)
                     if version.startsWith("1.8") =>
                   docTypes += jarFileName -> Javadoc8
-                case JavadocComment(_*) =>
-                  docTypes += jarFileName -> Javadoc
-                case _ =>
+                case JavadocComment(_*) => docTypes += jarFileName -> Javadoc
+                case _                  =>
               }
             }
           }

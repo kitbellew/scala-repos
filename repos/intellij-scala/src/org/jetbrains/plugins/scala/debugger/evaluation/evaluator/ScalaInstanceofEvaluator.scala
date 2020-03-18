@@ -49,9 +49,6 @@ class ScalaInstanceofEvaluator(
       val args: java.util.List[Object] = new util.LinkedList[Object]
       args.add(value.asInstanceOf[ObjectReference].referenceType.classObject)
       context.getDebugProcess.invokeMethod(context, classObject, method, args)
-    } catch {
-      case e: Exception =>
-        throw EvaluationException(e)
-    }
+    } catch { case e: Exception => throw EvaluationException(e) }
   }
 }

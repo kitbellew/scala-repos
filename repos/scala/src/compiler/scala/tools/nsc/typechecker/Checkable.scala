@@ -282,8 +282,7 @@ trait Checkable {
             args1,
             args2,
             sym1.typeParams))
-        case _ =>
-          false
+        case _ => false
       }
     // Important to dealias at any entry point (this is the only one at this writing.)
     def isNeverSubType(tp1: Type, tp2: Type): Boolean =
@@ -338,8 +337,7 @@ trait Checkable {
         case TypeRef(_, NothingClass | NullClass | AnyValClass, _) =>
           InferErrorGen.TypePatternOrIsInstanceTestError(tree, P)
         // If top-level abstract types can be checked using a classtag extractor, don't warn about them
-        case TypeRef(_, sym, _) if sym.isAbstractType && canRemedy =>
-          ;
+        case TypeRef(_, sym, _) if sym.isAbstractType && canRemedy => ;
         // Matching on types like case _: AnyRef { def bippy: Int } => doesn't work -- yet.
         case RefinedType(_, decls) if !decls.isEmpty =>
           reporter.warning(

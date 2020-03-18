@@ -110,8 +110,7 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
             val hostReferences = ref.getReferences
             if (hostReferences.length == 2) {
               hostReferences.find(_.isInstanceOf[ScReferenceElement]) match {
-                case Some(r: ScReferenceElement) =>
-                  doEachTest(r, it._2)
+                case Some(r: ScReferenceElement) => doEachTest(r, it._2)
                 case _ =>
                   assert(
                     assertion = false,

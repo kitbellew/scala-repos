@@ -173,8 +173,7 @@ private[kinesis] object KinesisRecordProcessor extends Logging {
       /* If the function succeeded, evaluate to x. */
       case util.Success(x) => x
       /* If the function failed, either retry or throw the exception */
-      case util.Failure(e) =>
-        e match {
+      case util.Failure(e) => e match {
           /* Retry:  Throttling or other Retryable exception has occurred */
           case _: ThrottlingException | _: KinesisClientLibDependencyException
               if numRetriesLeft > 1 => {

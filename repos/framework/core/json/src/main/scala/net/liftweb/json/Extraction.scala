@@ -95,8 +95,7 @@ object Extraction {
         case null                         => JNull
         case x: JValue                    => x
         case x if primitive_?(x.getClass) => primitive2jvalue(x)(formats)
-        case x: Map[_, _] =>
-          JObject(
+        case x: Map[_, _] => JObject(
             (x map { case (k: String, v) => JField(k, decompose(v)) }).toList)
         case x: Iterable[_] => JArray(x.toList map decompose)
         case x if (x.getClass.isArray) =>
@@ -149,13 +148,11 @@ object Extraction {
         case JDouble(num)     => Map(path -> num.toString)
         case JInt(num)        => Map(path -> num.toString)
         case JBool(value)     => Map(path -> value.toString)
-        case JObject(obj) =>
-          obj.foldLeft(Map[String, String]()) {
+        case JObject(obj) => obj.foldLeft(Map[String, String]()) {
             case (map, JField(name, value)) =>
               map ++ flatten0(path + "." + escapePath(name), value)
           }
-        case JArray(arr) =>
-          arr.length match {
+        case JArray(arr) => arr.length match {
             case 0 => Map(path -> "[]")
             case _ =>
               arr
@@ -426,10 +423,9 @@ object Extraction {
             newCollection(root, m, a => List(a: _*))
           else if (c == classOf[Option[_]]) newOption(root, m)
           else fail("Expected collection but got " + m + " for class " + c)
-        case Dict(m) =>
-          root match {
-            case JObject(xs) =>
-              Map(xs.map(x => (x.name, build(x.value, m))): _*)
+        case Dict(m) => root match {
+            case JObject(xs) => Map(
+                xs.map(x => (x.name, build(x.value, m))): _*)
             case x => fail("Expected object but got " + x)
           }
       }

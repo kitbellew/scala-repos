@@ -38,8 +38,7 @@ class ScalaTestLocationProvider extends SMTestLocator {
       project: Project,
       scope: GlobalSearchScope): List[Location[_ <: PsiElement]] = {
     protocolId match {
-      case "scala" =>
-        locationData match {
+      case "scala" => locationData match {
           case SpecsHintPattern(className, fileName, lineNumber) =>
             val clazzes = ScalaShortNamesCacheManager
               .getInstance(project)

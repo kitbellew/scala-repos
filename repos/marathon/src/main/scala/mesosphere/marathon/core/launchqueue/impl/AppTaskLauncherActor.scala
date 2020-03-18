@@ -273,8 +273,7 @@ private class AppTaskLauncherActor(
             log.debug("{} finished", taskId)
             removeTask(taskId)
 
-          case TaskStateChange.NoChange =>
-            log.debug("no change for {}", taskId)
+          case TaskStateChange.NoChange => log.debug("no change for {}", taskId)
 
           case TaskStateChange.Failure(cause) =>
             log.warning(
@@ -309,8 +308,7 @@ private class AppTaskLauncherActor(
   }
 
   private[this] def receiveGetCurrentCount: Receive = {
-    case AppTaskLauncherActor.GetCount =>
-      replyWithQueuedTaskCount()
+    case AppTaskLauncherActor.GetCount => replyWithQueuedTaskCount()
   }
 
   private[this] def receiveAddCount: Receive = {
@@ -403,8 +401,7 @@ private class AppTaskLauncherActor(
         case Some(newTask) =>
           tasksMap += taskId -> newTask
           scheduleTaskOpTimeout(taskOp)
-        case None =>
-          removeTask(taskId)
+        case None => removeTask(taskId)
       }
 
       OfferMatcherRegistration.manageOfferMatcherStatus()

@@ -19,8 +19,8 @@ class ScalaCompilerConfiguration(
     val optionsElement = createOptionsElement()
 
     context.getStorageScheme match {
-      case StorageScheme.DIRECTORY_BASED =>
-        Some(addDirectoryBasedOptions(optionsElement, context))
+      case StorageScheme.DIRECTORY_BASED => Some(
+          addDirectoryBasedOptions(optionsElement, context))
       case StorageScheme.DEFAULT =>
         addProjectBasedOptions(optionsElement, context)
         None

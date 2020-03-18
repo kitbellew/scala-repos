@@ -20,8 +20,7 @@ sealed class :+:[+M, +N](private val rep: Vector[M \/ N]) {
       (r1, r2) match {
         case (Vector(), es) => es
         case (es, Vector()) => es
-        case (v1, v2) =>
-          (v1.last, v2.head) match {
+        case (v1, v2) => (v1.last, v2.head) match {
             case (-\/(m1), -\/(m2)) => go(v1.init, -\/(m1 |+| m2) +: v2.tail)
             case (\/-(n1), \/-(n2)) => go(v1.init, \/-(n1 |+| n2) +: v2.tail)
             case _                  => (v1 ++ v2)
@@ -73,10 +72,8 @@ sealed class :+:[+M, +N](private val rep: Vector[M \/ N]) {
       f: (B, A) => A,
       g: (A, B) => B): (A, B) =
     rep.foldLeft(mzero[(A, B)]) {
-      case ((curm, curn), -\/(m)) =>
-        (curm |+| f(curn, m), curn)
-      case ((curm, curn), \/-(n)) =>
-        (curm, curn |+| g(curm, n))
+      case ((curm, curn), -\/(m)) => (curm |+| f(curn, m), curn)
+      case ((curm, curn), \/-(n)) => (curm, curn |+| g(curm, n))
     }
 
   /**

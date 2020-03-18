@@ -42,9 +42,7 @@ abstract class InteractiveReporter extends Reporter {
           otherProblems
         }
       problems += Problem(pos, msg, severity.id)
-    } catch {
-      case ex: UnsupportedOperationException =>
-    }
+    } catch { case ex: UnsupportedOperationException => }
 
   override def reset() {
     super.reset()

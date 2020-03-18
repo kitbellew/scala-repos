@@ -33,8 +33,7 @@ final class StackTraceElement(
           (getLineNumber == that.getLineNumber) &&
           (getClassName == that.getClassName) &&
           (getMethodName == that.getMethodName)
-      case _ =>
-        false
+      case _ => false
     }
 
   override def toString(): String = {

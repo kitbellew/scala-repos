@@ -287,8 +287,7 @@ object Promise {
     */
   def attached[A](parent: Future[A]): Promise[A] with Detachable =
     parent match {
-      case p: Promise[_] =>
-        new DetachablePromise[A](p.asInstanceOf[Promise[A]])
+      case p: Promise[_] => new DetachablePromise[A](p.asInstanceOf[Promise[A]])
       case _ =>
         val p = new DetachableFuture[A]()
         parent.respond { t => if (p.detach()) p.update(t) }
@@ -452,8 +451,7 @@ class Promise[A]
       case s @ Transforming(waitq, _) =>
         if (!cas(s, Interruptible(waitq, f))) setInterruptHandler(f)
 
-      case Interrupted(_, signal) =>
-        f.applyOrElse(signal, Promise.AlwaysUnit)
+      case Interrupted(_, signal) => f.applyOrElse(signal, Promise.AlwaysUnit)
 
       case Done(_) => // ignore
     }
@@ -495,8 +493,7 @@ class Promise[A]
       case s @ Transforming(waitq, _) =>
         if (!cas(s, Transforming(waitq, other))) forwardInterruptsTo(other)
 
-      case Interrupted(_, signal) =>
-        other.raise(signal)
+      case Interrupted(_, signal) => other.raise(signal)
 
       case Done(_) => // ignore
     }
@@ -527,8 +524,7 @@ class Promise[A]
   @tailrec
   protected[Promise] final def detach(k: K[A]): Boolean = {
     state match {
-      case Linked(p) =>
-        p.detach(k)
+      case Linked(p) => p.detach(k)
 
       case s @ Interruptible(waitq, handler) =>
         if (!cas(s, Interruptible(waitq filterNot (_ eq k), handler))) detach(k)
@@ -561,8 +557,7 @@ class Promise[A]
       case Linked(p) =>
         p.ready(timeout)
         this
-      case Done(res) =>
-        this
+      case Done(res) => this
       case Waiting(_, _) | Interruptible(_, _) | Interrupted(_, _) |
           Transforming(_, _) =>
         val condition = new java.util.concurrent.CountDownLatch(1)
@@ -729,8 +724,7 @@ class Promise[A]
   @tailrec
   protected[util] final def continue(k: K[A]): Unit = {
     state match {
-      case Done(v) =>
-        Scheduler.submit(new Runnable {
+      case Done(v) => Scheduler.submit(new Runnable {
           def run() { k(v) }
         })
       case s @ Waiting(first, rest) if first == null =>
@@ -743,8 +737,7 @@ class Promise[A]
         if (!cas(s, Transforming(k :: waitq, other))) continue(k)
       case s @ Interrupted(waitq, signal) =>
         if (!cas(s, Interrupted(k :: waitq, signal))) continue(k)
-      case Linked(p) =>
-        p.continue(k)
+      case Linked(p) => p.continue(k)
     }
   }
 
@@ -760,8 +753,7 @@ class Promise[A]
         // there should never be a `cas` fail.
         cas(s, Linked(target))
         target
-      case _ =>
-        this
+      case _ => this
     }
 
   @tailrec
@@ -829,8 +821,7 @@ class Promise[A]
       case Linked(p) => p.poll
       case Done(res) => Some(res)
       case Waiting(_, _) | Interruptible(_, _) | Interrupted(_, _) |
-          Transforming(_, _) =>
-        None
+          Transforming(_, _) => None
     }
 
   override def isDefined: Boolean =
@@ -840,7 +831,6 @@ class Promise[A]
       case Linked(p) => p.isDefined
       case Done(res) => true
       case Waiting(_, _) | Interruptible(_, _) | Interrupted(_, _) |
-          Transforming(_, _) =>
-        false
+          Transforming(_, _) => false
     }
 }

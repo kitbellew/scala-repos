@@ -39,8 +39,8 @@ object ForkConfig {
       case _: DefaultFileWatchService => DefaultWatchService
       case _: JDK7FileWatchService    => JDK7WatchService
       case _: JNotifyFileWatchService => JNotifyWatchService
-      case sbt: PollingFileWatchService =>
-        PollingWatchService(sbt.pollDelayMillis)
+      case sbt: PollingFileWatchService => PollingWatchService(
+          sbt.pollDelayMillis)
       case optional: OptionalFileWatchServiceDelegate =>
         optional.watchService match {
           case Success(service) => identifyWatchService(service)

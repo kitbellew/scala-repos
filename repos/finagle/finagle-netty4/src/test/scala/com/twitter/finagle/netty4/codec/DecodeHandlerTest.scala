@@ -25,10 +25,8 @@ class DecodeHandlerTest extends FunSuite with MockitoSugar {
           ctx: ChannelHandlerContext,
           msg: scala.Any): Unit = {
         msg match {
-          case s: String =>
-            messagesSeen.append(s)
-          case _ =>
-            nonStringsMessageCount += 1
+          case s: String => messagesSeen.append(s)
+          case _         => nonStringsMessageCount += 1
         }
         super.channelRead(ctx, msg)
       }

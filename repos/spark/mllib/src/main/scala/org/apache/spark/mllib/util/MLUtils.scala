@@ -112,8 +112,7 @@ object MLUtils {
         parsed.persist(StorageLevel.MEMORY_ONLY)
         parsed
           .map {
-            case (label, indices, values) =>
-              indices.lastOption.getOrElse(0)
+            case (label, indices, values) => indices.lastOption.getOrElse(0)
           }
           .reduce(math.max) + 1
       }

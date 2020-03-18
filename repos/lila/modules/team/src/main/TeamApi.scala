@@ -83,8 +83,7 @@ final class TeamApi(
           (
             doJoin(team, user.id) inject Joined(team).some
           ): Fu[Option[Requesting]]
-        case (team, user) =>
-          fuccess(Motivate(team).some: Option[Requesting])
+        case (team, user) => fuccess(Motivate(team).some: Option[Requesting])
       })
     } yield result
 

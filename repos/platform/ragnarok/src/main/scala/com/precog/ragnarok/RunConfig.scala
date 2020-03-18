@@ -62,10 +62,7 @@ object RunConfig {
       try {
         val p = str.toDouble
         if (p >= 0.0 && p < 0.5) Some(p) else None
-      } catch {
-        case _: NumberFormatException =>
-          None
-      }
+      } catch { case _: NumberFormatException => None }
   }
 
   def fromCommandLine(args: Array[String]): ValidationNel[String, RunConfig] =
@@ -77,8 +74,7 @@ object RunConfig {
       config: ValidationNel[String, RunConfig] = RunConfig().successNel)
       : ValidationNel[String, RunConfig] =
     args match {
-      case Nil =>
-        config
+      case Nil => config
 
       case "--baseline" :: file :: args =>
         val f = new File(file)
@@ -150,8 +146,7 @@ object RunConfig {
           args,
           config *> "The argument to --timeout must be a non-negative number".failureNel)
 
-      case test :: args =>
-        fromCommandLine(
+      case test :: args => fromCommandLine(
           args,
           config map { config =>
             val g = { (path: List[String], _: Any) => path contains test }

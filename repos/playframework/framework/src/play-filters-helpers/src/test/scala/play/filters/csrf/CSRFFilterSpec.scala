@@ -103,8 +103,7 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
         "play.filters.csrf.body.bufferSize" -> "200",
         "play.http.filters" -> classOf[CsrfFilters].getName)
       .routes {
-        case _ =>
-          Action { req =>
+        case _ => Action { req =>
             (for {
               body <- req.body.asFormUrlEncoded
               foos <- body.get("foo")
@@ -224,8 +223,7 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
         withServer(
           configuration ++ Seq(
             "play.http.filters" -> classOf[CsrfFilters].getName)) {
-          case _ =>
-            Action { implicit req =>
+          case _ => Action { implicit req =>
               CSRF.getToken(req).map { token =>
                 Results.Ok(token.value)
               } getOrElse Results.NotFound

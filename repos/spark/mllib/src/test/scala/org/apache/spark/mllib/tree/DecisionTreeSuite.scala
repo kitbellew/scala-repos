@@ -1086,8 +1086,7 @@ object DecisionTreeSuite extends SparkFunSuite {
       requiredAccuracy: Double) {
     val predictions = input.map(x => model.predict(x.features))
     val numOffPredictions = predictions.zip(input).count {
-      case (prediction, expected) =>
-        prediction != expected.label
+      case (prediction, expected) => prediction != expected.label
     }
     val accuracy = (input.length - numOffPredictions).toDouble / input.length
     assert(

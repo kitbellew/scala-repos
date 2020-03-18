@@ -89,9 +89,7 @@ object ReplicationUtils extends Logging {
           }
         case None =>
       }
-    } catch {
-      case e1: Exception =>
-    }
+    } catch { case e1: Exception => }
     (false, -1)
   }
 

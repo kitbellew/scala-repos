@@ -46,8 +46,7 @@ trait ScReferenceExpression
   def smartQualifier: Option[ScExpression] = {
     qualifier match {
       case Some(qual) => Some(qual)
-      case _ =>
-        getParent match {
+      case _ => getParent match {
           case p: ScPrefixExpr if p.operation == this  => Some(p.operand)
           case p: ScPostfixExpr if p.operation == this => Some(p.getBaseExpr)
           case p: ScInfixExpr if p.operation == this   => Some(p.getBaseExpr)

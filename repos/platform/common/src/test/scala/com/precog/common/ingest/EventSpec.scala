@@ -63,9 +63,8 @@ class EventSpec
         "path" -> JString("/test/"),
         "data" -> JObject("test" -> JNum(1)),
         "metadata" -> JArray())).validated[Ingest] must beLike {
-        case Success(_) => ok
-        case Failure(Thrown(ex)) =>
-          throw ex
+        case Success(_)          => ok
+        case Failure(Thrown(ex)) => throw ex
       }
     }
   }

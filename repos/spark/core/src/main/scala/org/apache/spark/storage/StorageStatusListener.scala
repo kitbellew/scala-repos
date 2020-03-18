@@ -64,8 +64,7 @@ class StorageStatusListener(conf: SparkConf) extends SparkListener {
   private def updateStorageStatus(unpersistedRDDId: Int) {
     storageStatusList.foreach { storageStatus =>
       storageStatus.rddBlocksById(unpersistedRDDId).foreach {
-        case (blockId, _) =>
-          storageStatus.removeBlock(blockId)
+        case (blockId, _) => storageStatus.removeBlock(blockId)
       }
     }
   }

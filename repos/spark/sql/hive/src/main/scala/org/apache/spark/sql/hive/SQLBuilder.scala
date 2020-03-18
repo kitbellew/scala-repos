@@ -118,27 +118,20 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
 
   private def toSQL(node: LogicalPlan): String =
     node match {
-      case Distinct(p: Project) =>
-        projectToSQL(p, isDistinct = true)
+      case Distinct(p: Project) => projectToSQL(p, isDistinct = true)
 
-      case p: Project =>
-        projectToSQL(p, isDistinct = false)
+      case p: Project => projectToSQL(p, isDistinct = false)
 
       case a @ Aggregate(_, _, e @ Expand(_, _, p: Project))
-          if isGroupingSet(a, e, p) =>
-        groupingSetToSQL(a, e, p)
+          if isGroupingSet(a, e, p) => groupingSetToSQL(a, e, p)
 
-      case p: Aggregate =>
-        aggregateToSQL(p)
+      case p: Aggregate => aggregateToSQL(p)
 
-      case w: Window =>
-        windowToSQL(w)
+      case w: Window => windowToSQL(w)
 
-      case g: Generate =>
-        generateToSQL(g)
+      case g: Generate => generateToSQL(g)
 
-      case Limit(limitExpr, child) =>
-        s"${toSQL(child)} LIMIT ${limitExpr.sql}"
+      case Limit(limitExpr, child) => s"${toSQL(child)} LIMIT ${limitExpr.sql}"
 
       case Filter(condition, child) =>
         val whereOrHaving = child match {
@@ -203,11 +196,9 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
           "DISTRIBUTE BY",
           p.partitionExpressions.map(_.sql).mkString(", "))
 
-      case p: ScriptTransformation =>
-        scriptTransformationToSQL(p)
+      case p: ScriptTransformation => scriptTransformationToSQL(p)
 
-      case OneRowRelation =>
-        ""
+      case OneRowRelation => ""
 
       case _ =>
         throw new UnsupportedOperationException(s"unsupported plan $node")
@@ -473,8 +464,7 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
         plan.transformDown {
           case Sample(lowerBound, upperBound, _, _, ExtractSQLTable(table)) =>
             aliasColumns(table.withSample(lowerBound, upperBound))
-          case ExtractSQLTable(table) =>
-            aliasColumns(table)
+          case ExtractSQLTable(table) => aliasColumns(table)
         }
 
       /**
@@ -568,8 +558,8 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
         case l @ LogicalRelation(
               _,
               _,
-              Some(TableIdentifier(table, Some(database)))) =>
-          Some(SQLTable(database, table, l.output.map(_.withQualifiers(Nil))))
+              Some(TableIdentifier(table, Some(database)))) => Some(
+            SQLTable(database, table, l.output.map(_.withQualifiers(Nil))))
 
         case m: MetastoreRelation =>
           Some(SQLTable(

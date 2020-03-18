@@ -98,8 +98,7 @@ class OrderedRDDFunctions[
             }
           PartitionPruningRDD.create(self, partitionIndicies.contains)
         }
-        case _ =>
-          self
+        case _ => self
       }
       rddToFilter.filter { case (k, v) => inRange(k) }
     }

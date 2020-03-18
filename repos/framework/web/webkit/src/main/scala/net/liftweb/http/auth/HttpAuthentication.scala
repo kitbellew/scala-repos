@@ -170,8 +170,7 @@ case class HttpDigestAuthentication(realmName: String)(
               val nonceCreationTime: Long = nonceMap.getOrElse(auth.nonce, -1)
               nonceCreationTime match {
                 case -1 => false
-                case _ =>
-                  (ts - nonceCreationTime) < nonceValidityPeriod
+                case _  => (ts - nonceCreationTime) < nonceValidityPeriod
               }
             case _ => false
           }

@@ -26,11 +26,9 @@ trait TypeDebugging {
     def skipRefTree(t: RefTree) =
       t match {
         case Select(Select(Ident(nme.ROOTPKG), nme.scala_), name)
-            if skipScalaName(name) =>
-          true
+            if skipScalaName(name) => true
         case Select(sel, name)
-            if sel.symbol == ScalaPackage && skipScalaName(name) =>
-          true
+            if sel.symbol == ScalaPackage && skipScalaName(name) => true
         case Select(Super(This(tpnme.EMPTY), tpnme.EMPTY), nme.CONSTRUCTOR) =>
           true
         case Ident(nme.ROOTPKG) => true

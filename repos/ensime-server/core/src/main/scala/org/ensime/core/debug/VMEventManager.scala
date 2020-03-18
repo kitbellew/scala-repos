@@ -24,8 +24,7 @@ class VMEventManager(val eventQueue: EventQueue, debugManager: ActorRef)
         while (it.hasNext) {
           val evt = it.nextEvent()
           evt match {
-            case e: VMDisconnectEvent =>
-              finished = true
+            case e: VMDisconnectEvent => finished = true
             case e: ClassPrepareEvent =>
               debugManager ! DMClassPrepareEvent(e, eventSet)
             case _ =>

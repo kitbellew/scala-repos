@@ -539,8 +539,7 @@ class Word2VecModel private[spark] (
           ind * vectorSize,
           ind * vectorSize + vectorSize)
         Vectors.dense(vec.map(_.toDouble))
-      case None =>
-        throw new IllegalStateException(s"$word not in vocabulary")
+      case None => throw new IllegalStateException(s"$word not in vocabulary")
     }
   }
 
@@ -602,8 +601,7 @@ class Word2VecModel private[spark] (
       .tail
     if (vecNorm != 0.0f) {
       topResults = topResults.map {
-        case (word, cosVal) =>
-          (word, cosVal / vecNorm)
+        case (word, cosVal) => (word, cosVal / vecNorm)
       }
     }
     topResults.toArray

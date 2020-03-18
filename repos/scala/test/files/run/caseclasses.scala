@@ -29,9 +29,7 @@ object Test extends App {
   try {
     Bar() productElement 3
     throw new NullPointerException("duh")
-  } catch {
-    case x: IndexOutOfBoundsException =>
-  }
+  } catch { case x: IndexOutOfBoundsException => }
 
   M.C("hi") match {
     case M.C("hi") => println("OK")
@@ -41,8 +39,6 @@ object Test extends App {
   try {
     f(2) productElement 3
     throw new NullPointerException("duh")
-  } catch {
-    case x: IndexOutOfBoundsException =>
-  }
+  } catch { case x: IndexOutOfBoundsException => }
 
 }

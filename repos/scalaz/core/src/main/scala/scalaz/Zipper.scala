@@ -93,8 +93,7 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
   def deleteLeft: Option[Zipper[A]] =
     lefts match {
       case l #:: ls => Some(zipper(ls, l, rights))
-      case Stream.Empty =>
-        rights match {
+      case Stream.Empty => rights match {
           case r #:: rs     => Some(zipper(Stream.empty, r, rs))
           case Stream.Empty => None
         }
@@ -114,8 +113,7 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
   def deleteRight: Option[Zipper[A]] =
     rights match {
       case r #:: rs => Some(zipper(lefts, r, rs))
-      case Stream.Empty =>
-        lefts match {
+      case Stream.Empty => lefts match {
           case l #:: ls     => Some(zipper(ls, l, Stream.empty))
           case Stream.Empty => None
         }
@@ -273,8 +271,7 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
       case (_, Stream.Empty) =>
         val xs = lefts.reverse
         zipper(rights, xs.head, xs.tail.append(Stream(focus)))
-      case (_, r #:: rs) =>
-        zipper(Stream.cons(focus, lefts), r, rs)
+      case (_, r #:: rs) => zipper(Stream.cons(focus, lefts), r, rs)
     }
 
   /**
@@ -296,8 +293,7 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
   def deleteLeftC: Option[Zipper[A]] =
     lefts match {
       case l #:: ls => Some(zipper(ls, l, rights))
-      case Stream.Empty =>
-        rights match {
+      case Stream.Empty => rights match {
           case _ #:: _ =>
             val rrev = rights.reverse;
             Some(zipper(rrev.tail, rrev.head, Stream.empty))
@@ -319,8 +315,7 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
   def deleteRightC: Option[Zipper[A]] =
     rights match {
       case r #:: rs => Some(zipper(lefts, r, rs))
-      case Stream.Empty =>
-        lefts match {
+      case Stream.Empty => lefts match {
           case _ #:: _ =>
             val lrev = lefts.reverse;
             Some(zipper(Stream.empty, lrev.head, lrev.tail))
@@ -427,19 +422,16 @@ sealed abstract class ZipperInstances {
                 G.apply3(x, f(fa.focus), F.traverse1(OneAnd(h2, t2))(f)) {
                   (l, z, r) => Zipper(l, z, r.head #:: r.tail)
                 }
-              case Stream.Empty =>
-                G.apply2(x, f(fa.focus)) { (l, z) =>
+              case Stream.Empty => G.apply2(x, f(fa.focus)) { (l, z) =>
                   Zipper(l, z, Stream.Empty)
                 }
             }
-          case Stream.Empty =>
-            fa.rights match {
+          case Stream.Empty => fa.rights match {
               case h2 #:: t2 =>
                 G.apply2(f(fa.focus), F.traverse1(OneAnd(h2, t2))(f)) {
                   (z, r) => Zipper(Stream.Empty, z, r.head #:: r.tail)
                 }
-              case Stream.Empty =>
-                G.map(f(fa.focus)) { z =>
+              case Stream.Empty => G.map(f(fa.focus)) { z =>
                   Zipper(Stream.Empty, z, Stream.Empty)
                 }
             }

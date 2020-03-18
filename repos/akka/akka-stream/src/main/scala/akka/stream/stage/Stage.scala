@@ -77,10 +77,8 @@ private[stream] object AbstractStage {
 
     private def onSupervision(ex: Throwable): Unit = {
       currentStage.decide(ex) match {
-        case Supervision.Stop ⇒
-          failStage(ex)
-        case Supervision.Resume ⇒
-          resetAfterSupervise()
+        case Supervision.Stop ⇒ failStage(ex)
+        case Supervision.Resume ⇒ resetAfterSupervise()
         case Supervision.Restart ⇒
           resetAfterSupervise()
           currentStage.postStop()
@@ -636,8 +634,8 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
           emitting = false
           andThen match {
             case Stay ⇒ // ok
-            case Become(newState) ⇒
-              become(newState.asInstanceOf[StageState[In, Out]])
+            case Become(newState) ⇒ become(
+                newState.asInstanceOf[StageState[In, Out]])
             case Finish ⇒ ctx.pushAndFinish(elem)
           }
           ctx.push(elem)

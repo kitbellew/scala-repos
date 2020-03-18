@@ -199,15 +199,13 @@ object ScalaExtractMethodUtils {
                     case _ if param.isEmptyParamFunction =>
                       ref.getParent match {
                         case ref: ScReferenceElement
-                            if ref.refName == "apply" =>
-                          tail()
-                        case call: ScMethodCall => tail()
+                            if ref.refName == "apply" => tail()
+                        case call: ScMethodCall       => tail()
                         case _ =>
                           ref.asInstanceOf[ScExpression].expectedType() match {
                             case Some(ScFunctionType(_, params))
-                                if params.isEmpty =>
-                              tail()
-                            case _ =>
+                                if params.isEmpty => tail()
+                            case _                =>
                               //we need to replace by method call
                               val newRef = ScalaPsiElementFactory
                                 .createExpressionFromText(
@@ -518,14 +516,12 @@ object ScalaExtractMethodUtils {
         }
         val arrow = ScalaPsiUtil.functionArrow(manager.getProject)
         val exprText = settings.returnType match {
-          case None => methodCallText
-          case Some(psi.types.Unit) =>
-            s"""$methodCallText match {
+          case None                 => methodCallText
+          case Some(psi.types.Unit) => s"""$methodCallText match {
                   |  case Some(result) $arrow result
                   |  case None $arrow return
                   |}""".stripMargin.replace("\r", "")
-          case Some(_) =>
-            s"""$methodCallText match {
+          case Some(_)              => s"""$methodCallText match {
                   |  case Left(toReturn) $arrow return toReturn
                   |  case Right(result) $arrow result
                   |}""".stripMargin.replace("\r", "")

@@ -69,12 +69,12 @@ private[finagle] object FinagleScheduler {
 
   def init() {
     scheduler().split(":").toList match {
-      case "bridged" :: Integer(numWorkers) :: Nil =>
-        switchToBridged(numWorkers)
+      case "bridged" :: Integer(numWorkers) :: Nil => switchToBridged(
+          numWorkers)
       case "bridged" :: Nil => switchToBridged(numProcs().ceil.toInt)
 
-      case "forkjoin" :: Integer(numWorkers) :: Nil =>
-        switchToForkJoin(numWorkers)
+      case "forkjoin" :: Integer(numWorkers) :: Nil => switchToForkJoin(
+          numWorkers)
       case "forkjoin" :: Nil => switchToForkJoin(numProcs().ceil.toInt)
 
       case "lifo" :: Nil =>

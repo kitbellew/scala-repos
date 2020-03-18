@@ -177,8 +177,7 @@ private[ui] class ExecutorTable(
             }
           </tr>
         }
-      case None =>
-        Seq.empty[Node]
+      case None => Seq.empty[Node]
     }
   }
 }

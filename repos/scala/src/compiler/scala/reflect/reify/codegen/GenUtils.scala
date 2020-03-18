@@ -86,21 +86,17 @@ trait GenUtils {
   object TypedOrAnnotated {
     def unapply(tree: Tree): Option[Tree] =
       tree match {
-        case ty @ Typed(_, _) =>
-          Some(ty)
-        case at @ Annotated(_, _) =>
-          Some(at)
-        case _ =>
-          None
+        case ty @ Typed(_, _)     => Some(ty)
+        case at @ Annotated(_, _) => Some(at)
+        case _                    => None
       }
   }
 
   def isSemiConcreteTypeMember(tpe: Type) =
     tpe match {
       case TypeRef(SingleType(_, _), sym, _)
-          if sym.isAbstractType && !sym.isExistential =>
-        true
-      case _ => false
+          if sym.isAbstractType && !sym.isExistential => true
+      case _                                          => false
     }
 
   def isCrossStageTypeBearer(tree: Tree): Boolean =

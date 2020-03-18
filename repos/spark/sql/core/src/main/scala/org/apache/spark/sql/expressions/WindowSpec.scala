@@ -70,10 +70,8 @@ class WindowSpec private[sql] (
   def orderBy(cols: Column*): WindowSpec = {
     val sortOrder: Seq[SortOrder] = cols.map { col =>
       col.expr match {
-        case expr: SortOrder =>
-          expr
-        case expr: Expression =>
-          SortOrder(expr, Ascending)
+        case expr: SortOrder  => expr
+        case expr: Expression => SortOrder(expr, Ascending)
       }
     }
     new WindowSpec(partitionSpec, sortOrder, frame)

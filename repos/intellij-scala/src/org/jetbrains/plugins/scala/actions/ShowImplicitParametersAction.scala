@@ -67,8 +67,7 @@ class ShowImplicitParametersAction
       context: ScExpression): String = {
     val named = rr.getElement
     ScalaPsiUtil.nameContext(named).getContext match {
-      case _: ScTemplateBody | _: ScEarlyDefinitions =>
-        rr.fromType match {
+      case _: ScTemplateBody | _: ScEarlyDefinitions => rr.fromType match {
           case Some(tp) => named.name //todo:
           case None     => named.name //todo:
         }
@@ -83,13 +82,10 @@ class ShowImplicitParametersAction
         : Option[Option[scala.Seq[ScalaResolveResult]]] = {
       def checkSimpleType(s: ScSimpleTypeElement) = { s.findImplicitParameters }
       element match {
-        case s: ScSimpleTypeElement =>
-          return Some(checkSimpleType(s))
-        case p: ScParameterizedTypeElement =>
-          p.typeElement match {
-            case s: ScSimpleTypeElement =>
-              return Some(checkSimpleType(s))
-            case _ =>
+        case s: ScSimpleTypeElement => return Some(checkSimpleType(s))
+        case p: ScParameterizedTypeElement => p.typeElement match {
+            case s: ScSimpleTypeElement => return Some(checkSimpleType(s))
+            case _                      =>
           }
         case _ =>
       }
@@ -108,10 +104,8 @@ class ShowImplicitParametersAction
             }
           case _ =>
         }
-      case expr: ScExpression =>
-        return expr.findImplicitParameters
-      case constr: ScConstructor =>
-        checkTypeElement(constr.typeElement) match {
+      case expr: ScExpression => return expr.findImplicitParameters
+      case constr: ScConstructor => checkTypeElement(constr.typeElement) match {
           case Some(x) => return x
           case _       =>
         }
@@ -147,18 +141,16 @@ class ShowImplicitParametersAction
         selectionStart,
         selectionEnd)
       opt match {
-        case Some((expr, _)) =>
-          forExpr(expr)
-        case _ =>
+        case Some((expr, _)) => forExpr(expr)
+        case _               =>
       }
     } else {
       val offset = editor.getCaretModel.getOffset
       val element: PsiElement = file.findElementAt(offset) match {
         case w: PsiWhiteSpace
             if w.getTextRange.getStartOffset == offset &&
-              w.getText.contains("\n") =>
-          file.findElementAt(offset - 1)
-        case p => p
+              w.getText.contains("\n") => file.findElementAt(offset - 1)
+        case p                         => p
       }
       def getExpressions: Array[PsiElement] = {
         val res = new ArrayBuffer[PsiElement]
@@ -172,8 +164,7 @@ class ShowImplicitParametersAction
                   if (p != null) p = p.getParent
                   if (p != null) p = p.getParent
                   if (!p.isInstanceOf[ScNewTemplateDefinition]) res += parent
-                case _ =>
-                  res += parent
+                case _ => res += parent
               }
             case _ =>
           }
@@ -199,9 +190,8 @@ class ShowImplicitParametersAction
           "Expressions",
           (expr: PsiElement) => {
             expr match {
-              case expr: ScExpression =>
-                ScalaRefactoringUtil.getShortText(expr)
-              case _ => expr.getText.slice(0, 20)
+              case expr: ScExpression => ScalaRefactoringUtil.getShortText(expr)
+              case _                  => expr.getText.slice(0, 20)
             }
           }
         )
@@ -368,8 +358,7 @@ class ImplicitParametersTreeStructure(
             }
             if (list.isEmpty)
               addErrorLeaf("Applicable by type implicits were not found")
-          case _ =>
-            addErrorLeaf("No information for no reason")
+          case _ => addErrorLeaf("No information for no reason")
         }
       } else {
         value.implicitParameters.foreach {
@@ -388,8 +377,7 @@ class ImplicitParametersTreeStructure(
             case Some(state) =>
               data.setPresentableText(
                 s"Parameter not found for type: ${state.tp}")
-            case _ =>
-              data.setPresentableText("Parameter not found")
+            case _ => data.setPresentableText("Parameter not found")
           }
           data.setAttributesKey(CodeInsightColors.WRONG_REFERENCES_ATTRIBUTES)
         } else {

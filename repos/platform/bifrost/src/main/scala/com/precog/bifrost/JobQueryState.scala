@@ -95,8 +95,7 @@ trait JobQueryStateMonad extends SwappableMonad[JobQueryState] {
   def bind[A, B](fa: JobQueryState[A])(
       f: A => JobQueryState[B]): JobQueryState[B] =
     maybeCancel(fa) match {
-      case Running(resources0, value0) =>
-        f(value0) match {
+      case Running(resources0, value0) => f(value0) match {
           case Running(resources1, value) =>
             Running(resources0 ++ resources1, value)
           case Cancelled => Cancelled

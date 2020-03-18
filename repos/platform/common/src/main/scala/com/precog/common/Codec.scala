@@ -511,8 +511,7 @@ object Codec {
     @tailrec
     private def writeArray(as: List[A], sink: ByteBuffer): Option[S] =
       as match {
-        case a :: as =>
-          elemCodec.writeInit(a, sink) match {
+        case a :: as => elemCodec.writeInit(a, sink) match {
             case Some(s) => Some(Right((s, as)))
             case None    => writeArray(as, sink)
           }
@@ -735,8 +734,7 @@ object Codec {
           offset + 2
         } else {
           bs partition (_ < c) match {
-            case (Nil, Nil) =>
-              offset
+            case (Nil, Nil) => offset
             case (Nil, hi) =>
               set(offset + 1)
               rec(hi, c, r, offset + 2)
@@ -886,8 +884,7 @@ object Codec {
           offset + 2
         } else {
           bs partition (_ < c) match {
-            case (Nil, Nil) =>
-              offset
+            case (Nil, Nil) => offset
             case (Nil, hi) =>
               set(offset + 1)
               rec(hi, c, r, offset + 2)

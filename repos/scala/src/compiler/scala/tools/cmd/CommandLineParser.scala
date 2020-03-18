@@ -55,8 +55,7 @@ object CommandLineParser {
     if (trimmed.isEmpty) Right((accum.reverse, ""))
     else
       argument(trimmed) match {
-        case Right((arg, next)) =>
-          (next span Character.isWhitespace) match {
+        case Right((arg, next)) => (next span Character.isWhitespace) match {
             case ("", rest) if rest.nonEmpty =>
               Left(
                 "Arguments should be separated by whitespace."

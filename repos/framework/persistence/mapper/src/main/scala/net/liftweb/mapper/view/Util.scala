@@ -47,8 +47,7 @@ object Util {
   def bindFields[T <: Mapper[T]](
       mapper: T,
       nsfn: MappedField[_, T] => NodeSeq): NodeSeq => NodeSeq = {
-    case xml.Elem(_, name, _, _, _*) =>
-      mapper.fieldByName(name) match {
+    case xml.Elem(_, name, _, _, _*) => mapper.fieldByName(name) match {
         case Full(field) => nsfn(field)
         case _           => NodeSeq.Empty
       }
@@ -75,10 +74,8 @@ object Util {
       filter: MappedField[_, T] => Boolean): NodeSeq => NodeSeq = {
     def fieldBindIfWanted(fieldName: String) = {
       mapper.fieldByName(fieldName).filter(filter) match {
-        case Full(field) =>
-          Some(fn(field))
-        case _ =>
-          None
+        case Full(field) => Some(fn(field))
+        case _           => None
       }
     }
 
@@ -96,8 +93,7 @@ object Util {
           } yield { ".field" #> fieldBind }
         } else {
           mapper.formFields.filter(filter).map {
-            case field: MappedField[_, T] =>
-              ".field" #> fn(field)
+            case field: MappedField[_, T] => ".field" #> fn(field)
           }
         }
 

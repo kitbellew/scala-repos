@@ -34,8 +34,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
               Buf.Utf8(key),
               v,
               Some(Interpreter.generateCasUnique(v))))
-          case _ =>
-            misses += key
+          case _ => misses += key
         }
         // Needed due to compiler bug(?)
         Unit
@@ -82,8 +81,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
         case Some(previousValue) =>
           map(key) = previousValue.concat(value)
           true
-        case None =>
-          false
+        case None => false
       }
     })
 
@@ -100,8 +98,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
         case Some(previousValue) =>
           map(key) = value.concat(previousValue)
           true
-        case None =>
-          false
+        case None => false
       }
     })
 
@@ -166,8 +163,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
                 "cannot increment or decrement non-numeric value")
           }
 
-        case None =>
-          None
+        case None => None
       }
     })
 

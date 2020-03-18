@@ -111,8 +111,7 @@ object Checkpoint {
         LOG.info(
           s"""Checkpoint "${checkpointName}": writing ${format} output to "${name}"""")
         pipe.write(getSource(format, name))
-      case None =>
-        flow.project(resultFields)
+      case None => flow.project(resultFields)
     }
   }
 

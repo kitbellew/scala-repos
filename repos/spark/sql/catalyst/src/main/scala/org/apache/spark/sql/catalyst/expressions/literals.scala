@@ -130,8 +130,7 @@ object Literal {
           InternalRow.fromSeq(
             struct.fields.map(f => default(f.dataType).value)),
           struct)
-      case other =>
-        throw new RuntimeException(s"no default for type $dataType")
+      case other => throw new RuntimeException(s"no default for type $dataType")
     }
 }
 
@@ -201,8 +200,8 @@ case class Literal protected (value: Any, dataType: DataType)
     val jsonValue = (value, dataType) match {
       case (null, _)          => JNull
       case (i: Int, DateType) => JString(DateTimeUtils.toJavaDate(i).toString)
-      case (l: Long, TimestampType) =>
-        JString(DateTimeUtils.toJavaTimestamp(l).toString)
+      case (l: Long, TimestampType) => JString(
+          DateTimeUtils.toJavaTimestamp(l).toString)
       case (other, _) => JString(other.toString)
     }
     ("value" -> jsonValue) :: ("dataType" -> dataType.jsonValue) :: Nil
@@ -252,8 +251,7 @@ case class Literal protected (value: Any, dataType: DataType)
           ev.value = s"${value}L"
           ""
         // eval() version may be faster for non-primitive types
-        case other =>
-          super[CodegenFallback].genCode(ctx, ev)
+        case other => super[CodegenFallback].genCode(ctx, ev)
       }
     }
   }
@@ -261,8 +259,7 @@ case class Literal protected (value: Any, dataType: DataType)
   override def sql: String =
     (value, dataType) match {
       case (_, NullType | _: ArrayType | _: MapType | _: StructType)
-          if value == null =>
-        "NULL"
+          if value == null             => "NULL"
       case _ if value == null          => s"CAST(NULL AS ${dataType.sql})"
       case (v: UTF8String, StringType) =>
         // Escapes all backslashes and double quotes.

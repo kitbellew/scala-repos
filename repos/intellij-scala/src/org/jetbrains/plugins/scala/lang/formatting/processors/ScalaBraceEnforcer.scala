@@ -90,8 +90,7 @@ class ScalaBraceEnforcer(settings: CodeStyleSettings)
     if (checkElementContainsRange(fun)) {
       super.visitFunction(fun)
       fun match {
-        case d: ScFunctionDefinition =>
-          d.body match {
+        case d: ScFunctionDefinition => d.body match {
             case Some(b) =>
               processExpression(b, fun, scalaSettings.METHOD_BRACE_FORCE)
             case _ =>
@@ -110,8 +109,7 @@ class ScalaBraceEnforcer(settings: CodeStyleSettings)
         case _ =>
       }
       tryStmt.finallyBlock match {
-        case Some(fin) =>
-          fin.expression match {
+        case Some(fin) => fin.expression match {
             case Some(expr) =>
               processExpression(
                 expr,

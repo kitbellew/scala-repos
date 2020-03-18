@@ -128,8 +128,9 @@ object JsonAST {
 
     private def findDirectByName(xs: List[JValue], name: String): List[JValue] =
       xs.flatMap {
-        case JObject(l) =>
-          l.collect { case JField(n, value) if n == name => value }
+        case JObject(l) => l.collect {
+            case JField(n, value) if n == name => value
+          }
         case JArray(l) => findDirectByName(l, name)
         case _         => Nil
       }
@@ -138,11 +139,10 @@ object JsonAST {
         xs: List[JValue],
         p: JValue => Boolean): List[JValue] =
       xs.flatMap {
-        case JObject(l) =>
-          l.collect { case JField(n, x) if p(x) => x }
-        case JArray(l) => findDirect(l, p)
-        case x if p(x) => x :: Nil
-        case _         => Nil
+        case JObject(l) => l.collect { case JField(n, x) if p(x) => x }
+        case JArray(l)  => findDirect(l, p)
+        case x if p(x)  => x :: Nil
+        case _          => Nil
       }
 
     /**
@@ -172,21 +172,18 @@ object JsonAST {
     def \\(nameToFind: String): JObject = {
       def find(json: JValue): List[JField] =
         json match {
-          case JObject(fields) =>
-            fields.foldLeft(List[JField]()) {
+          case JObject(fields) => fields.foldLeft(List[JField]()) {
               case (matchingFields, JField(name, value)) =>
                 matchingFields :::
                   List(JField(name, value)).filter(_.name == nameToFind) :::
                   find(value)
             }
 
-          case JArray(fields) =>
-            fields.foldLeft(List[JField]()) { (matchingFields, children) =>
-              matchingFields ::: find(children)
+          case JArray(fields) => fields.foldLeft(List[JField]()) {
+              (matchingFields, children) => matchingFields ::: find(children)
             }
 
-          case _ =>
-            Nil
+          case _ => Nil
         }
 
       JObject(find(this))
@@ -338,13 +335,11 @@ object JsonAST {
       def rec(acc: A, v: JValue) = {
         val newAcc = f(acc, v)
         v match {
-          case JObject(l) =>
-            l.foldLeft(newAcc) {
+          case JObject(l) => l.foldLeft(newAcc) {
               case (a, JField(name, value)) => value.fold(a)(f)
             }
-          case JArray(l) =>
-            l.foldLeft(newAcc) { (a, e) => e.fold(a)(f) }
-          case _ => newAcc
+          case JArray(l) => l.foldLeft(newAcc) { (a, e) => e.fold(a)(f) }
+          case _         => newAcc
         }
       }
       rec(z, this)
@@ -360,8 +355,7 @@ object JsonAST {
     def foldField[A](z: A)(f: (A, JField) => A): A = {
       def rec(acc: A, v: JValue) = {
         v match {
-          case JObject(l) =>
-            l.foldLeft(acc) {
+          case JObject(l) => l.foldLeft(acc) {
               case (a, field @ JField(name, value)) =>
                 value.foldField(f(a, field))(f)
             }
@@ -392,8 +386,9 @@ object JsonAST {
     def map(f: JValue => JValue): JValue = {
       def rec(v: JValue): JValue =
         v match {
-          case JObject(l) =>
-            f(JObject(l.map { field => field.copy(value = rec(field.value)) }))
+          case JObject(l) => f(JObject(l.map { field =>
+              field.copy(value = rec(field.value))
+            }))
           case JArray(l) => f(JArray(l.map(rec)))
           case x         => f(x)
         }
@@ -418,8 +413,9 @@ object JsonAST {
     def mapField(f: JField => JField): JValue = {
       def rec(v: JValue): JValue =
         v match {
-          case JObject(l) =>
-            JObject(l.map { field => f(field.copy(value = rec(field.value))) })
+          case JObject(l) => JObject(l.map { field =>
+              f(field.copy(value = rec(field.value)))
+            })
           case JArray(l) => JArray(l.map(rec))
           case x         => x
         }
@@ -500,8 +496,7 @@ object JsonAST {
     def replace(l: List[String], replacement: JValue): JValue = {
       def rep(l: List[String], in: JValue): JValue = {
         l match {
-          case x :: xs =>
-            in match {
+          case x :: xs => in match {
               case JObject(fields) =>
                 JObject(fields.map {
                   case JField(`x`, value) =>
@@ -811,8 +806,7 @@ object JsonAST {
     type Values = Map[String, Any]
     def values = {
       obj.map {
-        case JField(name, value) =>
-          (name, value.values): (String, Any)
+        case JField(name, value) => (name, value.values): (String, Any)
       }.toMap
     }
 
@@ -858,8 +852,7 @@ object JsonAST {
         case '\t' => "\\t"
         case c
             if ((c >= '\u0000' && c < '\u0020')) || settings.escapeChars
-              .contains(c) =>
-          "\\u%04x".format(c: Int)
+              .contains(c) => "\\u%04x".format(c: Int)
 
         case _ => ""
       }
@@ -897,8 +890,7 @@ object JsonAST {
       ('\ufeff', '\ufeff'),
       ('\ufff0', '\uffff')
     ).foldLeft(Set[Char]()) {
-      case (set, (start, end)) =>
-        set ++ (start to end).toSet
+      case (set, (start, end)) => set ++ (start to end).toSet
     }
 
     /**

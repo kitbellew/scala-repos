@@ -21,8 +21,7 @@ object Types {
       case types.Long    => 0L
       case types.Float   => 0.0f
       case types.Double  => 0d
-      case ScDesignatorType(element) =>
-        element.name match {
+      case ScDesignatorType(element) => element.name match {
           case "String"                => ""
           case "BigInt" | "BigInteger" => BigInt(0)
           case "BigDecimal"            => BigDecimal(0)

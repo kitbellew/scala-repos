@@ -224,8 +224,7 @@ class FancyTailCalls {
       case _ if {
             def loop(n: Int): Int = if (n == 0) v else loop(n - 1)
             loop(x) == v
-          } =>
-        true
+          } => true
     }
 
   import FancyTailCalls._
@@ -279,8 +278,8 @@ object Test {
     print("test " + name)
     try { val actual: Int = closure; }
     catch {
-      case exception: compat.Platform.StackOverflowError =>
-        println(" was successful")
+      case exception: compat.Platform.StackOverflowError => println(
+          " was successful")
       case exception: Throwable => { print(" raised exception " + exception) }
     }
     println

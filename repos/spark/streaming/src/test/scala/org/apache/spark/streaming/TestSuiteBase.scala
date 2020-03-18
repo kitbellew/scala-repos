@@ -303,8 +303,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
     finally {
       try { ssc.stop(stopSparkContext = true) }
       catch {
-        case e: Exception =>
-          logError("Error stopping StreamingContext", e)
+        case e: Exception => logError("Error stopping StreamingContext", e)
       }
     }
   }
@@ -317,10 +316,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
     try { block(testServer) }
     finally {
       try { testServer.stop() }
-      catch {
-        case e: Exception =>
-          logError("Error stopping TestServer", e)
-      }
+      catch { case e: Exception => logError("Error stopping TestServer", e) }
     }
   }
 

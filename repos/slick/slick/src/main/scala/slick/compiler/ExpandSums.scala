@@ -50,16 +50,14 @@ class ExpandSums extends Phase {
               from,
               LiteralNode(None) :@ OptionType(ScalaBaseType.nullType),
               oa @ OptionApply(Ref(s)),
-              gen) if s == gen =>
-          silentCast(oa.nodeType, from)
+              gen) if s == gen => silentCast(oa.nodeType, from)
 
         // Primitive OptionFold representing GetOrElse -> translate to GetOrElse
         case OptionFold(
               from :@ OptionType.Primitive(_),
               LiteralNode(v),
               Ref(s),
-              gen) if s == gen =>
-          GetOrElse(from, () => v).infer()
+              gen) if s == gen => GetOrElse(from, () => v).infer()
 
         // Primitive OptionFold -> translate to null check
         case OptionFold(from :@ OptionType.Primitive(_), ifEmpty, map, gen) =>
@@ -117,8 +115,7 @@ class ExpandSums extends Phase {
 
         // Non-primitive GetOrElse
         // (.get is only defined on primitive Options, but this can occur inside of HOFs like .map)
-        case g @ GetOrElse(ch :@ tpe, _) =>
-          tpe match {
+        case g @ GetOrElse(ch :@ tpe, _) => tpe match {
             case OptionType.Primitive(_) => g
             case _ =>
               throw new SlickException(
@@ -177,9 +174,9 @@ class ExpandSums extends Phase {
       }
       def find(t: Type, path: List[TermSymbol]): Vector[List[TermSymbol]] =
         t.structural match {
-          case StructType(defs) =>
-            defs.toSeq.flatMap { case (s, t) => find(t, s :: path) }(
-              collection.breakOut)
+          case StructType(defs) => defs.toSeq.flatMap {
+              case (s, t) => find(t, s :: path)
+            }(collection.breakOut)
           case p: ProductType =>
             p.elements.iterator.zipWithIndex.flatMap {
               case (t, i) => find(t, ElementSymbol(i + 1) :: path)
@@ -357,8 +354,7 @@ class ExpandSums extends Phase {
   def collectDiscriminatorCandidates(
       n: Node): Set[(TypeSymbol, List[TermSymbol])] =
     n.collectAll[(TypeSymbol, List[TermSymbol])] {
-        case OptionApply(ch) =>
-          ch.collect[(TypeSymbol, List[TermSymbol])] {
+        case OptionApply(ch) => ch.collect[(TypeSymbol, List[TermSymbol])] {
             case PathOnTypeSymbol(ts, ss) => (ts, ss)
           }
       }
@@ -408,11 +404,10 @@ class ExpandSums extends Phase {
             if tpe.structural == tpe2.structural =>
           invalidate(v)
           v
-        case Library.SilentCast(Library.SilentCast(ch)) :@ tpe =>
-          tr(Library.SilentCast.typed(tpe, ch).infer())
+        case Library.SilentCast(Library.SilentCast(ch)) :@ tpe => tr(
+            Library.SilentCast.typed(tpe, ch).infer())
         case Library.SilentCast(LiteralNode(None)) :@ (tpe @ OptionType
-              .Primitive(_)) =>
-          LiteralNode(tpe, None).infer()
+              .Primitive(_)) => LiteralNode(tpe, None).infer()
 
         // Expand multi-column IfThenElse
         case (cond @ IfThenElse(_)) :@ Type.Structural(ProductType(chTypes)) =>
@@ -433,15 +428,13 @@ class ExpandSums extends Phase {
               ConstArray(
                 Library.==(r, LiteralNode(null)),
                 Library.SilentCast(LiteralNode(None)),
-                c @ Library.SilentCast(r2))) if r == r2 =>
-          c
+                c @ Library.SilentCast(r2))) if r == r2 => c
 
         // Fix Untyped nulls in else clauses
         case cond @ IfThenElse(clauses) if (clauses.last match {
               case LiteralNode(None) :@ OptionType(ScalaBaseType.nullType) =>
                 true; case _                                               => false
-            }) =>
-          cond.copy(clauses.init :+ LiteralNode(cond.nodeType, None))
+            }) => cond.copy(clauses.init :+ LiteralNode(cond.nodeType, None))
 
         // Resolve Selects into ProductNodes and StructNodes
         case Select(ProductNode(ch), ElementSymbol(idx)) => ch(idx - 1)

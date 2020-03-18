@@ -57,9 +57,8 @@ object WrapInOptionQuickFix {
           ScType.extractClass(des) match {
             case Some(scClass: ScClass)
                 if scClass.qualifiedName == "scala.Option" && scType.conforms(
-                  typeArg) =>
-              result = true
-            case _ =>
+                  typeArg) => result = true
+            case _         =>
           }
         case _ =>
       }

@@ -12,8 +12,7 @@ object ResolvedWithSubst {
   def unapply(e: PsiReference): Option[(PsiElement, ScSubstitutor)] = {
     e match {
       case null => None
-      case e: ScReferenceElement =>
-        e.bind() match {
+      case e: ScReferenceElement => e.bind() match {
           case Some(ScalaResolveResult(target, substitutor)) =>
             Some(target, substitutor)
           case _ => None

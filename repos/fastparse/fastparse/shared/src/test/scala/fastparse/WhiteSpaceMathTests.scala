@@ -16,8 +16,7 @@ object WhiteSpaceMathTests extends TestSuite {
   def eval(tree: (Int, Seq[(String, Int)])): Int = {
     val (base, ops) = tree
     ops.foldLeft(base) {
-      case (left, (op, right)) =>
-        op match {
+      case (left, (op, right)) => op match {
           case "+" => left + right
           case "-" => left - right
           case "*" => left * right

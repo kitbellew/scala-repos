@@ -146,8 +146,7 @@ trait SQLServerProfile extends JdbcProfile {
           _.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
           case Some(l) =>
             if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})"
-          case None =>
-            defaultStringType match {
+          case None => defaultStringType match {
               case Some(s) => s
               case None =>
                 if (sym
@@ -209,9 +208,8 @@ trait SQLServerProfile extends JdbcProfile {
         case Library.Substring(n, start) =>
           b"\({fn substring($n, ${QueryParameter
             .constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())}, ${Int.MaxValue})}\)"
-        case Library.Repeat(str, count) =>
-          b"replicate($str, $count)"
-        case n => super.expr(n, skipParens)
+        case Library.Repeat(str, count) => b"replicate($str, $count)"
+        case n                          => super.expr(n, skipParens)
       }
   }
 

@@ -144,9 +144,7 @@ object ThriftMuxResponseClassifier {
               try {
                 val bytes = Buf.ByteArray.Owned.extract(rep.body)
                 deserCtx.deserialize(bytes)
-              } catch {
-                case _: Throwable =>
-              }
+              } catch { case _: Throwable => }
             }
           case _ =>
         }

@@ -145,8 +145,7 @@ private[puzzle] final class PuzzleApi(
         .cursor[BSONDocument]()
         .collect[List](5) map {
         case attempts if attempts.size < 5 => true
-        case attempts =>
-          attempts.foldLeft(false) {
+        case attempts => attempts.foldLeft(false) {
             case (true, _) => true
             case (false, doc) =>
               doc.getAs[Boolean](Attempt.BSONFields.vote).isDefined

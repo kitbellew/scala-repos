@@ -80,10 +80,8 @@ package docs.serialization {
     def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
       // Put the real code that deserializes here
       manifest match {
-        case CustomerManifest =>
-          Customer(new String(bytes, UTF_8))
-        case UserManifest =>
-          User(new String(bytes, UTF_8))
+        case CustomerManifest => Customer(new String(bytes, UTF_8))
+        case UserManifest     => User(new String(bytes, UTF_8))
       }
     }
   }

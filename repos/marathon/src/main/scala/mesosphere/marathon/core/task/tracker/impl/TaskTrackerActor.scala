@@ -114,8 +114,7 @@ private class TaskTrackerActor(
         // escalate this failure
         throw new IllegalStateException("while loading tasks", cause)
 
-      case stashMe: AnyRef =>
-        stash()
+      case stashMe: AnyRef => stash()
     }
 
   private[this] def withTasks(
@@ -145,8 +144,7 @@ private class TaskTrackerActor(
     metrics.runningCount.setValue(counts.tasksRunning)
 
     LoggingReceive.withLabel("withTasks") {
-      case TaskTrackerActor.List =>
-        sender() ! appTasks
+      case TaskTrackerActor.List => sender() ! appTasks
 
       case ForwardTaskOp(deadline, taskId, action) =>
         val op = TaskOpProcessor.Operation(deadline, sender(), taskId, action)

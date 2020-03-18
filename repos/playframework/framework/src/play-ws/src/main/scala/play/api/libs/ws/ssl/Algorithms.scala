@@ -72,14 +72,10 @@ object Algorithms {
         if ((sk.getFormat == "RAW") && sk.getEncoded != null) {
           Some(sk.getEncoded.length * 8)
         } else { None }
-      case pubk: RSAKey =>
-        Some(pubk.getModulus.bitLength)
-      case pubk: ECKey =>
-        Some(pubk.getParams.getOrder.bitLength())
-      case pubk: DSAKey =>
-        Some(pubk.getParams.getP.bitLength)
-      case pubk: DHKey =>
-        Some(pubk.getParams.getP.bitLength)
+      case pubk: RSAKey => Some(pubk.getModulus.bitLength)
+      case pubk: ECKey  => Some(pubk.getParams.getOrder.bitLength())
+      case pubk: DSAKey => Some(pubk.getParams.getP.bitLength)
+      case pubk: DHKey  => Some(pubk.getParams.getP.bitLength)
       case pubk: Key =>
         val translatedKey = translateKey(pubk)
         keySize(translatedKey)
@@ -129,10 +125,8 @@ object Algorithms {
       .loadClass("sun.security.ec.ECKeyFactory")
     val method = keyFactory.getMethod("toECKey", classOf[java.security.Key])
     method.invoke(null, pubk) match {
-      case e: ECPublicKey =>
-        e
-      case e: ECPrivateKey =>
-        e
+      case e: ECPublicKey  => e
+      case e: ECPrivateKey => e
     }
   }
 
@@ -224,11 +218,9 @@ case class AlgorithmConstraint(
     if (!matches(algorithm)) { return false }
 
     constraint match {
-      case Some(expression) =>
-        expression.matches(keySize)
+      case Some(expression) => expression.matches(keySize)
 
-      case None =>
-        true
+      case None => true
     }
   }
 
@@ -246,8 +238,7 @@ object AlgorithmConstraintsParser extends RegexParsers {
 
   def apply(input: String): AlgorithmConstraint =
     parseAll(expression, input) match {
-      case Success(result, _) =>
-        result
+      case Success(result, _) => result
       case NoSuccess(message, _) =>
         throw new IllegalArgumentException(
           s"Cannot parse string $input: $message")
@@ -258,29 +249,22 @@ object AlgorithmConstraintsParser extends RegexParsers {
       case algorithm ~ Some(constraint) =>
         AlgorithmConstraint(algorithm, Some(constraint))
 
-      case algorithm ~ None =>
-        AlgorithmConstraint(algorithm, None)
+      case algorithm ~ None => AlgorithmConstraint(algorithm, None)
     }
 
   def keySizeConstraint: Parser[ExpressionSymbol] =
     "keySize" ~> operator ~ decimalInteger ^^ {
-      case "<=" ~ decimal =>
-        LessThanOrEqual(decimal)
+      case "<=" ~ decimal => LessThanOrEqual(decimal)
 
-      case "<" ~ decimal =>
-        LessThan(decimal)
+      case "<" ~ decimal => LessThan(decimal)
 
-      case "==" ~ decimal =>
-        Equal(decimal)
+      case "==" ~ decimal => Equal(decimal)
 
-      case "!=" ~ decimal =>
-        NotEqual(decimal)
+      case "!=" ~ decimal => NotEqual(decimal)
 
-      case ">=" ~ decimal =>
-        MoreThanOrEqual(decimal)
+      case ">=" ~ decimal => MoreThanOrEqual(decimal)
 
-      case ">" ~ decimal =>
-        MoreThan(decimal)
+      case ">" ~ decimal => MoreThan(decimal)
     }
 
   def operator: Parser[String] = "<=" | "<" | "==" | "!=" | ">=" | ">"

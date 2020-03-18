@@ -112,8 +112,7 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
       tp match {
         case MethodType(thiz :: rest, restpe) if thiz.name == nme.SELF =>
           Some((thiz, if (rest.isEmpty) restpe else MethodType(rest, restpe)))
-        case _ =>
-          None
+        case _ => None
       }
   }
 
@@ -134,8 +133,7 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
           normalize(restpe.substSym(ctparams, clazz.typeParams), clazz))
       case ExtensionMethodType(thiz, etpe) =>
         etpe.substituteTypes(thiz :: Nil, clazz.thisType :: Nil)
-      case _ =>
-        stpe
+      case _ => stpe
     }
 
   class Extender(unit: CompilationUnit) extends TypingTransformer(unit) {
@@ -306,8 +304,7 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
           deriveDefDef(tree)(_ =>
             atOwner(origMeth)(localTyper.typedPos(rhs.pos)(
               gen.mkForwarder(callPrefix, mmap(vparamss)(_.symbol)))))
-        case _ =>
-          super.transform(tree)
+        case _ => super.transform(tree)
       }
     }
 
@@ -326,8 +323,7 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
           if (extraStats.isEmpty) md
           else
             deriveModuleDef(md)(tmpl => deriveTemplate(tmpl)(_ ++ extraStats))
-        case stat =>
-          stat
+        case stat => stat
       }
   }
 

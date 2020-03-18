@@ -116,10 +116,7 @@ class ExecutorClassLoader(
 
       private def toClassNotFound(fn: => Int): Int = {
         try { fn }
-        catch {
-          case e: Exception =>
-            throw new ClassNotFoundException(path, e)
-        }
+        catch { case e: Exception => throw new ClassNotFoundException(path, e) }
       }
     }
   }

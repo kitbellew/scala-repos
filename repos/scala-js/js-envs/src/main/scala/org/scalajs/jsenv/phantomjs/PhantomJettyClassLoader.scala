@@ -54,10 +54,7 @@ final class PhantomJettyClassLoader(
       }
     } else {
       try { jettyLoader.loadClass(name) }
-      catch {
-        case _: ClassNotFoundException =>
-          super.loadClass(name, resolve)
-      }
+      catch { case _: ClassNotFoundException => super.loadClass(name, resolve) }
     }
   }
 }

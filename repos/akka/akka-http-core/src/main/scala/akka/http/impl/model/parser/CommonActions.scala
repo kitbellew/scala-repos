@@ -20,8 +20,7 @@ private[parser] trait CommonActions {
       params: Map[String, String]): MediaType = {
     val subLower = subType.toRootLowerCase
     mainType.toRootLowerCase match {
-      case "multipart" ⇒
-        subLower match {
+      case "multipart" ⇒ subLower match {
           case "mixed" ⇒ multipart.mixed(params)
           case "alternative" ⇒ multipart.alternative(params)
           case "related" ⇒ multipart.related(params)
@@ -30,8 +29,7 @@ private[parser] trait CommonActions {
           case "encrypted" ⇒ multipart.encrypted(params)
           case custom ⇒ MediaType.customMultipart(custom, params)
         }
-      case mainLower ⇒
-        MediaTypes.getForKey((mainLower, subLower)) match {
+      case mainLower ⇒ MediaTypes.getForKey((mainLower, subLower)) match {
           case Some(registered) ⇒
             if (params.isEmpty) registered else registered.withParams(params)
           case None ⇒

@@ -92,15 +92,13 @@ class RemoveTakeDrop(
   object TakeDrop {
     def unapply(n: Node): Option[(Node, Option[Node], Option[Node])] =
       n match {
-        case Take(from, num) =>
-          unapply(from) match {
-            case Some((f, Some(t), d)) =>
-              Some((f, Some(constOp[Long]("min")(math.min)(t, num)), d))
+        case Take(from, num) => unapply(from) match {
+            case Some((f, Some(t), d)) => Some(
+                (f, Some(constOp[Long]("min")(math.min)(t, num)), d))
             case Some((f, None, d)) => Some((f, Some(num), d))
             case _                  => Some((from, Some(num), None))
           }
-        case Drop(from, num) =>
-          unapply(from) match {
+        case Drop(from, num) => unapply(from) match {
             case Some((f, Some(t), None)) =>
               Some((
                 f,
@@ -108,8 +106,8 @@ class RemoveTakeDrop(
                   LiteralNode(0L).infer(),
                   constOp[Long]("-")(_ - _)(t, num))),
                 Some(num)))
-            case Some((f, None, Some(d))) =>
-              Some((f, None, Some(constOp[Long]("+")(_ + _)(d, num))))
+            case Some((f, None, Some(d))) => Some(
+                (f, None, Some(constOp[Long]("+")(_ + _)(d, num))))
             case Some((f, Some(t), Some(d))) =>
               Some((
                 f,

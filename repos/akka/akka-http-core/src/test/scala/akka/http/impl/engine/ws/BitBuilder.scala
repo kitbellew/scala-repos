@@ -51,8 +51,7 @@ final case class Bits(elements: Seq[Bits.BitElement]) {
             if (remainingBits > 0)
               rec(byteIdx + 1, 0, Multibit(remainingBits, value) +: rest)
             else rec(byteIdx, bitIdx + numBits, rest)
-          case Nil ⇒
-            require(bitIdx == 0 && byteIdx == bits / 8)
+          case Nil ⇒ require(bitIdx == 0 && byteIdx == bits / 8)
         }
     rec(0, 0, elements)
 

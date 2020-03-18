@@ -53,8 +53,7 @@ object Video extends LilaController {
               ctx.userId.?? { userId =>
                 env.api.view.add(View.make(videoId = video.id, userId = userId))
               } map {
-              case (similar, _) =>
-                Ok(html.video.show(video, similar, control))
+              case (similar, _) => Ok(html.video.show(video, similar, control))
             }
         }
       }

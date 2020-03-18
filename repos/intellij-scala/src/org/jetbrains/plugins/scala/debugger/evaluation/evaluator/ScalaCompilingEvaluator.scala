@@ -342,8 +342,7 @@ private class GeneratedClass(
       elem match {
         case (stmt: ScBlockStatement) childOf (b: ScBlock) => (stmt, b)
         case (stmt: ScBlockStatement) childOf (funDef: ScFunctionDefinition)
-            if funDef.body.contains(stmt) =>
-          (stmt, funDef)
+            if funDef.body.contains(stmt) => (stmt, funDef)
         case (stmt: ScBlockStatement) childOf (nonExpr: PsiElement) =>
           (stmt, nonExpr)
         case _ =>
@@ -373,8 +372,7 @@ private class GeneratedClass(
             prevParent)
         parent = prevParent.replace(newBlock)
         parent match {
-          case bl: ScBlock =>
-            bl.statements.head
+          case bl: ScBlock => bl.statements.head
           case _ =>
             throw EvaluationException(
               "Could not compile local class in this context")

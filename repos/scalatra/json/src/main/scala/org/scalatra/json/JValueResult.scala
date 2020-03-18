@@ -44,8 +44,7 @@ trait JValueResult extends ScalatraBase {
     case x: NodeSeq if format == "xml" ⇒
       contentType = formats("xml")
       response.writer.write(x.toString)
-    case x: NodeSeq ⇒
-      response.writer.write(x.toString)
+    case x: NodeSeq ⇒ response.writer.write(x.toString)
     case p: Product if isJValueResponse            => Extraction.decompose(p)
     case p: TraversableOnce[_] if isJValueResponse => Extraction.decompose(p)
   }

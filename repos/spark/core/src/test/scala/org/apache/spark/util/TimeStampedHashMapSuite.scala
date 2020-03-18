@@ -160,10 +160,8 @@ class TimeStampedHashMapSuite extends SparkFunSuite {
                 case 0 =>
                   testMap(Random.nextString(10)) =
                     Random.nextDouble().toString // put
-                case 1 =>
-                  getRandomKey(testMap).map(testMap.get) // get
-                case 2 =>
-                  getRandomKey(testMap).map(testMap.remove) // remove
+                case 1 => getRandomKey(testMap).map(testMap.get) // get
+                case 2 => getRandomKey(testMap).map(testMap.remove) // remove
               }
             }
           } catch {

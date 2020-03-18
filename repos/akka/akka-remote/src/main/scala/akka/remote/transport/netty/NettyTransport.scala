@@ -572,8 +572,7 @@ class NettyTransport(
   // TODO: This should be factored out to an async (or thread-isolated) name lookup service #2960
   def addressToSocketAddress(addr: Address): Future[InetSocketAddress] =
     addr match {
-      case Address(_, _, Some(host), Some(port)) ⇒
-        Future {
+      case Address(_, _, Some(host), Some(port)) ⇒ Future {
           blocking { new InetSocketAddress(InetAddress.getByName(host), port) }
         }
       case _ ⇒

@@ -53,10 +53,7 @@ class NodeJSEnv private (
     try {
       jsRunner(code).run(NullLogger, NullJSConsole)
       true
-    } catch {
-      case t: ExternalJSEnv.NonZeroExitException =>
-        false
-    }
+    } catch { case t: ExternalJSEnv.NonZeroExitException => false }
   }
 
   protected def vmName: String = "Node.js"
@@ -206,8 +203,7 @@ class NodeJSEnv private (
         js2jvm.mark(0)
         String.valueOf(carr)
       } catch {
-        case e: EOFException =>
-          throw new ComJSEnv.ComClosedException(e)
+        case e: EOFException => throw new ComJSEnv.ComClosedException(e)
         case e: SocketTimeoutException =>
           js2jvm.reset()
           throw new TimeoutException("Timeout expired")
@@ -233,9 +229,7 @@ class NodeJSEnv private (
             comSocket.getOutputStream()))
           js2jvm = new DataInputStream(new BufferedInputStream(
             comSocket.getInputStream()))
-        } catch {
-          case to: SocketTimeoutException =>
-        }
+        } catch { case to: SocketTimeoutException => }
       }
 
       comSocket != null
@@ -347,8 +341,7 @@ class NodeJSEnv private (
         case file: FileVirtualJSFile =>
           val fname = file.file.getAbsolutePath
           writer.write(s"""require("${escapeJS(fname)}");\n""")
-        case _ =>
-          super.writeJSFile(file, writer)
+        case _ => super.writeJSFile(file, writer)
       }
     }
 

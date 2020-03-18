@@ -88,11 +88,9 @@ class ScalaGenerateAnonymousFunctionInsertHandler(
                     abstr.simplifyType match {
                       case Any | Nothing =>
                         new ConstantNode(refName.substring(prefixLength))
-                      case tp =>
-                        new ConstantNode(ScType.presentableText(tp))
+                      case tp => new ConstantNode(ScType.presentableText(tp))
                     }
-                  case None =>
-                    new ConstantNode(refName.substring(prefixLength))
+                  case None => new ConstantNode(refName.substring(prefixLength))
                 }
                 builder.replaceElement(simple, refName, node, false)
               }
@@ -107,22 +105,18 @@ class ScalaGenerateAnonymousFunctionInsertHandler(
       case f: ScFunctionExpr =>
         for (parameter <- f.parameters) {
           parameter.typeElement match {
-            case Some(te) =>
-              seekAbstracts(te)
-            case _ =>
+            case Some(te) => seekAbstracts(te)
+            case _        =>
           }
           builder.replaceElement(parameter.nameId, parameter.name)
         }
-      case c: ScCaseClause =>
-        c.pattern match {
+      case c: ScCaseClause => c.pattern match {
           case Some(pattern) =>
             for (binding <- pattern.bindings) {
               binding match {
-                case tp: ScTypedPattern =>
-                  tp.typePattern match {
-                    case Some(tpe) =>
-                      seekAbstracts(tpe.typeElement)
-                    case _ =>
+                case tp: ScTypedPattern => tp.typePattern match {
+                    case Some(tpe) => seekAbstracts(tpe.typeElement)
+                    case _         =>
                   }
                 case _ =>
               }

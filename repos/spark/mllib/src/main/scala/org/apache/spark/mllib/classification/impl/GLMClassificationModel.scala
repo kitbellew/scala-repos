@@ -88,8 +88,7 @@ private[classification] object GLMClassificationModel {
       val data = dataArray(0)
       assert(data.size == 3, s"Unable to load $modelClass data from: $datapath")
       val (weights, intercept) = data match {
-        case Row(weights: Vector, intercept: Double, _) =>
-          (weights, intercept)
+        case Row(weights: Vector, intercept: Double, _) => (weights, intercept)
       }
       val threshold =
         if (data.isNullAt(2)) { None }

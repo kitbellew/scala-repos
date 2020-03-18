@@ -318,8 +318,7 @@ private[akka] class ConductorHandler(
     val channel = event.getChannel
     log.debug("message from {}: {}", getAddrString(channel), event.getMessage)
     event.getMessage match {
-      case msg: NetworkOp ⇒
-        clients.get(channel) ! msg
+      case msg: NetworkOp ⇒ clients.get(channel) ! msg
       case msg ⇒
         log.info(
           "client {} sent garbage '{}', disconnecting",
@@ -536,8 +535,7 @@ private[akka] class Controller(
       case c @ ClientDisconnected(name) ⇒
         nodes -= name
         barrier forward c
-      case op: ServerOp ⇒
-        op match {
+      case op: ServerOp ⇒ op match {
           case _: EnterBarrier ⇒ barrier forward op
           case _: FailBarrier ⇒ barrier forward op
           case GetAddress(node) ⇒
@@ -549,8 +547,7 @@ private[akka] class Controller(
               )
           case _: Done ⇒ //FIXME what should happen?
         }
-      case op: CommandOp ⇒
-        op match {
+      case op: CommandOp ⇒ op match {
           case Throttle(node, target, direction, rateMBit) ⇒
             val t = nodes(target)
             nodes(node).fsm forward ToClient(
@@ -562,8 +559,7 @@ private[akka] class Controller(
             barrier ! BarrierCoordinator.RemoveClient(node)
             nodes(node).fsm forward ToClient(TerminateMsg(shutdownOrExit))
             nodes -= node
-          case Remove(node) ⇒
-            barrier ! BarrierCoordinator.RemoveClient(node)
+          case Remove(node) ⇒ barrier ! BarrierCoordinator.RemoveClient(node)
         }
       case GetNodes ⇒ sender() ! nodes.keys
       case GetSockAddr ⇒ sender() ! connection.getLocalAddress
@@ -724,8 +720,7 @@ private[akka] class BarrierCoordinator
     case Event(FailBarrier(name), d @ Data(_, barrier, _, _)) ⇒
       if (name != barrier) throw WrongBarrier(name, sender(), d)
       throw FailedBarrier(d)
-    case Event(StateTimeout, d) ⇒
-      throw BarrierTimeout(d)
+    case Event(StateTimeout, d) ⇒ throw BarrierTimeout(d)
   }
 
   initialize()

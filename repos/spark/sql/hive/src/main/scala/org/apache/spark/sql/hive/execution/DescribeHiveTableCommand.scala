@@ -71,8 +71,7 @@ private[hive] case class DescribeHiveTableCommand(
         }
 
         results.map {
-          case (name, dataType, comment) =>
-            Row(name, dataType, comment)
+          case (name, dataType, comment) => Row(name, dataType, comment)
         }
 
       case o: LogicalPlan =>

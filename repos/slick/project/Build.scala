@@ -130,11 +130,9 @@ object SlickBuild extends Build {
     repoKind <<= (version)(v =>
       if (v.trim.endsWith("SNAPSHOT")) "snapshots" else "releases"),
     publishTo <<= (repoKind) {
-      case "snapshots" =>
-        Some(
+      case "snapshots" => Some(
           "snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")
-      case "releases" =>
-        Some(
+      case "releases" => Some(
           "releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
     },
     publishMavenStyle := true,

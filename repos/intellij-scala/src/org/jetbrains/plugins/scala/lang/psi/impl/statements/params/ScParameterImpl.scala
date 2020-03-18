@@ -53,9 +53,8 @@ class ScParameterImpl protected (
       return stub.asInstanceOf[ScParameterStub].isCallByNameParameter
     }
     paramType match {
-      case Some(paramType) =>
-        paramType.isCallByNameParameter
-      case _ => false
+      case Some(paramType) => paramType.isCallByNameParameter
+      case _               => false
     }
   }
 
@@ -130,8 +129,7 @@ class ScParameterImpl protected (
               case Some(t) => t.getType(TypingContext.empty).getOrNothing
               case None    => lang.psi.types.Nothing
             }
-          case None =>
-            expectedParamType.map(_.unpackedType) match {
+          case None => expectedParamType.map(_.unpackedType) match {
               case Some(t) => t
               case None    => lang.psi.types.Nothing
             }

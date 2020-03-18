@@ -78,8 +78,7 @@ trait FileUploadSupport extends ServletBase {
   private def extractMultipartParams(req: HttpServletRequest): BodyParams =
     // First look for it cached on the request, because we can't parse it twice.  See GH-16.
     req.get(BodyParamsKey).asInstanceOf[Option[BodyParams]] match {
-      case Some(bodyParams) =>
-        bodyParams
+      case Some(bodyParams) => bodyParams
       case None =>
         val upload = newServletFileUpload
         val items = upload.parseRequest(req).asInstanceOf[JList[FileItem]]
@@ -124,8 +123,7 @@ trait FileUploadSupport extends ServletBase {
       case diskItem: DiskFileItem =>
         // Why doesn't FileItem have this method???
         Option(diskItem.getCharSet())
-      case _ =>
-        None
+      case _ => None
     }
     item.getString(charset getOrElse defaultCharacterEncoding)
   }

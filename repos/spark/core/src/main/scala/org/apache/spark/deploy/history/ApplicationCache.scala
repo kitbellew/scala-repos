@@ -162,11 +162,9 @@ private[history] class ApplicationCache(
       val ui = get(appAndAttempt)
       Some(ui)
     } catch {
-      case NonFatal(e) =>
-        e.getCause() match {
-          case nsee: NoSuchElementException =>
-            None
-          case cause: Exception => throw cause
+      case NonFatal(e) => e.getCause() match {
+          case nsee: NoSuchElementException => None
+          case cause: Exception             => throw cause
         }
     }
   }

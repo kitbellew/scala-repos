@@ -154,8 +154,7 @@ case class AhcWSRequest(
 
   def withRequestTimeout(timeout: Duration): WSRequest = {
     timeout match {
-      case Duration.Inf =>
-        copy(requestTimeout = Some(-1))
+      case Duration.Inf => copy(requestTimeout = Some(-1))
       case d =>
         val millis = d.toMillis
         require(
@@ -259,8 +258,7 @@ case class AhcWSRequest(
 
   def contentType: Option[String] = {
     this.headers.find(p => p._1 == HttpHeaders.Names.CONTENT_TYPE).map {
-      case (header, values) =>
-        values.head
+      case (header, values) => values.head
     }
   }
 

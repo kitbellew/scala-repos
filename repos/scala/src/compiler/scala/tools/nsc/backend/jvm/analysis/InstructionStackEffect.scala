@@ -100,8 +100,7 @@ object InstructionStackEffect {
 
       case ACONST_NULL | ICONST_M1 | ICONST_0 | ICONST_1 | ICONST_2 | ICONST_3 |
           ICONST_4 | ICONST_5 | FCONST_0 | FCONST_1 | FCONST_2 | BIPUSH |
-          SIPUSH | ILOAD | FLOAD | ALOAD =>
-        t(0, 1)
+          SIPUSH | ILOAD | FLOAD | ALOAD => t(0, 1)
 
       case LDC =>
         if (forClassfile) insn.asInstanceOf[LdcInsnNode].cst match {
@@ -176,12 +175,10 @@ object InstructionStackEffect {
       case SWAP => t(2, 2)
 
       case IADD | FADD | ISUB | FSUB | IMUL | FMUL | IDIV | FDIV | IREM |
-          FREM =>
-        t(2, 1)
+          FREM => t(2, 1)
 
       case LADD | DADD | LSUB | DSUB | LMUL | DMUL | LDIV | DDIV | LREM |
-          DREM =>
-        if (forClassfile) t(4, 2) else t(2, 1)
+          DREM => if (forClassfile) t(4, 2) else t(2, 1)
 
       case INEG | FNEG => t(1, 1)
 
@@ -210,8 +207,7 @@ object InstructionStackEffect {
       case IFEQ | IFNE | IFLT | IFGE | IFGT | IFLE => t(1, 0)
 
       case IF_ICMPEQ | IF_ICMPNE | IF_ICMPLT | IF_ICMPGE | IF_ICMPGT |
-          IF_ICMPLE | IF_ACMPEQ | IF_ACMPNE =>
-        t(2, 0)
+          IF_ICMPLE | IF_ACMPEQ | IF_ACMPNE => t(2, 0)
 
       case GOTO => t(0, 0)
 

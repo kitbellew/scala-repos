@@ -130,8 +130,7 @@ class ControllerContext(val zkUtils: ZkUtils, val zkSessionTimeout: Int) {
           topicAndPartition.topic.equals(topic)
       }
       .map {
-        case (topicAndPartition, replicas) =>
-          replicas.map { r =>
+        case (topicAndPartition, replicas) => replicas.map { r =>
             new PartitionAndReplica(
               topicAndPartition.topic,
               topicAndPartition.partition,

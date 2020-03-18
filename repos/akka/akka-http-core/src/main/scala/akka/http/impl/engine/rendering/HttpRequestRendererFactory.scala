@@ -37,8 +37,7 @@ private[http] class HttpRequestRendererFactory(
     def renderRequestLine(): Unit = {
       r ~~ method ~~ ' '
       val rawRequestUriRendered = headers.exists {
-        case `Raw-Request-URI`(rawUri) ⇒
-          r ~~ rawUri; true
+        case `Raw-Request-URI`(rawUri) ⇒ r ~~ rawUri; true
         case _ ⇒ false
       }
       if (!rawRequestUriRendered)
@@ -55,8 +54,7 @@ private[http] class HttpRequestRendererFactory(
         userAgentSeen: Boolean = false,
         transferEncodingSeen: Boolean = false): Unit =
       remaining match {
-        case head :: tail ⇒
-          head match {
+        case head :: tail ⇒ head match {
             case x: `Content-Length` ⇒
               suppressionWarning(
                 log,
@@ -79,8 +77,7 @@ private[http] class HttpRequestRendererFactory(
                 userAgentSeen,
                 transferEncodingSeen)
 
-            case x: `Transfer-Encoding` ⇒
-              x.withChunkedPeeled match {
+            case x: `Transfer-Encoding` ⇒ x.withChunkedPeeled match {
                 case None ⇒
                   suppressionWarning(log, head)
                   renderHeaders(

@@ -127,8 +127,7 @@ class IdleConnectionFilter[Req, Rep](
         closed.incr()
         true
 
-      case None =>
-        false
+      case None => false
     }
 
   private[this] def accept(c: ClientConnection): Boolean = {

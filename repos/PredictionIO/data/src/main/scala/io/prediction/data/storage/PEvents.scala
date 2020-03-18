@@ -118,10 +118,7 @@ trait PEvents extends Serializable {
     val dmRDD = PEventAggregator.aggregateProperties(eventRDD)
 
     required map { r =>
-      dmRDD.filter {
-        case (k, v) =>
-          r.map(v.contains(_)).reduce(_ && _)
-      }
+      dmRDD.filter { case (k, v) => r.map(v.contains(_)).reduce(_ && _) }
     } getOrElse dmRDD
   }
 

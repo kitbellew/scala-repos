@@ -234,10 +234,7 @@ private[spark] object SerializationDebugger extends Logging {
       val innerObjectsCatcher = new ListObjectOutputStream
       var notSerializableFound = false
       try { innerObjectsCatcher.writeObject(o) }
-      catch {
-        case io: IOException =>
-          notSerializableFound = true
-      }
+      catch { case io: IOException => notSerializableFound = true }
 
       // If something was not serializable, then visit the captured objects.
       // Otherwise, all the captured objects are safely serializable, so no need to visit them.

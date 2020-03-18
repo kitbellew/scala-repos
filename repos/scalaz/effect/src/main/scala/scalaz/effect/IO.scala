@@ -279,8 +279,7 @@ object IO extends IOInstances {
       for {
         hs <- hsIORef.read
         _ <- hs.foldRight[IO[Unit]](IO.ioUnit) {
-          case (r, o) =>
-            for {
+          case (r, o) => for {
               refCnt <- r.refcount.mod(_ - 1)
               _ <- if (refCnt == 0) r.finalizer else IO.ioUnit
             } yield ()
@@ -294,10 +293,8 @@ object IO extends IOInstances {
     io(rw =>
       BindRec[Trampoline]
         .tailrecM[(Tower[IvoryTower], A), (Tower[IvoryTower], B)] {
-          case (nw0, x) =>
-            f(x)(nw0).map {
-              case (nw1, e) =>
-                e.bimap((nw1, _), (nw1, _))
+          case (nw0, x) => f(x)(nw0).map {
+              case (nw1, e) => e.bimap((nw1, _), (nw1, _))
             }
         }((rw, a)))
 

@@ -67,14 +67,10 @@ object CTypeFlags {
       }
 
       t match {
-        case t: CValueType[_] =>
-          flagForCValueType(t)
-        case CNull =>
-          buffer += FNull
-        case CEmptyArray =>
-          buffer += FEmptyArray
-        case CEmptyObject =>
-          buffer += FEmptyObject
+        case t: CValueType[_] => flagForCValueType(t)
+        case CNull            => buffer += FNull
+        case CEmptyArray      => buffer += FEmptyArray
+        case CEmptyObject     => buffer += FEmptyObject
         case CUndefined =>
           sys.error(
             "Unexpected CUndefined type. Undefined segments don't exist!")
@@ -100,8 +96,7 @@ object CTypeFlags {
         case FBigDecimal => Success(CNum)
         case FDate       => Success(CDate)
         case FArray      => readCValueType(buffer.get()) map (CArrayType(_))
-        case flag =>
-          Failure(
+        case flag => Failure(
             new IOException("Unexpected segment type flag: %x" format flag))
       }
 

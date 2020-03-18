@@ -107,8 +107,7 @@ object ConvertImplicitBoundsToImplicitParameter {
             addedClause.parameters.take(addedParametersCount)
           case _ => Seq.empty
         }
-      case _ =>
-        function.effectiveParameterClauses.lastOption match {
+      case _ => function.effectiveParameterClauses.lastOption match {
           case Some(implicitParamClause) if implicitParamClause.isImplicit =>
             // for a constructor, might need to add an empty parameter section before the
             // implicit section.
@@ -117,9 +116,8 @@ object ConvertImplicitBoundsToImplicitParameter {
               .headOption
             var result: Seq[ScParameter] = Seq.empty
             for (c <- extra) {
-              val newClause = ScalaPsiElementFactory.createClauseFromText(
-                c.getText,
-                manager)
+              val newClause = ScalaPsiElementFactory
+                .createClauseFromText(c.getText, manager)
               val addedParametersCount = c.parameters.size
               val addedClause =
                 function.parameterList.addClause(newClause).clauses.last

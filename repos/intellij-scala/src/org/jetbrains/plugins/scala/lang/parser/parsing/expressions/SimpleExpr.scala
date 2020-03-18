@@ -152,8 +152,7 @@ object SimpleExpr extends ParserNode with ScalaTokenTypes {
           val tMarker = marker.precede
           marker.done(ScalaElementTypes.GENERIC_CALL)
           subparse(tMarker)
-        case _ =>
-          marker.drop()
+        case _ => marker.drop()
       }
     }
     subparse(newMarker)

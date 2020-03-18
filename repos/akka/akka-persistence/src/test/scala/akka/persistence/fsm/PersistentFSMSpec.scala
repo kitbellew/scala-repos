@@ -401,8 +401,7 @@ object PersistentFSMSpec {
     when(LookingAround) {
       case Event(AddItem(item), _) ⇒
         goto(Shopping) applying ItemAdded(item) forMax (1 seconds)
-      case Event(GetCurrentCart, data) ⇒
-        stay replying data
+      case Event(GetCurrentCart, data) ⇒ stay replying data
     }
 
     when(Shopping) {
@@ -418,10 +417,8 @@ object PersistentFSMSpec {
         stop applying OrderDiscarded andThen {
           case _ ⇒ reportActor ! ShoppingCardDiscarded
         }
-      case Event(GetCurrentCart, data) ⇒
-        stay replying data
-      case Event(StateTimeout, _) ⇒
-        goto(Inactive) forMax (2 seconds)
+      case Event(GetCurrentCart, data) ⇒ stay replying data
+      case Event(StateTimeout, _) ⇒ goto(Inactive) forMax (2 seconds)
     }
 
     when(Inactive) {
@@ -435,8 +432,7 @@ object PersistentFSMSpec {
 
     when(Paid) {
       case Event(Leave, _) ⇒ stop()
-      case Event(GetCurrentCart, data) ⇒
-        stay replying data
+      case Event(GetCurrentCart, data) ⇒ stay replying data
     }
     //#customer-fsm-body
 

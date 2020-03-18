@@ -127,10 +127,10 @@ case class ScaldingEnv(override val jobName: String, inargs: Array[String])
 
     def getStatePath(ss: Store[_, _]): Option[String] =
       ss match {
-        case store: store.VersionedBatchStore[_, _, _, _] =>
-          Some(store.rootPath)
-        case initstore: store.InitialBatchedStore[_, _] =>
-          getStatePath(initstore.proxy)
+        case store: store.VersionedBatchStore[_, _, _, _] => Some(
+            store.rootPath)
+        case initstore: store.InitialBatchedStore[_, _] => getStatePath(
+            initstore.proxy)
         case _ => None
       }
     // VersionedState needs this

@@ -265,17 +265,14 @@ case class Join(
 
   override def output: Seq[Attribute] = {
     joinType match {
-      case LeftSemi =>
-        left.output
-      case LeftOuter =>
-        left.output ++ right.output.map(_.withNullability(true))
+      case LeftSemi  => left.output
+      case LeftOuter => left.output ++ right.output.map(_.withNullability(true))
       case RightOuter =>
         left.output.map(_.withNullability(true)) ++ right.output
       case FullOuter =>
         left.output.map(_.withNullability(true)) ++ right.output.map(
           _.withNullability(true))
-      case _ =>
-        left.output ++ right.output
+      case _ => left.output ++ right.output
     }
   }
 
@@ -288,16 +285,11 @@ case class Join(
       case LeftSemi if condition.isDefined =>
         left.constraints
           .union(splitConjunctivePredicates(condition.get).toSet)
-      case Inner =>
-        left.constraints.union(right.constraints)
-      case LeftSemi =>
-        left.constraints
-      case LeftOuter =>
-        left.constraints
-      case RightOuter =>
-        right.constraints
-      case FullOuter =>
-        Set.empty[Expression]
+      case Inner      => left.constraints.union(right.constraints)
+      case LeftSemi   => left.constraints
+      case LeftOuter  => left.constraints
+      case RightOuter => right.constraints
+      case FullOuter  => Set.empty[Expression]
     }
   }
 
@@ -591,8 +583,7 @@ case class Pivot(
       case agg :: Nil =>
         pivotValues.map(value =>
           AttributeReference(value.toString, agg.dataType)())
-      case _ =>
-        pivotValues.flatMap { value =>
+      case _ => pivotValues.flatMap { value =>
           aggregates.map(agg =>
             AttributeReference(value + "_" + agg.sql, agg.dataType)())
         }

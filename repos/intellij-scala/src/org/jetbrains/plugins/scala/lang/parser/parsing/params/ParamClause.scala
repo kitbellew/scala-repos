@@ -39,10 +39,8 @@ object ParamClause {
     }
     Params parse builder
     builder.getTokenType match {
-      case ScalaTokenTypes.tRPARENTHESIS =>
-        builder.advanceLexer() //Ate )
-      case _ =>
-        builder error ScalaBundle.message("rparenthesis.expected")
+      case ScalaTokenTypes.tRPARENTHESIS => builder.advanceLexer() //Ate )
+      case _                             => builder error ScalaBundle.message("rparenthesis.expected")
     }
     builder.restoreNewlinesState
     paramMarker.done(ScalaElementTypes.PARAM_CLAUSE)

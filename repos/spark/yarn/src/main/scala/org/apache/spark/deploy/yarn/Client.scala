@@ -266,8 +266,7 @@ private[spark] class Client(
                 "of YARN does not support it")
             appContext.setResource(capability)
         }
-      case None =>
-        appContext.setResource(capability)
+      case None => appContext.setResource(capability)
     }
 
     appContext
@@ -1095,14 +1094,14 @@ private[spark] class Client(
 
       if (lastState != state) {
         state match {
-          case YarnApplicationState.RUNNING =>
-            reportLauncherState(SparkAppHandle.State.RUNNING)
-          case YarnApplicationState.FINISHED =>
-            reportLauncherState(SparkAppHandle.State.FINISHED)
-          case YarnApplicationState.FAILED =>
-            reportLauncherState(SparkAppHandle.State.FAILED)
-          case YarnApplicationState.KILLED =>
-            reportLauncherState(SparkAppHandle.State.KILLED)
+          case YarnApplicationState.RUNNING => reportLauncherState(
+              SparkAppHandle.State.RUNNING)
+          case YarnApplicationState.FINISHED => reportLauncherState(
+              SparkAppHandle.State.FINISHED)
+          case YarnApplicationState.FAILED => reportLauncherState(
+              SparkAppHandle.State.FAILED)
+          case YarnApplicationState.KILLED => reportLauncherState(
+              SparkAppHandle.State.KILLED)
           case _ =>
         }
       }
@@ -1332,8 +1331,7 @@ object Client extends Logging {
         logError(
           "Unable to obtain the default MR Application classpath.",
           f.exception)
-      case s: Success[Seq[String]] =>
-        logDebug(
+      case s: Success[Seq[String]] => logDebug(
           s"Using the default MR application classpath: ${s.get.mkString(",")}")
     }
 
@@ -1527,10 +1525,7 @@ object Client extends Logging {
       try {
         srcHost = InetAddress.getByName(srcHost).getCanonicalHostName()
         dstHost = InetAddress.getByName(dstHost).getCanonicalHostName()
-      } catch {
-        case e: UnknownHostException =>
-          return false
-      }
+      } catch { case e: UnknownHostException => return false }
     }
 
     Objects.equal(srcHost, dstHost) && srcUri.getPort() == dstUri.getPort()

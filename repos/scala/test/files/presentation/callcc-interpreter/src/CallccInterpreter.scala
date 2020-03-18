@@ -64,15 +64,13 @@ object callccInterpreter {
     t match {
       case Var(x) => lookup(x, e)
       case Con(n) => unitM(Num(n))
-      case Add(l, r) =>
-        for {
+      case Add(l, r) => for {
           a <- interp(l, e)
           b <- interp(r, e)
           c <- add(a, b)
         } yield c
       case Lam(x, t) => unitM(Fun(a => interp(t, (x, a) :: e)))
-      case App(f, t) =>
-        for {
+      case App(f, t) => for {
           a <- interp(f, e)
           b <- interp(t, e)
           c <- apply(a, b)

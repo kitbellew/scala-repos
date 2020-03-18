@@ -82,8 +82,7 @@ object ScalaBreakpointMethodFilter {
       exprLines: Range[Integer]): Option[ScalaBreakpointMethodFilter] =
     elem match {
       case null => None
-      case funDef: ScFunctionDefinition =>
-        funDef.body match {
+      case funDef: ScFunctionDefinition => funDef.body match {
           case Some(b: ScBlock)      => from(Some(funDef), b.statements, exprLines)
           case Some(e: ScExpression) => from(Some(funDef), Seq(e), exprLines)
           case _                     => None
@@ -91,8 +90,7 @@ object ScalaBreakpointMethodFilter {
       case pc: ScPrimaryConstructor =>
         val statements = stmtsForTemplate(pc.containingClass)
         from(Some(pc), statements, exprLines)
-      case fake: FakePsiMethod =>
-        fake.navElement match {
+      case fake: FakePsiMethod => fake.navElement match {
           case newTp: ScNewTemplateDefinition =>
             from(Some(fake), newTp +: stmtsForTemplate(newTp), exprLines)
           case _ => None
@@ -126,8 +124,7 @@ object ScalaBreakpointMethodFilter {
     membersAndExprs
       .collect {
         case x @ (_: ScPatternDefinition | _: ScVariableDefinition |
-            _: ScExpression) =>
-          x.asInstanceOf[ScBlockStatement]
+            _: ScExpression) => x.asInstanceOf[ScBlockStatement]
       }
       .sortBy(_.getTextOffset)
   }

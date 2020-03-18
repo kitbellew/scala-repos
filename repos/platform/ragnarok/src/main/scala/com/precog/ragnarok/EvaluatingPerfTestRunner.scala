@@ -112,8 +112,7 @@ trait EvaluatingPerfTestRunner[M[+_], T]
       val instructions = Timing.time("Emitting instructions")(emit(tree))
       val decorated = Timing.time("Decorating tree")(decorate(instructions))
       decorated match {
-        case Left(stackError) =>
-          sys.error("Failed to construct DAG.")
+        case Left(stackError) => sys.error("Failed to construct DAG.")
 
         case Right(dag) =>
           for {

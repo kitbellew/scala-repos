@@ -148,8 +148,7 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
         case Some(block) =>
           blocks(pid) = block
           releaseLock(pieceId)
-        case None =>
-          bm.getRemoteBytes(pieceId) match {
+        case None => bm.getRemoteBytes(pieceId) match {
             case Some(b) =>
               // We found the block from remote executors/driver's BlockManager, so put the block
               // in this executor's BlockManager.

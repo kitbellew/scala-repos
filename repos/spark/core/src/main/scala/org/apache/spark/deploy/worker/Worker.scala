@@ -387,8 +387,9 @@ private[deploy] class Worker(
         workerWebUiUrl))
       .onComplete {
         // This is a very fast action so we can use "ThreadUtils.sameThread"
-        case Success(msg) =>
-          Utils.tryLogNonFatalError { handleRegisterResponse(msg) }
+        case Success(msg) => Utils.tryLogNonFatalError {
+            handleRegisterResponse(msg)
+          }
         case Failure(e) =>
           logError(s"Cannot register with master: ${masterEndpoint.address}", e)
           System.exit(1)
@@ -577,8 +578,7 @@ private[deploy] class Worker(
             execId,
             state,
             message,
-            exitStatus) =>
-        handleExecutorStateChanged(executorStateChanged)
+            exitStatus) => handleExecutorStateChanged(executorStateChanged)
 
       case KillExecutor(masterUrl, appId, execId) =>
         if (masterUrl != activeMasterUrl) {
@@ -590,8 +590,7 @@ private[deploy] class Worker(
             case Some(executor) =>
               logInfo("Asked to kill executor " + fullId)
               executor.kill()
-            case None =>
-              logInfo("Asked to kill unknown executor " + fullId)
+            case None => logInfo("Asked to kill unknown executor " + fullId)
           }
         }
 
@@ -617,10 +616,8 @@ private[deploy] class Worker(
       case KillDriver(driverId) => {
         logInfo(s"Asked to kill driver $driverId")
         drivers.get(driverId) match {
-          case Some(runner) =>
-            runner.kill()
-          case None =>
-            logError(s"Asked to kill unknown driver $driverId")
+          case Some(runner) => runner.kill()
+          case None         => logError(s"Asked to kill unknown driver $driverId")
         }
       }
 
@@ -629,8 +626,7 @@ private[deploy] class Worker(
             state,
             exception) => { handleDriverStateChanged(driverStateChanged) }
 
-      case ReregisterWithMaster =>
-        reregisterWithMaster()
+      case ReregisterWithMaster => reregisterWithMaster()
 
       case ApplicationFinished(id) =>
         finishedApps += id
@@ -639,8 +635,7 @@ private[deploy] class Worker(
 
   override def receiveAndReply(
       context: RpcCallContext): PartialFunction[Any, Unit] = {
-    case RequestWorkerState =>
-      context.reply(WorkerStateResponse(
+    case RequestWorkerState => context.reply(WorkerStateResponse(
         host,
         port,
         workerId,
@@ -742,14 +737,12 @@ private[deploy] class Worker(
       case DriverState.ERROR =>
         logWarning(
           s"Driver $driverId failed with unrecoverable exception: ${exception.get}")
-      case DriverState.FAILED =>
-        logWarning(s"Driver $driverId exited with failure")
-      case DriverState.FINISHED =>
-        logInfo(s"Driver $driverId exited successfully")
-      case DriverState.KILLED =>
-        logInfo(s"Driver $driverId was killed by user")
-      case _ =>
-        logDebug(s"Driver $driverId changed state to $state")
+      case DriverState.FAILED => logWarning(
+          s"Driver $driverId exited with failure")
+      case DriverState.FINISHED => logInfo(
+          s"Driver $driverId exited successfully")
+      case DriverState.KILLED => logInfo(s"Driver $driverId was killed by user")
+      case _                  => logDebug(s"Driver $driverId changed state to $state")
     }
     sendToMaster(driverStateChanged)
     val driver = drivers.remove(driverId).get

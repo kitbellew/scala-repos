@@ -92,8 +92,7 @@ object ColorSelector extends JFXApp {
         val media = buffer.map(_.value.value).sum / buffer.size
         added.last.value <==> synchronizedValue
         buffer.foreach(_.value = media)
-      case Remove(pos, removed) =>
-        removed.last.value unbind synchronizedValue
+      case Remove(pos, removed) => removed.last.value unbind synchronizedValue
       case _ @otherChange =>
         throw new UnsupportedOperationException(
           "Only add and remove defined for the ColorSelector SliderControl sync")

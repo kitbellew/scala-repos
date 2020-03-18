@@ -164,10 +164,8 @@ private[log] class LogCleanerManager(
   def abortAndPauseCleaning(topicAndPartition: TopicAndPartition) {
     inLock(lock) {
       inProgress.get(topicAndPartition) match {
-        case None =>
-          inProgress.put(topicAndPartition, LogCleaningPaused)
-        case Some(state) =>
-          state match {
+        case None => inProgress.put(topicAndPartition, LogCleaningPaused)
+        case Some(state) => state match {
             case LogCleaningInProgress =>
               inProgress.put(topicAndPartition, LogCleaningAborted)
             case s =>
@@ -193,10 +191,8 @@ private[log] class LogCleanerManager(
           throw new IllegalStateException(
             "Compaction for partition %s cannot be resumed since it is not paused."
               .format(topicAndPartition))
-        case Some(state) =>
-          state match {
-            case LogCleaningPaused =>
-              inProgress.remove(topicAndPartition)
+        case Some(state) => state match {
+            case LogCleaningPaused => inProgress.remove(topicAndPartition)
             case s =>
               throw new IllegalStateException(
                 "Compaction for partition %s cannot be resumed since it is in %s state."
@@ -214,9 +210,8 @@ private[log] class LogCleanerManager(
       topicAndPartition: TopicAndPartition,
       expectedState: LogCleaningState): Boolean = {
     inProgress.get(topicAndPartition) match {
-      case None => false
-      case Some(state) =>
-        if (state == expectedState) true else false
+      case None        => false
+      case Some(state) => if (state == expectedState) true else false
     }
   }
 

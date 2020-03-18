@@ -90,9 +90,8 @@ class MainGenericRunner {
               command.arguments)
           case AsJar =>
             JarRunner.runJar(settings, thingToRun, command.arguments)
-          case Error =>
-            Right(false)
-          case _ =>
+          case Error => Right(false)
+          case _     =>
             // We start the repl when no arguments are given.
             Right(new interpreter.ILoop process settings)
         }

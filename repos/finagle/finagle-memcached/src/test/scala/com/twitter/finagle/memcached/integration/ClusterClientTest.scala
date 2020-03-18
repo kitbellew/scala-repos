@@ -81,8 +81,7 @@ class ClusterClientTest
           case Some(server) =>
             testServers :+= server
             pool { zkServerSetCluster.join(server.address) }
-          case None =>
-            fail("could not start TestMemcachedServer")
+          case None => fail("could not start TestMemcachedServer")
         }
       }),
       TimeOut
@@ -619,8 +618,7 @@ class ClusterClientTest
 
     Await.result(myCachePool.ready, TimeOut) // wait until the pool is ready
     myCachePool.snap match {
-      case (cachePool, changes) =>
-        assert(cachePool.size == expectedSize)
+      case (cachePool, changes) => assert(cachePool.size == expectedSize)
     }
     myCachePool
   }

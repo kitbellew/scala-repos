@@ -24,8 +24,7 @@ object Util {
     scalacOptions <++= scalaVersion map CrossVersion.partialVersion map {
       case Some((2, 9)) | Some((2, 8)) =>
         Nil // support 2.9 for some subprojects for the Scala Eclipse IDE
-      case _ =>
-        Seq(
+      case _ => Seq(
           "-feature",
           "-language:implicitConversions",
           "-language:postfixOps",
@@ -113,8 +112,7 @@ object Util {
     def cleanNodes(nodes: Seq[Node]): Seq[Node] =
       nodes flatMap {
         case elem @ Elem(prefix, "dependency", attributes, scope, children @ _*)
-            if excludePomDependency(elem) =>
-          NodeSeq.Empty
+            if excludePomDependency(elem) => NodeSeq.Empty
         case Elem(prefix, "classifier", attributes, scope, children @ _*) =>
           NodeSeq.Empty
         case Elem(prefix, label, attributes, scope, children @ _*) =>

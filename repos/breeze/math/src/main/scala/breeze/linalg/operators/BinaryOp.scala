@@ -77,9 +77,8 @@ trait BinaryRegistry[A, B, Op, +R]
     val firstLevelCached = l1cache.get()
     if (firstLevelCached != null && pair == firstLevelCached._1) {
       firstLevelCached._2 match {
-        case None => bindingMissing(a, b)
-        case some @ Some(m) =>
-          m.asInstanceOf[UImpl2[Op, A, B, R]].apply(a, b)
+        case None           => bindingMissing(a, b)
+        case some @ Some(m) => m.asInstanceOf[UImpl2[Op, A, B, R]].apply(a, b)
       }
     } else { slowPath(a, b, ac, bc, pair) }
 

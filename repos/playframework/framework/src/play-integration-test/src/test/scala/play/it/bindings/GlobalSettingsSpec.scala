@@ -42,8 +42,7 @@ trait GlobalSettingsSpec
     lazy val app: Application = new GuiceApplicationBuilder()
       .configure(additionalSettings)
       .overrides(bind[Router].to(Router.from {
-        case p"/scala" =>
-          Action { request =>
+        case p"/scala" => Action { request =>
             Ok(request.headers.get("X-Foo").getOrElse("null"))
           }
         case p"/java" => JAction(app, JavaAction)

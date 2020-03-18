@@ -510,8 +510,7 @@ abstract class GeneratedRouter extends Router {
                 a12,
                 a13,
                 a14,
-                a15) =>
-            generator(
+                a15) => generator(
               a1,
               a2,
               a3,
@@ -624,8 +623,7 @@ abstract class GeneratedRouter extends Router {
                 a13,
                 a14,
                 a15,
-                a16) =>
-            generator(
+                a16) => generator(
               a1,
               a2,
               a3,
@@ -744,8 +742,7 @@ abstract class GeneratedRouter extends Router {
                 a14,
                 a15,
                 a16,
-                a17) =>
-            generator(
+                a17) => generator(
               a1,
               a2,
               a3,
@@ -871,8 +868,7 @@ abstract class GeneratedRouter extends Router {
                 a15,
                 a16,
                 a17,
-                a18) =>
-            generator(
+                a18) => generator(
               a1,
               a2,
               a3,
@@ -1005,8 +1001,7 @@ abstract class GeneratedRouter extends Router {
                 a16,
                 a17,
                 a18,
-                a19) =>
-            generator(
+                a19) => generator(
               a1,
               a2,
               a3,
@@ -1146,8 +1141,7 @@ abstract class GeneratedRouter extends Router {
                 a17,
                 a18,
                 a19,
-                a20) =>
-            generator(
+                a20) => generator(
               a1,
               a2,
               a3,
@@ -1293,8 +1287,7 @@ abstract class GeneratedRouter extends Router {
                 a18,
                 a19,
                 a20,
-                a21) =>
-            generator(
+                a21) => generator(
               a1,
               a2,
               a3,

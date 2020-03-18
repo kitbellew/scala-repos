@@ -47,8 +47,7 @@ class MyEventsByTagPublisher(
       query()
       deliverBuf()
 
-    case Cancel ⇒
-      context.stop(self)
+    case Cancel ⇒ context.stop(self)
   }
 
   object Select {
@@ -90,10 +89,7 @@ class MyEventsByTagPublisher(
               serialization.deserialize(bytes, classOf[PersistentRepr]).get
             EventEnvelope(offset = id, p.persistenceId, p.sequenceNr, p.payload)
         }
-      } catch {
-        case e: Exception ⇒
-          onErrorThenStop(e)
-      }
+      } catch { case e: Exception ⇒ onErrorThenStop(e) }
     }
 
   final def deliverBuf(): Unit =

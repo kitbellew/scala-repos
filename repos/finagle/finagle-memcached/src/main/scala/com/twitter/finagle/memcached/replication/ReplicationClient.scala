@@ -117,9 +117,8 @@ class BaseReplicationClient(
       clients match {
         case _
             if currentRes.misses.isEmpty &&
-              currentRes.failures.isEmpty =>
-          Future.value(currentRes)
-        case Seq() => Future.value(currentRes)
+              currentRes.failures.isEmpty => Future.value(currentRes)
+        case Seq()                        => Future.value(currentRes)
         case Seq(c, tail @ _*) =>
           val missing = currentRes.misses ++ currentRes.failures.keySet
           c.getResult(missing) flatMap {
@@ -233,8 +232,9 @@ class BaseReplicationClient(
           case (Throw(e), _)     => Throw(e)
         }
         InconsistentReplication(transformed)
-      case FailedReplication(fs) =>
-        FailedReplication(fs map { t => Throw(t.e) })
+      case FailedReplication(fs) => FailedReplication(fs map { t =>
+          Throw(t.e)
+        })
     }
 
   /**
@@ -510,8 +510,7 @@ class SimpleReplicationClient(underlying: BaseReplicationClient)
     op(underlyingClient) flatMap {
       case ConsistentReplication(r) => Future.value(r)
       case InconsistentReplication(resultsSeq)
-          if resultsSeq.forall(_.isReturn) =>
-        Future.value(default)
+          if resultsSeq.forall(_.isReturn) => Future.value(default)
       case _ =>
         Future.exception(SimpleReplicationFailure(
           "One or more underlying replica failed op: " + name))

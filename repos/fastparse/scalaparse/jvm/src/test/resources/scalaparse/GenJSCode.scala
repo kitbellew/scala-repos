@@ -415,8 +415,7 @@ abstract class GenJSCode
           case EmptyTree            => Nil
           case Template(_, _, body) => body.flatMap(gen)
           case dd: DefDef           => genMethod(dd).toList
-          case _ =>
-            abort("Illegal tree in gen of genInterface(): " + tree)
+          case _                    => abort("Illegal tree in gen of genInterface(): " + tree)
         }
       }
       val generatedMethods = gen(cd.impl)
@@ -676,8 +675,7 @@ abstract class GenJSCode
               // Test whether args are trivial forwarders
               assert(args.size == params.size, "Argument count mismatch")
               params.zip(args) forall {
-                case (param, arg) =>
-                  arg.symbol == param
+                case (param, arg) => arg.symbol == param
               }
             } else { false }
 
@@ -719,8 +717,7 @@ abstract class GenJSCode
                 params,
                 body,
                 captureValues.map(transformExpr))(tree.pos)
-            case _ =>
-              super.transform(tree, isStat)
+            case _ => super.transform(tree, isStat)
           }
       }
       val newBody = transformer.transform(
@@ -776,10 +773,7 @@ abstract class GenJSCode
         s1 == s2 || // Shortcut
         s1.name == s2.name &&
         p1.size == p2.size &&
-        (p1 zip p2).forall {
-          case (s1, s2) =>
-            s1.tpe =:= s2.tpe
-        }
+        (p1 zip p2).forall { case (s1, s2) => s1.tpe =:= s2.tpe }
       }
 
       /** Check if the symbol's owner's superclass has a matching member (and
@@ -842,8 +836,7 @@ abstract class GenJSCode
                  * scalac 2.10 bug. We assume no boxing is required. See #1581.
                  */
                 ObjectTpe
-              case symTpe =>
-                symTpe.resultType
+              case symTpe => symTpe.resultType
             }
           }
           val body = ensureBoxed(call, resTpeEnteringPosterasure)
@@ -896,12 +889,10 @@ abstract class GenJSCode
               rhs) =>
           // This method has tail jumps
           withScopedVars((initialThis match {
-            case This(_) =>
-              Seq(
+            case This(_) => Seq(
                 methodTailJumpThisSym := thisDef.symbol,
                 fakeTailJumpParamRepl := (NoSymbol, NoSymbol))
-            case Ident(_) =>
-              Seq(
+            case Ident(_) => Seq(
                 methodTailJumpThisSym := NoSymbol,
                 fakeTailJumpParamRepl := (thisDef.symbol, initialThis.symbol))
           }): _*) {
@@ -923,8 +914,7 @@ abstract class GenJSCode
             }
           }
 
-        case _ =>
-          if (bodyIsStat) genStat(tree) else genExpr(tree)
+        case _ => if (bodyIsStat) genStat(tree) else genExpr(tree)
       }
 
       js.MethodDef(static, methodIdent, jsParams, resultIRType, body)(
@@ -972,8 +962,7 @@ abstract class GenJSCode
       tree match {
 
         /** LabelDefs (for while and do..while loops) */
-        case lblDf: LabelDef =>
-          genLabelDef(lblDf)
+        case lblDf: LabelDef => genLabelDef(lblDf)
 
         /** Local val or var declaration */
         case ValDef(_, name, _, rhs) =>
@@ -1009,14 +998,12 @@ abstract class GenJSCode
             genStatOrExpr(thenp, isStat),
             genStatOrExpr(elsep, isStat))(toIRType(tree.tpe))
 
-        case Return(expr) =>
-          js.Return(toIRType(expr.tpe) match {
+        case Return(expr) => js.Return(toIRType(expr.tpe) match {
             case jstpe.NoType => js.Block(genStat(expr), js.Undefined())
             case _            => genExpr(expr)
           })
 
-        case t: Try =>
-          genTry(t, isStat)
+        case t: Try => genTry(t, isStat)
 
         case Throw(expr) =>
           val ex = genExpr(expr)
@@ -1029,11 +1016,9 @@ abstract class GenJSCode
             } else { ex }
           }
 
-        case app: Apply =>
-          genApply(app, isStat)
+        case app: Apply => genApply(app, isStat)
 
-        case app: ApplyDynamic =>
-          genApplyDynamic(app)
+        case app: ApplyDynamic => genApplyDynamic(app)
 
         case This(qual) =>
           if (tree.symbol == currentClassSym.get) { genThis() }
@@ -1076,38 +1061,25 @@ abstract class GenJSCode
             } else { js.VarRef(encodeLocalSym(sym))(toIRType(sym.tpe)) }
           } else { sys.error("Cannot use package as value: " + tree) }
 
-        case Literal(value) =>
-          value.tag match {
-            case UnitTag =>
-              js.Skip()
-            case BooleanTag =>
-              js.BooleanLiteral(value.booleanValue)
+        case Literal(value) => value.tag match {
+            case UnitTag    => js.Skip()
+            case BooleanTag => js.BooleanLiteral(value.booleanValue)
             case ByteTag | ShortTag | CharTag | IntTag =>
               js.IntLiteral(value.intValue)
-            case LongTag =>
-              js.LongLiteral(value.longValue)
-            case FloatTag =>
-              js.FloatLiteral(value.floatValue)
-            case DoubleTag =>
-              js.DoubleLiteral(value.doubleValue)
-            case StringTag =>
-              js.StringLiteral(value.stringValue)
-            case NullTag =>
-              js.Null()
-            case ClazzTag =>
-              genClassConstant(value.typeValue)
-            case EnumTag =>
-              genStaticMember(value.symbolValue)
+            case LongTag   => js.LongLiteral(value.longValue)
+            case FloatTag  => js.FloatLiteral(value.floatValue)
+            case DoubleTag => js.DoubleLiteral(value.doubleValue)
+            case StringTag => js.StringLiteral(value.stringValue)
+            case NullTag   => js.Null()
+            case ClazzTag  => genClassConstant(value.typeValue)
+            case EnumTag   => genStaticMember(value.symbolValue)
           }
 
-        case tree: Block =>
-          genBlock(tree, isStat)
+        case tree: Block => genBlock(tree, isStat)
 
-        case Typed(Super(_, _), _) =>
-          genThis()
+        case Typed(Super(_, _), _) => genThis()
 
-        case Typed(expr, _) =>
-          genExpr(expr)
+        case Typed(expr, _) => genExpr(expr)
 
         case Assign(lhs, rhs) =>
           val sym = lhs.symbol
@@ -1129,19 +1101,15 @@ abstract class GenJSCode
           js.Assign(genLhs, genExpr(rhs))
 
         /** Array constructor */
-        case av: ArrayValue =>
-          genArrayValue(av)
+        case av: ArrayValue => genArrayValue(av)
 
         /** A Match reaching the backend is supposed to be optimized as a switch */
-        case mtch: Match =>
-          genMatch(mtch, isStat)
+        case mtch: Match => genMatch(mtch, isStat)
 
         /** Anonymous function (only with -Ydelambdafy:method) */
-        case fun: Function =>
-          genAnonFunction(fun)
+        case fun: Function => genAnonFunction(fun)
 
-        case EmptyTree =>
-          js.Skip()
+        case EmptyTree => js.Skip()
 
         case _ =>
           abort(
@@ -1214,8 +1182,7 @@ abstract class GenJSCode
           js.While(js.BooleanLiteral(true), js.Block(bodyStats map genStat))
 
         // while (false) { body }
-        case LabelDef(lname, Nil, Literal(Constant(()))) =>
-          js.Skip()
+        case LabelDef(lname, Nil, Literal(Constant(()))) => js.Skip()
 
         // do { body } while (cond)
         case LabelDef(
@@ -1311,8 +1278,7 @@ abstract class GenJSCode
             caseDef.pat match {
               case Typed(Ident(nme.WILDCARD), tpt) =>
                 isMaybeJavaScriptException(tpt.tpe)
-              case Ident(nme.WILDCARD) =>
-                true
+              case Ident(nme.WILDCARD) => true
               case pat @ Bind(_, _) =>
                 isMaybeJavaScriptException(pat.symbol.tpe)
             }
@@ -1341,18 +1307,15 @@ abstract class GenJSCode
 
             // Extract exception type and variable
             val (tpe, boundVar) = (pat match {
-              case Typed(Ident(nme.WILDCARD), tpt) =>
-                (tpt.tpe, None)
-              case Ident(nme.WILDCARD) =>
-                (ThrowableClass.tpe, None)
+              case Typed(Ident(nme.WILDCARD), tpt) => (tpt.tpe, None)
+              case Ident(nme.WILDCARD)             => (ThrowableClass.tpe, None)
               case Bind(_, _) =>
                 (pat.symbol.tpe, Some(encodeLocalSym(pat.symbol)))
             })
 
             // Generate the body that must be executed if the exception matches
             val bodyWithBoundVar = (boundVar match {
-              case None =>
-                genStatOrExpr(body, isStat)
+              case None => genStatOrExpr(body, isStat)
               case Some(bv) =>
                 val castException = genAsInstanceOf(exceptVar, tpe)
                 js.Block(
@@ -1392,14 +1355,11 @@ abstract class GenJSCode
       val Apply(fun, args) = tree
 
       fun match {
-        case TypeApply(_, _) =>
-          genApplyTypeApply(tree)
+        case TypeApply(_, _) => genApplyTypeApply(tree)
 
-        case Select(Super(_, _), _) =>
-          genSuperCall(tree)
+        case Select(Super(_, _), _) => genSuperCall(tree)
 
-        case Select(New(_), nme.CONSTRUCTOR) =>
-          genApplyNew(tree)
+        case Select(New(_), nme.CONSTRUCTOR) => genApplyNew(tree)
 
         case _ =>
           val sym = fun.symbol
@@ -1524,12 +1484,11 @@ abstract class GenJSCode
       } else if (isRawJSType(tpe)) { genPrimitiveJSNew(tree) }
       else {
         toTypeKind(tpe) match {
-          case arr @ ARRAY(elem) =>
-            genNewArray(arr.toIRType, args map genExpr)
+          case arr @ ARRAY(elem) => genNewArray(arr.toIRType, args map genExpr)
           case rt @ REFERENCE(cls) =>
             genNew(cls, ctor, genActualArgs(ctor, args))
-          case generatedType =>
-            abort(s"Non reference type cannot be instantiated: $generatedType")
+          case generatedType => abort(
+              s"Non reference type cannot be instantiated: $generatedType")
         }
       }
     }
@@ -1938,8 +1897,7 @@ abstract class GenJSCode
       val (defaultBody, defaultLabelSym) = defaultBody0 match {
         case LabelDef(_, Nil, rhs) if hasSynthCaseSymbol(defaultBody0) =>
           (rhs, defaultBody0.symbol)
-        case _ =>
-          (defaultBody0, NoSymbol)
+        case _ => (defaultBody0, NoSymbol)
       }
 
       val genDefaultBody = genStatOrExpr(defaultBody, isStat)
@@ -1956,15 +1914,13 @@ abstract class GenJSCode
             case app @ Apply(_, Nil) if app.symbol == defaultLabelSym =>
               genDefaultBody
             case Block(List(app @ Apply(_, Nil)), _)
-                if app.symbol == defaultLabelSym =>
-              genDefaultBody
+                if app.symbol == defaultLabelSym => genDefaultBody
 
             case If(cond, thenp, elsep) =>
               js.If(genExpr(cond), genBody(thenp), genBody(elsep))(resultType)(
                 body.pos)
 
-            case _ =>
-              genStatOrExpr(body, isStat)
+            case _ => genStatOrExpr(body, isStat)
           }
 
         def genLiteral(lit: Literal): js.Literal =
@@ -1973,8 +1929,7 @@ abstract class GenJSCode
         pat match {
           case lit: Literal =>
             clauses = (List(genLiteral(lit)), genBody(body)) :: clauses
-          case Ident(nme.WILDCARD) =>
-            elseClause = genDefaultBody
+          case Ident(nme.WILDCARD) => elseClause = genDefaultBody
           case Alternative(alts) =>
             val genAlts = {
               alts map {
@@ -2030,13 +1985,11 @@ abstract class GenJSCode
       }
 
       expr match {
-        case expr: LabelDef if isCaseLabelDef(expr) =>
-          translateMatch(expr)
+        case expr: LabelDef if isCaseLabelDef(expr) => translateMatch(expr)
 
         // Sometimes the pattern matcher casts its final result
         case Apply(TypeApply(Select(expr: LabelDef, nme.asInstanceOf_Ob), _), _)
-            if isCaseLabelDef(expr) =>
-          translateMatch(expr)
+            if isCaseLabelDef(expr) => translateMatch(expr)
 
         case _ =>
           assert(
@@ -2095,11 +2048,9 @@ abstract class GenJSCode
             case Block(stats, expr) =>
               js.Block((stats map genStat) :+ genCaseBody(expr))
 
-            case Apply(_, Nil) if tree.symbol == nextCaseSym =>
-              js.Skip()
+            case Apply(_, Nil) if tree.symbol == nextCaseSym => js.Skip()
 
-            case _ =>
-              genStat(tree)
+            case _ => genStat(tree)
           }
         }
 
@@ -2162,10 +2113,8 @@ abstract class GenJSCode
         // Unary operation
         case List(source) =>
           (code match {
-            case POS =>
-              source
-            case NEG =>
-              (resultType: @unchecked) match {
+            case POS => source
+            case NEG => (resultType: @unchecked) match {
                 case jstpe.IntType =>
                   js.BinaryOp(js.BinaryOp.Int_-, js.IntLiteral(0), source)
                 case jstpe.LongType =>
@@ -2178,17 +2127,14 @@ abstract class GenJSCode
                 case jstpe.DoubleType =>
                   js.BinaryOp(js.BinaryOp.Double_-, js.DoubleLiteral(0), source)
               }
-            case NOT =>
-              (resultType: @unchecked) match {
+            case NOT => (resultType: @unchecked) match {
                 case jstpe.IntType =>
                   js.BinaryOp(js.BinaryOp.Int_^, js.IntLiteral(-1), source)
                 case jstpe.LongType =>
                   js.BinaryOp(js.BinaryOp.Long_^, js.LongLiteral(-1), source)
               }
-            case ZNOT =>
-              js.UnaryOp(js.UnaryOp.Boolean_!, source)
-            case _ =>
-              abort("Unknown unary operation code: " + code)
+            case ZNOT => js.UnaryOp(js.UnaryOp.Boolean_!, source)
+            case _    => abort("Unknown unary operation code: " + code)
           })
 
         // Binary operation on Longs
@@ -2222,8 +2168,7 @@ abstract class GenJSCode
             case LE  => js.BinaryOp(Long_<=, ltree, rtree)
             case GT  => js.BinaryOp(Long_>, ltree, rtree)
             case GE  => js.BinaryOp(Long_>=, ltree, rtree)
-            case _ =>
-              abort("Unknown binary operation code: " + code)
+            case _   => abort("Unknown binary operation code: " + code)
           }
 
         // Binary operation
@@ -2298,8 +2243,7 @@ abstract class GenJSCode
 
             case _ =>
               val op = (resultType: @unchecked) match {
-                case jstpe.IntType =>
-                  (code: @switch) match {
+                case jstpe.IntType => (code: @switch) match {
                     case ADD => Int_+
                     case SUB => Int_-
                     case MUL => Int_*
@@ -2312,24 +2256,21 @@ abstract class GenJSCode
                     case LSR => Int_>>>
                     case ASR => Int_>>
                   }
-                case jstpe.FloatType =>
-                  (code: @switch) match {
+                case jstpe.FloatType => (code: @switch) match {
                     case ADD => Float_+
                     case SUB => Float_-
                     case MUL => Float_*
                     case DIV => Float_/
                     case MOD => Float_%
                   }
-                case jstpe.DoubleType =>
-                  (code: @switch) match {
+                case jstpe.DoubleType => (code: @switch) match {
                     case ADD => Double_+
                     case SUB => Double_-
                     case MUL => Double_*
                     case DIV => Double_/
                     case MOD => Double_%
                   }
-                case jstpe.BooleanType =>
-                  (code: @switch) match {
+                case jstpe.BooleanType => (code: @switch) match {
                     case LT  => Num_<
                     case LE  => Num_<=
                     case GT  => Num_>
@@ -2342,8 +2283,7 @@ abstract class GenJSCode
               js.BinaryOp(op, lsrc, rsrc)
           }
 
-        case _ =>
-          abort("Too many arguments for primitive function: " + tree)
+        case _ => abort("Too many arguments for primitive function: " + tree)
       }
     }
 
@@ -2525,10 +2465,8 @@ abstract class GenJSCode
         (code: @switch) match {
           case F2C | D2C | F2B | D2B | F2S | D2S | F2I | D2I =>
             js.UnaryOp(js.UnaryOp.DoubleToInt, source)
-          case L2C | L2B | L2S | L2I =>
-            js.UnaryOp(js.UnaryOp.LongToInt, source)
-          case _ =>
-            source
+          case L2C | L2B | L2S | L2I => js.UnaryOp(js.UnaryOp.LongToInt, source)
+          case _                     => source
         }
 
       (code: @switch) match {
@@ -2553,20 +2491,16 @@ abstract class GenJSCode
             js.IntLiteral(16))
 
         // To Int, need to crop at signed 32-bit
-        case L2I | F2I | D2I =>
-          source2int
+        case L2I | F2I | D2I => source2int
 
         // Any int to Long
-        case C2L | B2L | S2L | I2L =>
-          js.UnaryOp(js.UnaryOp.IntToLong, source)
+        case C2L | B2L | S2L | I2L => js.UnaryOp(js.UnaryOp.IntToLong, source)
 
         // Any double to Long
-        case F2L | D2L =>
-          js.UnaryOp(js.UnaryOp.DoubleToLong, source)
+        case F2L | D2L => js.UnaryOp(js.UnaryOp.DoubleToLong, source)
 
         // Long to Double
-        case L2D =>
-          js.UnaryOp(js.UnaryOp.LongToDouble, source)
+        case L2D => js.UnaryOp(js.UnaryOp.LongToDouble, source)
 
         // Any int, or Double, to Float
         case C2F | B2F | S2F | I2F | D2F =>
@@ -2580,8 +2514,7 @@ abstract class GenJSCode
 
         // Identities and IR upcasts
         case C2C | B2B | S2S | I2I | L2L | F2F | D2D | C2I | C2D | B2S | B2I |
-            B2D | S2I | S2D | I2D | F2D =>
-          source
+            B2D | S2I | S2D | I2D | F2D => source
       }
     }
 
@@ -2643,10 +2576,7 @@ abstract class GenJSCode
           val sParams = s.tpe.params
           !s.isBridge &&
           params.size == sParams.size &&
-          (params zip sParams).forall {
-            case (s1, s2) =>
-              s1.tpe =:= s2.tpe
-          }
+          (params zip sParams).forall { case (s1, s2) => s1.tpe =:= s2.tpe }
         }
 
       val ApplyDynamic(receiver, args) = tree
@@ -2807,16 +2737,14 @@ abstract class GenJSCode
         pos: Position): js.Tree = {
 
       tpeEnteringPosterasure match {
-        case tpe if isPrimitiveValueType(tpe) =>
-          makePrimitiveBox(expr, tpe)
+        case tpe if isPrimitiveValueType(tpe) => makePrimitiveBox(expr, tpe)
 
         case tpe: ErasedValueType =>
           val boxedClass = tpe.valueClazz
           val ctor = boxedClass.primaryConstructor
           genNew(boxedClass, ctor, List(expr))
 
-        case _ =>
-          expr
+        case _ => expr
       }
     }
 
@@ -2829,8 +2757,7 @@ abstract class GenJSCode
         pos: Position): js.Tree = {
 
       tpeEnteringPosterasure match {
-        case tpe if isPrimitiveValueType(tpe) =>
-          makePrimitiveUnbox(expr, tpe)
+        case tpe if isPrimitiveValueType(tpe) => makePrimitiveUnbox(expr, tpe)
 
         case tpe: ErasedValueType =>
           val boxedClass = tpe.valueClazz
@@ -2842,8 +2769,7 @@ abstract class GenJSCode
           if (unboxMethod.tpe.resultType <:< tpe.erasedUnderlying) content
           else fromAny(content, tpe.erasedUnderlying)
 
-        case tpe =>
-          genAsInstanceOf(expr, tpe)
+        case tpe => genAsInstanceOf(expr, tpe)
       }
     }
 
@@ -2862,8 +2788,7 @@ abstract class GenJSCode
           } else {
             expr // box is identity for all non-Char types
           }
-        case _ =>
-          abort(
+        case _ => abort(
             s"makePrimitiveBox requires a primitive type, found $tpe at $pos")
       }
     }
@@ -2881,8 +2806,7 @@ abstract class GenJSCode
               BoxesRunTime_unboxToChar,
               List(expr))
           } else { js.Unbox(expr, kind.primitiveCharCode) }
-        case _ =>
-          abort(
+        case _ => abort(
             s"makePrimitiveUnbox requires a primitive type, found $tpe at $pos")
       }
     }
@@ -2997,8 +2921,7 @@ abstract class GenJSCode
         js.JSArrayConstr(genArgs)
       } else
         (genArgs match {
-          case Nil =>
-            code match {
+          case Nil => code match {
               case GETCLASS => js.GetClass(receiver)
               case ENV_INFO => js.JSEnvInfo()
               case DEBUGGER => js.Debugger()
@@ -3057,22 +2980,18 @@ abstract class GenJSCode
             code match {
 
               /** Convert a scala.FunctionN f to a js.FunctionN. */
-              case F2JS =>
-                arg match {
+              case F2JS => arg match {
                   /* This case will happen every time we have a Scala lambda
                    * in js.FunctionN position. We remove the JS function to
                    * Scala function wrapper, instead of adding a Scala function
                    * to JS function wrapper.
                    */
-                  case JSFunctionToScala(fun, arity) =>
-                    fun
-                  case _ =>
-                    genFunctionToJSFunction(isThisFunction = false)
+                  case JSFunctionToScala(fun, arity) => fun
+                  case _                             => genFunctionToJSFunction(isThisFunction = false)
                 }
 
               /** Convert a scala.FunctionN f to a js.ThisFunction{N-1}. */
-              case F2JSTHIS =>
-                genFunctionToJSFunction(isThisFunction = true)
+              case F2JSTHIS => genFunctionToJSFunction(isThisFunction = true)
 
               case DICT_DEL =>
                 // js.Dictionary.delete(arg)
@@ -3092,8 +3011,7 @@ abstract class GenJSCode
                   List(arg))
             }
 
-          case List(arg1, arg2) =>
-            code match {
+          case List(arg1, arg2) => code match {
               case HASPROP =>
                 // js.Object.hasProperty(arg1, arg2)
                 /* Here we have an issue with evaluation order of arg1 and arg2,
@@ -3177,8 +3095,7 @@ abstract class GenJSCode
               noSpread && (argc == 1 || argc == 2),
               s"@JSBracketAccess methods should have 1 or 2 non-varargs arguments")
             args match {
-              case List(keyArg) =>
-                js.JSBracketSelect(receiver, keyArg)
+              case List(keyArg) => js.JSBracketSelect(receiver, keyArg)
               case List(keyArg, valueArg) =>
                 js.Assign(js.JSBracketSelect(receiver, keyArg), valueArg)
             }
@@ -3191,10 +3108,8 @@ abstract class GenJSCode
       }
 
       boxedResult match {
-        case js.UndefinedParam() | js.Assign(_, _) =>
-          boxedResult
-        case _ if isStat =>
-          boxedResult
+        case js.UndefinedParam() | js.Assign(_, _) => boxedResult
+        case _ if isStat                           => boxedResult
         case _ =>
           fromAny(
             boxedResult,
@@ -3488,12 +3403,10 @@ abstract class GenJSCode
           Some(elems.map(e => ensureBoxed(genExpr(e), elemTpe)))
 
         // foo()
-        case Select(_, _) if handleNil && arg.symbol == NilModule =>
-          Some(Nil)
+        case Select(_, _) if handleNil && arg.symbol == NilModule => Some(Nil)
 
         // foo(argSeq:_*) - cannot be optimized
-        case _ =>
-          None
+        case _ => None
       }
     }
 
@@ -3501,10 +3414,8 @@ abstract class GenJSCode
       def unapply(tree: Tree): Some[Tree] =
         tree match {
           case Apply(TypeApply(asInstanceOf_? @ Select(base, _), _), _)
-              if asInstanceOf_?.symbol == Object_asInstanceOf =>
-            Some(base)
-          case _ =>
-            Some(tree)
+              if asInstanceOf_?.symbol == Object_asInstanceOf => Some(base)
+          case _                                              => Some(tree)
         }
     }
 
@@ -3526,10 +3437,8 @@ abstract class GenJSCode
       def unapply(tree: Apply): Option[Tree] =
         tree match {
           case Apply(wrapArray_?, List(wrapped))
-              if isWrapArray(wrapArray_?.symbol) =>
-            Some(wrapped)
-          case _ =>
-            None
+              if isWrapArray(wrapArray_?.symbol) => Some(wrapped)
+          case _                                 => None
         }
     }
 
@@ -3612,8 +3521,7 @@ abstract class GenJSCode
             try { Some((fun, arityStr.toInt)) }
             catch { case e: NumberFormatException => None }
 
-          case _ =>
-            None
+          case _ => None
         }
     }
 
@@ -3720,8 +3628,7 @@ abstract class GenJSCode
                 fail(s"Found a non-apply method $ddsym in $cd")
               }
             }
-          case _ =>
-            fail(
+          case _ => fail(
               "Illegal tree in gen of genAndRecordAnonFunctionClass(): " + tree)
         }
       }
@@ -3764,10 +3671,7 @@ abstract class GenJSCode
           try {
             genMethodWithInfoBuilder(applyDef).getOrElse(abort(
               s"Oops, $applyDef did not produce a method"))
-          } catch {
-            case e: CancelGenMethodAsJSFunction =>
-              fail(e.getMessage)
-          }
+          } catch { case e: CancelGenMethodAsJSFunction => fail(e.getMessage) }
         }
 
         withScopedVars(currentMethodInfoBuilder := methodInfoBuilder) {

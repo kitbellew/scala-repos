@@ -89,8 +89,7 @@ private[remote] object Remoting {
                 " Make sure at least one transport is configured to be responsible for the address.",
               null)
 
-          case 1 ⇒
-            responsibleTransports.head._2
+          case 1 ⇒ responsibleTransports.head._2
 
           case _ ⇒
             throw new RemoteTransportException(
@@ -417,7 +416,8 @@ private[remote] object EndpointManager {
       if (isWritable(endpoint)) {
         val address = writableToAddress(endpoint)
         addressToWritable.get(address) match {
-          case Some(policy) if policy.isTombstone ⇒ // There is already a tombstone directive, leave it there
+          case Some(policy)
+              if policy.isTombstone ⇒ // There is already a tombstone directive, leave it there
           case _ ⇒ addressToWritable -= address
         }
         writableToAddress -= endpoint
@@ -671,10 +671,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       addressesPromise.failure(cause)
     case ia: InboundAssociation ⇒
       context.system.scheduler.scheduleOnce(10.milliseconds, self, ia)
-    case ManagementCommand(_) ⇒
-      sender() ! ManagementCommandAck(status = false)
-    case StartupFinished ⇒
-      context.become(accepting)
+    case ManagementCommand(_) ⇒ sender() ! ManagementCommandAck(status = false)
+    case StartupFinished ⇒ context.become(accepting)
     case ShutdownAndFlush ⇒
       sender() ! true
       context.stop(self) // Nothing to flush at this point
@@ -705,8 +703,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             endpoint,
             Deadline.now + settings.RetryGateClosedFor)
         case (Some(Pass(endpoint, Some(currentUid), _)), Some(quarantineUid))
-            if currentUid == quarantineUid ⇒
-          context.stop(endpoint)
+            if currentUid == quarantineUid ⇒ context.stop(endpoint)
         case _ ⇒
         // Do nothing, because either:
         // A: we don't know yet the UID of the writer, it will be checked against current quarantine state later
@@ -717,8 +714,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       (endpoints.readOnlyEndpointFor(address), uidToQuarantineOption) match {
         case (Some((endpoint, _)), None) ⇒ context.stop(endpoint)
         case (Some((endpoint, currentUid)), Some(quarantineUid))
-            if currentUid == quarantineUid ⇒
-          context.stop(endpoint)
+            if currentUid == quarantineUid ⇒ context.stop(endpoint)
         case _ ⇒ // nothing to stop
       }
 
@@ -777,8 +773,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         )
 
       endpoints.writableEndpointWithPolicyFor(recipientAddress) match {
-        case Some(Pass(endpoint, _, _)) ⇒
-          endpoint ! s
+        case Some(Pass(endpoint, _, _)) ⇒ endpoint ! s
         case Some(Gated(timeOfRelease)) ⇒
           if (timeOfRelease.isOverdue())
             createAndRegisterWritingEndpoint(refuseUid = None) ! s
@@ -787,8 +782,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
           // timeOfRelease is only used for garbage collection reasons, therefore it is ignored here. We still have
           // the Quarantined tombstone and we know what UID we don't want to accept, so use it.
           createAndRegisterWritingEndpoint(refuseUid = Some(uid)) ! s
-        case None ⇒
-          createAndRegisterWritingEndpoint(refuseUid = None) ! s
+        case None ⇒ createAndRegisterWritingEndpoint(refuseUid = None) ! s
 
       }
 
@@ -807,8 +801,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       handleStashedInbound(sender(), writerIsIdle = false)
     case ReliableDeliverySupervisor.Idle ⇒
       handleStashedInbound(sender(), writerIsIdle = true)
-    case Prune ⇒
-      endpoints.prune()
+    case Prune ⇒ endpoints.prune()
     case ShutdownAndFlush ⇒
       // Shutdown all endpoints and signal to sender() when ready (and whether all endpoints were shut down gracefully)
 

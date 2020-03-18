@@ -72,8 +72,7 @@ private[camel] class ActivationTracker extends Actor with ActorLogging {
       case AwaitActivation(ref) ⇒ sender() ! EndpointActivated(ref)
       case AwaitDeActivation(ref) ⇒ sender() ! EndpointDeActivated(ref)
       //resurrected at restart.
-      case msg @ EndpointActivated(ref) ⇒
-        receive = activated(Nil)
+      case msg @ EndpointActivated(ref) ⇒ receive = activated(Nil)
     }
 
     /**
@@ -86,7 +85,9 @@ private[camel] class ActivationTracker extends Actor with ActorLogging {
         sender() ! EndpointFailedToActivate(ref, cause)
       case AwaitDeActivation(ref) ⇒
         sender() ! EndpointFailedToActivate(ref, cause)
-      case EndpointDeActivated(_) ⇒ // the de-register at termination always sends a de-activated when the cleanup is done. ignoring.
+      case EndpointDeActivated(
+            _
+          ) ⇒ // the de-register at termination always sends a de-activated when the cleanup is done. ignoring.
     }
 
     /**
@@ -98,7 +99,9 @@ private[camel] class ActivationTracker extends Actor with ActorLogging {
       case AwaitActivation(ref) ⇒ sender() ! EndpointActivated(ref)
       case AwaitDeActivation(ref) ⇒
         sender() ! EndpointFailedToDeActivate(ref, cause)
-      case EndpointDeActivated(_) ⇒ // the de-register at termination always sends a de-activated when the cleanup is done. ignoring.
+      case EndpointDeActivated(
+            _
+          ) ⇒ // the de-register at termination always sends a de-activated when the cleanup is done. ignoring.
     }
 
   }

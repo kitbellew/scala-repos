@@ -67,8 +67,7 @@ private[spark] class HiveCatalog(client: HiveClient)
     synchronized {
       try { body }
       catch {
-        case e: NoSuchItemException =>
-          throw new AnalysisException(e.getMessage)
+        case e: NoSuchItemException => throw new AnalysisException(e.getMessage)
         case NonFatal(e) if isClientException(e) =>
           throw new AnalysisException(
             e.getClass.getCanonicalName + ": " + e.getMessage)

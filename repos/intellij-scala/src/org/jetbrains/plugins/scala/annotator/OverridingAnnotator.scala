@@ -43,17 +43,15 @@ trait OverridingAnnotator {
           if method.getContainingClass != null && method.getContainingClass.isInterface =>
         false
       case method: PsiMethod
-          if !method.hasAbstractModifier && !method.isConstructor =>
-        true
+          if !method.hasAbstractModifier && !method.isConstructor => true
       case method: PsiMethod
-          if method.hasModifierProperty(PsiModifier.NATIVE) =>
-        true
-      case _: ScPatternDefinition   => true
-      case _: ScVariableDefinition  => true
-      case _: ScClassParameter      => true
-      case _: ScTypeDefinition      => true
-      case _: ScTypeAliasDefinition => true
-      case _                        => false
+          if method.hasModifierProperty(PsiModifier.NATIVE) => true
+      case _: ScPatternDefinition                           => true
+      case _: ScVariableDefinition                          => true
+      case _: ScClassParameter                              => true
+      case _: ScTypeDefinition                              => true
+      case _: ScTypeAliasDefinition                         => true
+      case _                                                => false
     }
   }
 
@@ -282,8 +280,7 @@ trait OverridingAnnotator {
           }
           for (signature <- superSignatures) {
             signature match {
-              case s: Signature =>
-                s.namedElement match {
+              case s: Signature => s.namedElement match {
                   case rp: ScBindingPattern if rp.isVal => annotVal()
                   case rp: ScBindingPattern if rp.isVar => annotVar()
                   case cp: ScClassParameter if cp.isVal => annotVal()

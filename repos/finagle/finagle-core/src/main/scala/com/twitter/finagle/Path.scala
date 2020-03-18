@@ -148,10 +148,8 @@ object Path {
       var i = 0
       while (i < n) {
         elems(i) match {
-          case Buf.Utf8(s) =>
-            elemss(i) = s
-          case _ =>
-            return None
+          case Buf.Utf8(s) => elemss(i) = s
+          case _           => return None
         }
         i += 1
       }

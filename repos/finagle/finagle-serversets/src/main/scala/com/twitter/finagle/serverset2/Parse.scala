@@ -31,8 +31,8 @@ private[serverset2] object StringObj {
 private[serverset2] object SeqObj {
   def unapply(o: Object): Option[Seq[Object]] =
     o match {
-      case l: java.util.List[_] =>
-        Some(l.asScala.toSeq.asInstanceOf[Seq[Object]])
+      case l: java.util.List[_] => Some(
+          l.asScala.toSeq.asInstanceOf[Seq[Object]])
       case _ => None
     }
 }

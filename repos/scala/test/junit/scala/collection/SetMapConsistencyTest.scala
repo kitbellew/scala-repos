@@ -328,8 +328,7 @@ class SetMapConsistencyTest {
     for (i <- 0 until n) {
       if (!check) {
         val temp = map2 match {
-          case b: BoxImmutableMap[_, _] =>
-            b.m match {
+          case b: BoxImmutableMap[_, _] => b.m match {
               case hx: ci.HashMap.HashTrieMap[_, _] =>
                 val h = hx.asInstanceOf[ci.HashMap.HashTrieMap[A, Int]]
                 Some((h.bitmap.toHexString, h.elems.mkString, h.size))
@@ -381,8 +380,7 @@ class SetMapConsistencyTest {
       val g2 = map2.get(gn2, keys(j))
       if (g1 != g2) {
         val temp = map2 match {
-          case b: BoxImmutableMap[_, _] =>
-            b.m match {
+          case b: BoxImmutableMap[_, _] => b.m match {
               case hx: ci.HashMap.HashTrieMap[_, _] =>
                 val h = hx.asInstanceOf[ci.HashMap.HashTrieMap[A, Int]]
                 val y = (ci.HashMap.empty[A, Int] ++ h)

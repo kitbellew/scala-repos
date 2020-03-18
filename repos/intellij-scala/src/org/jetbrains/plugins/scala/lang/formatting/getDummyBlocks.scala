@@ -276,19 +276,15 @@ object getDummyBlocks {
       val indent = ScalaIndentProcessor.getChildIndent(block, child)
       val childAlignment: Alignment = {
         node.getPsi match {
-          case _: ScParameterClause =>
-            child.getElementType match {
+          case _: ScParameterClause => child.getElementType match {
               case ScalaTokenTypes.tRPARENTHESIS |
-                  ScalaTokenTypes.tLPARENTHESIS =>
-                null
-              case _ => alignment
+                  ScalaTokenTypes.tLPARENTHESIS => null
+              case _                            => alignment
             }
-          case args: ScArgumentExprList =>
-            child.getElementType match {
+          case args: ScArgumentExprList => child.getElementType match {
               case ScalaTokenTypes.tRPARENTHESIS
                   if args.missedLastExpr &&
-                    settings.ALIGN_MULTILINE_PARAMETERS_IN_CALLS =>
-                alignment
+                    settings.ALIGN_MULTILINE_PARAMETERS_IN_CALLS => alignment
               case ScalaTokenTypes.tRPARENTHESIS |
                   ScalaTokenTypes.tLPARENTHESIS =>
                 if (settings.ALIGN_MULTILINE_METHOD_BRACKETS) {
@@ -298,18 +294,15 @@ object getDummyBlocks {
                   alternateAlignment
                 } else null
               case ScalaElementTypes.BLOCK_EXPR
-                  if scalaSettings.DO_NOT_ALIGN_BLOCK_EXPR_PARAMS =>
-                null
+                  if scalaSettings.DO_NOT_ALIGN_BLOCK_EXPR_PARAMS => null
               case _ if settings.ALIGN_MULTILINE_PARAMETERS_IN_CALLS =>
                 alignment
               case _ => null
             }
-          case patt: ScPatternArgumentList =>
-            child.getElementType match {
+          case patt: ScPatternArgumentList => child.getElementType match {
               case ScalaTokenTypes.tRPARENTHESIS
                   if patt.missedLastExpr &&
-                    settings.ALIGN_MULTILINE_PARAMETERS_IN_CALLS =>
-                alignment
+                    settings.ALIGN_MULTILINE_PARAMETERS_IN_CALLS => alignment
               case ScalaTokenTypes.tRPARENTHESIS |
                   ScalaTokenTypes.tLPARENTHESIS =>
                 if (settings.ALIGN_MULTILINE_METHOD_BRACKETS) {
@@ -319,8 +312,7 @@ object getDummyBlocks {
                   alternateAlignment
                 } else null
               case ScalaElementTypes.BLOCK_EXPR
-                  if scalaSettings.DO_NOT_ALIGN_BLOCK_EXPR_PARAMS =>
-                null
+                  if scalaSettings.DO_NOT_ALIGN_BLOCK_EXPR_PARAMS => null
               case _ if settings.ALIGN_MULTILINE_PARAMETERS_IN_CALLS =>
                 alignment
               case _ => null
@@ -339,12 +331,10 @@ object getDummyBlocks {
               case ScalaElementTypes.XML_ATTRIBUTE => alignment
               case _                               => null
             }
-          case _: ScXmlElement =>
-            child.getElementType match {
+          case _: ScXmlElement => child.getElementType match {
               case ScalaElementTypes.XML_START_TAG |
-                  ScalaElementTypes.XML_END_TAG =>
-                alignment
-              case _ => null
+                  ScalaElementTypes.XML_END_TAG => alignment
+              case _                            => null
             }
           case _ => alignment
         }
@@ -556,9 +546,8 @@ object getDummyBlocks {
             return false
           }
           psi match {
-            case _: ScCaseClause =>
-              true
-            case _: PsiComment => false
+            case _: ScCaseClause => true
+            case _: PsiComment   => false
             case _ =>
               breaks += 2
               false
@@ -873,8 +862,7 @@ object getDummyBlocks {
             addSubBlock(lParen, after.head)
             addTail(after.tail)
           }
-        case _ =>
-          addTail(children)
+        case _ => addTail(children)
       }
     addFor(children.filter(isCorrectBlock).toList)
     subBlocks
@@ -965,10 +953,7 @@ object getDummyBlocks {
       .map(_.asInstanceOf[ScInterpolatedStringLiteral])
       .flatMap(literal =>
         alignmentsMap
-          .find {
-            case (pointer, _) =>
-              pointer.getElement == literal
-          }
+          .find { case (pointer, _) => pointer.getElement == literal }
           .map(_._2))
       .getOrElse(Alignment.createAlignment(true))
     val wrap: Wrap = Wrap.createWrap(WrapType.NONE, true)
@@ -1238,35 +1223,28 @@ object getDummyBlocks {
         true
       case _: ScArgumentExprList
           if mySettings.ALIGN_MULTILINE_PARAMETERS_IN_CALLS ||
-            mySettings.ALIGN_MULTILINE_METHOD_BRACKETS =>
-        true
+            mySettings.ALIGN_MULTILINE_METHOD_BRACKETS => true
       case _: ScPatternArgumentList
           if mySettings.ALIGN_MULTILINE_PARAMETERS_IN_CALLS ||
-            mySettings.ALIGN_MULTILINE_METHOD_BRACKETS =>
-        true
+            mySettings.ALIGN_MULTILINE_METHOD_BRACKETS        => true
       case _: ScEnumerators if mySettings.ALIGN_MULTILINE_FOR => true
       case _: ScParenthesisedExpr
-          if mySettings.ALIGN_MULTILINE_PARENTHESIZED_EXPRESSION =>
-        true
+          if mySettings.ALIGN_MULTILINE_PARENTHESIZED_EXPRESSION => true
       case _: ScParenthesisedTypeElement
-          if mySettings.ALIGN_MULTILINE_PARENTHESIZED_EXPRESSION =>
-        true
+          if mySettings.ALIGN_MULTILINE_PARENTHESIZED_EXPRESSION => true
       case _: ScParenthesisedPattern
-          if mySettings.ALIGN_MULTILINE_PARENTHESIZED_EXPRESSION =>
-        true
+          if mySettings.ALIGN_MULTILINE_PARENTHESIZED_EXPRESSION         => true
       case _: ScInfixExpr if mySettings.ALIGN_MULTILINE_BINARY_OPERATION => true
       case _: ScInfixPattern if mySettings.ALIGN_MULTILINE_BINARY_OPERATION =>
         true
       case _: ScInfixTypeElement
-          if mySettings.ALIGN_MULTILINE_BINARY_OPERATION =>
-        true
+          if mySettings.ALIGN_MULTILINE_BINARY_OPERATION => true
       case _: ScCompositePattern if scalaSettings.ALIGN_COMPOSITE_PATTERN =>
         true
 
       case _: ScMethodCall | _: ScReferenceExpression
-          if mySettings.ALIGN_MULTILINE_CHAINED_METHODS =>
-        true
-      case _ => false
+          if mySettings.ALIGN_MULTILINE_CHAINED_METHODS => true
+      case _                                            => false
     }
   }
 

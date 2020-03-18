@@ -290,8 +290,7 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
           sink,
           timeout)
         val addResult: EitherT[Future, String, PrecogUnit] = repeat match {
-          case None =>
-            EitherT.right(executeTask(newTask))
+          case None => EitherT.right(executeTask(newTask))
 
           case Some(_) =>
             storage.addTask(newTask) map { task =>
@@ -325,11 +324,9 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
             Failure("Internal error getting status for task")
         } pipeTo sender
 
-      case AddTasksToQueue(tasks) =>
-        rescheduleTasks(tasks)
+      case AddTasksToQueue(tasks) => rescheduleTasks(tasks)
 
-      case RemoveTaskFromQueue(id) =>
-        removeTask(id)
+      case RemoveTaskFromQueue(id) => removeTask(id)
 
       case WakeForRun =>
         val now = new DateTime

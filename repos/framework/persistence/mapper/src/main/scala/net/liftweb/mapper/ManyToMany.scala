@@ -111,8 +111,7 @@ trait ManyToMany extends BaseKeyedMapper {
               otherFK(newJoin)(_.apply(e))
               newJoin
           }
-        case Some(join) =>
-          join
+        case Some(join) => join
       }
     }
     protected def unown(e: T2) = {
@@ -125,8 +124,7 @@ trait ManyToMany extends BaseKeyedMapper {
             case mfk => mfk set mfk.defaultValue
           }
           Some(join)
-        case None =>
-          None
+        case None => None
       }
     }
 
@@ -175,9 +173,8 @@ trait ManyToMany extends BaseKeyedMapper {
     def remove(n: Int) = {
       val child = childAt(n)
       unown(child) match {
-        case Some(join) =>
-          _joins = joins filterNot join.eq
-        case None =>
+        case Some(join) => _joins = joins filterNot join.eq
+        case None       =>
       }
       child
     }

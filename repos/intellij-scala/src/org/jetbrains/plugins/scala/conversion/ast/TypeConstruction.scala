@@ -66,8 +66,7 @@ object TypeConstruction {
             ScType.extractClass(p).flatMap(el => Option(el.getQualifiedName))))
         val argsOnLevel = args.map(getParts(_, buffer))
         ParametrizedConstruction(typeConstruction, argsOnLevel)
-      case JavaArrayType(arg) =>
-        ArrayConstruction(getParts(arg, buffer))
+      case JavaArrayType(arg) => ArrayConstruction(getParts(arg, buffer))
       case otherType =>
         val typeConstruction: IntermediateNode = TypeConstruction(
           otherType.presentableText)

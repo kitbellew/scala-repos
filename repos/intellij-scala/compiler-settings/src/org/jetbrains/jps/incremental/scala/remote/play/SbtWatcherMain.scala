@@ -64,9 +64,7 @@ object SbtWatcherMain {
                 writer.write(message)
                 writer.flush()
                 writer.close()
-              } catch {
-                case ex: Exception =>
-              }
+              } catch { case ex: Exception => }
             }
           }
           else
@@ -113,8 +111,7 @@ object SbtWatcherMain {
           case _ => run()
         }
       case STOP => currentExec.foreach(a => a._1.endSbtExec())
-      case IS_RUNNING =>
-        write2source(currentExec.map { a =>
+      case IS_RUNNING => write2source(currentExec.map { a =>
           toMessage(a._1.isRunning)
         } getOrElse FALSE)
       case _ =>

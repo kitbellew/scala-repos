@@ -139,23 +139,18 @@ object ClusterSingletonManagerSpec extends MultiNodeConfig {
     }
 
     def receive = {
-      case n: Int if n <= current ⇒
-        context.stop(self)
+      case n: Int if n <= current ⇒ context.stop(self)
       case n: Int ⇒
         current = n
         delegateTo ! n
-      case x @ (RegistrationOk | UnexpectedRegistration) ⇒
-        delegateTo ! x
-      case GetCurrent ⇒
-        sender() ! current
+      case x @ (RegistrationOk | UnexpectedRegistration) ⇒ delegateTo ! x
+      case GetCurrent ⇒ sender() ! current
       //#consumer-end
-      case End ⇒
-        queue ! UnregisterConsumer
+      case End ⇒ queue ! UnregisterConsumer
       case UnregistrationOk ⇒
         stoppedBeforeUnregistration = false
         context stop self
-      case Ping ⇒
-        sender() ! Pong
+      case Ping ⇒ sender() ! Pong
       //#consumer-end
     }
   }

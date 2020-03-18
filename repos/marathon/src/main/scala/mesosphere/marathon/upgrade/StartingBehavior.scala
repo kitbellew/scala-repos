@@ -139,8 +139,8 @@ object StartingBehavior {
 private object StartErrorState {
   def unapply(state: String): Option[String] =
     state match {
-      case "TASK_ERROR" | "TASK_FAILED" | "TASK_KILLED" | "TASK_LOST" =>
-        Some(state)
+      case "TASK_ERROR" | "TASK_FAILED" | "TASK_KILLED" | "TASK_LOST" => Some(
+          state)
       case _ => None
     }
 }

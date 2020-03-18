@@ -328,8 +328,7 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
       EssentialAction { request =>
         try {
           next(request).recover {
-            case t: Throwable =>
-              Results.InternalServerError(t.getMessage)
+            case t: Throwable => Results.InternalServerError(t.getMessage)
           }(play.api.libs.concurrent.Execution.Implicits.defaultContext)
         } catch {
           case t: Throwable =>
@@ -396,20 +395,19 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
   val testRouter = Router.from {
     case GET(p"/")   => Action { request => Results.Ok(expectedOkText) }
     case GET(p"/ok") => Action { request => Results.Ok(expectedOkText) }
-    case POST(p"/ok") =>
-      Action { request => Results.Ok(request.body.asText.getOrElse("")) }
-    case GET(p"/error") =>
-      Action { request => throw new RuntimeException(expectedErrorText) }
-    case POST(p"/error") =>
-      Action { request =>
+    case POST(p"/ok") => Action { request =>
+        Results.Ok(request.body.asText.getOrElse(""))
+      }
+    case GET(p"/error") => Action { request =>
+        throw new RuntimeException(expectedErrorText)
+      }
+    case POST(p"/error") => Action { request =>
         throw new RuntimeException(request.body.asText.getOrElse(""))
       }
-    case GET(p"/error-async") =>
-      Action.async { request =>
+    case GET(p"/error-async") => Action.async { request =>
         Future { throw new RuntimeException(expectedErrorText) }(ec)
       }
-    case POST(p"/error-async") =>
-      Action.async { request =>
+    case POST(p"/error-async") => Action.async { request =>
         Future {
           throw new RuntimeException(request.body.asText.getOrElse(""))
         }(ec)

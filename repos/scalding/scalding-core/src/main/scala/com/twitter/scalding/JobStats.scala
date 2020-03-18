@@ -64,11 +64,9 @@ object JobStats {
   def toCounters(cMap: Any): Try[Map[String, Map[String, Long]]] =
     // This really sucks, but this is what happens when you let Map[String, Any] into your code
     cMap match {
-      case m: Map[_, _] =>
-        Try {
+      case m: Map[_, _] => Try {
           m.foldLeft(Map.empty[String, Map[String, Long]]) {
-            case (acc, (k: String, v: Any)) =>
-              v match {
+            case (acc, (k: String, v: Any)) => v match {
                 case m: Map[_, _] =>
                   acc + (k -> m.foldLeft(Map.empty[String, Long]) {
                     case (acc2, (k: String, v: Long)) => acc2 + (k -> v)

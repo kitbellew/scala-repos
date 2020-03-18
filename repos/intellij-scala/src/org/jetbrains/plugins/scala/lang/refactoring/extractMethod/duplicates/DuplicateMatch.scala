@@ -110,8 +110,7 @@ class DuplicateMatch(
         }
       case (
             intd1: ScInterpolatedStringLiteral,
-            intd2: ScInterpolatedStringLiteral) =>
-        checkChildren(intd1, intd2)
+            intd2: ScInterpolatedStringLiteral) => checkChildren(intd1, intd2)
       case (
             ElementType(ScalaTokenTypes.tINTERPOLATED_STRING),
             ElementType(ScalaTokenTypes.tINTERPOLATED_STRING)) =>

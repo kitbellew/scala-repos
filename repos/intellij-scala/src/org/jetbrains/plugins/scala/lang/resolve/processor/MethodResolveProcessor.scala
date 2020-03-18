@@ -110,8 +110,9 @@ class MethodResolveProcessor(
             isAccessible = accessible,
             isForwardReference = forwardReference,
             unresolvedTypeParameters = unresolvedTypeParameters))
-        case cc: ScClass                      =>
-        case o: ScObject if o.isPackageObject => // do not resolve to package object
+        case cc: ScClass =>
+        case o: ScObject
+            if o.isPackageObject => // do not resolve to package object
         case obj: ScObject
             if ref.getParent.isInstanceOf[ScMethodCall] || ref.getParent
               .isInstanceOf[ScGenericCall] =>
@@ -313,8 +314,7 @@ object MethodResolveProcessor {
           case fun: ScFunction
               if fun.paramClauses.clauses.isEmpty ||
                 fun.paramClauses.clauses.head.parameters.isEmpty ||
-                isUnderscore =>
-            ConformanceExtResult(problems)
+                isUnderscore => ConformanceExtResult(problems)
           case fun: ScFun
               if fun.paramClauses == Seq() || fun.paramClauses == Seq(
                 Seq()) || isUnderscore =>
@@ -413,10 +413,8 @@ object MethodResolveProcessor {
 
     val result = element match {
       //objects
-      case obj: PsiClass =>
-        ConformanceExtResult(problems)
-      case a: ScTypeAlias =>
-        ConformanceExtResult(problems)
+      case obj: PsiClass  => ConformanceExtResult(problems)
+      case a: ScTypeAlias => ConformanceExtResult(problems)
       //Implicit Application
       case f: ScFunction if f.hasMalformedSignature =>
         problems += new MalformedDefinition
@@ -669,21 +667,17 @@ object MethodResolveProcessor {
     //We want to leave only fields and properties from inherited classes, this is important, because
     //field in base class is shadowed by private field from inherited class
     val input: Set[ScalaResolveResult] = _input.filter {
-      case r: ScalaResolveResult =>
-        r.element match {
+      case r: ScalaResolveResult => r.element match {
           case f: ScFunction if f.hasParameterClause => true
-          case b: ScTypedDefinition =>
-            b.nameContext match {
+          case b: ScTypedDefinition => b.nameContext match {
               case m: ScMember =>
                 val clazz1: ScTemplateDefinition = m.containingClass
                 if (clazz1 == null) true
                 else {
                   _input.forall {
-                    case r2: ScalaResolveResult =>
-                      r2.element match {
+                    case r2: ScalaResolveResult => r2.element match {
                         case f: ScFunction if f.hasParameterClause => true
-                        case b2: ScTypedDefinition =>
-                          b2.nameContext match {
+                        case b2: ScTypedDefinition => b2.nameContext match {
                             case m2: ScMember =>
                               val clazz2: ScTemplateDefinition =
                                 m2.containingClass
@@ -691,9 +685,8 @@ object MethodResolveProcessor {
                               else {
                                 if (clazz1 == clazz2) true
                                 else {
-                                  ScalaPsiUtil.cachedDeepIsInheritor(
-                                    clazz1,
-                                    clazz2)
+                                  ScalaPsiUtil
+                                    .cachedDeepIsInheritor(clazz1, clazz2)
                                 }
                               }
                             case _ => true

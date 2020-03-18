@@ -240,8 +240,7 @@ trait Interface extends ast.TreeDSL {
         val toIdents = to.forall(_.isInstanceOf[Ident])
         val containsSym = tree.exists {
           case i @ Ident(_) => from contains i.symbol
-          case tt: TypeTree =>
-            tt.tpe.exists {
+          case tt: TypeTree => tt.tpe.exists {
               case SingleType(_, sym) =>
                 (from contains sym) && {
                   if (!toIdents)

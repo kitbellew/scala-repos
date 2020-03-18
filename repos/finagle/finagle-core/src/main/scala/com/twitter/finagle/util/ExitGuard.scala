@@ -43,10 +43,8 @@ object ExitGuard {
   private[this] def addGuard(guard: Guard) {
     synchronized {
       guards match {
-        case Some((thread, gs)) =>
-          guards = Some((thread, guard :: gs))
-        case None =>
-          guards = Some((startGuardThread(), List(guard)))
+        case Some((thread, gs)) => guards = Some((thread, guard :: gs))
+        case None               => guards = Some((startGuardThread(), List(guard)))
       }
       updateName()
     }

@@ -184,8 +184,7 @@ object TraversablesOrderedBuf {
             }
           }
         """
-          case NoSort =>
-            q"""
+          case NoSort => q"""
         val $len: Int = $element.size
         $inputStream.writePosVarInt($len)
         $element.foreach { case $innerElement =>
@@ -237,8 +236,7 @@ object TraversablesOrderedBuf {
         val travBuilder = freshT("travBuilder")
         val iter = freshT("iter")
         val extractionTree = maybeArray match {
-          case IsArray =>
-            q"""val $travBuilder = new Array[..$innerTypes]($len)
+          case IsArray => q"""val $travBuilder = new Array[..$innerTypes]($len)
             var $iter = 0
             while($iter < $len) {
               $travBuilder($iter) = ${innerBuf.get(inputStream)}

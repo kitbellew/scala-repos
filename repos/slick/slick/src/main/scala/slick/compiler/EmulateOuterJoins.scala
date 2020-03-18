@@ -107,8 +107,9 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
   def nullStructFor(t: Type): Node =
     t.structural match {
       case ProductType(ts) => ProductNode(ts.map(nullStructFor))
-      case StructType(sts) =>
-        StructNode(sts.map { case (s, t) => (s, nullStructFor(t)) })
+      case StructType(sts) => StructNode(sts.map {
+          case (s, t) => (s, nullStructFor(t))
+        })
       case t: OptionType => LiteralNode(t, None)
       case t             => LiteralNode(OptionType(t), None)
     }

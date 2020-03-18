@@ -231,8 +231,7 @@ abstract class BasicDirectives extends BasicDirectivesBase {
         .filter(returnTypeMatches)
         .collectFirst {
           case method @ ParameterTypes(RequestContextClass :: rest)
-              if paramsMatch(rest) ⇒
-            methodInvocator(method, _ +: _)
+              if paramsMatch(rest) ⇒ methodInvocator(method, _ +: _)
           case method @ ParameterTypes(rest) if paramsMatch(rest) ⇒
             methodInvocator(method, IdentityAdaptor)
         }

@@ -70,8 +70,7 @@ object CORSHeaderHandler {
       val delegate = delegateService
       val service = (r: HttpRequest[A]) =>
         r.method match {
-          case HttpMethods.OPTIONS =>
-            Success(
+          case HttpMethods.OPTIONS => Success(
               Promise.successful(HttpResponse(headers = corsHeaders))(executor))
           case _ =>
             delegateService.service(r).map {

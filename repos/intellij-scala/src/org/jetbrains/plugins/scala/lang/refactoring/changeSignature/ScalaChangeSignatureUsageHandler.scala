@@ -203,9 +203,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       case ScalaPsiUtil.inNameContext(pd: ScPatternDefinition) if pd.isSimple =>
         Some(pd.valKeyword)
       case ScalaPsiUtil.inNameContext(vd: ScVariableDefinition)
-          if vd.isSimple =>
-        Some(vd.varKeyword)
-      case _ => return
+          if vd.isSimple => Some(vd.varKeyword)
+      case _             => return
     }
     keywordToChange.foreach { kw =>
       val defKeyword = ScalaPsiElementFactory
@@ -469,8 +468,7 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
           .createIdentifier(newName, scRef.getManager)
           .getPsi
         scRef.nameId.replace(newId)
-      case jRef: PsiReferenceExpression =>
-        jRef.getReferenceNameElement match {
+      case jRef: PsiReferenceExpression => jRef.getReferenceNameElement match {
           case nameId: PsiIdentifier =>
             val factory: PsiElementFactory =
               JavaPsiFacade.getInstance(jRef.getProject).getElementFactory

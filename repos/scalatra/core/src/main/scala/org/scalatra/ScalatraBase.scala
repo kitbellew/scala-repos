@@ -448,22 +448,21 @@ trait ScalatraBase
     * response has been rendered.
     */
   protected def renderPipeline: RenderPipeline = {
-    case 404 =>
-      doNotFound()
+    case 404 => doNotFound()
     case ActionResult(status, x: Int, resultHeaders) =>
       response.status = status
       resultHeaders foreach {
         case (name, value) => response.addHeader(name, value)
       }
       response.writer.print(x.toString)
-    case status: Int =>
-      response.status = ResponseStatus(status)
+    case status: Int => response.status = ResponseStatus(status)
     case bytes: Array[Byte] =>
       if (contentType != null && contentType.startsWith("text"))
         response.setCharacterEncoding(FileCharset(bytes).name)
       response.outputStream.write(bytes)
-    case is: java.io.InputStream =>
-      using(is) { util.io.copy(_, response.outputStream) }
+    case is: java.io.InputStream => using(is) {
+        util.io.copy(_, response.outputStream)
+      }
     case file: File =>
       if (contentType startsWith "text")
         response.setCharacterEncoding(FileCharset(file).name)
@@ -480,8 +479,7 @@ trait ScalatraBase
         case (name, value) => response.addHeader(name, value)
       }
       actionResult.body
-    case x =>
-      response.writer.print(x.toString)
+    case x => response.writer.print(x.toString)
   }
 
   /**

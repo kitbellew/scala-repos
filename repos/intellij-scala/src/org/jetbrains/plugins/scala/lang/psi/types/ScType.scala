@@ -108,8 +108,7 @@ trait ScType {
     recursiveVarianceUpdate(
       (tp: ScType, i: Int) => {
         tp match {
-          case ScAbstractType(_, lower, upper) =>
-            i match {
+          case ScAbstractType(_, lower, upper) => i match {
               case -1 => (true, lower)
               case 1  => (true, upper)
               case 0 =>
@@ -294,8 +293,7 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
         val result = ta.aliasedType(TypingContext.empty)
         if (result.isEmpty) return None
         extractClassType(result.get, project, visitedAlias + ta)
-      case proj @ ScProjectionType(p, elem, _) =>
-        proj.actualElement match {
+      case proj @ ScProjectionType(p, elem, _) => proj.actualElement match {
           case c: PsiClass => Some((c, proj.actualSubst))
           case t: ScTypeAliasDefinition =>
             if (visitedAlias.contains(t)) return None
@@ -342,8 +340,7 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
         extractDesignated(result.get, withoutAliases)
       case ScDesignatorType(e) => Some(e, ScSubstitutor.empty)
       case ScThisType(c)       => Some(c, ScSubstitutor.empty)
-      case proj @ ScProjectionType(p, e, _) =>
-        proj.actualElement match {
+      case proj @ ScProjectionType(p, e, _) => proj.actualElement match {
           case t: ScTypeAliasDefinition if withoutAliases =>
             val result = t.aliasedType(TypingContext.empty)
             if (result.isEmpty) return None
@@ -369,13 +366,11 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
   def isSingletonType(tp: ScType): Boolean =
     tp match {
       case _: ScThisType => true
-      case ScDesignatorType(v) =>
-        v match {
+      case ScDesignatorType(v) => v match {
           case t: ScTypedDefinition => t.isStable
           case _                    => false
         }
-      case ScProjectionType(_, elem, _) =>
-        elem match {
+      case ScProjectionType(_, elem, _) => elem match {
           case t: ScTypedDefinition => t.isStable
           case _                    => false
         }
@@ -384,8 +379,7 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
 
   def extractDesignatorSingletonType(tp: ScType): Option[ScType] =
     tp match {
-      case ScDesignatorType(v) =>
-        v match {
+      case ScDesignatorType(v) => v match {
           case o: ScObject => None
           case p: ScParameter if p.isStable =>
             p.getRealParameterType(TypingContext.empty).toOption
@@ -393,8 +387,7 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
             t.getType(TypingContext.empty).toOption
           case _ => None
         }
-      case proj @ ScProjectionType(_, elem, _) =>
-        elem match {
+      case proj @ ScProjectionType(_, elem, _) => elem match {
           case o: ScObject => None
           case p: ScParameter if p.isStable =>
             p.getRealParameterType(TypingContext.empty)
@@ -411,8 +404,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
   def isStable(t: ScType): Boolean =
     t match {
       case ScThisType(_) => true
-      case ScProjectionType(projected, element: ScObject, _) =>
-        isStable(projected)
+      case ScProjectionType(projected, element: ScObject, _) => isStable(
+          projected)
       case ScProjectionType(projected, element: ScTypedDefinition, _) =>
         isStable(projected) && element.isStable
       case ScDesignatorType(o: ScObject)                        => true
@@ -423,8 +416,7 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
   def projectionOption(tp: ScType): Option[ScType] =
     tp match {
       case ScParameterizedType(des, _) => projectionOption(des)
-      case proj @ ScProjectionType(p, elem, _) =>
-        proj.actualElement match {
+      case proj @ ScProjectionType(p, elem, _) => proj.actualElement match {
           case c: PsiClass => Some(p)
           case t: ScTypeAliasDefinition =>
             projectionOption(proj.actualSubst.subst(
@@ -432,8 +424,7 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
           case t: ScTypeAliasDeclaration => Some(p)
           case _                         => None
         }
-      case ScDesignatorType(t: ScTypeAliasDefinition) =>
-        projectionOption(
+      case ScDesignatorType(t: ScTypeAliasDefinition) => projectionOption(
           t.aliasedType(TypingContext.empty).getOrElse(return None))
       case _ => None
     }
@@ -453,8 +444,7 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
       visited: HashSet[ScType] = HashSet.empty): TypeResult[ScType] = {
     if (visited contains tp) return Success(tp, None)
     tp match {
-      case proj @ ScProjectionType(p, elem, _) =>
-        proj.actualElement match {
+      case proj @ ScProjectionType(p, elem, _) => proj.actualElement match {
           case t: ScTypeAliasDefinition if t.typeParameters.isEmpty =>
             t.aliasedType(TypingContext.empty)
               .flatMap(t =>
@@ -530,13 +520,13 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
   def designator(element: PsiNamedElement): ScType = {
     element match {
       case td: ScClass =>
-        StdType.QualNameToType
-          .getOrElse(td.qualifiedName, new ScDesignatorType(element))
+        StdType.QualNameToType.getOrElse(
+          td.qualifiedName,
+          new ScDesignatorType(element))
       case _ =>
         val clazzOpt = element match {
           case p: ScClassParameter => Option(p.containingClass)
-          case _ =>
-            element.getContext match {
+          case _ => element.getContext match {
               case _: ScTemplateBody | _: ScEarlyDefinitions =>
                 Option(ScalaPsiUtil.contextOfType(
                   element,

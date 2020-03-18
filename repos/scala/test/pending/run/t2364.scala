@@ -45,10 +45,7 @@ object Test {
 
     parser.setContentHandler(fac)
     try { parser.parse(str) }
-    catch {
-      case x: Exception =>
-        x.printStackTrace
-    }
+    catch { case x: Exception => x.printStackTrace }
     fac.rootElem
   }
   def attributes(d: MetaData) = {

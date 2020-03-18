@@ -50,8 +50,7 @@ object Test extends App {
             throw CaughtException(action)
         }
       } catch {
-        case CaughtException(action) =>
-          action match {
+        case CaughtException(action) => action match {
             case ExceptionNormalExit =>
               println(s"normal exit $action")
               action
@@ -61,8 +60,7 @@ object Test extends App {
             case ExceptionUncaughtException =>
               println(s"uncaught exception $action")
               throw UncaughtException(action)
-            case _ =>
-              sys.error(s"unexpected $action in exception handler")
+            case _ => sys.error(s"unexpected $action in exception handler")
           }
       } finally { println(s"finally $action") }
     println(s"normal flow $action")

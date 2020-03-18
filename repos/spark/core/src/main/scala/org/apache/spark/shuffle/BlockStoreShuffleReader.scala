@@ -123,8 +123,7 @@ private[spark] class BlockStoreShuffleReader[K, C](
         CompletionIterator[Product2[K, C], Iterator[Product2[K, C]]](
           sorter.iterator,
           sorter.stop())
-      case None =>
-        aggregatedIter
+      case None => aggregatedIter
     }
   }
 }

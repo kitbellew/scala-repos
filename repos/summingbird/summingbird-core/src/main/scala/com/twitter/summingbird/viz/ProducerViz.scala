@@ -36,8 +36,7 @@ case class ProducerViz[P <: Platform[P]](tail: Producer[P, _]) {
 
     nodeLookupTable.get(node) match {
       case Some(name) => name
-      case None =>
-        nameLookupTable.get(preferredName) match {
+      case None => nameLookupTable.get(preferredName) match {
           case Some(count) => {
             val newNum = count + 1
             val newName = preferredName + "[" + newNum + "]"

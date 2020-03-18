@@ -177,12 +177,9 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv, val maxRetries: Int)
             // access to curRunner and promise must be synchronized
             synchronized { if (curRunner eq runner) promise.complete(result) }
           }
-        case Send(msg) =>
-          curRunner.send(msg)
-        case Stop =>
-          curRunner.stop()
-        case Close =>
-          curRunner.close()
+        case Send(msg) => curRunner.send(msg)
+        case Stop      => curRunner.stop()
+        case Close     => curRunner.close()
       }
 
     private sealed trait LogItem

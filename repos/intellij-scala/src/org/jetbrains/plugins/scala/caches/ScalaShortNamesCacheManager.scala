@@ -79,8 +79,7 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
         count += 1
         psiClass = clazz
         clazz match {
-          case s: ScTypeDefinition =>
-            s.fakeCompanionModule match {
+          case s: ScTypeDefinition => s.fakeCompanionModule match {
               case Some(o) =>
                 buffer += o
                 count += 1
@@ -250,9 +249,8 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
         }
         if (fqn == qualifiedName) {
           psiClass match {
-            case typeDefinition: ScTypeDefinition =>
-              return typeDefinition
-            case _ =>
+            case typeDefinition: ScTypeDefinition => return typeDefinition
+            case _                                =>
           }
         }
       }

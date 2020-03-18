@@ -811,8 +811,7 @@ case class Round(child: Expression, scale: Expression)
     val ce = child.gen(ctx)
 
     val evaluationCode = child.dataType match {
-      case _: DecimalType =>
-        s"""
+      case _: DecimalType => s"""
         if (${ce.value}.changePrecision(${ce.value}.precision(), ${_scale})) {
           ${ev.value} = ${ce.value};
         } else {

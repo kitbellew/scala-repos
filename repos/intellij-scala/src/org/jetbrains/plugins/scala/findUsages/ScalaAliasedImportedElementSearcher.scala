@@ -21,8 +21,7 @@ class ScalaAliasedImportedElementSearcher
       consumer: Processor[PsiReference]) {
     val target: Option[PsiNamedElement] = inReadAction {
       parameters.getElementToSearch match {
-        case named: PsiNamedElement =>
-          ScalaPsiUtil.nameContext(named) match {
+        case named: PsiNamedElement => ScalaPsiUtil.nameContext(named) match {
             case _: PsiNamedElement | _: PsiMember | _: ScTypeAlias =>
               Some(named)
             case _ => None

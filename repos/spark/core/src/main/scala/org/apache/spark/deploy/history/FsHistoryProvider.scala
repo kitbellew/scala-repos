@@ -171,9 +171,7 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
             clock.waitTillTime(deadline)
           }
           startPolling()
-        } catch {
-          case _: InterruptedException =>
-        }
+        } catch { case _: InterruptedException => }
       }
     })
     initThread.setDaemon(true)
@@ -337,8 +335,7 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
             // the replayExecutor.
             task.get()
           } catch {
-            case e: InterruptedException =>
-              throw e
+            case e: InterruptedException => throw e
             case e: Exception =>
               logError("Exception while merging application listings", e)
           }
@@ -628,10 +625,8 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
     */
   private[history] def isFsInSafeMode(): Boolean =
     fs match {
-      case dfs: DistributedFileSystem =>
-        isFsInSafeMode(dfs)
-      case _ =>
-        false
+      case dfs: DistributedFileSystem => isFsInSafeMode(dfs)
+      case _                          => false
     }
 
   // For testing.
@@ -687,8 +682,7 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
       case None =>
         logDebug(s"Application Attempt $appId/$attemptId not found")
         false
-      case Some(latest) =>
-        prevFileSize < latest.fileSize
+      case Some(latest) => prevFileSize < latest.fileSize
     }
   }
 }

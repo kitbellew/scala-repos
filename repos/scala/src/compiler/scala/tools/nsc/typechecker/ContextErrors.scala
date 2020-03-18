@@ -232,8 +232,7 @@ trait ContextErrors {
                 foundDecls,
                 tree.pos)
             }
-          case _ =>
-            found
+          case _ => found
         }
         assert(!foundType.isErroneous && !req.isErroneous, (foundType, req))
 
@@ -290,10 +289,7 @@ trait ContextErrors {
           tparams: List[Symbol]) = {
         val tptSafeString: String =
           try { tpt.tpe.toString() }
-          catch {
-            case _: CyclicReference =>
-              tpt.toString()
-          }
+          catch { case _: CyclicReference => tpt.toString() }
         val msg =
           "wrong number of type arguments for " + tptSafeString + ", should be " + tparams.length
         issueNormalTypeError(tree, msg)
@@ -1510,8 +1506,7 @@ trait ContextErrors {
           case ImplicitAtToplevel =>
             "`implicit' modifier cannot be used for top-level objects"
 
-          case OverrideClass =>
-            "`override' modifier not allowed for classes"
+          case OverrideClass => "`override' modifier not allowed for classes"
 
           case SealedNonClass =>
             "`sealed' modifier can be used only for classes"
@@ -1569,10 +1564,8 @@ trait ContextErrors {
           name: Name,
           kind: DuplicatesErrorKinds.Value) = {
         val msg = kind match {
-          case RenamedTwice =>
-            "is renamed twice"
-          case AppearsTwice =>
-            "appears twice as a target of a renaming"
+          case RenamedTwice => "is renamed twice"
+          case AppearsTwice => "appears twice as a target of a renaming"
         }
 
         issueNormalTypeError(tree, name.decode + " " + msg)

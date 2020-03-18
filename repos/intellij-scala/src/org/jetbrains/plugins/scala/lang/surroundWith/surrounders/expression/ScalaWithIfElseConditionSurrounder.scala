@@ -28,15 +28,13 @@ class ScalaWithIfElseConditionSurrounder extends ScalaExpressionSurrounder {
       case x: ScExpression
           if x
             .getTypeIgnoreBaseType(TypingContext.empty)
-            .getOrAny == psi.types.Boolean =>
-        return true
-      case _ => return false
+            .getOrAny == psi.types.Boolean => return true
+      case _                               => return false
     }
   }
   override def getSurroundSelectionRange(withIfNode: ASTNode): TextRange = {
     val element: PsiElement = withIfNode.getPsi match {
-      case x: ScParenthesisedExpr =>
-        x.expr match {
+      case x: ScParenthesisedExpr => x.expr match {
           case Some(y) => y
           case _       => return x.getTextRange
         }

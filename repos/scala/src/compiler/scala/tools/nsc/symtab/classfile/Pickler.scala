@@ -43,8 +43,7 @@ abstract class Pickler extends SubComponent {
         }
 
         tree match {
-          case PackageDef(_, stats) =>
-            stats foreach pickle
+          case PackageDef(_, stats) => stats foreach pickle
           case ClassDef(_, _, _, _) | ModuleDef(_, _, _) =>
             val sym = tree.symbol
             val pickle = new Pickle(sym)
@@ -224,18 +223,15 @@ abstract class Pickler extends SubComponent {
     private def putType(tp: Type): Unit =
       if (putEntry(tp)) {
         tp match {
-          case NoType | NoPrefix =>
-            ;
-          case ThisType(sym) =>
-            putSymbol(sym)
+          case NoType | NoPrefix => ;
+          case ThisType(sym)     => putSymbol(sym)
           case SingleType(pre, sym) =>
             putType(pre)
             putSymbol(sym)
           case SuperType(thistpe, supertpe) =>
             putType(thistpe)
             putType(supertpe)
-          case ConstantType(value) =>
-            putConstant(value)
+          case ConstantType(value) => putConstant(value)
           case TypeRef(pre, sym, args) =>
             putType(pre)
             putSymbol(sym)
@@ -250,8 +246,7 @@ abstract class Pickler extends SubComponent {
           case MethodType(params, restpe) =>
             putType(restpe)
             putSymbols(params)
-          case NullaryMethodType(restpe) =>
-            putType(restpe)
+          case NullaryMethodType(restpe) => putType(restpe)
           case PolyType(tparams, restpe) =>
             putType(restpe)
             putSymbols(tparams)

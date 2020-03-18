@@ -66,8 +66,7 @@ object BlockContext {
    **/
   def current: BlockContext =
     contextLocal.get match {
-      case null =>
-        Thread.currentThread match {
+      case null => Thread.currentThread match {
           case ctx: BlockContext => ctx
           case _                 => DefaultBlockContext
         }

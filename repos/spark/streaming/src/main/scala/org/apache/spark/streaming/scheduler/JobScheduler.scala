@@ -155,10 +155,7 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
           handleJobCompletion(job, completedTime)
         case ErrorReported(m, e) => handleError(m, e)
       }
-    } catch {
-      case e: Throwable =>
-        reportError("Error in job scheduler", e)
-    }
+    } catch { case e: Throwable => reportError("Error in job scheduler", e) }
   }
 
   private def handleJobStart(job: Job, startTime: Long) {
@@ -193,9 +190,8 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
       listenerBus.post(StreamingListenerBatchCompleted(jobSet.toBatchInfo))
     }
     job.result match {
-      case Failure(e) =>
-        reportError("Error running job " + job, e)
-      case _ =>
+      case Failure(e) => reportError("Error running job " + job, e)
+      case _          =>
     }
   }
 

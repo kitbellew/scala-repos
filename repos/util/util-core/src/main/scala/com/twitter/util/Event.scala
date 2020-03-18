@@ -150,10 +150,8 @@ trait Event[+T] {
         val left = self.respond {
           Function.synchronizeWith(mu) { t =>
             state match {
-              case None =>
-                state = Some(Left(Queue(t)))
-              case Some(Left(q)) =>
-                state = Some(Left(q enqueue t))
+              case None          => state = Some(Left(Queue(t)))
+              case Some(Left(q)) => state = Some(Left(q enqueue t))
               case Some(Right(Queue(u, rest @ _*))) =>
                 if (rest.isEmpty) state = None
                 else state = Some(Right(Queue(rest: _*)))
@@ -165,10 +163,8 @@ trait Event[+T] {
         val right = other.respond {
           Function.synchronizeWith(mu) { u =>
             state match {
-              case None =>
-                state = Some(Right(Queue(u)))
-              case Some(Right(q)) =>
-                state = Some(Right(q enqueue u))
+              case None           => state = Some(Right(Queue(u)))
+              case Some(Right(q)) => state = Some(Right(q enqueue u))
               case Some(Left(Queue(t, rest @ _*))) =>
                 if (rest.isEmpty) state = None
                 else state = Some(Left(Queue(rest: _*)))
@@ -195,8 +191,7 @@ trait Event[+T] {
         val left = self.respond {
           Function.synchronizeWith(mu) { t =>
             state match {
-              case Empty | LeftHalf(_) =>
-                state = LeftHalf(t)
+              case Empty | LeftHalf(_) => state = LeftHalf(t)
               case RightHalf(u) =>
                 state = Full(t, u)
                 s.notify((t, u))
@@ -210,8 +205,7 @@ trait Event[+T] {
         val right = other.respond {
           Function.synchronizeWith(mu) { u =>
             state match {
-              case Empty | RightHalf(_) =>
-                state = RightHalf(u)
+              case Empty | RightHalf(_) => state = RightHalf(u)
               case LeftHalf(t) =>
                 state = Full(t, u)
                 s.notify((t, u))
@@ -281,10 +275,7 @@ trait Event[+T] {
   def toFuture(): Future[T] = {
     val p = new Promise[T]
     val c = register(Witness(p))
-    p.setInterruptHandler {
-      case exc =>
-        p.updateIfEmpty(Throw(exc))
-    }
+    p.setInterruptHandler { case exc => p.updateIfEmpty(Throw(exc)) }
     p.ensure { c.close() }
   }
 

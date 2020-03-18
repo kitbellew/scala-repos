@@ -123,8 +123,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
         generated || sameFile && locationsOfLine(refType, position).size > 0
       } catch {
         case _: NoDataException | _: AbsentInformationException |
-            _: ClassNotPreparedException | _: ObjectCollectedException =>
-          false
+            _: ClassNotPreparedException | _: ObjectCollectedException => false
       }
     }
 
@@ -816,14 +815,12 @@ object ScalaPositionManager {
 
         while (elem != null && elem.getTextOffset <= endLine) {
           elem match {
-            case ChildOf(_: ScUnitExpr) | ChildOf(ScBlock()) =>
-              result += elem
+            case ChildOf(_: ScUnitExpr) | ChildOf(ScBlock()) => result += elem
             case ElementType(t)
                 if ScalaTokenTypes.WHITES_SPACES_AND_COMMENTS_TOKEN_SET
                   .contains(t) ||
                   ScalaTokenTypes.BRACES_TOKEN_SET.contains(t) =>
-            case _ =>
-              result += elem
+            case _                                             => result += elem
           }
           elem = PsiTreeUtil.nextLeaf(elem, true)
         }
@@ -837,14 +834,12 @@ object ScalaPositionManager {
         val anon = parentsOnTheLine.collectFirst {
           case e if isLambda(e) => e
           case newTd: ScNewTemplateDefinition
-              if DebuggerUtil.generatesAnonClass(newTd) =>
-            newTd
+              if DebuggerUtil.generatesAnonClass(newTd) => newTd
         }
         val filteredParents = parentsOnTheLine.reverse.filter {
           case _: ScExpression => true
           case _: ScConstructorPattern | _: ScInfixPattern |
-              _: ScBindingPattern =>
-            true
+              _: ScBindingPattern => true
           case callRefId childOf (
                 (ref: ScReferenceExpression) childOf (_: ScMethodCall)
               )
@@ -925,8 +920,7 @@ object ScalaPositionManager {
       case null => null
       case elem
           if ScalaEvaluatorBuilderUtil.isGenerateClass(elem) || isLambda(
-            elem) =>
-        elem
+            elem)                 => elem
       case InsideMacro(macroCall) => macroCall
       case elem                   => findGeneratingClassOrMethodParent(elem.getParent)
     }
@@ -940,9 +934,8 @@ object ScalaPositionManager {
         case _
             if fun.annotations
               .map(_.constructor.typeElement.getText)
-              .contains(macroImpl) =>
-          Some(fun)
-        case _ => None
+              .contains(macroImpl) => Some(fun)
+        case _                     => None
       }
     }
   }
@@ -959,9 +952,8 @@ object ScalaPositionManager {
     def unapply(elem: PsiElement): Option[ScMethodCall] =
       elem match {
         case InsideMacro(call @ ScMethodCall(ref: ScReferenceExpression, _))
-            if ref.refName == "async" =>
-          Some(call)
-        case _ => None
+            if ref.refName == "async" => Some(call)
+        case _                        => None
       }
   }
 
@@ -1052,8 +1044,7 @@ object ScalaPositionManager {
       elem match {
         case td: ScTypeDefinition => Seq(ScalaNamesUtil.toJavaName(td.name))
         case newTd: ScNewTemplateDefinition
-            if DebuggerUtil.generatesAnonClass(newTd) =>
-          Seq("$anon")
+            if DebuggerUtil.generatesAnonClass(newTd) => Seq("$anon")
         case e if ScalaEvaluatorBuilderUtil.isGenerateClass(e) =>
           partsForAnonfun(e)
         case _ => Seq.empty

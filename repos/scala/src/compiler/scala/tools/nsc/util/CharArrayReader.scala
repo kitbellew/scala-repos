@@ -114,9 +114,8 @@ abstract class CharArrayReader extends CharArrayReaderData {
       case LF =>
         charOffset += 1
         ch = LF
-      case '\\' =>
-        if (lookaheadReader.getu == LF) potentialUnicode()
-      case _ =>
+      case '\\' => if (lookaheadReader.getu == LF) potentialUnicode()
+      case _    =>
     }
 
   /** Handle line ends */

@@ -110,8 +110,7 @@ sealed abstract class Free[S[_], A] {
     this match {
       case Return(a)  => \/-(a)
       case Suspend(t) => -\/(S.map(t)(Return(_)))
-      case b @ Gosub() =>
-        b.a match {
+      case b @ Gosub() => b.a match {
           case Return(a)   => b.f(a).resume
           case Suspend(t)  => -\/(S.map(t)(b.f))
           case c @ Gosub() => c.a.flatMap(z => c.f(z).flatMap(b.f)).resume
@@ -128,8 +127,7 @@ sealed abstract class Free[S[_], A] {
   final def mapFirstSuspension(f: S ~> S): Free[S, A] =
     step match {
       case Suspend(s) => Suspend(f(s))
-      case a @ Gosub() =>
-        a.a match {
+      case a @ Gosub() => a.a match {
           case Suspend(s) => Suspend(f(s)).flatMap(a.f)
           case _          => a.a.mapFirstSuspension(f).flatMap(a.f)
         }
@@ -210,14 +208,10 @@ sealed abstract class Free[S[_], A] {
   @annotation.tailrec
   final def step: Free[S, A] =
     this match {
-      case x @ Gosub() =>
-        x.a match {
-          case b @ Gosub() =>
-            b.a.flatMap(a => b.f(a).flatMap(x.f)).step
-          case Return(b) =>
-            x.f(b).step
-          case _ =>
-            x
+      case x @ Gosub() => x.a match {
+          case b @ Gosub() => b.a.flatMap(a => b.f(a).flatMap(x.f)).step
+          case Return(b)   => x.f(b).step
+          case _           => x
         }
       case x => x
     }
@@ -241,8 +235,7 @@ sealed abstract class Free[S[_], A] {
       _.step match {
         case Return(a)  => M.point(\/-(a))
         case Suspend(t) => M.map(f(t))(\/.right)
-        case b @ Gosub() =>
-          (b.a: @unchecked) match {
+        case b @ Gosub() => (b.a: @unchecked) match {
             case Suspend(t) => M.map(f(t))(a => -\/(b.f(a)))
           }
       }
@@ -362,12 +355,9 @@ sealed abstract class Free[S[_], A] {
 
   def toFreeT: FreeT[S, Id, A] =
     this match {
-      case Return(a) =>
-        FreeT.point(a)
-      case Suspend(a) =>
-        FreeT.liftF(a)
-      case a @ Gosub() =>
-        FreeT.gosub(a.a.toFreeT)(a.f.andThen(_.toFreeT))
+      case Return(a)   => FreeT.point(a)
+      case Suspend(a)  => FreeT.liftF(a)
+      case a @ Gosub() => FreeT.gosub(a.a.toFreeT)(a.f.andThen(_.toFreeT))
     }
 }
 

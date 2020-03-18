@@ -78,8 +78,7 @@ class MultiReaderTest
         def apply(request: Command) = {
           val promise = new Promise[Response]()
           executor match {
-            case Some(exec) =>
-              exec.submit(new Runnable {
+            case Some(exec) => exec.submit(new Runnable {
                 def run() { promise.setValue(interpreter(request)) }
               })
             case None => promise.setValue(interpreter(request))
@@ -190,8 +189,7 @@ class MultiReaderTest
         def apply(request: Command) = {
           val promise = new Promise[Response]()
           executor match {
-            case Some(exec) =>
-              exec.submit(new Runnable {
+            case Some(exec) => exec.submit(new Runnable {
                 def run() { promise.setValue(interpreter(request)) }
               })
             case None => promise.setValue(interpreter(request))
@@ -271,8 +269,7 @@ class MultiReaderTest
 
       assert(messages.size == 0)
       sentMessages.zipWithIndex foreach {
-        case (m, i) =>
-          handles(i % handles.size)._messages ! m
+        case (m, i) => handles(i % handles.size)._messages ! m
       }
 
       assert(messages == sentMessages)

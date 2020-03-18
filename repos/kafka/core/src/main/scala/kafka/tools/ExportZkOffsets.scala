@@ -112,8 +112,8 @@ object ExportZkOffsets extends Logging {
               case Some(offsetVal) =>
                 fileWriter.write(offsetPath + ":" + offsetVal + "\n")
                 debug(offsetPath + " => " + offsetVal)
-              case None =>
-                error("Could not retrieve offset value from " + offsetPath)
+              case None => error(
+                  "Could not retrieve offset value from " + offsetPath)
             }
           }
         }

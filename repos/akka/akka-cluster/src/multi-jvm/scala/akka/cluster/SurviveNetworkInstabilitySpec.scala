@@ -54,8 +54,7 @@ object SurviveNetworkInstabilityMultiJvmSpec extends MultiNodeConfig {
       case Targets(refs) ⇒
         targets = refs
         sender() ! TargetsRegistered
-      case "boom" ⇒
-        targets.foreach(context.watch)
+      case "boom" ⇒ targets.foreach(context.watch)
       case Terminated(_) ⇒
     }
   }

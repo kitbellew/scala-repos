@@ -608,8 +608,8 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         .get()
       fail("Should throw CorruptedRecordException")
     } catch {
-      case e: ExecutionException =>
-        assertTrue(e.getCause.isInstanceOf[InvalidTimestampException])
+      case e: ExecutionException => assertTrue(
+          e.getCause.isInstanceOf[InvalidTimestampException])
     } finally { producer.close() }
 
     // Test compressed messages.
@@ -629,8 +629,8 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         .get()
       fail("Should throw CorruptedRecordException")
     } catch {
-      case e: ExecutionException =>
-        assertTrue(e.getCause.isInstanceOf[InvalidTimestampException])
+      case e: ExecutionException => assertTrue(
+          e.getCause.isInstanceOf[InvalidTimestampException])
     } finally { compressedProducer.close() }
   }
 

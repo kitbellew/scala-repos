@@ -62,8 +62,7 @@ class EdgeCaseRequestTest extends KafkaServerTestHarness {
       case Some(id) =>
         outgoing.writeInt(request.length + 2)
         outgoing.writeShort(id)
-      case None =>
-        outgoing.writeInt(request.length)
+      case None => outgoing.writeInt(request.length)
     }
     outgoing.write(request)
     outgoing.flush()

@@ -127,8 +127,7 @@ class HealthCheckActor(
     case GetTaskHealth(taskId) =>
       sender() ! taskHealth.getOrElse(taskId, Health(taskId))
 
-    case GetAppHealth =>
-      sender() ! AppHealth(taskHealth.values.toSeq)
+    case GetAppHealth => sender() ! AppHealth(taskHealth.values.toSeq)
 
     case Tick =>
       purgeStatusOfDoneTasks()
@@ -145,8 +144,7 @@ class HealthCheckActor(
       val health = taskHealth.getOrElse(taskId, Health(taskId))
 
       val newHealth = result match {
-        case Healthy(_, _, _) =>
-          health.update(result)
+        case Healthy(_, _, _) => health.update(result)
         case Unhealthy(_, _, _, _) =>
           taskTracker.tasksByAppSync.task(taskId) match {
             case Some(task) =>

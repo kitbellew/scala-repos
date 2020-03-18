@@ -107,8 +107,7 @@ private[streaming] class DStreamCheckpointData[T: ClassTag](dstream: DStream[T])
                 fileSystem = null
             }
         }
-      case None =>
-        logDebug("Nothing to delete")
+      case None => logDebug("Nothing to delete")
     }
   }
 

@@ -100,8 +100,7 @@ class DontLeakActorsOnFailingConnectionSpecs
         println(s"$id: OK: (${httpRes.status.intValue}")
         httpRes.entity.dataBytes.runWith(Sink.ignore)
 
-      case Failure(ex) ⇒
-        println(s"$id: FAIL: $ex")
+      case Failure(ex) ⇒ println(s"$id: FAIL: $ex")
     }
   }
 

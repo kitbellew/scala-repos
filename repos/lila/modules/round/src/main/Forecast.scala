@@ -18,8 +18,7 @@ case class Forecast(
         steps = steps.collect {
           case (fst :: snd :: rest)
               if rest.nonEmpty && g.turns == fst.ply && fst.is(lastMove) && snd
-                .is(move) =>
-            rest
+                .is(move) => rest
         },
         date = DateTime.now) -> move
     }

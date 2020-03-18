@@ -94,8 +94,7 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
               new TextRange(offset, offset)
             ) //adding dummy range for recursion
         }
-      case x: ScMethodCall =>
-        x.getEffectiveInvokedExpr match {
+      case x: ScMethodCall => x.getEffectiveInvokedExpr match {
           case ref: ScReferenceElement =>
             return select(ref, editorText, cursorOffset, editor)
           case _ =>

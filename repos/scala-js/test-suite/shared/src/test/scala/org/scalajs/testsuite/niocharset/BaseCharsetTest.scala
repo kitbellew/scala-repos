@@ -58,16 +58,14 @@ class BaseCharsetTest(val charset: Charset) {
             try buf.get(bufArray)
             finally buf.reset()
             expectedChars ++= bufArray
-          case Malformed(len) =>
-            malformedAction match {
+          case Malformed(len) => malformedAction match {
               case CodingErrorAction.IGNORE =>
               case CodingErrorAction.REPLACE =>
                 expectedChars ++= decoder.replacement()
               case CodingErrorAction.REPORT =>
                 throw new MalformedInputException(len)
             }
-          case Unmappable(len) =>
-            unmappableAction match {
+          case Unmappable(len) => unmappableAction match {
               case CodingErrorAction.IGNORE =>
               case CodingErrorAction.REPLACE =>
                 expectedChars ++= decoder.replacement()
@@ -143,16 +141,14 @@ class BaseCharsetTest(val charset: Charset) {
             try buf.get(bufArray)
             finally buf.reset()
             expectedBytes ++= bufArray
-          case Malformed(len) =>
-            malformedAction match {
+          case Malformed(len) => malformedAction match {
               case CodingErrorAction.IGNORE =>
               case CodingErrorAction.REPLACE =>
                 expectedBytes ++= encoder.replacement()
               case CodingErrorAction.REPORT =>
                 throw new MalformedInputException(len)
             }
-          case Unmappable(len) =>
-            unmappableAction match {
+          case Unmappable(len) => unmappableAction match {
               case CodingErrorAction.IGNORE =>
               case CodingErrorAction.REPLACE =>
                 expectedBytes ++= encoder.replacement()

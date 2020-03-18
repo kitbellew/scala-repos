@@ -17,8 +17,6 @@ trait NameAfterRename {
 object Test {
   def main(args: Array[String]) {
     NameAfterRename()
-    1 match {
-      case NameAfterRename(i) =>
-    }
+    1 match { case NameAfterRename(i) => }
   }
 }

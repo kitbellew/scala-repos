@@ -576,31 +576,27 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
       dig2: AFinger,
       m2: => NodeTree): NodeTree =
     dig1 match {
-      case One(_, a) =>
-        dig2 match {
+      case One(_, a) => dig2 match {
           case One(_, b)           => m1.add1(node2(a, b), m2)
           case Two(_, b, c)        => m1.add1(node3(a, b, c), m2)
           case Three(_, b, c, d)   => m1.add2(node2(a, b), node2(c, d), m2)
           case Four(_, b, c, d, e) => m1.add2(node3(a, b, c), node2(d, e), m2)
         }
-      case Two(_, a, b) =>
-        dig2 match {
+      case Two(_, a, b) => dig2 match {
           case One(_, c)         => m1.add1(node3(a, b, c), m2)
           case Two(_, c, d)      => m1.add2(node2(a, b), node2(c, d), m2)
           case Three(_, c, d, e) => m1.add2(node3(a, b, c), node2(d, e), m2)
           case Four(_, c, d, e, f) =>
             m1.add2(node3(a, b, c), node3(d, e, f), m2)
         }
-      case Three(_, a, b, c) =>
-        dig2 match {
+      case Three(_, a, b, c) => dig2 match {
           case One(_, d)         => m1.add2(node2(a, b), node2(c, d), m2)
           case Two(_, d, e)      => m1.add2(node3(a, b, c), node2(d, e), m2)
           case Three(_, d, e, f) => m1.add2(node3(a, b, c), node3(d, e, f), m2)
           case Four(_, d, e, f, g) =>
             m1.add3(node3(a, b, c), node2(d, e), node2(f, g), m2)
         }
-      case Four(_, a, b, c, d) =>
-        dig2 match {
+      case Four(_, a, b, c, d) => dig2 match {
           case One(_, e)    => m1.add2(node3(a, b, c), node2(d, e), m2)
           case Two(_, e, f) => m1.add2(node3(a, b, c), node3(d, e, f), m2)
           case Three(_, e, f, g) =>
@@ -619,24 +615,21 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
     lazy val x = xt
     lazy val m2 = m2t
     d1 match {
-      case One(_, a) =>
-        d2 match {
+      case One(_, a) => d2 match {
           case One(_, b)         => m1.add1(node3(a, x, b), m2)
           case Two(_, b, c)      => m1.add2(node2(a, x), node2(b, c), m2)
           case Three(_, b, c, d) => m1.add2(node3(a, x, b), node2(c, d), m2)
           case Four(_, b, c, d, e) =>
             m1.add2(node3(a, x, b), node3(c, d, e), m2)
         }
-      case Two(_, a, b) =>
-        d2 match {
+      case Two(_, a, b) => d2 match {
           case One(_, c)         => m1.add2(node2(a, b), node2(x, c), m2)
           case Two(_, c, d)      => m1.add2(node3(a, b, x), node2(c, d), m2)
           case Three(_, c, d, e) => m1.add2(node3(a, b, x), node3(c, d, e), m2)
           case Four(_, c, d, e, f) =>
             m1.add3(node3(a, b, x), node2(c, d), node2(e, f), m2)
         }
-      case Three(_, a, b, c) =>
-        d2 match {
+      case Three(_, a, b, c) => d2 match {
           case One(_, d)    => m1.add2(node3(a, b, c), node2(x, d), m2)
           case Two(_, d, e) => m1.add2(node3(a, b, c), node3(x, d, e), m2)
           case Three(_, d, e, f) =>
@@ -644,8 +637,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
           case Four(_, d, e, f, g) =>
             m1.add3(node3(a, b, c), node3(x, d, e), node2(f, g), m2)
         }
-      case Four(_, a, b, c, d) =>
-        d2 match {
+      case Four(_, a, b, c, d) => d2 match {
           case One(_, e) => m1.add2(node3(a, b, c), node3(d, x, e), m2)
           case Two(_, e, f) =>
             m1.add3(node3(a, b, c), node2(d, x), node2(e, f), m2)
@@ -668,16 +660,14 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
     lazy val y = yt
     lazy val m2 = m2t
     d1 match {
-      case One(_, a) =>
-        d2 match {
+      case One(_, a) => d2 match {
           case One(_, b)         => m1.add2(node2(a, x), node2(y, b), m2)
           case Two(_, b, c)      => m1.add2(node3(a, x, y), node2(b, c), m2)
           case Three(_, b, c, d) => m1.add2(node3(a, x, y), node3(b, c, d), m2)
           case Four(_, b, c, d, e) =>
             m1.add3(node3(a, x, y), node2(b, c), node2(d, e), m2)
         }
-      case Two(_, a, b) =>
-        d2 match {
+      case Two(_, a, b) => d2 match {
           case One(_, c)    => m1.add2(node3(a, b, x), node2(y, c), m2)
           case Two(_, c, d) => m1.add2(node3(a, b, x), node3(y, c, d), m2)
           case Three(_, c, d, e) =>
@@ -685,8 +675,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
           case Four(_, c, d, e, f) =>
             m1.add3(node3(a, b, x), node3(y, c, d), node2(e, f), m2)
         }
-      case Three(_, a, b, c) =>
-        d2 match {
+      case Three(_, a, b, c) => d2 match {
           case One(_, d) => m1.add2(node3(a, b, c), node3(x, y, d), m2)
           case Two(_, d, e) =>
             m1.add3(node3(a, b, c), node2(x, y), node2(d, e), m2)
@@ -695,8 +684,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
           case Four(_, d, e, f, g) =>
             m1.add3(node3(a, b, c), node3(x, y, d), node3(e, f, g), m2)
         }
-      case Four(_, a, b, c, d) =>
-        d2 match {
+      case Four(_, a, b, c, d) => d2 match {
           case One(_, e) =>
             m1.add3(node3(a, b, c), node2(d, x), node2(y, e), m2)
           case Two(_, e, f) =>
@@ -727,8 +715,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
     lazy val z = zt
     lazy val m2 = m2t
     d1 match {
-      case One(_, a) =>
-        d2 match {
+      case One(_, a) => d2 match {
           case One(_, b)    => m1.add2(node3(a, x, y), node2(z, b), m2)
           case Two(_, b, c) => m1.add2(node3(a, x, y), node3(z, b, c), m2)
           case Three(_, b, c, d) =>
@@ -736,8 +723,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
           case Four(_, b, c, d, e) =>
             m1.add3(node3(a, x, y), node3(z, b, c), node2(d, e), m2)
         }
-      case Two(_, a, b) =>
-        d2 match {
+      case Two(_, a, b) => d2 match {
           case One(_, c) => m1.add2(node3(a, b, x), node3(y, z, c), m2)
           case Two(_, c, d) =>
             m1.add3(node3(a, b, x), node2(y, z), node2(c, d), m2)
@@ -746,8 +732,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
           case Four(_, c, d, e, f) =>
             m1.add3(node3(a, b, x), node3(y, z, c), node3(d, e, f), m2)
         }
-      case Three(_, a, b, c) =>
-        d2 match {
+      case Three(_, a, b, c) => d2 match {
           case One(_, d) =>
             m1.add3(node3(a, b, c), node2(x, y), node2(z, d), m2)
           case Two(_, d, e) =>
@@ -762,8 +747,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
               node2(f, g),
               m2)
         }
-      case Four(_, a, b, c, d) =>
-        d2 match {
+      case Four(_, a, b, c, d) => d2 match {
           case One(_, e) =>
             m1.add3(node3(a, b, c), node3(d, x, y), node2(z, e), m2)
           case Two(_, e, f) =>
@@ -801,8 +785,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
     lazy val w = wt
     lazy val m2 = m2t
     d1 match {
-      case One(_, a) =>
-        d2 match {
+      case One(_, a) => d2 match {
           case One(_, b) => m1.add2(node3(a, x, y), node3(z, w, b), m2)
           case Two(_, b, c) =>
             m1.add3(node3(a, x, y), node2(z, w), node2(b, c), m2)
@@ -811,8 +794,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
           case Four(_, b, c, d, e) =>
             m1.add3(node3(a, x, y), node3(z, w, b), node3(c, d, e), m2)
         }
-      case Two(_, a, b) =>
-        d2 match {
+      case Two(_, a, b) => d2 match {
           case One(_, c) =>
             m1.add3(node3(a, b, x), node2(y, z), node2(w, c), m2)
           case Two(_, c, d) =>
@@ -827,8 +809,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
               node2(e, f),
               m2)
         }
-      case Three(_, a, b, c) =>
-        d2 match {
+      case Three(_, a, b, c) => d2 match {
           case One(_, d) =>
             m1.add3(node3(a, b, c), node3(x, y, z), node2(w, d), m2)
           case Two(_, d, e) =>
@@ -848,8 +829,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
               node2(f, g),
               m2)
         }
-      case Four(_, a, b, c, d) =>
-        d2 match {
+      case Four(_, a, b, c, d) => d2 match {
           case One(_, e) =>
             m1.add3(node3(a, b, c), node3(d, x, y), node3(z, w, e), m2)
           case Two(_, e, f) =>

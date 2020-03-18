@@ -358,16 +358,13 @@ private[tree] sealed class TreeEnsembleModel(
     */
   def predict(features: Vector): Double = {
     (algo, combiningStrategy) match {
-      case (Regression, Sum) =>
-        predictBySumming(features)
-      case (Regression, Average) =>
-        predictBySumming(features) / sumWeights
+      case (Regression, Sum)     => predictBySumming(features)
+      case (Regression, Average) => predictBySumming(features) / sumWeights
       case (Classification, Sum) => // binary classification
         val prediction = predictBySumming(features)
         // TODO: predicted labels are +1 or -1 for GBT. Need a better way to store this info.
         if (prediction > 0.0) 1.0 else 0.0
-      case (Classification, Vote) =>
-        predictByVoting(features)
+      case (Classification, Vote) => predictByVoting(features)
       case _ =>
         throw new IllegalArgumentException(
           "TreeEnsembleModel given unsupported (algo, combiningStrategy) combination: " +
@@ -398,8 +395,7 @@ private[tree] sealed class TreeEnsembleModel(
     algo match {
       case Classification =>
         s"TreeEnsembleModel classifier with $numTrees trees\n"
-      case Regression =>
-        s"TreeEnsembleModel regressor with $numTrees trees\n"
+      case Regression => s"TreeEnsembleModel regressor with $numTrees trees\n"
       case _ =>
         throw new IllegalArgumentException(
           s"TreeEnsembleModel given unknown algo parameter: $algo.")

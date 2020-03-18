@@ -65,8 +65,7 @@ trait DefaultActorPool extends ActorPool {
 
   protected def _route(): Receive = {
     // for testing...
-    case Stat =>
-      self reply_? Stats(_delegates length)
+    case Stat => self reply_? Stats(_delegates length)
     case max: MaximumNumberOfRestartsWithinTimeRangeReached =>
       _delegates = _delegates filterNot { _.uuid == max.victim.uuid }
     case msg =>

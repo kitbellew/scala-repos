@@ -58,9 +58,8 @@ trait ScalaUnusedImportPassBase {
             Some(e.wildcardElement.get)
           case ImportWildcardSelectorUsed(e)
               if !PsiTreeUtil.hasErrorElements(e) && !isLanguageFeatureImport(
-                imp) =>
-            Some(e.getParent)
-          case _ => None
+                imp) => Some(e.getParent)
+          case _     => None
         }
 
         val qName = imp.qualName
@@ -73,8 +72,7 @@ trait ScalaUnusedImportPassBase {
               if qName.exists(qName =>
                 ScalaCodeStyleSettings
                   .getInstance(file.getProject)
-                  .isAlwaysUsedImport(qName)) =>
-            Seq.empty
+                  .isAlwaysUsedImport(qName)) => Seq.empty
           case Some(psi) =>
             val annotation = annotationHolder.createWarningAnnotation(
               psi,

@@ -337,8 +337,7 @@ object FunctionRegistry {
         // Otherwise, find an ctor method that matches the number of arguments, and use that.
         val params = Seq.fill(expressions.size)(classOf[Expression])
         val f = Try(tag.runtimeClass.getDeclaredConstructor(params: _*)) match {
-          case Success(e) =>
-            e
+          case Success(e) => e
           case Failure(e) =>
             throw new AnalysisException(
               s"Invalid number of arguments for function $name")

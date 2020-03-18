@@ -69,8 +69,7 @@ class CompileServerManager(project: Project) extends ProjectComponent {
       case (true, false) =>
         bar.addWidget(Widget, "before Position", project)
         installed = true
-      case (false, true) =>
-        removeWidget()
+      case (false, true)  => removeWidget()
       case (false, false) => // do nothing
     }
   }

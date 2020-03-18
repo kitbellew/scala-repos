@@ -148,23 +148,16 @@ trait Solving extends Logic {
 
         def convert(p: Prop): Option[Lit] = {
           p match {
-            case And(fv) =>
-              Some(and(fv.flatMap(convert)))
-            case Or(fv) =>
-              Some(or(fv.flatMap(convert)))
-            case Not(a) =>
-              convert(a).map(not)
-            case sym: Sym =>
-              Some(convertSym(sym))
-            case True =>
-              Some(constTrue)
-            case False =>
-              Some(constFalse)
+            case And(fv)  => Some(and(fv.flatMap(convert)))
+            case Or(fv)   => Some(or(fv.flatMap(convert)))
+            case Not(a)   => convert(a).map(not)
+            case sym: Sym => Some(convertSym(sym))
+            case True     => Some(constTrue)
+            case False    => Some(constFalse)
             case AtMostOne(ops) =>
               atMostOne(ops)
               None
-            case _: Eq =>
-              throw new MatchError(p)
+            case _: Eq => throw new MatchError(p)
           }
         }
 
@@ -244,9 +237,8 @@ trait Solving extends Logic {
                 /\(-convertSym(xn), -snMinus)
               } else {
                 ops.map(convertSym).combinations(2).foreach {
-                  case a :: b :: Nil =>
-                    addClauseProcessed(clause(-a, -b))
-                  case _ =>
+                  case a :: b :: Nil => addClauseProcessed(clause(-a, -b))
+                  case _             =>
                 }
               }
           }
@@ -275,10 +267,8 @@ trait Solving extends Logic {
           f match {
             case Or(fv) =>
               val cl = fv.foldLeft(Option(clause())) {
-                case (Some(clause), ToLiteral(lit)) =>
-                  Some(clause + lit)
-                case (_, _) =>
-                  None
+                case (Some(clause), ToLiteral(lit)) => Some(clause + lit)
+                case (_, _)                         => None
               }
               cl.map(Array(_))
             case True => Some(Array()) // empty, no clauses needed
@@ -295,14 +285,13 @@ trait Solving extends Logic {
       object ToCnf {
         def unapply(f: Prop): Option[Solvable] =
           f match {
-            case ToDisjunction(clauses) =>
-              Some(Solvable(clauses, symbolMapping))
+            case ToDisjunction(clauses) => Some(
+                Solvable(clauses, symbolMapping))
             case And(fv) =>
               val clauses = fv.foldLeft(Option(mutable.ArrayBuffer[Clause]())) {
                 case (Some(cnf), ToDisjunction(clauses)) =>
                   Some(cnf ++= clauses)
-                case (_, _) =>
-                  None
+                case (_, _) => None
               }
               clauses.map(c => Solvable(c.toArray, symbolMapping))
             case _ => None
@@ -342,8 +331,7 @@ trait Solving extends Logic {
             // this is needed because t6942 would generate too many clauses with Tseitin
             // already in CNF, just add clauses
             solvable
-          case p =>
-            cnfTransformer.apply(p)
+          case p => cnfTransformer.apply(p)
         }
       }
 
@@ -352,8 +340,7 @@ trait Solving extends Logic {
           // SI-6942:
           // CNF(P1 /\ ... /\ PN) == CNF(P1) ++ CNF(...) ++ CNF(PN)
           props.map(cnfFor).reduce(_ ++ _)
-        case p =>
-          cnfFor(p)
+        case p => cnfFor(p)
       }
     }
   }

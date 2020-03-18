@@ -57,8 +57,7 @@ class ScNewTemplateDefinitionImpl private (
   protected override def innerType(ctx: TypingContext) = {
     val earlyHolders: Seq[ScDeclaredElementsHolder] =
       extendsBlock.earlyDefinitions match {
-        case Some(e: ScEarlyDefinitions) =>
-          e.members.flatMap {
+        case Some(e: ScEarlyDefinitions) => e.members.flatMap {
             case holder: ScDeclaredElementsHolder => Seq(holder)
             case _                                => Seq.empty
           }
@@ -90,8 +89,7 @@ class ScNewTemplateDefinitionImpl private (
       extendsBlock.templateParents match {
         case Some(tp) if tp.allTypeElements.length == 1 =>
           tp.allTypeElements.head.getNonValueType(ctx)
-        case _ =>
-          superTypes.headOption match {
+        case _ => superTypes.headOption match {
             case s @ Some(t) => Success(t, Some(this))
             case None        => Success(AnyRef, Some(this)) //this is new {} case
           }

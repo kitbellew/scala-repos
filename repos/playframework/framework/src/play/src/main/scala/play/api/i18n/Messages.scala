@@ -339,8 +339,9 @@ object Messages {
     val sentence = (comment | positioned(message)) <~ newLine
 
     val parser = phrase(((sentence | blankLine).*) <~ end) ^^ {
-      case messages =>
-        messages.collect { case m @ Messages.Message(_, _, _, _) => m }
+      case messages => messages.collect {
+          case m @ Messages.Message(_, _, _, _) => m
+        }
     }
 
     def parse: Either[PlayException.ExceptionSource, Seq[Message]] = {

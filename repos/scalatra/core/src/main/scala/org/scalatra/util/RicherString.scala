@@ -44,9 +44,8 @@ class RicherString(orig: String) {
   def toCheckboxBool: Boolean = {
     orig.toUpperCase match {
       case "ON" | "TRUE" | "OK" | "1" | "CHECKED" | "YES" | "ENABLE" |
-          "ENABLED" =>
-        true
-      case _ => false
+          "ENABLED" => true
+      case _        => false
     }
   }
 }

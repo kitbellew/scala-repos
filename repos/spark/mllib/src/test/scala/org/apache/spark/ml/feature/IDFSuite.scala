@@ -43,8 +43,7 @@ class IDFSuite
         Vectors.dense(res)
       case data: SparseVector =>
         val res = data.indices.zip(data.values).map {
-          case (id, value) =>
-            (id, value * model(id))
+          case (id, value) => (id, value * model(id))
         }
         Vectors.sparse(data.size, res)
     }

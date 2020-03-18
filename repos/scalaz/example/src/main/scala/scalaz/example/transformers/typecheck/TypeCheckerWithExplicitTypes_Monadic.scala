@@ -30,8 +30,7 @@ object TypeCheckerWithExplicitTypes_Monadic {
       case Id(x)  => find(x, env)
       // make sure the first branch is a boolean and then
       // make sure the second and third branches have the same type
-      case If(tst, texp, fexp) =>
-        for {
+      case If(tst, texp, fexp) => for {
           t <- typeCheck(tst, env)
           _ <- compare(
             t,
@@ -46,14 +45,12 @@ object TypeCheckerWithExplicitTypes_Monadic {
             lt,
             "if branches not the same type, got: " + (lt, rt))
         } yield res
-      case Fun(arg, argType, body) =>
-        for { t <- typeCheck(body, env + (arg -> argType)) } yield TyLam(
-          argType,
-          t)
+      case Fun(arg, argType, body) => for {
+          t <- typeCheck(body, env + (arg -> argType))
+        } yield TyLam(argType, t)
       // make sure the first argument to function application is indeed a function
       // then make sure that the arguments match the explicit declarations
-      case App(operator, operand) =>
-        for {
+      case App(operator, operand) => for {
           operatorType <- typeCheck(operator, env)
           operandType <- typeCheck(operand, env)
           res <- operatorType match {

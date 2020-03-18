@@ -150,14 +150,13 @@ object ParserUtils {
       case Token("TOK_DATE", Nil)                     => DateType
       case Token("TOK_TIMESTAMP", Nil)                => TimestampType
       case Token("TOK_BINARY", Nil)                   => BinaryType
-      case Token("TOK_LIST", elementType :: Nil) =>
-        ArrayType(nodeToDataType(elementType))
+      case Token("TOK_LIST", elementType :: Nil) => ArrayType(
+          nodeToDataType(elementType))
       case Token("TOK_STRUCT", Token("TOK_TABCOLLIST", fields) :: Nil) =>
         StructType(fields.map(nodeToStructField))
       case Token("TOK_MAP", keyType :: valueType :: Nil) =>
         MapType(nodeToDataType(keyType), nodeToDataType(valueType))
-      case _ =>
-        noParseRule("DataType", node)
+      case _ => noParseRule("DataType", node)
     }
 
   def nodeToStructField(node: ASTNode): StructField =
@@ -178,8 +177,7 @@ object ParserUtils {
           nodeToDataType(dataType),
           nullable = true,
           meta)
-      case _ =>
-        noParseRule("StructField", node)
+      case _ => noParseRule("StructField", node)
     }
 
   /**

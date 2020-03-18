@@ -7,7 +7,5 @@ class Bar[A, B](val _1: A, val _2: B) extends Product2[A, B] {
 }
 
 object Test {
-  new Bar(2, 'a') match {
-    case Bar(x, y) =>
-  }
+  new Bar(2, 'a') match { case Bar(x, y) => }
 }

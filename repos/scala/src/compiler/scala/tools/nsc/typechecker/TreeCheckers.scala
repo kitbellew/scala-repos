@@ -344,14 +344,12 @@ abstract class TreeCheckers extends Analyzer {
                 ownerstr(
                   sym) + " has getter but cannot be found. " + sym.ownerChain)
             }
-          case Apply(fn, args) =>
-            if (args exists (_ == EmptyTree))
+          case Apply(fn, args) => if (args exists (_ == EmptyTree))
               errorFn(
                 tree.pos,
                 "Apply arguments to " + fn + " contains an empty tree: " + args)
 
-          case Select(qual, name) =>
-            checkSym(tree)
+          case Select(qual, name) => checkSym(tree)
           case This(_) =>
             checkSym(tree)
             if (sym.isStatic && sym.hasModuleFlag) ()
@@ -362,9 +360,8 @@ abstract class TreeCheckers extends Analyzer {
                 "tree symbol " + sym + " does not point to enclosing class; tree = ")
 
           /* XXX: temporary while Import nodes are arriving untyped. */
-          case Import(_, _) =>
-            return
-          case _ =>
+          case Import(_, _) => return
+          case _            =>
         }
         if (tree.pos == NoPosition) noPos(tree)
         else if (tree.tpe == null && isPastTyper) noType(tree)
@@ -474,10 +471,9 @@ abstract class TreeCheckers extends Analyzer {
 
       private def checkReturnReferencesDirectlyEnclosingDef(tree: Tree): Unit =
         tree match {
-          case _: Return =>
-            path collectFirst { case dd: DefDef => dd } match {
-              case None =>
-                errorFn(s"Return node ($tree) must be enclosed in a DefDef")
+          case _: Return => path collectFirst { case dd: DefDef => dd } match {
+              case None => errorFn(
+                  s"Return node ($tree) must be enclosed in a DefDef")
               case Some(dd) if tree.symbol != dd.symbol =>
                 errorFn(
                   s"Return symbol (${tree.symbol}} does not reference directly enclosing DefDef (${dd.symbol})")

@@ -282,8 +282,7 @@ private[spark] abstract class YarnSchedulerBackend(
 
     override def receiveAndReply(
         context: RpcCallContext): PartialFunction[Any, Unit] = {
-      case r: RequestExecutors =>
-        amEndpoint match {
+      case r: RequestExecutors => amEndpoint match {
           case Some(am) =>
             Future { context.reply(am.askWithRetry[Boolean](r)) } onFailure {
               case NonFatal(e) =>
@@ -296,8 +295,7 @@ private[spark] abstract class YarnSchedulerBackend(
             context.reply(false)
         }
 
-      case k: KillExecutors =>
-        amEndpoint match {
+      case k: KillExecutors => amEndpoint match {
           case Some(am) =>
             Future { context.reply(am.askWithRetry[Boolean](k)) } onFailure {
               case NonFatal(e) =>

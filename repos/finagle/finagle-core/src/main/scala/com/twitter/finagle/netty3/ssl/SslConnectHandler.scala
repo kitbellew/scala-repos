@@ -117,8 +117,7 @@ class SslConnectHandler(
 
         super.connectRequested(ctx, wrappedEvent)
 
-      case _ =>
-        fail(ctx.getChannel, new InconsistentStateException(_))
+      case _ => fail(ctx.getChannel, new InconsistentStateException(_))
     }
   }
 
@@ -145,8 +144,7 @@ class SslConnectHandler(
         override def operationComplete(f: ChannelFuture): Unit =
           if (f.isSuccess) {
             sessionError(sslHandler.getEngine.getSession) match {
-              case Some(t) =>
-                fail(ctx.getChannel, t)
+              case Some(t) => fail(ctx.getChannel, t)
               case None =>
                 connectFuture.get.setSuccess()
                 SslConnectHandler.super.channelConnected(ctx, e)

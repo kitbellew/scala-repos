@@ -29,8 +29,7 @@ object RetryPolicy {
     def apply[T](op: => Future[T]): Future[T] = {
       def retry(tries: Int): Future[T] = {
         op rescue {
-          case KeeperConnectionException(_) if (tries > 0) =>
-            retry(tries - 1)
+          case KeeperConnectionException(_) if (tries > 0) => retry(tries - 1)
         }
       }
       retry(retries)

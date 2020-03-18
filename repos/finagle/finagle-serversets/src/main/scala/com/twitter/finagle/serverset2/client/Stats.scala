@@ -85,10 +85,10 @@ private[serverset2] trait StatsWriter extends StatsClient with ZooKeeperWriter {
       acl: Seq[Data.ACL],
       createMode: CreateMode): Future[String] =
     createMode match {
-      case CreateMode.Ephemeral =>
-        EphemeralFilter(underlying.create(path, data, acl, createMode))
-      case CreateMode.EphemeralSequential =>
-        EphemeralFilter(underlying.create(path, data, acl, createMode))
+      case CreateMode.Ephemeral => EphemeralFilter(
+          underlying.create(path, data, acl, createMode))
+      case CreateMode.EphemeralSequential => EphemeralFilter(
+          underlying.create(path, data, acl, createMode))
       case _ => WriteFilter(underlying.create(path, data, acl, createMode))
     }
 

@@ -613,8 +613,7 @@ object TestSubscriber {
             throw new AssertionError(
               s"toStrict received OnError while draining stream! Accumulated elements: ${b.result()}",
               ex)
-          case OnComplete ⇒
-            b.result()
+          case OnComplete ⇒ b.result()
           case OnNext(i: I @unchecked) ⇒
             b += i
             drain()

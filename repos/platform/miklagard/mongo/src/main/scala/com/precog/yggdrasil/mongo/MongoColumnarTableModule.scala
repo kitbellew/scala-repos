@@ -142,8 +142,7 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
       for { paths <- pathsM(table) } yield {
         Table(
           StreamT.unfoldM[Future, Slice, LoadState](InitialLoad(paths.toList)) {
-            case InLoad(cursorGen, skip, remaining) =>
-              M.point {
+            case InLoad(cursorGen, skip, remaining) => M.point {
                 val (slice, nextSkip) = makeSlice(cursorGen, skip)
                 logger.trace(
                   "Running InLoad: fetched %d rows, next skip = %s".format(
@@ -156,8 +155,7 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                     .getOrElse(InitialLoad(remaining)))
               }
 
-            case InitialLoad(path :: xs) =>
-              path.elements.toList match {
+            case InitialLoad(path :: xs) => path.elements.toList match {
                 case dbName :: collectionName :: Nil =>
                   logger.trace("Running InitialLoad")
                   M.point {
@@ -219,8 +217,7 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                     "MongoDB path " + path.path + " does not have the form /dbName/collectionName; rollups not yet supported.")
               }
 
-            case InitialLoad(Nil) =>
-              M.point(None)
+            case InitialLoad(Nil) => M.point(None)
           },
           UnknownSize
         )

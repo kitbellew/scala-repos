@@ -52,8 +52,7 @@ private[sbt] object KeyMacro {
         case (_: ApplyTree | _: Select | _: TypeApply) :: xs => enclosingVal(xs)
         // lazy val x: X = <methodName> has this form for some reason (only when the explicit type is present, though)
         case Block(_, _) :: DefDef(mods, name, _, _, _, _) :: xs
-            if mods.hasFlag(Flag.LAZY) =>
-          processName(name)
+            if mods.hasFlag(Flag.LAZY) => processName(name)
         case _ =>
           c.error(c.enclosingPosition, invalidEnclosingTree(methodName.decoded))
           "<error>"

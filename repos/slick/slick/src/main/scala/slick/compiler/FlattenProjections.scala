@@ -48,10 +48,10 @@ class FlattenProjections extends Phase {
             }
             logger.debug("Translated " + p.pathString + " to:", p2)
             p2
-          case n: Bind =>
-            n.mapChildren { ch => tr(ch, topLevel && (ch ne n.from)) }
-          case u: Union =>
-            n.mapChildren { ch => tr(ch, true) }
+          case n: Bind => n.mapChildren { ch =>
+              tr(ch, topLevel && (ch ne n.from))
+            }
+          case u: Union => n.mapChildren { ch => tr(ch, true) }
           case Library.SilentCast(ch) :@ tpe =>
             Library.SilentCast.typed(tpe.structuralRec, tr(ch, false))
           case n => n.mapChildren(tr(_, false))
@@ -99,10 +99,10 @@ class FlattenProjections extends Phase {
     def flatten(n: Node, path: List[TermSymbol]) {
       logger.debug("Flattening node at " + Path.toString(path), n)
       n match {
-        case StructNode(ch) =>
-          ch.foreach { case (s, n) => flatten(n, s :: path) }
-        case p: ProductNode =>
-          p.children.zipWithIndex.foreach {
+        case StructNode(ch) => ch.foreach {
+            case (s, n) => flatten(n, s :: path)
+          }
+        case p: ProductNode => p.children.zipWithIndex.foreach {
             case (n, i) => flatten(n, new ElementSymbol(i + 1) :: path)
           }
         case n =>

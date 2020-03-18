@@ -159,8 +159,7 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
            */
           case _
               if (!noOpNode(activeBolt) && dependsOnSummerProducer(
-                currentProducer)) =>
-            true
+                currentProducer)) => true
           /*
            * This should possibly be improved, but currently, we force a FlatMapNode just before a
            * summer (to handle map-side aggregation). This check is here to prevent us from merging
@@ -168,8 +167,7 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
            */
           case FlatMapNode(_)
               if hasSummerAsDependantProducer(
-                currentProducer) && allTransDepsMergeableWithSource(dep) =>
-            true
+                currentProducer) && allTransDepsMergeableWithSource(dep) => true
           /*
            * if the current node can't be merged with a source, but the transitive deps can
            * then split now.

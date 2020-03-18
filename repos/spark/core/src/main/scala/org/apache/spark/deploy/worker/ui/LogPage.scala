@@ -47,10 +47,8 @@ private[ui] class LogPage(parent: WorkerWebUI)
       .getOrElse(defaultBytes)
 
     val logDir = (appId, executorId, driverId) match {
-      case (Some(a), Some(e), None) =>
-        s"${workDir.getPath}/$appId/$executorId/"
-      case (None, None, Some(d)) =>
-        s"${workDir.getPath}/$driverId/"
+      case (Some(a), Some(e), None) => s"${workDir.getPath}/$appId/$executorId/"
+      case (None, None, Some(d))    => s"${workDir.getPath}/$driverId/"
       case _ =>
         throw new Exception(
           "Request must specify either application or driver identifiers")

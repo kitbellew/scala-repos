@@ -99,9 +99,8 @@ class NewScalaTypeDefinitionAction
       newName: String,
       templateName: String): ScTypeDefinition = {
     createClassFromTemplate(directory, newName, templateName) match {
-      case scalaFile: ScalaFile =>
-        scalaFile.typeDefinitions.headOption.orNull
-      case _ => null
+      case scalaFile: ScalaFile => scalaFile.typeDefinitions.headOption.orNull
+      case _                    => null
     }
   }
 

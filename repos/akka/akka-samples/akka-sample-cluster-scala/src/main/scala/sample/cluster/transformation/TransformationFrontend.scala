@@ -30,8 +30,7 @@ class TransformationFrontend extends Actor {
       context watch sender()
       backends = backends :+ sender()
 
-    case Terminated(a) =>
-      backends = backends.filterNot(_ == a)
+    case Terminated(a) => backends = backends.filterNot(_ == a)
   }
 }
 //#frontend

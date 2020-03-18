@@ -46,11 +46,9 @@ class ScalaKindCompletionWeigher extends CompletionWeigher {
 
     def weight =
       ScalaLookupItem.original(element) match {
-        case s: ScalaLookupItem =>
-          s.element match {
+        case s: ScalaLookupItem => s.element match {
             case p: ScClassParameter => KindWeights.field
-            case patt: ScTypedDefinition =>
-              patt.nameContext match {
+            case patt: ScTypedDefinition => patt.nameContext match {
                 case m: PsiMember => handleMember(m, position)
                 case _            => null
               }

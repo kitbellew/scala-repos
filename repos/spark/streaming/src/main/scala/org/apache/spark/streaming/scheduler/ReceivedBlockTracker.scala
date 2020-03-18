@@ -242,8 +242,7 @@ private[streaming] class ReceivedBlockTracker(
               insertAddedBlock(receivedBlockInfo)
             case BatchAllocationEvent(time, allocatedBlocks) =>
               insertAllocatedBatch(time, allocatedBlocks)
-            case BatchCleanupEvent(batchTimes) =>
-              cleanupBatches(batchTimes)
+            case BatchCleanupEvent(batchTimes) => cleanupBatches(batchTimes)
           }
         }
       }

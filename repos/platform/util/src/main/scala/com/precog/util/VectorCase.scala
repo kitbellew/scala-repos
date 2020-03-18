@@ -178,12 +178,11 @@ private[precog] case class Vector1[+A](_1: A) extends VectorCase[A] {
 
   def ++[B >: A](that: VectorCase[B]) =
     that match {
-      case Vector0             => this
-      case Vector1(_2)         => Vector2(_1, _2)
-      case Vector2(_2, _3)     => Vector3(_1, _2, _3)
-      case Vector3(_2, _3, _4) => Vector4(_1, _2, _3, _4)
-      case _: Vector4[_] | _: VectorN[_] =>
-        VectorN(_1 +: that.toVector)
+      case Vector0                       => this
+      case Vector1(_2)                   => Vector2(_1, _2)
+      case Vector2(_2, _3)               => Vector3(_1, _2, _3)
+      case Vector3(_2, _3, _4)           => Vector4(_1, _2, _3, _4)
+      case _: Vector4[_] | _: VectorN[_] => VectorN(_1 +: that.toVector)
     }
 
   override def foreach[U](f: A => U) { f(_1) }
@@ -218,8 +217,8 @@ private[precog] case class Vector2[+A](_1: A, _2: A) extends VectorCase[A] {
       case Vector0         => this
       case Vector1(_3)     => Vector3(_1, _2, _3)
       case Vector2(_3, _4) => Vector4(_1, _2, _3, _4)
-      case _: Vector3[_] | _: Vector4[_] | _: VectorN[_] =>
-        VectorN(Vector(_1, _2) ++ that.toVector)
+      case _: Vector3[_] | _: Vector4[_] | _: VectorN[_] => VectorN(
+          Vector(_1, _2) ++ that.toVector)
     }
 
   override def foreach[U](f: A => U) {
@@ -303,8 +302,7 @@ private[precog] case class Vector4[+A](_1: A, _2: A, _3: A, _4: A)
     that match {
       case Vector0 => this
       case _: Vector1[_] | _: Vector2[_] | _: Vector3[_] | _: Vector4[_] |
-          _: VectorN[_] =>
-        VectorN(Vector(_1, _2, _3, _4) ++ that.toVector)
+          _: VectorN[_] => VectorN(Vector(_1, _2, _3, _4) ++ that.toVector)
     }
 
   override def foreach[U](f: A => U) {

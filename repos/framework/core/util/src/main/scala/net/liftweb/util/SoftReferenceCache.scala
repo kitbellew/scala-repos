@@ -130,8 +130,7 @@ class SoftReferenceCache[K, V](cacheSize: Int) {
         }
 
         retval
-      case (_, retval) =>
-        retval
+      case (_, retval) => retval
     }
   }
 

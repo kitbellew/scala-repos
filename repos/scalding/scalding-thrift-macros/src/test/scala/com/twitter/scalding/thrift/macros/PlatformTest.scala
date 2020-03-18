@@ -35,10 +35,7 @@ class CompareJob[T: OrderedSerialization](in: Iterable[T], args: Args)
     .flatMap { i => (0 until 1).map(_ => i) }
     .map(_ -> 1L)
     .sumByKey
-    .map {
-      case (k, v) =>
-        (k.hashCode, v)
-    }
+    .map { case (k, v) => (k.hashCode, v) }
     .write(TypedTsv[(Int, Long)]("output"))
 }
 private[macros] trait InstanceProvider[T] {

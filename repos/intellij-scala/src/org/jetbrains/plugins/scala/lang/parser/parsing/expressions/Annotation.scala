@@ -22,8 +22,7 @@ object Annotation {
     val rollbackMarker = builder.mark()
     val annotMarker = builder.mark
     builder.getTokenType match {
-      case ScalaTokenTypes.tAT =>
-        builder.advanceLexer() //Ate @
+      case ScalaTokenTypes.tAT => builder.advanceLexer() //Ate @
       case _ =>
         annotMarker.drop()
         rollbackMarker.drop()

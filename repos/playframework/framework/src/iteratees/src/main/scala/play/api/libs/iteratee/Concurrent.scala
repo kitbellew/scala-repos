@@ -130,8 +130,7 @@ object Concurrent {
               case Left(s) =>
                 p.success(s)
                 None
-              case Right(s) =>
-                Some(s)
+              case Right(s) => Some(s)
             }(dec)
             .recover {
               case NonFatal(e) =>
@@ -345,9 +344,8 @@ object Concurrent {
               case d @ DoneIt(it) => d
 
             } match {
-              case Waiting(p) =>
-                p.success(Input.EOF)
-              case _ =>
+              case Waiting(p) => p.success(Input.EOF)
+              case _          =>
             }
             Iteratee.flatten(last.future)
 
@@ -439,8 +437,7 @@ object Concurrent {
             in: Input[E]): Iteratee[E, Iteratee[E, A]] = {
 
           in match {
-            case Input.EOF =>
-              Done(inner, Input.Empty)
+            case Input.EOF => Done(inner, Input.Empty)
 
             case in =>
               if (!busy.single()) {
@@ -450,8 +447,7 @@ object Concurrent {
                     inner
                       .pureFold[Iteratee[E, Iteratee[E, A]]] {
                         case Step.Done(a, e) => Done(Done(a, e), Input.Empty)
-                        case Step.Cont(k) =>
-                          Cont { in =>
+                        case Step.Cont(k) => Cont { in =>
                             val next = k(in)
                             Cont(step(next))
                           }
@@ -464,8 +460,7 @@ object Concurrent {
 
                 Iteratee.flatten(
                   readyOrNot.map {
-                    case Left(ready) =>
-                      Iteratee.flatten(ready.feed(in))
+                    case Left(ready) => Iteratee.flatten(ready.feed(in))
                     case Right(_) =>
                       busy.single() = true
                       Cont(step(inner))
@@ -522,8 +517,9 @@ object Concurrent {
               iteratee.single
                 .swap(Future.successful(None))
                 .onComplete {
-                  case Success(maybeK) =>
-                    maybeK.foreach { k => promise.success(k(Input.EOF)) }
+                  case Success(maybeK) => maybeK.foreach { k =>
+                      promise.success(k(Input.EOF))
+                    }
                   case Failure(e) => promise.failure(e)
                 }(dec)
             }
@@ -570,8 +566,7 @@ object Concurrent {
                             promise.success(next)
                             None
                           }(dec)
-                        case Step.Cont(k) =>
-                          Future.successful(Some(k))
+                        case Step.Cont(k) => Future.successful(Some(k))
                       }(dec)
                     }
                     eventuallyNext.completeWith(n)
@@ -739,11 +734,11 @@ object Concurrent {
                   iteratees.swap(List())
                 }
                 v match {
-                  case Failure(e) =>
-                    its.foreach { case (_, p) => p.failure(e) }
+                  case Failure(e) => its.foreach { case (_, p) => p.failure(e) }
 
-                  case Success(_) =>
-                    its.foreach { case (it, p) => p.success(it) }
+                  case Success(_) => its.foreach {
+                      case (it, p) => p.success(it)
+                    }
                 }
               }(dec)
             }

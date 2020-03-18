@@ -338,8 +338,7 @@ class NameParamsSerializer
       (
         { case jv: JValue => WorkflowUtils.extractNameParams(jv) },
         {
-          case x: NameParams =>
-            JObject(
+          case x: NameParams => JObject(
               JField("name", JString(x.name)) ::
                 JField("params", x.params.getOrElse(JNothing)) :: Nil)
         }))
@@ -396,10 +395,9 @@ class UpgradeCheckRunner(val component: String, val engine: String)
       else { s"$versionsHost$version/$component/$engine.json" }
     try { val upgradeData = Source.fromURL(url) }
     catch {
-      case e: FileNotFoundException =>
-        debug(s"Update metainfo not found. $url")
-      case e: java.net.UnknownHostException =>
-        debug(s"${e.getClass.getName}: {e.getMessage}")
+      case e: FileNotFoundException => debug(s"Update metainfo not found. $url")
+      case e: java.net.UnknownHostException => debug(
+          s"${e.getClass.getName}: {e.getMessage}")
     }
     // TODO: Implement upgrade logic
   }

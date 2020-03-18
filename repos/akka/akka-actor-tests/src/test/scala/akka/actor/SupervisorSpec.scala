@@ -41,8 +41,7 @@ object SupervisorSpec {
       case Ping ⇒
         sendTo ! PingMessage
         if (sender() != sendTo) sender() ! PongMessage
-      case Die ⇒
-        throw new RuntimeException(ExceptionMessage)
+      case Die ⇒ throw new RuntimeException(ExceptionMessage)
       case DieReply ⇒
         val e = new RuntimeException(ExceptionMessage)
         sender() ! Status.Failure(e)

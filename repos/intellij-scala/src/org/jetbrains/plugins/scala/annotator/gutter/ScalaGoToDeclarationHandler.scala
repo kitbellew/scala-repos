@@ -51,8 +51,7 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
 
     if (sourceElement.getNode.getElementType == ScalaTokenTypes.kTHIS) {
       sourceElement.getParent match {
-        case self: ScSelfInvocation =>
-          self.bind match {
+        case self: ScSelfInvocation => self.bind match {
             case Some(elem) => return Array(elem)
             case None       => return null
           }
@@ -65,8 +64,7 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
       val ref = file.findReferenceAt(sourceElement.getTextRange.getStartOffset)
       if (ref == null) return null
       val targets = ref match {
-        case resRef: ResolvableReferenceElement =>
-          resRef.bind() match {
+        case resRef: ResolvableReferenceElement => resRef.bind() match {
             case Some(x) =>
               /**
                 * Extra targets:
@@ -86,13 +84,11 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
                   if (clazz == x.getActualElement)
                     Seq(x.element).flatMap(goToTargets)
                   else all.distinct flatMap goToTargets
-                case _ =>
-                  all.distinct flatMap goToTargets
+                case _ => all.distinct flatMap goToTargets
               }
             case None => return null
           }
-        case r =>
-          Set(r.resolve()) flatMap goToTargets
+        case r => Set(r.resolve()) flatMap goToTargets
       }
       return targets.toArray
     }
@@ -102,8 +98,8 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
   private def goToTargets(element: PsiElement): Seq[PsiElement] = {
     element match {
       case null => Seq.empty
-      case fun: ScFunction =>
-        Seq(fun.getSyntheticNavigationElement.getOrElse(element))
+      case fun: ScFunction => Seq(
+          fun.getSyntheticNavigationElement.getOrElse(element))
       case td: ScTypeDefinition if td.isSynthetic =>
         td.syntheticContainingClass match {
           case Some(containingClass) => Seq(containingClass)

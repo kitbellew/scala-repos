@@ -55,8 +55,7 @@ object JsonUtil {
             Failure(errors).point[M]
           case AsyncParse(_, values) if values.nonEmpty =>
             Success(values.head).point[M]
-          case _ =>
-            next
+          case _ => next
         }
 
       stream.uncons flatMap {

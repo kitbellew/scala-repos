@@ -82,8 +82,7 @@ private[akka] trait Children {
     functionRefs.getOrElse(name, Children.GetNobody()) match {
       case f: FunctionRef ⇒
         if (uid == ActorCell.undefinedUid || f.path.uid == uid) f else Nobody
-      case other ⇒
-        other
+      case other ⇒ other
     }
 
   private[akka] def addFunctionRef(f: (ActorRef, Any) ⇒ Unit): FunctionRef = {
@@ -345,8 +344,7 @@ private[akka] trait Children {
                 ser
                   .deserialize(bytes, serializer.identifier, manifest)
                   .get != null
-              case _ ⇒
-                ser.deserialize(bytes, arg.getClass).get != null
+              case _ ⇒ ser.deserialize(bytes, arg.getClass).get != null
             }
           })
       } catch {

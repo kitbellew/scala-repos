@@ -214,10 +214,8 @@ class FixedPoint(val long: Long) extends AnyVal {
     if (k < 0)
       throw new IllegalArgumentException("exponent %s not allowed" format k)
     k match {
-      case 0 =>
-        new FixedPoint(scale.denom)
-      case 1 =>
-        this
+      case 0 => new FixedPoint(scale.denom)
+      case 1 => this
       case _ =>
         val g = spire.math.gcd(long, scale.denom)
         val n = spire.math.pow((long / g).toDouble, k) * g

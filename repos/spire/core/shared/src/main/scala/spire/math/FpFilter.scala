@@ -70,8 +70,7 @@ final class FpFilter[A](
       case that: FpFilter[_] =>
         if (this.error == 0 && that.error == 0) this.apx == that.apx
         else this.exact == that.exact
-      case _ =>
-        false
+      case _ => false
     }
 
   // Avoid using this.

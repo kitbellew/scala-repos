@@ -126,18 +126,12 @@ object WebSocketHandler {
   private def frameOpCodeToMessageType(
       opcode: Protocol.Opcode): MessageType.Type =
     opcode match {
-      case Protocol.Opcode.Binary =>
-        MessageType.Binary
-      case Protocol.Opcode.Text =>
-        MessageType.Text
-      case Protocol.Opcode.Close =>
-        MessageType.Close
-      case Protocol.Opcode.Ping =>
-        MessageType.Ping
-      case Protocol.Opcode.Pong =>
-        MessageType.Pong
-      case Protocol.Opcode.Continuation =>
-        MessageType.Continuation
+      case Protocol.Opcode.Binary       => MessageType.Binary
+      case Protocol.Opcode.Text         => MessageType.Text
+      case Protocol.Opcode.Close        => MessageType.Close
+      case Protocol.Opcode.Ping         => MessageType.Ping
+      case Protocol.Opcode.Pong         => MessageType.Pong
+      case Protocol.Opcode.Continuation => MessageType.Continuation
     }
 
   /**
@@ -176,10 +170,8 @@ object WebSocketHandler {
               elem: Either[Message, RawMessage],
               ctx: Context[Either[RawMessage, Message]]) =
             elem match {
-              case _ if closing =>
-                ctx.finish()
-              case Right(message) =>
-                ctx.push(Left(message))
+              case _ if closing   => ctx.finish()
+              case Right(message) => ctx.push(Left(message))
               case Left(close) =>
                 closing = true
                 ctx.push(Right(close))

@@ -92,8 +92,7 @@ sealed abstract class STArray[S, A] {
   def fill[B](f: (A, B) => A, xs: Traversable[(Int, B)]): ST[S, Unit] =
     xs match {
       case Nil => returnST(())
-      case ((i, v) :: ivs) =>
-        for {
+      case ((i, v) :: ivs) => for {
           _ <- update(f, i, v)
           _ <- fill(f, ivs)
         } yield ()

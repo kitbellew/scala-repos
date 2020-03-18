@@ -93,8 +93,7 @@ object JarManifest {
         throw new InvalidManifestException(
           elem,
           "<intellij-compat> with plugin descriptors")
-      case xss: NodeSeq =>
-        JarManifest(
+      case xss: NodeSeq => JarManifest(
           (xss \\ "scala-plugin").map(buildPluginDescriptor),
           containingJar.getPath.replaceAll("!/", ""),
           new File(containingJar.getPath.replaceAll("!/", "")).lastModified()

@@ -73,8 +73,7 @@ private[spark] class LocalEndpoint(
     isLocal = true)
 
   override def receive: PartialFunction[Any, Unit] = {
-    case ReviveOffers =>
-      reviveOffers()
+    case ReviveOffers => reviveOffers()
 
     case StatusUpdate(taskId, state, serializedData) =>
       scheduler.statusUpdate(taskId, state, serializedData)

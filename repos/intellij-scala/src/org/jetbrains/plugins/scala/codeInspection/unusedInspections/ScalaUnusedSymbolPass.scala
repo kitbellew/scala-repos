@@ -137,9 +137,9 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
       x: ScDeclaredElementsHolder,
       state: UnusedPassState) {
     x.getContext match {
-      case _: ScPackageLike | _: ScalaFile | _: ScEarlyDefinitions => // ignore, too expensive to check for references.
-      case _: ScTemplateBody =>
-        x match {
+      case _: ScPackageLike | _: ScalaFile |
+          _: ScEarlyDefinitions => // ignore, too expensive to check for references.
+      case _: ScTemplateBody => x match {
           case mem: ScMember
               if mem.getModifierList.accessModifier.exists(
                 _.isUnqualifiedPrivateOrThis) =>
@@ -223,8 +223,7 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
       val (message, nameOpt) = declElementHolder.declaredElements match {
         case Seq(n: ScNamedElement) =>
           ("var '%s' could be a val".format(n.name), Some(n.name))
-        case _ =>
-          ("var could be a val", None)
+        case _ => ("var could be a val", None)
       }
       val severity = state.config.localAssignSeverity
       val start = declElementHolder

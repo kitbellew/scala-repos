@@ -37,8 +37,7 @@ object RefineStat {
           EmptyDcl.parse(builder, isMod = false)
           return true
         }
-      case _ =>
-        return false
+      case _ => return false
     }
   }
 }

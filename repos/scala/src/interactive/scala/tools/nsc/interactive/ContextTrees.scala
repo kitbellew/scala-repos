@@ -52,10 +52,8 @@ trait ContextTrees {
       def locateFinestContextTree(context: ContextTree): ContextTree = {
         if (context.pos includes pos) {
           locateContextTree(context.children, pos) match {
-            case Some(x) =>
-              locateFinestContextTree(x)
-            case None =>
-              context
+            case Some(x) => locateFinestContextTree(x)
+            case None    => context
           }
         } else { context }
       }

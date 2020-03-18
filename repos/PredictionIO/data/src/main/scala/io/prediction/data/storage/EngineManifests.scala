@@ -81,8 +81,7 @@ class EngineManifestSerializer
               files = Nil,
               engineFactory = "")
             fields.foldLeft(seed) {
-              case (enginemanifest, field) =>
-                field match {
+              case (enginemanifest, field) => field match {
                   case JField("id", JString(id)) => enginemanifest.copy(id = id)
                   case JField("version", JString(version)) =>
                     enginemanifest.copy(version = version)

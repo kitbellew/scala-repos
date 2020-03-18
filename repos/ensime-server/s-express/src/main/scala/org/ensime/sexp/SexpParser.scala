@@ -15,8 +15,7 @@ object SexpParser {
   def parse(desc: String): Sexp = {
     val parser = new SexpParser(desc)
     parser.SexpP.run() match {
-      case Success(d) =>
-        d
+      case Success(d) => d
       case Failure(error: ParseError) =>
         val msg = parser.formatError(
           error,

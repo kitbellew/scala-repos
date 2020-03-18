@@ -131,8 +131,7 @@ class Codec[A: Manifest](
                 message.getFuture,
                 buffer,
                 message.getRemoteAddress)
-            case None =>
-              message.getFuture.setSuccess()
+            case None => message.getFuture.setSuccess()
           }
         } else { context.sendDownstream(event) }
         obj match {
@@ -165,8 +164,7 @@ class Codec[A: Manifest](
       }
     bytesReadCounter(readableBytes - buffer.readableBytes())
     nextStep match {
-      case Incomplete =>
-        null
+      case Incomplete => null
       case GoToStage(s) =>
         stage = s
         decode(context, channel, buffer)

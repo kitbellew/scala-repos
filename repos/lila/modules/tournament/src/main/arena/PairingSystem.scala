@@ -149,8 +149,7 @@ object PairingSystem extends AbstractPairingSystem {
       def findBetter(from: Combination, than: Score): FindBetter =
         nextCombos(from) match {
           case Nil => End
-          case nexts =>
-            nexts.foldLeft(none[Combination]) {
+          case nexts => nexts.foldLeft(none[Combination]) {
               case (current, next) =>
                 val toBeat = current.fold(than)(score)
                 if (score(next) >= toBeat) current
@@ -171,11 +170,9 @@ object PairingSystem extends AbstractPairingSystem {
         case List(p1, p2) if onlyTwoActivePlayers =>
           List(p1.player -> p2.player)
         case List(p1, p2)
-            if justPlayedTogether(p1.player.userId, p2.player.userId) =>
-          Nil
-        case List(p1, p2) => List(p1.player -> p2.player)
-        case ps =>
-          findBetter(Nil, Int.MaxValue) match {
+            if justPlayedTogether(p1.player.userId, p2.player.userId) => Nil
+        case List(p1, p2)                                             => List(p1.player -> p2.player)
+        case ps => findBetter(Nil, Int.MaxValue) match {
             case Found(best) =>
               best map { case (rp0, rp1) => rp0.player -> rp1.player }
             case _ =>

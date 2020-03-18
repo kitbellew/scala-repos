@@ -426,14 +426,12 @@ private final class Analyzer(
                 assert(m.isReflProxy && !m.isAbstract)
                 Some(m)
 
-              case _ =>
-                ancestorInfo.findProxyMatch(proxyName) match {
+              case _ => ancestorInfo.findProxyMatch(proxyName) match {
                   case Some(target) =>
                     val targetName = target.encodedName
                     Some(ancestorInfo.createReflProxy(proxyName, targetName))
 
-                  case None =>
-                    loop(ancestorInfo.superClass)
+                  case None => loop(ancestorInfo.superClass)
                 }
             }
           } else { None }
@@ -494,8 +492,7 @@ private final class Analyzer(
           val leftInfo = _classInfos.get(leftCls)
           val rightInfo = _classInfos.get(rightCls)
           leftInfo.zip(rightInfo).exists {
-            case (l, r) =>
-              l.ancestors.contains(r)
+            case (l, r) => l.ancestors.contains(r)
           }
         }
       }
@@ -507,10 +504,8 @@ private final class Analyzer(
               ArrayType(leftBase, leftDepth),
               ArrayType(rightBase, rightDepth)) =>
           leftDepth == rightDepth && classIsMoreSpecific(leftBase, rightBase)
-        case (ArrayType(_, _), ClassType(ObjectClass)) =>
-          true
-        case _ =>
-          false
+        case (ArrayType(_, _), ClassType(ObjectClass)) => true
+        case _                                         => false
       }
     }
 

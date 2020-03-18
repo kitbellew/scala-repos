@@ -20,8 +20,7 @@ class RetryPolicyTest extends FunSpec {
       exceptions: Stream[Exception]): Stream[Duration] =
     exceptions match {
       case Stream.Empty => Stream.empty
-      case e #:: tail =>
-        policy(Throw(e)) match {
+      case e #:: tail => policy(Throw(e)) match {
           case None                => Stream.empty
           case Some((backoff, p2)) => backoff #:: getBackoffs(p2, tail)
         }

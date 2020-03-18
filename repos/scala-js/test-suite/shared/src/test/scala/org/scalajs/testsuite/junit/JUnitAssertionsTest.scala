@@ -17,8 +17,7 @@ class JUnitAssertionsTest {
       assertion: => Unit,
       shouldPass: Boolean = true): Unit = {
     Try(assertion) match {
-      case Success(_) =>
-        if (!shouldPass) fail("Assertion should have failed.")
+      case Success(_) => if (!shouldPass) fail("Assertion should have failed.")
 
       case Failure(assErr: AssertionError) =>
         if (shouldPass) {
@@ -490,20 +489,18 @@ class JUnitAssertionsTest {
     }
 
     Try(testIfAsserts((), ShallNotPass)) match {
-      case Success(_) =>
-        fail("testIfAsserts should have failed")
+      case Success(_) => fail("testIfAsserts should have failed")
 
       case Failure(ex: AssertionError)
           if ex.getMessage == "Assertion should have failed." =>
       // As expected
 
-      case Failure(ex) =>
-        throw ex
+      case Failure(ex) => throw ex
     }
 
     Try(testIfAsserts(throw new AssertionError)) match {
-      case Success(_) =>
-        fail("testIfAsserts should not succeed with <throw new AssertionError>")
+      case Success(_) => fail(
+          "testIfAsserts should not succeed with <throw new AssertionError>")
 
       case Failure(ex: AssertionError)
           if ex.getMessage == "Assertion should not have failed." =>
@@ -526,19 +523,17 @@ class JUnitAssertionsTest {
 
     val except = new Exception
     Try(testIfAsserts(throw except)) match {
-      case Success(_) =>
-        fail("testIfAsserts should not succeed with <throw new Exception>")
+      case Success(_) => fail(
+          "testIfAsserts should not succeed with <throw new Exception>")
 
-      case Failure(ex) =>
-        if (ex ne except) throw ex
+      case Failure(ex) => if (ex ne except) throw ex
     }
 
     Try(testIfAsserts(throw except, ShallNotPass)) match {
-      case Success(_) =>
-        fail("testIfAsserts should not succeed with <throw new Exception>")
+      case Success(_) => fail(
+          "testIfAsserts should not succeed with <throw new Exception>")
 
-      case Failure(ex) =>
-        if (ex ne except) throw ex
+      case Failure(ex) => if (ex ne except) throw ex
     }
   }
 }

@@ -171,8 +171,7 @@ object TypedSimilarity extends Serializable {
           (n: N, leftit: Iterator[(N, Int)], rightit: Iterable[(N, Int)]) =>
             // Use a co-group to ensure this happens in the reducer:
             leftit.flatMap {
-              case (node1, deg1) =>
-                rightit.iterator.flatMap {
+              case (node1, deg1) => rightit.iterator.flatMap {
                   case (node2, deg2) =>
                     val weight =
                       1.0 / scala.math.sqrt(deg1.toDouble * deg2.toDouble)
@@ -214,8 +213,7 @@ object TypedSimilarity extends Serializable {
               rightit: Iterable[(N, Double, Double)]) =>
             // Use a co-group to ensure this happens in the reducer:
             leftit.flatMap {
-              case (node1, weight1, norm1) =>
-                rightit.iterator.flatMap {
+              case (node1, weight1, norm1) => rightit.iterator.flatMap {
                   case (node2, weight2, norm2) =>
                     val weight = 1.0 / (norm1.toDouble * norm2.toDouble)
                     val prob = oversample * weight

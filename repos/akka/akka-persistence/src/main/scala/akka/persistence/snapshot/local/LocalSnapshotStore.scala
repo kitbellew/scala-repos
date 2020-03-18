@@ -103,8 +103,7 @@ private[persistence] class LocalSnapshotStore
       metadata: immutable.Seq[SnapshotMetadata]): Option[SelectedSnapshot] =
     metadata.lastOption match {
       case None ⇒ None
-      case Some(md) ⇒
-        Try(withInputStream(md)(deserialize)) match {
+      case Some(md) ⇒ Try(withInputStream(md)(deserialize)) match {
           case Success(s) ⇒ Some(SelectedSnapshot(md, s.data))
           case Failure(e) ⇒
             log.error(e, s"Error loading snapshot [${md}]")

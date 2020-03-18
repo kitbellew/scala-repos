@@ -33,11 +33,7 @@ class ConstructorAnnotatorTest extends SimpleTestCase {
   val iAmAScriptFile = ()
   """
 
-  def testEmpty() {
-    assertMatches(messages("")) {
-      case Nil =>
-    }
-  }
+  def testEmpty() { assertMatches(messages("")) { case Nil => } }
 
   def testFine() {
     val codes = Seq(
@@ -56,11 +52,7 @@ class ConstructorAnnotatorTest extends SimpleTestCase {
       "new E(new Z[Int])",
       "new Alias[Int](0)"
     )
-    for { code <- codes } {
-      assertMatches(messages(code)) {
-        case Nil =>
-      }
-    }
+    for { code <- codes } { assertMatches(messages(code)) { case Nil => } }
   }
 
   def testExcessArguments() {

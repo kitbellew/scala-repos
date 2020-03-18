@@ -183,8 +183,7 @@ object AdminUtils extends Logging {
       fixedStartIndex: Int,
       startPartitionId: Int): Map[Int, Seq[Int]] = {
     val brokerRackMap = brokerMetadatas.collect {
-      case BrokerMetadata(id, Some(rack)) =>
-        id -> rack
+      case BrokerMetadata(id, Some(rack)) => id -> rack
     }.toMap
     val numRacks = brokerRackMap.values.toSet.size
     val arrangedBrokerList = getRackAlternatedBrokerList(brokerRackMap)
@@ -257,8 +256,7 @@ object AdminUtils extends Logging {
   private[admin] def getRackAlternatedBrokerList(
       brokerRackMap: Map[Int, String]): IndexedSeq[Int] = {
     val brokersIteratorByRack = getInverseMap(brokerRackMap).map {
-      case (rack, brokers) =>
-        (rack, brokers.toIterator)
+      case (rack, brokers) => (rack, brokers.toIterator)
     }
     val racks = brokersIteratorByRack.keys.toArray.sorted
     val result = new mutable.ArrayBuffer[Int]
@@ -672,8 +670,7 @@ object AdminUtils extends Logging {
           map.get("config") match {
             case Some(config: Map[_, _]) =>
               for (configTup <- config) configTup match {
-                case (k: String, v: String) =>
-                  props.setProperty(k, v)
+                case (k: String, v: String) => props.setProperty(k, v)
                 case _ =>
                   throw new IllegalArgumentException(
                     "Invalid " + entityType + " config: " + str)

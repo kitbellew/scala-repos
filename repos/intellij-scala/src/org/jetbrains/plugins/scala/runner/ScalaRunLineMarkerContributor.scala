@@ -22,14 +22,12 @@ class ScalaRunLineMarkerContributor extends RunLineMarkerContributor {
         case fun: ScFunctionDefinition
             if ScalaApplicationConfigurationProducer.findMain(
               fun,
-              firstContMethodOnly = true) != null =>
-          createInfo(1)
+              firstContMethodOnly = true) != null => createInfo(1)
         case obj: ScObject
             if ScalaApplicationConfigurationProducer.getMainClass(
               element,
-              firstTemplateDefOnly = true) != null =>
-          createInfo(0)
-        case _ => null
+              firstTemplateDefOnly = true) != null => createInfo(0)
+        case _                                     => null
       }
     else null
 

@@ -39,8 +39,7 @@ class PostToEventStreamStepImpl @Inject() (
       status: TaskStatus): Future[_] = {
 
     status.getState match {
-      case Terminated(_) =>
-        postEvent(timestamp, status, task)
+      case Terminated(_) => postEvent(timestamp, status, task)
       case TASK_RUNNING
           if task.launched.exists(
             !_.hasStartedRunning

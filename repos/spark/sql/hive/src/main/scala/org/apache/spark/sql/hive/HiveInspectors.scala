@@ -270,8 +270,7 @@ private[hive] trait HiveInspectors {
   def unwrap(data: Any, oi: ObjectInspector): Any =
     oi match {
       case coi: ConstantObjectInspector
-          if coi.getWritableConstantValue == null =>
-        null
+          if coi.getWritableConstantValue == null => null
       case poi: WritableConstantStringObjectInspector =>
         UTF8String.fromString(poi.getWritableConstantValue.toString)
       case poi: WritableConstantHiveVarcharObjectInspector =>
@@ -327,8 +326,7 @@ private[hive] trait HiveInspectors {
       case _ if data == null => null
       case poi: VoidObjectInspector =>
         null // always be null for void object inspector
-      case pi: PrimitiveObjectInspector =>
-        pi match {
+      case pi: PrimitiveObjectInspector => pi match {
           // We think HiveVarchar/HiveChar is also a String
           case hvoi: HiveVarcharObjectInspector if hvoi.preferWritable() =>
             UTF8String.fromString(
@@ -496,8 +494,7 @@ private[hive] trait HiveInspectors {
           } else { null }
         }
 
-      case _ =>
-        identity[Any]
+      case _ => identity[Any]
     }
 
   /**
@@ -552,8 +549,7 @@ private[hive] trait HiveInspectors {
     oi match {
       case x: ConstantObjectInspector => x.getWritableConstantValue
       case _ if a == null             => null
-      case x: PrimitiveObjectInspector =>
-        x match {
+      case x: PrimitiveObjectInspector => x match {
           // TODO we don't support the HiveVarcharObjectInspector yet.
           case _: StringObjectInspector if x.preferWritable() =>
             getStringWritable(a)
@@ -737,24 +733,24 @@ private[hive] trait HiveInspectors {
     expr match {
       case Literal(value, StringType) =>
         getStringWritableConstantObjectInspector(value)
-      case Literal(value, IntegerType) =>
-        getIntWritableConstantObjectInspector(value)
+      case Literal(value, IntegerType) => getIntWritableConstantObjectInspector(
+          value)
       case Literal(value, DoubleType) =>
         getDoubleWritableConstantObjectInspector(value)
       case Literal(value, BooleanType) =>
         getBooleanWritableConstantObjectInspector(value)
-      case Literal(value, LongType) =>
-        getLongWritableConstantObjectInspector(value)
-      case Literal(value, FloatType) =>
-        getFloatWritableConstantObjectInspector(value)
-      case Literal(value, ShortType) =>
-        getShortWritableConstantObjectInspector(value)
-      case Literal(value, ByteType) =>
-        getByteWritableConstantObjectInspector(value)
+      case Literal(value, LongType) => getLongWritableConstantObjectInspector(
+          value)
+      case Literal(value, FloatType) => getFloatWritableConstantObjectInspector(
+          value)
+      case Literal(value, ShortType) => getShortWritableConstantObjectInspector(
+          value)
+      case Literal(value, ByteType) => getByteWritableConstantObjectInspector(
+          value)
       case Literal(value, BinaryType) =>
         getBinaryWritableConstantObjectInspector(value)
-      case Literal(value, DateType) =>
-        getDateWritableConstantObjectInspector(value)
+      case Literal(value, DateType) => getDateWritableConstantObjectInspector(
+          value)
       case Literal(value, TimestampType) =>
         getTimestampWritableConstantObjectInspector(value)
       case Literal(value, DecimalType()) =>
@@ -821,8 +817,8 @@ private[hive] trait HiveInspectors {
             f.getFieldName,
             inspectorToDataType(f.getFieldObjectInspector),
             nullable = true)))
-      case l: ListObjectInspector =>
-        ArrayType(inspectorToDataType(l.getListElementObjectInspector))
+      case l: ListObjectInspector => ArrayType(
+          inspectorToDataType(l.getListElementObjectInspector))
       case m: MapObjectInspector =>
         MapType(
           inspectorToDataType(m.getMapKeyObjectInspector),
@@ -1009,8 +1005,7 @@ private[hive] trait HiveInspectors {
 
     def toTypeInfo: TypeInfo =
       dt match {
-        case ArrayType(elemType, _) =>
-          getListTypeInfo(elemType.toTypeInfo)
+        case ArrayType(elemType, _) => getListTypeInfo(elemType.toTypeInfo)
         case StructType(fields) =>
           getStructTypeInfo(
             java.util.Arrays.asList(fields.map(_.name): _*),

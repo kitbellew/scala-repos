@@ -640,8 +640,7 @@ private[execution] final class OffsetWindowFunctionFrame(
           org.apache.spark.sql.catalyst.expressions
             .Coalesce(input :: default :: Nil)
         }
-      case e =>
-        BindReferences.bindReference(e, inputAttrs)
+      case e => BindReferences.bindReference(e, inputAttrs)
     }
 
     // Create the projection.
@@ -972,8 +971,7 @@ private[execution] object AggregateProcessor {
         initialValues ++= noOps
         updateExpressions ++= noOps
         evaluateExpressions += imperative
-      case other =>
-        sys.error(s"Unsupported Aggregate Function: $other")
+      case other => sys.error(s"Unsupported Aggregate Function: $other")
     }
 
     // Create the projections.

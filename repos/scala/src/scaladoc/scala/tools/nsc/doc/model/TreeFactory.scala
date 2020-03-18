@@ -81,8 +81,7 @@ trait TreeFactory {
                 }
                 traverse(qualifier)
               case Ident(_) => makeLink(tree)
-              case _ =>
-                super.traverse(tree)
+              case _        => super.traverse(tree)
             }
         }
 

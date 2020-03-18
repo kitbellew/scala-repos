@@ -270,8 +270,7 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
       predicates: Array[String],
       connectionProperties: Properties): DataFrame = {
     val parts: Array[Partition] = predicates.zipWithIndex.map {
-      case (part, i) =>
-        JDBCPartition(part, i): Partition
+      case (part, i) => JDBCPartition(part, i): Partition
     }
     jdbc(url, table, parts, connectionProperties)
   }
@@ -282,10 +281,7 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
       parts: Array[Partition],
       connectionProperties: Properties): DataFrame = {
     val props = new Properties()
-    extraOptions.foreach {
-      case (key, value) =>
-        props.put(key, value)
-    }
+    extraOptions.foreach { case (key, value) => props.put(key, value) }
     // connectionProperties should override settings in extraOptions
     props.putAll(connectionProperties)
     val relation = JDBCRelation(url, table, parts, props)(sqlContext)

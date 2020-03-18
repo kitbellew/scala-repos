@@ -69,8 +69,7 @@ private class RateLimiterActor private (
   }
 
   private[this] def receiveDelayOps: Receive = {
-    case GetDelay(app) =>
-      sender() ! DelayUpdate(app, rateLimiter.getDelay(app))
+    case GetDelay(app) => sender() ! DelayUpdate(app, rateLimiter.getDelay(app))
 
     case AddDelay(app) =>
       rateLimiter.addDelay(app)

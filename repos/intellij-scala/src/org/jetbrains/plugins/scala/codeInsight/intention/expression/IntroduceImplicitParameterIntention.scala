@@ -157,16 +157,14 @@ class IntroduceImplicitParameterIntention
     val startOffset = expr.getTextRange.getStartOffset
 
     createExpressionToIntroduce(expr, withoutParameterTypes = false) match {
-      case Left(newExpr) =>
-        inWriteAction {
+      case Left(newExpr) => inWriteAction {
           expr.replace(newExpr)
           editor.getCaretModel.moveToOffset(startOffset)
           PsiDocumentManager
             .getInstance(project)
             .commitDocument(editor.getDocument)
         }
-      case Right(message) =>
-        showErrorHint(message)
+      case Right(message) => showErrorHint(message)
     }
   }
 }

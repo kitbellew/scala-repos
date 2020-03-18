@@ -106,10 +106,8 @@ private[python] class WritableToJavaConverter(
 
   override def convert(obj: Any): Any = {
     obj match {
-      case writable: Writable =>
-        convertWritable(writable)
-      case _ =>
-        obj
+      case writable: Writable => convertWritable(writable)
+      case _                  => obj
     }
   }
 }

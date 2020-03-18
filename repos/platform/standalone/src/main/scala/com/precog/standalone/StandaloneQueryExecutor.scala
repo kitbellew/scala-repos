@@ -122,10 +122,7 @@ trait StandaloneQueryExecutor
         shardQueryMonad,
         implicitly[Decomposer[Option[FaultPosition]]])
       def freshIdScanner = platform.freshIdScanner
-    } map {
-      case (faults, result) =>
-        result
-    }
+    } map { case (faults, result) => result }
   }
 
   def asyncExecutorFor(apiKey: APIKey)

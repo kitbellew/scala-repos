@@ -73,9 +73,7 @@ trait TimeoutComTests extends TimeoutTests with ComTests {
       try {
         com.receive(900.millis)
         fail("Expected TimeoutException to be thrown")
-      } catch {
-        case _: TimeoutException =>
-      }
+      } catch { case _: TimeoutException => }
       assertEquals(s"Got: Hello World: $i", com.receive(3000.millis))
     }
 

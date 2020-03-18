@@ -23,8 +23,7 @@ object QuickLinker {
     val semantics = Semantics.Defaults.withRuntimeClassName(_.fullName match {
       case "org.scalajs.testsuite.compiler.ReflectionTest$RenamedTestClass" =>
         "renamed.test.Class"
-      case fullName =>
-        fullName
+      case fullName => fullName
     })
     linkNodeInternal(semantics, irFilesAndJars)
   }

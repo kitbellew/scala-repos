@@ -4,30 +4,18 @@ object Test {
 
   def main(args: Array[String]) {
     a() match {
-      case Some(b1) =>
-        a() match {
-          case Some(b2) =>
-            a() match {
-              case Some(b3) =>
-                a() match {
-                  case Some(b4) =>
-                    a() match {
-                      case Some(b5) =>
-                        a() match {
-                          case Some(b6) =>
-                            a() match {
-                              case Some(b7) =>
-                                a() match {
-                                  case Some(b8) =>
-                                    a() match {
-                                      case Some(b9) =>
-                                        a() match {
-                                          case Some(b10) =>
-                                            a() match {
-                                              case Some(b11) =>
-                                                a() match {
-                                                  case Some(b12) =>
-                                                    a() match {
+      case Some(b1) => a() match {
+          case Some(b2) => a() match {
+              case Some(b3) => a() match {
+                  case Some(b4) => a() match {
+                      case Some(b5) => a() match {
+                          case Some(b6) => a() match {
+                              case Some(b7) => a() match {
+                                  case Some(b8) => a() match {
+                                      case Some(b9) => a() match {
+                                          case Some(b10) => a() match {
+                                              case Some(b11) => a() match {
+                                                  case Some(b12) => a() match {
                                                       case Some(b13) =>
                                                         a() match {
                                                           case Some(b14) =>

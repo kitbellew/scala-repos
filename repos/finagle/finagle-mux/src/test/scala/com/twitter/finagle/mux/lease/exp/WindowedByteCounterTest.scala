@@ -75,8 +75,7 @@ class WindowedByteCounterTest
     import h._
 
     withCounter(fakeBean, fakePool) {
-      case (counter, _) =>
-        assert(counter.rate() == 0)
+      case (counter, _) => assert(counter.rate() == 0)
     }
   }
 

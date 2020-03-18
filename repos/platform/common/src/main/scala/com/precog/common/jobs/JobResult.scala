@@ -49,8 +49,7 @@ case class JobResult(mimeTypes: List[MimeType], content: Array[Byte]) {
           result
         }
 
-      case _ =>
-        false
+      case _ => false
     }
 }
 

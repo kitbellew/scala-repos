@@ -196,8 +196,7 @@ object Pickler {
             val result = p.unpickle(rd).requireSuccess
             rd.accept(')')
             result
-          case _ =>
-            errorExpected(rd, quoted(label) + "(...)")
+          case _ => errorExpected(rd, quoted(label) + "(...)")
         }
     }
 

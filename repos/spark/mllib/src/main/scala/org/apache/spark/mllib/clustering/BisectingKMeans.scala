@@ -184,10 +184,7 @@ class BisectingKMeans private (
       // If we don't need all divisible clusters, take the larger ones.
       if (divisibleClusters.size > numLeafClustersNeeded) {
         divisibleClusters = divisibleClusters.toSeq
-          .sortBy {
-            case (_, summary) =>
-              -summary.size
-          }
+          .sortBy { case (_, summary) => -summary.size }
           .take(numLeafClustersNeeded)
           .toMap
       }
@@ -213,8 +210,7 @@ class BisectingKMeans private (
             divisibleIndices,
             newClusterCenters)
             .filter {
-              case (index, _) =>
-                divisibleIndices.contains(parentIndex(index))
+              case (index, _) => divisibleIndices.contains(parentIndex(index))
             }
           newClusters = summarize(d, newAssignments)
           newClusterCenters = newClusters.mapValues(_.center).map(identity)

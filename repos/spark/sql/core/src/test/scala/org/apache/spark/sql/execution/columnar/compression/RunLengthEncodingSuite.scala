@@ -50,8 +50,7 @@ class RunLengthEncodingSuite extends SparkFunSuite {
         columnType,
         uniqueValueCount)
       val inputSeq = inputRuns.flatMap {
-        case (index, run) =>
-          Seq.fill(run)(index)
+        case (index, run) => Seq.fill(run)(index)
       }
 
       inputSeq.foreach(i => builder.appendFrom(rows(i), 0))

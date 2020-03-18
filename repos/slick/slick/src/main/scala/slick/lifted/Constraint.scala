@@ -58,8 +58,7 @@ object ForeignKey {
       n match {
         case _: Select | _: Ref | _: TableNode => sels += n
         case _: ProductNode | _: OptionApply | _: GetOrElse | _: TypeMapping |
-            _: ClientSideOp =>
-          n.childrenForeach(f)
+            _: ClientSideOp => n.childrenForeach(f)
       }
     f(n)
     sels

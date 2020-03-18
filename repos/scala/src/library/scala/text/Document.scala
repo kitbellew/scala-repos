@@ -46,24 +46,15 @@ abstract class Document {
 
     def fits(w: Int, state: List[FmtState]): Boolean =
       state match {
-        case _ if w < 0 =>
-          false
-        case List() =>
-          true
-        case (_, _, DocNil) :: z =>
-          fits(w, z)
-        case (i, b, DocCons(h, t)) :: z =>
-          fits(w, (i, b, h) :: (i, b, t) :: z)
-        case (_, _, DocText(t)) :: z =>
-          fits(w - t.length(), z)
-        case (i, b, DocNest(ii, d)) :: z =>
-          fits(w, (i + ii, b, d) :: z)
-        case (_, false, DocBreak) :: z =>
-          fits(w - 1, z)
-        case (_, true, DocBreak) :: z =>
-          true
-        case (i, _, DocGroup(d)) :: z =>
-          fits(w, (i, false, d) :: z)
+        case _ if w < 0                  => false
+        case List()                      => true
+        case (_, _, DocNil) :: z         => fits(w, z)
+        case (i, b, DocCons(h, t)) :: z  => fits(w, (i, b, h) :: (i, b, t) :: z)
+        case (_, _, DocText(t)) :: z     => fits(w - t.length(), z)
+        case (i, b, DocNest(ii, d)) :: z => fits(w, (i + ii, b, d) :: z)
+        case (_, false, DocBreak) :: z   => fits(w - 1, z)
+        case (_, true, DocBreak) :: z    => true
+        case (i, _, DocGroup(d)) :: z    => fits(w, (i, false, d) :: z)
       }
 
     def spaces(n: Int) {
@@ -77,16 +68,13 @@ abstract class Document {
 
     def fmt(k: Int, state: List[FmtState]): Unit =
       state match {
-        case List() => ()
-        case (_, _, DocNil) :: z =>
-          fmt(k, z)
-        case (i, b, DocCons(h, t)) :: z =>
-          fmt(k, (i, b, h) :: (i, b, t) :: z)
+        case List()                     => ()
+        case (_, _, DocNil) :: z        => fmt(k, z)
+        case (i, b, DocCons(h, t)) :: z => fmt(k, (i, b, h) :: (i, b, t) :: z)
         case (i, _, DocText(t)) :: z =>
           writer write t
           fmt(k + t.length(), z)
-        case (i, b, DocNest(ii, d)) :: z =>
-          fmt(k, (i + ii, b, d) :: z)
+        case (i, b, DocNest(ii, d)) :: z => fmt(k, (i + ii, b, d) :: z)
         case (i, true, DocBreak) :: z =>
           writer write "\n"
           spaces(i)
@@ -97,8 +85,7 @@ abstract class Document {
         case (i, b, DocGroup(d)) :: z =>
           val fitsFlat = fits(width - k, (i, false, d) :: z)
           fmt(k, (i, !fitsFlat, d) :: z)
-        case _ =>
-          ()
+        case _ => ()
       }
 
     fmt(0, (0, false, DocGroup(this)) :: Nil)

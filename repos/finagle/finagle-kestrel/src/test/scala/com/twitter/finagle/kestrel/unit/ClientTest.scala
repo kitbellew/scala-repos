@@ -152,10 +152,7 @@ class ClientTest extends FunSuite with MockitoSugar {
       val promise = new Promise[Response]()
       @volatile
       var wasInterrupted = false
-      promise.setInterruptHandler {
-        case _cause =>
-          wasInterrupted = true
-      }
+      promise.setInterruptHandler { case _cause => wasInterrupted = true }
       when(service(open)) thenReturn promise
       when(service(closeAndOpen)) thenReturn promise
       when(service(abort)) thenReturn Future(Values(Seq()))
@@ -180,10 +177,7 @@ class ClientTest extends FunSuite with MockitoSugar {
 
     @volatile
     var wasInterrupted = false
-    promise.setInterruptHandler {
-      case _cause =>
-        wasInterrupted = true
-    }
+    promise.setInterruptHandler { case _cause => wasInterrupted = true }
 
     when(
       finagledClient.get(

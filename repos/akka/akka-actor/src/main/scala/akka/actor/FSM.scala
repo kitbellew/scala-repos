@@ -686,10 +686,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
       listeners.add(actorRef)
       // send current state back as reference point
       actorRef ! CurrentState(self, currentState.stateName)
-    case UnsubscribeTransitionCallBack(actorRef) ⇒
-      listeners.remove(actorRef)
-    case Deafen(actorRef) ⇒
-      listeners.remove(actorRef)
+    case UnsubscribeTransitionCallBack(actorRef) ⇒ listeners.remove(actorRef)
+    case Deafen(actorRef) ⇒ listeners.remove(actorRef)
     case value ⇒ {
       if (timeoutFuture.isDefined) {
         timeoutFuture.get.cancel()

@@ -353,10 +353,8 @@ object DumpLogSegments {
     if (isDeepIteration) {
       val message = messageAndOffset.message
       message.compressionCodec match {
-        case NoCompressionCodec =>
-          getSingleMessageIterator(messageAndOffset)
-        case _ =>
-          ByteBufferMessageSet.deepIterator(messageAndOffset)
+        case NoCompressionCodec => getSingleMessageIterator(messageAndOffset)
+        case _                  => ByteBufferMessageSet.deepIterator(messageAndOffset)
       }
     } else getSingleMessageIterator(messageAndOffset)
   }

@@ -537,8 +537,7 @@ class UpgradedImageIExtractor(
 
         Some(mainImage)
 
-      case _ =>
-        None
+      case _ => None
     }
   }
 

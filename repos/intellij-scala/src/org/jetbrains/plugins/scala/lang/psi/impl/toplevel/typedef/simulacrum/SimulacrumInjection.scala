@@ -42,8 +42,7 @@ class SimulacrumInjection extends SyntheticMembersInjector {
 
   override def injectFunctions(source: ScTypeDefinition): Seq[String] = {
     source match {
-      case obj: ScObject =>
-        obj.fakeCompanionClassOrCompanionClass match {
+      case obj: ScObject => obj.fakeCompanionClassOrCompanionClass match {
           case clazz: ScTypeDefinition
               if clazz.findAnnotationNoAliases(
                 "simulacrum.typeclass") != null && clazz.typeParameters.length == 1 =>
@@ -60,8 +59,7 @@ class SimulacrumInjection extends SyntheticMembersInjector {
 
   override def injectInners(source: ScTypeDefinition): Seq[String] = {
     source match {
-      case obj: ScObject =>
-        ScalaPsiUtil.getCompanionModule(obj) match {
+      case obj: ScObject => ScalaPsiUtil.getCompanionModule(obj) match {
           case Some(clazz)
               if clazz.findAnnotationNoAliases(
                 "simulacrum.typeclass") != null && clazz.typeParameters.length == 1 =>
@@ -78,8 +76,7 @@ class SimulacrumInjection extends SyntheticMembersInjector {
             def isProperTpt(tp: ScType): Option[Option[ScTypeParameterType]] = {
               tp match {
                 case ScTypeParameterType(_, _, _, _, param)
-                    if param == clazzTypeParam =>
-                  Some(None)
+                    if param == clazzTypeParam => Some(None)
                 case ScParameterizedType(
                       ScTypeParameterType(_, _, _, _, param),
                       Seq(p: ScTypeParameterType)) if param == clazzTypeParam =>
@@ -97,16 +94,12 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                       val annotation = f.findAnnotationNoAliases(
                         "simulacrum.op")
                       val names = annotation match {
-                        case a: ScAnnotation =>
-                          a.constructor.args match {
-                            case Some(args) =>
-                              args.exprs.headOption match {
+                        case a: ScAnnotation => a.constructor.args match {
+                            case Some(args) => args.exprs.headOption match {
                                 case Some(l: ScLiteral) if l.isString =>
                                   l.getValue match {
-                                    case value: String =>
-                                      args.exprs match {
-                                        case Seq(_, second) =>
-                                          second match {
+                                    case value: String => args.exprs match {
+                                        case Seq(_, second) => second match {
                                             case l: ScLiteral
                                                 if l.getValue == true =>
                                               Seq(value, f.name)
@@ -200,8 +193,7 @@ class SimulacrumInjection extends SyntheticMembersInjector {
             val AllOpsSupers = clazz.extendsBlock.templateParents.toSeq
               .flatMap(parents =>
                 parents.typeElements.flatMap {
-                  case te =>
-                    te.getType(TypingContext.empty) match {
+                  case te => te.getType(TypingContext.empty) match {
                       case Success(ScParameterizedType(classType, Seq(tp)), _)
                           if isProperTpt(tp).isDefined =>
                         def fromType: Seq[String] = {

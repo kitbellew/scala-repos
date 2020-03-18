@@ -192,9 +192,8 @@ object Trees {
     require(
       lhs match {
         case _: VarRef | _: Select | _: ArraySelect | _: JSDotSelect |
-            _: JSBracketSelect | _: JSSuperBracketSelect =>
-          true
-        case _ => false
+            _: JSBracketSelect | _: JSSuperBracketSelect => true
+        case _                                           => false
       },
       s"Invalid lhs for Assign: $lhs"
     )
@@ -335,20 +334,14 @@ object Trees {
     val tpe = (op: @switch) match {
       case === | !== | Num_== | Num_!= | Num_< | Num_<= | Num_> | Num_>= |
           Long_== | Long_!= | Long_< | Long_<= | Long_> | Long_>= | Boolean_== |
-          Boolean_!= | Boolean_| | Boolean_& =>
-        BooleanType
-      case String_+ =>
-        StringType
+          Boolean_!= | Boolean_| | Boolean_& => BooleanType
+      case String_+                          => StringType
       case Int_+ | Int_- | Int_* | Int_/ | Int_% | Int_| | Int_& | Int_^ |
-          Int_<< | Int_>>> | Int_>> =>
-        IntType
-      case Float_+ | Float_- | Float_* | Float_/ | Float_% =>
-        FloatType
-      case Double_+ | Double_- | Double_* | Double_/ | Double_% =>
-        DoubleType
+          Int_<< | Int_>>> | Int_>>                             => IntType
+      case Float_+ | Float_- | Float_* | Float_/ | Float_%      => FloatType
+      case Double_+ | Double_- | Double_* | Double_/ | Double_% => DoubleType
       case Long_+ | Long_- | Long_* | Long_/ | Long_% | Long_| | Long_& |
-          Long_^ | Long_<< | Long_>>> | Long_>> =>
-        LongType
+          Long_^ | Long_<< | Long_>>> | Long_>> => LongType
     }
   }
 

@@ -29,9 +29,8 @@ object RequestOrResponseSend {
     val buffer = ByteBuffer.allocate(
       request.sizeInBytes + (if (request.requestId != None) 2 else 0))
     request.requestId match {
-      case Some(requestId) =>
-        buffer.putShort(requestId)
-      case None =>
+      case Some(requestId) => buffer.putShort(requestId)
+      case None            =>
     }
     request.writeTo(buffer)
     buffer.rewind()

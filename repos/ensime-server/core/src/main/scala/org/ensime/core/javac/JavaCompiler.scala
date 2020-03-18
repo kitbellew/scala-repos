@@ -135,8 +135,7 @@ class JavaCompiler(
       file: SourceFileInfo,
       offset: Int): Option[DocSigPair] = {
     pathToPoint(file, offset) flatMap {
-      case (info: CompilationInfo, path: TreePath) =>
-        docSignature(info, path)
+      case (info: CompilationInfo, path: TreePath) => docSignature(info, path)
     }
   }
 
@@ -197,8 +196,7 @@ class JavaCompiler(
         "Parsed and analyzed: " + (System.currentTimeMillis() - t) + "ms")
     } catch {
       case e @ (_: Abort | _: ArrayIndexOutOfBoundsException |
-          _: AssertionError) =>
-        log.error("Javac error: " + e.getMessage())
+          _: AssertionError) => log.error("Javac error: " + e.getMessage())
     }
   }
 

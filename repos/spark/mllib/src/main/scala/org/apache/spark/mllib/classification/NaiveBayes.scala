@@ -113,10 +113,8 @@ class NaiveBayesModel private[spark] (
   @Since("1.0.0")
   override def predict(testData: Vector): Double = {
     modelType match {
-      case Multinomial =>
-        labels(multinomialCalculation(testData).argmax)
-      case Bernoulli =>
-        labels(bernoulliCalculation(testData).argmax)
+      case Multinomial => labels(multinomialCalculation(testData).argmax)
+      case Bernoulli   => labels(bernoulliCalculation(testData).argmax)
     }
   }
 
@@ -146,10 +144,9 @@ class NaiveBayesModel private[spark] (
   @Since("1.5.0")
   def predictProbabilities(testData: Vector): Vector = {
     modelType match {
-      case Multinomial =>
-        posteriorProbabilities(multinomialCalculation(testData))
-      case Bernoulli =>
-        posteriorProbabilities(bernoulliCalculation(testData))
+      case Multinomial => posteriorProbabilities(
+          multinomialCalculation(testData))
+      case Bernoulli => posteriorProbabilities(bernoulliCalculation(testData))
     }
   }
 
@@ -443,10 +440,7 @@ class NaiveBayes private (
 
     val numLabels = aggregated.length
     var numDocuments = 0L
-    aggregated.foreach {
-      case (_, (n, _)) =>
-        numDocuments += n
-    }
+    aggregated.foreach { case (_, (n, _))                      => numDocuments += n }
     val numFeatures = aggregated.head match { case (_, (_, v)) => v.size }
 
     val labels = new Array[Double](numLabels)

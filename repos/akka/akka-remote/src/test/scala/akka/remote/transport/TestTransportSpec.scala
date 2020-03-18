@@ -160,16 +160,13 @@ class TestTransportSpec
 
       handleA.disassociate()
 
-      expectMsgPF(timeout.duration) {
-        case Disassociated(_) ⇒
-      }
+      expectMsgPF(timeout.duration) { case Disassociated(_) ⇒ }
 
       awaitCond(!registry.existsAssociation(addressA, addressB))
 
       registry.logSnapshot exists {
         case DisassociateAttempt(requester, remote)
-            if requester == addressA && remote == addressB ⇒
-          true
+            if requester == addressA && remote == addressB ⇒ true
         case _ ⇒ false
       } should ===(true)
     }

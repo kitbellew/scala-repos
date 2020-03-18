@@ -293,8 +293,7 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
             case (v, "Long")   => v.toLong
             case (v, "Double") => v.toDouble
             case (v, "Float")  => v.toFloat
-            case (v, "Char") =>
-              v.length match {
+            case (v, "Char") => v.length match {
                 case 1 => v(0)
                 case 3 => v(1) // quoted character
               }

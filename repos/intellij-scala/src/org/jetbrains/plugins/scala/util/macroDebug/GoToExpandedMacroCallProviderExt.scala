@@ -32,9 +32,8 @@ class GoToExpandedMacroCallProviderExt extends LineMarkerProvider {
 
     val synFile = file match {
       case scalaFile: ScalaFile
-          if ScalaMacroDebuggingUtil tryToLoad scalaFile =>
-        Some(scalaFile)
-      case _ => None
+          if ScalaMacroDebuggingUtil tryToLoad scalaFile => Some(scalaFile)
+      case _                                             => None
     }
 
     val macrosFound = elements filter ScalaMacroDebuggingUtil.isMacroCall

@@ -20,10 +20,10 @@ private[api] final class Cli(bus: lila.common.Bus, renderer: ActorSelection)
     }
 
   def process = {
-    case "deploy" :: "pre" :: Nil =>
-      remindDeploy(lila.hub.actorApi.RemindDeployPre)
-    case "deploy" :: "post" :: Nil =>
-      remindDeploy(lila.hub.actorApi.RemindDeployPost)
+    case "deploy" :: "pre" :: Nil => remindDeploy(
+        lila.hub.actorApi.RemindDeployPre)
+    case "deploy" :: "post" :: Nil => remindDeploy(
+        lila.hub.actorApi.RemindDeployPost)
     case "rating" :: "fest" :: Nil =>
       RatingFest(
         lila.db.Env.current,

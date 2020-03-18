@@ -75,13 +75,10 @@ trait CValueGenerators {
       case CBoolean => Gen.oneOf(true, false) map (CBoolean(_))
       case CLong    => arbLong.arbitrary map (CLong(_))
       case CDouble  => arbDouble.arbitrary map (CDouble(_))
-      case CNum =>
-        for {
+      case CNum => for {
           scale <- arbInt.arbitrary
           bigInt <- arbBigInt.arbitrary
-        } yield CNum(BigDecimal(
-          new java.math.BigDecimal(bigInt.bigInteger, scale - 1),
-          java.math.MathContext.UNLIMITED))
+        } yield CNum(BigDecimal(new java.math.BigDecimal(bigInt.bigInteger, scale - 1), java.math.MathContext.UNLIMITED))
       case CDate =>
         choose[Long](0, Long.MaxValue) map (new DateTime(_)) map (CDate(_))
       case CArrayType(elemType) =>

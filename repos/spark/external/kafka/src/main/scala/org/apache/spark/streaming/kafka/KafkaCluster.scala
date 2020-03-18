@@ -354,10 +354,8 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
       try {
         consumer = connect(hp._1, hp._2)
         fn(consumer)
-      } catch {
-        case NonFatal(e) =>
-          errs.append(e)
-      } finally { if (consumer != null) { consumer.close() } }
+      } catch { case NonFatal(e) => errs.append(e) }
+      finally { if (consumer != null) { consumer.close() } }
     }
   }
 }

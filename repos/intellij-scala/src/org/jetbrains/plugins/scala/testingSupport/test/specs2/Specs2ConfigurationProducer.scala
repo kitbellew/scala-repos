@@ -94,9 +94,7 @@ with AbstractTestConfigurationProducer {
     try {
       val module = ScalaPsiUtil.getModule(element)
       if (module != null) { runConfiguration.setModule(module) }
-    } catch {
-      case e: Exception =>
-    }
+    } catch { case e: Exception => }
     JavaRunConfigurationExtensionManager.getInstance
       .extendCreatedConfiguration(runConfiguration, location)
     Some((testClass, settings))
@@ -140,8 +138,7 @@ with AbstractTestConfigurationProducer {
     configuration match {
       case configuration: Specs2RunConfiguration
           if configuration.getTestKind == TestKind.CLASS &&
-            testName == null =>
-        testClassPath == configuration.getTestClassPath
+            testName == null => testClassPath == configuration.getTestClassPath
       case configuration: Specs2RunConfiguration
           if configuration.getTestKind == TestKind.TEST_NAME =>
         testClassPath == configuration.getTestClassPath && testName != null &&

@@ -50,12 +50,10 @@ object CommonHelperFunctions {
 
     (0 until evalK).map { foldIdx =>
       val trainingPoints = indexedPoints.flatMap {
-        case (pt, idx) =>
-          selectPoint(foldIdx, pt, idx, evalK, true)
+        case (pt, idx) => selectPoint(foldIdx, pt, idx, evalK, true)
       }
       val testingPoints = indexedPoints.flatMap {
-        case (pt, idx) =>
-          selectPoint(foldIdx, pt, idx, evalK, false)
+        case (pt, idx) => selectPoint(foldIdx, pt, idx, evalK, false)
       }
 
       (

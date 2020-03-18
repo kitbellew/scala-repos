@@ -179,8 +179,7 @@ trait DiagramDirectiveParser {
     directives match {
 
       // if there are no specific diagram directives, return the default filter (either FullDiagram or NoDiagramAtAll)
-      case Nil =>
-        defaultFilter
+      case Nil => defaultFilter
 
       // compute the exact filters. By including the annotation, the diagram is automatically added
       case _ =>
@@ -217,8 +216,7 @@ trait DiagramDirectiveParser {
           .split(",")
           .map(_.trim)
         for (entry <- entries) entry match {
-          case "hideDiagram" =>
-            hideDiagram0 = true
+          case "hideDiagram" => hideDiagram0 = true
           case "hideIncomingImplicits" if isInheritanceDiagram =>
             hideIncomingImplicits0 = true
           case "hideOutgoingImplicits" if isInheritanceDiagram =>

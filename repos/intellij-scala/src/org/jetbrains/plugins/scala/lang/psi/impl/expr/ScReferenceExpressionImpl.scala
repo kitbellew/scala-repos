@@ -282,15 +282,12 @@ class ScReferenceExpressionImpl(node: ASTNode)
             case _                           => tp
           }).isAliasType match {
             case Some(AliasType(_, lower, _))
-                if lower.isDefined && lower.get.isStable =>
-              return true
+                if lower.isDefined && lower.get.isStable => return true
             case _ =>
               if (tp.isStable) return true
               typeElementOpt match {
-                case Some(te) =>
-                  te.getContext match {
-                    case pt: ScParameterType =>
-                      pt.getContext match {
+                case Some(te) => te.getContext match {
+                    case pt: ScParameterType => pt.getContext match {
                         case p: ScParameter
                             if !p.getDefaultExpression.contains(this) =>
                           p.owner match {
@@ -303,9 +300,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
                                     simple.reference match {
                                       case Some(ref)
                                           if ref.refName == p.name && ref
-                                            .resolve() == p =>
-                                        found = true
-                                      case _ =>
+                                            .resolve() == p => found = true
+                                      case _                =>
                                     }
                                   }
                                   super.visitSimpleTypeElement(simple)
@@ -541,16 +537,14 @@ class ScReferenceExpressionImpl(node: ASTNode)
             } else None
           }
           val returnType: Option[ScType] = qualifier match {
-            case Some(qual) =>
-              convertQualifier(qual.getType(TypingContext.empty))
-            case None =>
-              getContext match {
+            case Some(qual) => convertQualifier(
+                qual.getType(TypingContext.empty))
+            case None => getContext match {
                 case i: ScInfixExpr if i.operation == this =>
                   convertQualifier(i.lOp.getType(TypingContext.empty))
                 case i: ScPostfixExpr if i.operation == this =>
                   convertQualifier(i.operand.getType(TypingContext.empty))
-                case _ =>
-                  for {
+                case _ => for {
                     clazz <- ScalaPsiUtil.drvTemplate(this)
                     qualifier <- convertQualifier(
                       clazz.getType(TypingContext.empty))
@@ -605,8 +599,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
         }
       case Some(qualifier) =>
         qualifier.getNonValueType(TypingContext.empty) match {
-          case Success(ScTypePolymorphicType(_, typeParams), _) =>
-            inner match {
+          case Success(ScTypePolymorphicType(_, typeParams), _) => inner match {
               case ScTypePolymorphicType(internal, typeParams2) =>
                 return Success(
                   ScalaPsiUtil.removeBadBounds(ScTypePolymorphicType(
@@ -650,8 +643,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
             case _                        => Seq.empty
           }
           .getOrElse(Seq.empty)
-      case _ =>
-        getContext match {
+      case _ => getContext match {
           case sugar: ScSugarCallExpr if sugar.operation == this =>
             sugar.getBaseExpr
               .getNonValueType(TypingContext.empty)

@@ -336,9 +336,8 @@ class ScalaIntroduceParameterHandler
     if (enclosingMethods.size > 1) {
       val methodsNotImplementingLibraryInterfaces = enclosingMethods.filter {
         case f: ScFunctionDefinition
-            if f.superMethods.exists(isLibraryInterfaceMethod) =>
-          false
-        case _ => true
+            if f.superMethods.exists(isLibraryInterfaceMethod) => false
+        case _                                                 => true
       }
       if (methodsNotImplementingLibraryInterfaces.nonEmpty)
         return methodsNotImplementingLibraryInterfaces
@@ -384,8 +383,7 @@ class ScalaIntroduceParameterHandler
       case pc: ScPrimaryConstructor =>
         s"${pc.containingClass.name} (primary constructor)"
       case (f: ScFunctionDefinition) && ContainingClass(
-            c: ScNewTemplateDefinition) =>
-        s"${f.name} (in anonymous class)"
+            c: ScNewTemplateDefinition) => s"${f.name} (in anonymous class)"
       case (f: ScFunctionDefinition) && ContainingClass(c) =>
         s"${f.name} (in ${c.name})"
       case f: ScFunctionDefinition => s"${f.name}"

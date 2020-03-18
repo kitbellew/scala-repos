@@ -234,10 +234,8 @@ class HistoryServer(
       appCache.get(appId, attemptId)
       true
     } catch {
-      case NonFatal(e) =>
-        e.getCause() match {
-          case nsee: NoSuchElementException =>
-            false
+      case NonFatal(e) => e.getCause() match {
+          case nsee: NoSuchElementException => false
 
           case cause: Exception => throw cause
         }

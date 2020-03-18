@@ -227,8 +227,8 @@ private final case class BackoffOptionsImpl(
       0.0 <= randomFactor && randomFactor <= 1.0,
       "randomFactor must be between 0.0 and 1.0")
     backoffReset match {
-      case AutoReset(resetBackoff) ⇒
-        require(minBackoff <= resetBackoff && resetBackoff <= maxBackoff)
+      case AutoReset(resetBackoff) ⇒ require(
+          minBackoff <= resetBackoff && resetBackoff <= maxBackoff)
       case _ ⇒ // ignore
     }
 

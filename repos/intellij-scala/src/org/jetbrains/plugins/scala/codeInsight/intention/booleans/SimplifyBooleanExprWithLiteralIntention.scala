@@ -38,8 +38,7 @@ class SimplifyBooleanExprWithLiteralIntention
 
   def invoke(project: Project, editor: Editor, element: PsiElement) {
     findSimplifiableParent(element) match {
-      case Some(expr) =>
-        inWriteAction {
+      case Some(expr) => inWriteAction {
           expr.replaceExpression(
             SimplifyBooleanUtil.simplify(expr),
             removeParenthesis = true)

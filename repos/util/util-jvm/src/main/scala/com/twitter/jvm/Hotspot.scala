@@ -56,11 +56,9 @@ class Hotspot extends Jvm {
           Array("java.lang.String"))
       o.asInstanceOf[CompositeDataSupport].get("value").asInstanceOf[String]
     } catch {
-      case _: IllegalArgumentException =>
-        None
+      case _: IllegalArgumentException => None
       case rbe: RuntimeMBeanException
-          if rbe.getCause.isInstanceOf[IllegalArgumentException] =>
-        None
+          if rbe.getCause.isInstanceOf[IllegalArgumentException] => None
     }
 
   private[this] def long(c: Counter) = c.getValue().asInstanceOf[Long]

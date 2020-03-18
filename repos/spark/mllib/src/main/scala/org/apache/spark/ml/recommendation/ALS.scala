@@ -799,10 +799,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       .join(userFactors)
       .mapPartitions(
         { items =>
-          items.flatMap {
-            case (_, (ids, factors)) =>
-              ids.view.zip(factors)
-          }
+          items.flatMap { case (_, (ids, factors)) => ids.view.zip(factors) }
         // Preserve the partitioning because IDs are consistent with the partitioners in userInBlocks
         // and userFactors.
         },
@@ -815,10 +812,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       .join(itemFactors)
       .mapPartitions(
         { items =>
-          items.flatMap {
-            case (_, (ids, factors)) =>
-              ids.view.zip(factors)
-          }
+          items.flatMap { case (_, (ids, factors)) => ids.view.zip(factors) }
         },
         preservesPartitioning = true)
       .setName("itemFactors")
@@ -1360,8 +1354,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       case (InBlock(dstIds, srcPtrs, srcEncodedIndices, ratings), srcFactors) =>
         val sortedSrcFactors = new Array[FactorBlock](numSrcBlocks)
         srcFactors.foreach {
-          case (srcBlockId, factors) =>
-            sortedSrcFactors(srcBlockId) = factors
+          case (srcBlockId, factors) => sortedSrcFactors(srcBlockId) = factors
         }
         val dstFactors = new Array[Array[Float]](dstIds.length)
         var j = 0

@@ -281,8 +281,7 @@ trait Client {
             backoffs match {
               case delay #:: rest =>
                 timer.schedule(delay.fromNow) { loop(read(queueName), rest) }
-              case _ =>
-                error ! OutOfRetriesException
+              case _ => error ! OutOfRetriesException
             }
           }
         )
@@ -377,8 +376,7 @@ abstract protected[kestrel] class ClientBase[
             error ! ReadClosedException
           },
           reply.toOffer {
-            case Return(r: Reply) =>
-              processResponse(r) match {
+            case Return(r: Reply) => processResponse(r) match {
                 case Return(Some((data, id))) =>
                   val ack = new Broker[ItemId]
                   messages ! ReadMessage(data, ack.send(id), abort.send(id))
@@ -391,8 +389,7 @@ abstract protected[kestrel] class ClientBase[
                       abort.recv { id => recv(service, abortCommand(id)) }
                     )
                     .sync()
-                case Return(None) =>
-                  recv(service, openCommand)
+                case Return(None) => recv(service, openCommand)
 
                 case Throw(t) =>
                   service.close()

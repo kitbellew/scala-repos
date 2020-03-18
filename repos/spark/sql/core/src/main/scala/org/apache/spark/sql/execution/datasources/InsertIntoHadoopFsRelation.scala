@@ -103,10 +103,8 @@ private[sql] case class InsertIntoHadoopFsRelation(
         }
         true
       case (SaveMode.Append, _) | (SaveMode.Overwrite, _) |
-          (SaveMode.ErrorIfExists, false) =>
-        true
-      case (SaveMode.Ignore, exists) =>
-        !exists
+          (SaveMode.ErrorIfExists, false) => true
+      case (SaveMode.Ignore, exists)      => !exists
       case (s, exists) =>
         throw new IllegalStateException(s"unsupported save mode $s ($exists)")
     }

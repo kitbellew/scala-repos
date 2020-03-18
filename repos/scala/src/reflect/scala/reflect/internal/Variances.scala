@@ -187,23 +187,19 @@ trait Variances {
           validateVariance(sym)
           super.traverse(tree)
         // ModuleDefs need not be considered because they have been eliminated already
-        case ValDef(_, _, _, _) =>
-          validateVariance(sym)
+        case ValDef(_, _, _, _) => validateVariance(sym)
         case DefDef(_, _, tparams, vparamss, _, _) =>
           validateVariance(sym)
           traverseTrees(tparams)
           traverseTreess(vparamss)
-        case Template(_, _, _) =>
-          super.traverse(tree)
-        case CompoundTypeTree(templ) =>
-          super.traverse(tree)
+        case Template(_, _, _)       => super.traverse(tree)
+        case CompoundTypeTree(templ) => super.traverse(tree)
 
         // SI-7872 These two cases make sure we don't miss variance exploits
         // in originals, e.g. in `foo[({type l[+a] = List[a]})#l]`
         case tt @ TypeTree() if tt.original != null =>
           super.traverse(tt.original)
-        case tt: TypTree =>
-          super.traverse(tt)
+        case tt: TypTree => super.traverse(tt)
 
         case _ =>
       }

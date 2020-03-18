@@ -140,16 +140,14 @@ class Analyzer(
         context.become(ready)
         unstashAll()
 
-      case other =>
-        stash()
+      case other => stash()
     }
 
   def ready: Receive =
     withLabel("ready") {
       case ReloadExistingFilesEvent if allFilesMode =>
         log.info("Skipping reload, in all-files mode")
-      case ReloadExistingFilesEvent =>
-        restartCompiler(keepLoaded = true)
+      case ReloadExistingFilesEvent => restartCompiler(keepLoaded = true)
 
       case FullTypeCheckCompleteEvent =>
         broadcaster ! FullTypeCheckCompleteEvent
@@ -189,14 +187,10 @@ class Analyzer(
       sender ! handleReloadFiles(List(fileInfo))
     case TypecheckFilesReq(files) =>
       sender ! handleReloadFiles(files.map(toSourceFileInfo))
-    case req: PrepareRefactorReq =>
-      sender ! handleRefactorPrepareRequest(req)
-    case req: ExecRefactorReq =>
-      sender ! handleRefactorExec(req)
-    case req: CancelRefactorReq =>
-      sender ! handleRefactorCancel(req)
-    case req: RefactorReq =>
-      sender ! handleRefactorRequest(req)
+    case req: PrepareRefactorReq => sender ! handleRefactorPrepareRequest(req)
+    case req: ExecRefactorReq    => sender ! handleRefactorExec(req)
+    case req: CancelRefactorReq  => sender ! handleRefactorCancel(req)
+    case req: RefactorReq        => sender ! handleRefactorRequest(req)
     case CompletionsReq(fileInfo, point, maxResults, caseSens, _reload) =>
       sender ! withExisting(fileInfo) {
         reporter.disable()

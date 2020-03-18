@@ -269,8 +269,7 @@ class Range(val start: Int, val end: Int, val step: Int)
               start == x.start && last == x.last
             ) // same length and same endpoints implies equality
         )
-      case _ =>
-        super.equals(other)
+      case _ => super.equals(other)
     }
 
   /** Note: hashCode can't be overridden without breaking Seq's

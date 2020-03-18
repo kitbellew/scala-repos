@@ -157,8 +157,7 @@ object Polynomial extends PolynomialInstances {
   def interpolate[C: Field: Eq: ClassTag](points: (C, C)*): Polynomial[C] = {
     def loop(p: Polynomial[C], xs: List[C], pts: List[(C, C)]): Polynomial[C] =
       pts match {
-        case Nil =>
-          p
+        case Nil => p
         case (x, y) :: tail =>
           val c = Polynomial.constant((y - p(x)) / xs.map(x - _).qproduct)
           val prod = xs.foldLeft(Polynomial.one[C]) { (prod, xn) =>
@@ -378,10 +377,7 @@ trait Polynomial[@sp(Double) C] {
     * @see http://en.wikipedia.org/wiki/Reciprocal_polynomial
     */
   def reciprocal(implicit ring: Semiring[C], eq: Eq[C]): Polynomial[C] =
-    mapTerms {
-      case term @ Term(coeff, exp) =>
-        Term(coeff, degree - exp)
-    }
+    mapTerms { case term @ Term(coeff, exp) => Term(coeff, degree - exp) }
 
   // EuclideanRing ops.
 
@@ -447,18 +443,15 @@ trait Polynomial[@sp(Double) C] {
         }
         loop()
 
-      case rhs: Polynomial[_] =>
-        false
+      case rhs: Polynomial[_] => false
 
-      case n if lhs.isZero =>
-        n == 0
+      case n if lhs.isZero => n == 0
 
       case n if lhs.degree == 0 =>
         val (_, lcs) = Polynomial.split(lhs)
         lcs(0) == n
 
-      case _ =>
-        false
+      case _ => false
     }
 
   override def toString: String =

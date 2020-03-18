@@ -137,8 +137,7 @@ class SbtResolverIndex private (
         try { Option(get(key)).getOrElse(Set.empty) }
         catch {
           case _: PersistentEnumeratorBase.CorruptedException |
-              _: EOFException =>
-            throw new CorruptedIndexException(file)
+              _: EOFException => throw new CorruptedIndexException(file)
         }
     }
 }

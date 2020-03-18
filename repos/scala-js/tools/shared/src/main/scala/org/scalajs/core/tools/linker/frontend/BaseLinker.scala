@@ -268,18 +268,14 @@ final class BaseLinker(
           else memberMethods += linkedMethod(m)
         }
 
-      case m: PropertyDef =>
-        if (analyzerInfo.isAnySubclassInstantiated)
+      case m: PropertyDef => if (analyzerInfo.isAnySubclassInstantiated)
           exportedMembers += linkedProperty(m)
 
-      case e: ConstructorExportDef =>
-        classExports += e
+      case e: ConstructorExportDef => classExports += e
 
-      case e: JSClassExportDef =>
-        classExports += e
+      case e: JSClassExportDef => classExports += e
 
-      case e: ModuleExportDef =>
-        classExports += e
+      case e: ModuleExportDef => classExports += e
 
       case tree =>
         sys.error(s"Illegal tree in ClassDef of class ${tree.getClass}")

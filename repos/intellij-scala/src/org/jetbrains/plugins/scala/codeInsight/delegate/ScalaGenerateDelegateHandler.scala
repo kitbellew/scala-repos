@@ -147,10 +147,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
   private def delegateText(delegate: ClassMember): String = {
     val delegateText = delegate match {
       case field @ (_: ScValueMember | _: ScVariableMember |
-          _: JavaFieldMember) =>
-        field.asInstanceOf[ScalaNamedMember].name
-      case methMember: ScMethodMember =>
-        methMember.sign.method match {
+          _: JavaFieldMember) => field.asInstanceOf[ScalaNamedMember].name
+      case methMember: ScMethodMember => methMember.sign.method match {
           case m: PsiMethod if m.isAccessor       => m.getName
           case f: ScFunction if f.isEmptyParen    => f.name + "()"
           case f: ScFunction if f.isParameterless => f.name
@@ -204,8 +202,7 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
           return None
         srr.getElement match {
           case meth: PsiMethod
-              if meth.isConstructor || meth.getContainingClass == null =>
-            None
+              if meth.isConstructor || meth.getContainingClass == null => None
           case meth: PsiMethod
               if meth.getContainingClass.getQualifiedName == CommonClassNames.JAVA_LANG_OBJECT =>
             None
@@ -213,10 +210,9 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
               if !ResolveUtils.isAccessible(
                 meth,
                 place,
-                forCompletion = true) =>
-            None
-          case meth: PsiMethod =>
-            Some(new PhysicalSignature(meth, srr.substitutor))
+                forCompletion = true) => None
+          case meth: PsiMethod => Some(
+              new PhysicalSignature(meth, srr.substitutor))
           case _ => None
         }
       }
@@ -285,32 +281,25 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     member match {
       case ta: ScAliasMember                                     => false
       case typed: ScalaTypedMember if typed.scType == types.Unit => false
-      case method: ScMethodMember =>
-        method.getElement match {
+      case method: ScMethodMember => method.getElement match {
           case m: PsiMethod if {
                 val cl = m.getContainingClass;
                 cl != null && cl.getQualifiedName == CommonClassNames.JAVA_LANG_OBJECT
-              } =>
-            false
+              } => false
           case f: ScFunction =>
-            (f.isParameterless || f.isEmptyParen) && ResolveUtils.isAccessible(
-              f,
-              clazz,
-              forCompletion = false)
+            (f.isParameterless || f.isEmptyParen) && ResolveUtils
+              .isAccessible(f, clazz, forCompletion = false)
           case m: PsiMethod =>
-            m.isAccessor && ResolveUtils.isAccessible(
-              m,
-              clazz,
-              forCompletion = false)
+            m.isAccessor && ResolveUtils
+              .isAccessible(m, clazz, forCompletion = false)
           case _ => false
         }
       case v @ (_: ScValueMember | _: ScVariableMember | _: JavaFieldMember)
           if ResolveUtils.isAccessible(
             v.getElement,
             clazz,
-            forCompletion = false) =>
-        true
-      case _ => false
+            forCompletion = false) => true
+      case _                       => false
     }
 
   private def classAtOffset(offset: Int, file: PsiFile) = {

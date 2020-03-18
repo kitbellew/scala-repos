@@ -30,8 +30,7 @@ class FetchRequestAndResponseMetrics(metricId: ClientIdBroker)
         "clientId" -> clientId,
         "brokerHost" -> brokerHost,
         "brokerPort" -> brokerPort.toString)
-    case ClientIdAllBrokers(clientId) =>
-      Map("clientId" -> clientId)
+    case ClientIdAllBrokers(clientId) => Map("clientId" -> clientId)
   }
 
   val requestTimer = new KafkaTimer(newTimer(

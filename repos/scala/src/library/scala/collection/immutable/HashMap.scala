@@ -316,15 +316,12 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
       if (hash == this.hash) {
         val kvs1 = kvs - key
         kvs1.size match {
-          case 0 =>
-            HashMap.empty[A, B]
+          case 0 => HashMap.empty[A, B]
           case 1 =>
             val kv = kvs1.head
             new HashMap1(kv._1, hash, kv._2, kv)
-          case x if x == kvs.size =>
-            this
-          case _ =>
-            new HashMapCollision1(hash, kvs1)
+          case x if x == kvs.size => this
+          case _                  => new HashMapCollision1(hash, kvs1)
         }
       } else this
 
@@ -336,15 +333,12 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
         offset0: Int): HashMap[A, B] = {
       val kvs1 = if (negate) kvs.filterNot(p) else kvs.filter(p)
       kvs1.size match {
-        case 0 =>
-          null
+        case 0 => null
         case 1 =>
           val kv @ (k, v) = kvs1.head
           new HashMap1(k, hash, v, kv)
-        case x if x == kvs.size =>
-          this
-        case _ =>
-          new HashMapCollision1(hash, kvs1)
+        case x if x == kvs.size => this
+        case _                  => new HashMapCollision1(hash, kvs1)
       }
     }
 

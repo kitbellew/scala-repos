@@ -39,8 +39,8 @@ object JdbcDataSource extends Logging {
     val pf: JdbcDataSourceFactory =
       c.getStringOr("connectionPool", "HikariCP") match {
         case "disabled" => DataSourceJdbcDataSource
-        case "HikariCP" =>
-          loadFactory("slick.jdbc.hikaricp.HikariCPJdbcDataSource$")
+        case "HikariCP" => loadFactory(
+            "slick.jdbc.hikaricp.HikariCPJdbcDataSource$")
         case "slick.jdbc.HikariCPJdbcDataSource" =>
           logger.warn(
             "connectionPool class 'slick.jdbc.HikariCPJdbcDataSource$' has been renamed to 'slick.jdbc.hikaricp.HikariCPJdbcDataSource$'")

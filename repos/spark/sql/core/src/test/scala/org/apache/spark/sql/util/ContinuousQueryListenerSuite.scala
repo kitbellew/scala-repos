@@ -190,9 +190,7 @@ class ContinuousQueryListenerSuite
 
       // To reset the waiter
       try asyncTestWaiter.await(timeout(1 milliseconds))
-      catch {
-        case NonFatal(e) =>
-      }
+      catch { case NonFatal(e) => }
     }
 
     def checkAsyncErrors(): Unit = {

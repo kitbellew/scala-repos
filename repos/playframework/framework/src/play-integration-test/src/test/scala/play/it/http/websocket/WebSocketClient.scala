@@ -205,8 +205,7 @@ object WebSocketClient {
               case close: CloseWebSocketFrame =>
                 clientInitiatedClose.set(true)
                 ctx.push(close)
-              case other =>
-                ctx.push(other)
+              case other => ctx.push(other)
             }
         })
 

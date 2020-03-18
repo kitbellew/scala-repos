@@ -61,8 +61,7 @@ private[handler] abstract class AnnotationHelper {
 
     matchedAnnotations match {
       case h :: Nil => Success((newHelper, fn(Some(h._2))))
-      case h :: t =>
-        Failure(
+      case h :: t => Failure(
           new Exception(s"Error more than one annotation when looking for $t"))
       case Nil => Success((newHelper, fn(None)))
     }

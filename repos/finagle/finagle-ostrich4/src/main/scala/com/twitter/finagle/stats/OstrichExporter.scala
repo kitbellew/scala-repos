@@ -47,8 +47,7 @@ class OstrichExporter extends HttpMuxHandler {
         StatsListener(duration, Stats, regexes).get(filtered)
       case (None, Some(namespace)) =>
         StatsListener(namespace, Stats).get(filtered)
-      case _ =>
-        Stats.get()
+      case _ => Stats.get()
     }
 
     summary.toJson

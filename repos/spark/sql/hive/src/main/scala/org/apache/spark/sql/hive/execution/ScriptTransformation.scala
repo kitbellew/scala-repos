@@ -459,17 +459,14 @@ private[hive] case class HiveScriptIOSchema(
     if (schemaLess) return Some("")
 
     val rowFormatDelimited = rowFormat.map {
-      case ("TOK_TABLEROWFORMATFIELD", value) =>
-        "FIELDS TERMINATED BY " + value
+      case ("TOK_TABLEROWFORMATFIELD", value) => "FIELDS TERMINATED BY " + value
       case ("TOK_TABLEROWFORMATCOLLITEMS", value) =>
         "COLLECTION ITEMS TERMINATED BY " + value
       case ("TOK_TABLEROWFORMATMAPKEYS", value) =>
         "MAP KEYS TERMINATED BY " + value
-      case ("TOK_TABLEROWFORMATLINES", value) =>
-        "LINES TERMINATED BY " + value
-      case ("TOK_TABLEROWFORMATNULL", value) =>
-        "NULL DEFINED AS " + value
-      case o => return None
+      case ("TOK_TABLEROWFORMATLINES", value) => "LINES TERMINATED BY " + value
+      case ("TOK_TABLEROWFORMATNULL", value)  => "NULL DEFINED AS " + value
+      case o                                  => return None
     }
 
     val serdeClassSQL = serdeClass.map("'" + _ + "'").getOrElse("")

@@ -46,8 +46,7 @@ object JsonTestHelper extends Assertions with Matchers {
         }
 
         JsObject(filterSubValues)
-      case JsArray(v) =>
-        JsArray(v.map(removeNullFieldValues))
+      case JsArray(v) => JsArray(v.map(removeNullFieldValues))
       case _: JsValue => json
     }
 

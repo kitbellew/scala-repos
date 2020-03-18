@@ -333,8 +333,7 @@ class HiveContext private[hive] (
                 } else {
                   files.filter(_.getName().toLowerCase().endsWith(".jar"))
                 }
-              case path =>
-                new File(path) :: Nil
+              case path => new File(path) :: Nil
             }
             .map(_.toURI.toURL)
 

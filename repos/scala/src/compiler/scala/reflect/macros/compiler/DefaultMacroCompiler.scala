@@ -61,12 +61,10 @@ abstract class DefaultMacroCompiler
       case Applied(
             Select(Applied(RefTree(qual, bundleName), _, Nil), methName),
             targs,
-            Nil) =>
-        (RefTree(qual, bundleName.toTypeName), methName, targs)
+            Nil) => (RefTree(qual, bundleName.toTypeName), methName, targs)
       case Applied(Ident(methName), targs, Nil) =>
         (Ident(context.owner.enclClass), methName, targs)
-      case _ =>
-        (EmptyTree, TermName(""), Nil)
+      case _ => (EmptyTree, TermName(""), Nil)
     }
     val bundleImplRef = MacroImplRefCompiler(
       atPos(macroDdef.rhs.pos)(gen.mkTypeApply(
@@ -98,8 +96,7 @@ abstract class DefaultMacroCompiler
           if (!isMacroBundleType(bundle.tpe)) MacroBundleWrongShapeError()
           if (!bundle.owner.isStaticOwner) MacroBundleNonStaticError()
           bundleResult.get
-        case _ =>
-          vanillaResult.get
+        case _ => vanillaResult.get
       }
     }
 

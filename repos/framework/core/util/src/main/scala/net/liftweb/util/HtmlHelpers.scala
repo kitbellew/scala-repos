@@ -244,8 +244,7 @@ trait HtmlHelpers extends CssBindImplicits {
     def stripDuplicateId(node: Node): Node =
       node match {
         case Group(ns) => Group(ns.map(stripDuplicateId))
-        case element: Elem =>
-          element.attribute("id") match {
+        case element: Elem => element.attribute("id") match {
             case Some(id) => {
               if (ids.contains(id.text)) {
                 processElement(

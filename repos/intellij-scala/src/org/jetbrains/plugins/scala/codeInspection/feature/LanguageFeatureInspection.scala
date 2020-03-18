@@ -67,8 +67,7 @@ class LanguageFeatureInspection
       _.dynamics,
       _.dynamics = true) {
       case e @ ReferenceTarget(ClassQualifiedName("scala.Dynamic")) && Parent(
-            Parent(Parent(_: ScClassParents))) =>
-        e
+            Parent(Parent(_: ScClassParents))) => e
     },
     Feature(
       "implicit conversion",

@@ -56,10 +56,8 @@ case class SortMergeJoin(
 
   override def output: Seq[Attribute] = {
     joinType match {
-      case Inner =>
-        left.output ++ right.output
-      case LeftOuter =>
-        left.output ++ right.output.map(_.withNullability(true))
+      case Inner     => left.output ++ right.output
+      case LeftOuter => left.output ++ right.output.map(_.withNullability(true))
       case RightOuter =>
         left.output.map(_.withNullability(true)) ++ right.output
       case FullOuter =>
@@ -72,14 +70,13 @@ case class SortMergeJoin(
 
   override def outputPartitioning: Partitioning =
     joinType match {
-      case Inner =>
-        PartitioningCollection(
+      case Inner => PartitioningCollection(
           Seq(left.outputPartitioning, right.outputPartitioning))
       // For left and right outer joins, the output is partitioned by the streamed input's join keys.
       case LeftOuter  => left.outputPartitioning
       case RightOuter => right.outputPartitioning
-      case FullOuter =>
-        UnknownPartitioning(left.outputPartitioning.numPartitions)
+      case FullOuter => UnknownPartitioning(
+          left.outputPartitioning.numPartitions)
       case x =>
         throw new IllegalArgumentException(
           s"${getClass.getSimpleName} should not take $x as the JoinType")
@@ -265,8 +262,7 @@ case class SortMergeJoin(
       a: Seq[ExprCode],
       b: Seq[ExprCode]): String = {
     val comparisons = a.zip(b).zipWithIndex.map {
-      case ((l, r), i) =>
-        s"""
+      case ((l, r), i) => s"""
          |if (comp == 0) {
          |  comp = ${ctx.genComp(leftKeys(i).dataType, l.value, r.value)};
          |}
@@ -403,8 +399,7 @@ case class SortMergeJoin(
       rightRow: String): Seq[ExprCode] = {
     ctx.INPUT_ROW = rightRow
     right.output.zipWithIndex.map {
-      case (a, i) =>
-        BoundReference(i, a.dataType, a.nullable).gen(ctx)
+      case (a, i) => BoundReference(i, a.dataType, a.nullable).gen(ctx)
     }
   }
 
@@ -421,8 +416,7 @@ case class SortMergeJoin(
     if (condition.isDefined) {
       val condRefs = condition.get.references
       val (used, notUsed) = attributes.zip(variables).partition {
-        case (a, ev) =>
-          condRefs.contains(a)
+        case (a, ev) => condRefs.contains(a)
       }
       val beforeCond = evaluateVariables(used.map(_._2))
       val afterCond = evaluateVariables(notUsed.map(_._2))

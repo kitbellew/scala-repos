@@ -57,8 +57,7 @@ object Literal {
       lit: Literal[T, N]): (HMap[({ type L[T] = Literal[T, N] })#L, N], N[T]) =
     hm.get(lit) match {
       case Some(prod) => (hm, prod)
-      case None =>
-        lit match {
+      case None => lit match {
           case ConstLit(prod) => (hm + (lit -> prod), prod)
           case UnaryLit(in, fn) =>
             val (h1, p1) = evaluate(hm, in)

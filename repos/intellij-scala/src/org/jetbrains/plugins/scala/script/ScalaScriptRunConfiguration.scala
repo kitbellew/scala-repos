@@ -128,9 +128,7 @@ class ScalaScriptRunConfiguration(
     try {
       val file: VirtualFile = VcsUtil.getVirtualFile(scriptPath)
       module = ModuleUtilCore.findModuleForFile(file, getProject)
-    } catch {
-      case e: Exception =>
-    }
+    } catch { case e: Exception => }
     if (module == null) module = getConfigurationModule.getModule
     module
   }

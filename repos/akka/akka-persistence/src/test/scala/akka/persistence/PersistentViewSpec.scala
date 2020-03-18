@@ -43,10 +43,8 @@ object PersistentViewSpec {
     var last: String = _
 
     def receive = {
-      case "get" ⇒
-        probe ! last
-      case "boom" ⇒
-        throw new TestException("boom")
+      case "get" ⇒ probe ! last
+      case "boom" ⇒ throw new TestException("boom")
 
       case payload if isPersistent && shouldFailOn(payload) ⇒
         throw new TestException("boom")
@@ -81,12 +79,10 @@ object PersistentViewSpec {
     var last: String = _
 
     def receive = {
-      case "get" ⇒
-        probe ! last
+      case "get" ⇒ probe ! last
       case payload if isPersistent && shouldFailOn(payload) ⇒
         throw new TestException("boom")
-      case payload ⇒
-        last = s"replicated-${payload}-${lastSequenceNr}"
+      case payload ⇒ last = s"replicated-${payload}-${lastSequenceNr}"
     }
 
     override def postRestart(reason: Throwable): Unit = {
@@ -108,8 +104,7 @@ object PersistentViewSpec {
     override def autoUpdateReplayMax: Long = 2
 
     def receive = {
-      case payload ⇒
-        probe ! s"replicated-${payload}-${lastSequenceNr}"
+      case payload ⇒ probe ! s"replicated-${payload}-${lastSequenceNr}"
     }
   }
 
@@ -162,14 +157,10 @@ object PersistentViewSpec {
     var last: String = _
 
     def receive = {
-      case "get" ⇒
-        probe ! last
-      case "snap" ⇒
-        saveSnapshot(last)
-      case "restart" ⇒
-        throw new TestException("restart requested")
-      case SaveSnapshotSuccess(_) ⇒
-        probe ! "snapped"
+      case "get" ⇒ probe ! last
+      case "snap" ⇒ saveSnapshot(last)
+      case "restart" ⇒ throw new TestException("restart requested")
+      case SaveSnapshotSuccess(_) ⇒ probe ! "snapped"
       case SnapshotOffer(metadata, snapshot: String) ⇒
         last = snapshot
         probe ! last

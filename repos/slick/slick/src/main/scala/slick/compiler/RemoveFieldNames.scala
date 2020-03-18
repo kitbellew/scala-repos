@@ -42,8 +42,7 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
                       _,
                       _,
                       _,
-                      _) if alwaysKeepSubqueryNames =>
-                  s
+                      _) if alwaysKeepSubqueryNames => s
               }
               .toSet
             val allTSyms =

@@ -168,8 +168,8 @@ trait MemberLookupBase {
 
         completeSearch(
           lookupInTemplate(pos, tplName, container, OnlyTerm)) match {
-          case Nil =>
-            completeSearch(lookupInTemplate(pos, tplName, container, OnlyType))
+          case Nil => completeSearch(
+              lookupInTemplate(pos, tplName, container, OnlyType))
           case syms => syms
         }
     }

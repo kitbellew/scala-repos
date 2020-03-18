@@ -81,8 +81,7 @@ object FailFastFactory {
           _endpoint: Transporter.EndpointAddr,
           next: ServiceFactory[Req, Rep]) = {
         failFast match {
-          case FailFast(false) =>
-            next
+          case FailFast(false) => next
           case FailFast(true) =>
             val param.Stats(statsReceiver) = _stats
             val param.Timer(timer) = _timer
@@ -223,9 +222,8 @@ private[finagle] class FailFastFactory[Req, Rep](
           val oldState = state
           state = Ok
           oldState match {
-            case Retrying(_, task, _, _) =>
-              task.cancel()
-            case _ =>
+            case Retrying(_, task, _, _) => task.cancel()
+            case _                       =>
           }
 
         case _ => ()

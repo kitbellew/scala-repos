@@ -103,8 +103,7 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
       html.toString must beLike {
         case eventAttributeMatcher(eventAttribute) =>
           ko(s"Contained unexpected event: ${eventAttribute}")
-        case _ =>
-          ok
+        case _ => ok
       }
     }
 

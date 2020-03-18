@@ -43,8 +43,7 @@ class SimpleDnsManager(val ext: DnsExt)
     case r @ Dns.Resolve(name) ⇒
       log.debug("Resolution request for {} from {}", name, sender())
       resolver.forward(r)
-    case SimpleDnsManager.CacheCleanup ⇒
-      for (c ← cacheCleanup) c.cleanup()
+    case SimpleDnsManager.CacheCleanup ⇒ for (c ← cacheCleanup) c.cleanup()
   }
 
   override def postStop(): Unit = { for (t ← cleanupTimer) t.cancel() }

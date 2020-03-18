@@ -259,8 +259,7 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
 
           ok(Some(body))
 
-        case None =>
-          notFound("No status found for id " + idStr)
+        case None => notFound("No status found for id " + idStr)
 
       } valueOr { error =>
         HttpResponse(

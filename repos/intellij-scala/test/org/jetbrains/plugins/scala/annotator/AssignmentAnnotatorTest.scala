@@ -16,9 +16,7 @@ class AssignmentAnnotatorTest extends SimpleTestCase {
   """
 
   def testVariable() {
-    assertMatches(messages("var v = A; v = A")) {
-      case Nil =>
-    }
+    assertMatches(messages("var v = A; v = A")) { case Nil => }
     assertMatches(messages("var v = A; v = B")) {
       case Error("B", TypeMismatch()) :: Nil =>
     }
@@ -50,18 +48,14 @@ class AssignmentAnnotatorTest extends SimpleTestCase {
   }
 
   def testClassParameter() {
-    assertMatches(messages("case class C(var p: A) { p = A }")) {
-      case Nil =>
-    }
+    assertMatches(messages("case class C(var p: A) { p = A }")) { case Nil => }
     assertMatches(messages("class C(p: A) { p = B }")) {
       case Error("p = B", ReassignmentToVal()) :: Nil =>
     }
   }
 
   def testClassVariableParameter() {
-    assertMatches(messages("class C(var p: A) { p = A }")) {
-      case Nil =>
-    }
+    assertMatches(messages("class C(var p: A) { p = A }")) { case Nil => }
     // TODO right expression "B" must have expected type
 //    assertMatches(messages("class C(var p: A) { p = B }")) {
 //      case Error("B", TypeMismatch()) :: Nil =>
@@ -137,9 +131,7 @@ class AssignmentAnnotatorTest extends SimpleTestCase {
   }
 
   def testVarInsideVar() {
-    assertMatches(messages("val x = { var a = A; a = A }")) {
-      case Nil =>
-    }
+    assertMatches(messages("val x = { var a = A; a = A }")) { case Nil => }
     assertMatches(messages("val x = { var a = A; a = B }")) {
       case Error("B", TypeMismatch()) :: Nil =>
     }

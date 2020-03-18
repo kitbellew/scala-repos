@@ -65,9 +65,8 @@ class SbtClient(baseDirectory: File, log: Logger, logEvents: Boolean)
       context become awaitingDaemon(client, pending)
     case SbtConnectionProxy.NewClientResponse.Error(recoverable, error) =>
       if (!recoverable) fail(new Exception(error), pending)
-    case request: SbtRequest =>
-      context become connecting(pending :+ request)
-    case Shutdown => shutdown()
+    case request: SbtRequest => context become connecting(pending :+ request)
+    case Shutdown            => shutdown()
   }
 
   def active(client: ActorRef): Receive = {
@@ -155,8 +154,7 @@ class SbtTask(name: String, client: ActorRef) extends Actor {
   }
 
   def connecting(pending: Seq[Request] = Seq.empty): Receive = {
-    case request: Request =>
-      context become connecting(pending :+ request)
+    case request: Request => context become connecting(pending :+ request)
     case SbtClientProxy.LookupScopedKeyResponse(name, Success(keys)) =>
       if (keys.isEmpty)
         fail(new Exception(s"No sbt key found for $name"), pending)
@@ -176,9 +174,8 @@ class SbtTask(name: String, client: ActorRef) extends Actor {
           interaction = None,
           sendTo = self)
       context become active(key, requests :+ request)
-    case SbtClientProxy.ExecutionId(Success(tid), _) => // ignore
-    case SbtClientProxy.ExecutionId(Failure(error), _) =>
-      fail(error, requests)
+    case SbtClientProxy.ExecutionId(Success(tid), _)   => // ignore
+    case SbtClientProxy.ExecutionId(Failure(error), _) => fail(error, requests)
     case SbtClientProxy.WatchEvent(key, result) =>
       requests foreach (_.sendTo ! Response(name, result))
       context become active(key)

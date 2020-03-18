@@ -73,8 +73,7 @@ object Expr {
       expr: Expr[T, N]): (HMap[({ type E[t] = Expr[t, N] })#E, N], N[T]) =
     cache.get(expr) match {
       case Some(node) => (cache, node)
-      case None =>
-        expr match {
+      case None => expr match {
           case Const(n) => (cache + (expr -> n), n)
           case Var(id) =>
             val (c1, n) = evaluate(idToExp, cache, idToExp(id))

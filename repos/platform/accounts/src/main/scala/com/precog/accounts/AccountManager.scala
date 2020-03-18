@@ -63,8 +63,7 @@ trait AccountManager[M[+_]] extends AccountFinder[M] {
       newPassword: String): M[String \/ Boolean] = {
     findAccountByResetToken(accountId, tokenId).flatMap {
       case errD @ -\/(error) => M.point(errD)
-      case \/-(account) =>
-        for {
+      case \/-(account) => for {
           updated <- updateAccountPassword(account, newPassword)
           _ <- markResetTokenUsed(tokenId)
         } yield \/-(updated)
@@ -151,10 +150,9 @@ trait AccountManager[M[+_]] extends AccountFinder[M] {
               account.passwordSalt) ||
             account.passwordHash == saltAndHashLegacy(
               password,
-              account.passwordSalt) =>
-        Success(account)
-      case Some(account) => Failure("password mismatch")
-      case None          => Failure("account not found")
+              account.passwordSalt) => Success(account)
+      case Some(account)            => Failure("password mismatch")
+      case None                     => Failure("account not found")
     }
   }
 

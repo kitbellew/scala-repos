@@ -114,8 +114,7 @@ object RegexTokenizerSuite extends SparkFunSuite {
       .select("tokens", "wantedTokens")
       .collect()
       .foreach {
-        case Row(tokens, wantedTokens) =>
-          assert(tokens === wantedTokens)
+        case Row(tokens, wantedTokens) => assert(tokens === wantedTokens)
       }
   }
 }

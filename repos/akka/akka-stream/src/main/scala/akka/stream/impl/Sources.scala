@@ -76,8 +76,7 @@ final private[stream] class QueueSource[T](
             case DropBuffer ⇒
               buffer.clear()
               enqueueAndSuccess(offer)
-            case DropNew ⇒
-              offer.promise.success(QueueOfferResult.Dropped)
+            case DropNew ⇒ offer.promise.success(QueueOfferResult.Dropped)
             case Fail ⇒
               val bufferOverflowException = new BufferOverflowException(
                 s"Buffer overflow (max capacity was: $maxBuffer)!")
@@ -85,13 +84,11 @@ final private[stream] class QueueSource[T](
                 bufferOverflowException))
               completion.failure(bufferOverflowException)
               failStage(bufferOverflowException)
-            case Backpressure ⇒
-              pendingOffer match {
+            case Backpressure ⇒ pendingOffer match {
                 case Some(_) ⇒
                   offer.promise.failure(new IllegalStateException(
                     "You have to wait for previous offer to be resolved to send another request"))
-                case None ⇒
-                  pendingOffer = Some(offer)
+                case None ⇒ pendingOffer = Some(offer)
               }
           }
       }

@@ -114,8 +114,7 @@ class ScImportStmtImpl private (
           }
 
         val resolve: Array[ResolveResult] = processor match {
-          case p: ResolveProcessor =>
-            ref match {
+          case p: ResolveProcessor => ref match {
               // do not process methodrefs when importing a type from a type
               case ref: ResolvableStableCodeReferenceElement
                   if p.kinds.contains(ResolveTargets.CLASS) &&
@@ -165,8 +164,7 @@ class ScImportStmtImpl private (
         }
         def calculateRefType(checkPo: => Boolean) = {
           exprQual.bind() match {
-            case Some(ScalaResolveResult(p: PsiPackage, _)) =>
-              poOpt() match {
+            case Some(ScalaResolveResult(p: PsiPackage, _)) => poOpt() match {
                 case Some(po) =>
                   if (checkPo) { po.getType(TypingContext.empty) }
                   else Failure("no failure", Some(this))

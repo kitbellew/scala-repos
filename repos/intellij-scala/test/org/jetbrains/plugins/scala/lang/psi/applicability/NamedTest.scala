@@ -8,24 +8,16 @@ import org.jetbrains.plugins.scala.lang.psi.types._
   */
 class NamedTest extends ApplicabilityTestBase {
   def testFine() {
-    assertProblems("(a: A)", "(a = A)") {
-      case Nil =>
-    }
-    assertProblems("(a: A, b: B)", "(a = A, b = B)") {
-      case Nil =>
-    }
+    assertProblems("(a: A)", "(a = A)") { case Nil              => }
+    assertProblems("(a: A, b: B)", "(a = A, b = B)") { case Nil => }
   }
 
   def testReversed() {
-    assertProblems("(a: A, b: B)", "(b = B, a = A)") {
-      case Nil =>
-    }
+    assertProblems("(a: A, b: B)", "(b = B, a = A)") { case Nil => }
   }
 
   def testPositionalWithNamed() {
-    assertProblems("(a: A, b: B)", "(A, b = B)") {
-      case Nil =>
-    }
+    assertProblems("(a: A, b: B)", "(A, b = B)") { case Nil => }
     //TODO compiler allows such calls, they seem to be OK
     //    assertProblems("(a: A, b: B)", "(a = A, b)") {
     //      case Nil =>

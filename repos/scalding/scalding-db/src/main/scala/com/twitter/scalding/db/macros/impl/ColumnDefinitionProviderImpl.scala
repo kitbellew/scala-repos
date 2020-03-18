@@ -176,14 +176,8 @@ object ColumnDefinitionProviderImpl {
             m.name.toString.trim -> mappedAnnotations
           }
           .groupBy(_._1)
-          .map {
-            case (k, l) =>
-              (k, l.map(_._2).reduce(_ ++ _))
-          }
-          .filter {
-            case (k, v) =>
-              !v.isEmpty
-          }
+          .map { case (k, l) => (k, l.map(_._2).reduce(_ ++ _)) }
+          .filter { case (k, v) => !v.isEmpty }
 
       outerTpe.declarations
         .collect { case m: MethodSymbol if m.isCaseAccessor => m }
@@ -222,8 +216,7 @@ object ColumnDefinitionProviderImpl {
         .toList
         // This algorithm returns the error from the first exception we run into.
         .foldLeft(scala.util.Try[List[ColumnFormat[c.type]]](Nil)) {
-          case (pTry, nxt) =>
-            (pTry, nxt) match {
+          case (pTry, nxt) => (pTry, nxt) match {
               case (Success(l), Success(r)) => Success(l ::: r)
               case (f @ Failure(_), _)      => f
               case (_, f @ Failure(_))      => f

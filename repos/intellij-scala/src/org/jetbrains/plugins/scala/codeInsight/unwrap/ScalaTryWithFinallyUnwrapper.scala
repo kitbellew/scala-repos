@@ -14,9 +14,8 @@ class ScalaTryWithFinallyUnwrapper extends ScalaUnwrapper {
   override def isApplicableTo(e: PsiElement) =
     e.getParent match {
       case ScTryStmt(tryBl, _, Some(finBl))
-          if finBl.expression.isDefined && (tryBl == e || finBl == e) =>
-        true
-      case _ => false
+          if finBl.expression.isDefined && (tryBl == e || finBl == e) => true
+      case _                                                          => false
     }
 
   override def doUnwrap(element: PsiElement, context: ScalaUnwrapContext) =

@@ -7,9 +7,8 @@ class CaseClasuseParamAsLocal {
   class CaseClauseAsLocal(classParam: Base) {
     def testCase = {
       classParam match {
-        case A(retparam) =>
-          ret < caret >
-        case _ =>
+        case A(retparam) => ret < caret >
+        case _           =>
       }
     }
 

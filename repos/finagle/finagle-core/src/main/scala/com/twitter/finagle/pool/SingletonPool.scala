@@ -50,8 +50,7 @@ private[finagle] object SingletonPool {
           // This is technically an API usage error.
           count.incrementAndGet()
           Future.exception(Failure(new ServiceClosedException))
-        case _ =>
-          Future.Done
+        case _ => Future.Done
       }
   }
 
@@ -146,11 +145,9 @@ class SingletonPool[Req, Rep](
           awaitApply(done, conn)
         } else { apply(conn) }
 
-      case Awaiting(done) =>
-        awaitApply(done, conn)
+      case Awaiting(done) => awaitApply(done, conn)
 
-      case Closed =>
-        Future.exception(Failure(new ServiceClosedException))
+      case Closed => Future.exception(Failure(new ServiceClosedException))
     }
 
   /**
@@ -204,7 +201,6 @@ class SingletonPool[Req, Rep](
           Future.Done
         }
 
-      case Closed =>
-        Future.Done
+      case Closed => Future.Done
     }
 }

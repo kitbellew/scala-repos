@@ -73,9 +73,7 @@ class ScalaChangeUtilSupport extends TreeCopyHandler {
               if (ref.qualifier == None) {
                 ref = ref.bindToElement(named).asInstanceOf[ScReferenceElement]
               }
-            } catch {
-              case ignored: IncorrectOperationException =>
-            }
+            } catch { case ignored: IncorrectOperationException => }
             return SourceTreeToPsiMap
               .psiElementToTree(ref)
               .asInstanceOf[TreeElement]

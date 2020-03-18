@@ -57,8 +57,7 @@ object AvroConversionUtil extends Serializable {
     obj match {
       case record: IndexedRecord =>
         record.getSchema.getFields.asScala.zipWithIndex.foreach {
-          case (f, i) =>
-            map.put(f.name, fromAvro(record.get(i), f.schema))
+          case (f, i) => map.put(f.name, fromAvro(record.get(i), f.schema))
         }
       case other =>
         throw new SparkException(

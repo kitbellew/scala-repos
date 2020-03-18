@@ -723,10 +723,8 @@ trait TransformSpec[M[+_]]
 
     val expected = sample.data flatMap { jv =>
       ((jv \ "value" \ "value1"), (jv \ "value" \ "value2")) match {
-        case (JUndefined, JUndefined) =>
-          None
-        case (x, y) =>
-          Some(JBool(x == y))
+        case (JUndefined, JUndefined) => None
+        case (x, y)                   => Some(JBool(x == y))
       }
     }
 

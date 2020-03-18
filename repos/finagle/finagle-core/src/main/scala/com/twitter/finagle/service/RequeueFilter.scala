@@ -105,8 +105,7 @@ private[finagle] class RequeueFilter[Req, Rep](
           else requestLimitCounter.incr()
           responseFuture(attempt, t)
         }
-      case t =>
-        responseFuture(attempt, t)
+      case t => responseFuture(attempt, t)
     }
   }
 

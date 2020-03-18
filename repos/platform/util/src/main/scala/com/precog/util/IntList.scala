@@ -50,8 +50,7 @@ sealed trait IntList
     @tailrec
     def loop(xs: IntList, row: Int): Int =
       xs match {
-        case IntCons(x, xs0) =>
-          if (row == idx) x else loop(xs0, row + 1)
+        case IntCons(x, xs0) => if (row == idx) x else loop(xs0, row + 1)
         case IntNil =>
           throw new IndexOutOfBoundsException("%d is larger than the IntList")
       }

@@ -360,9 +360,7 @@ class ScribeHandler(
     synchronized {
       socket.foreach { s =>
         try { s.close() }
-        catch {
-          case _: Throwable =>
-        }
+        catch { case _: Throwable => }
       }
       socket = None
     }

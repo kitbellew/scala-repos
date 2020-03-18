@@ -168,8 +168,8 @@ private[util] class BatchedWriteAheadLog(
       val numBatched = walWriteQueue.drainTo(buffer.asJava) + 1
       logDebug(s"Received $numBatched records from queue")
     } catch {
-      case _: InterruptedException =>
-        logWarning("BatchedWriteAheadLog Writer queue interrupted.")
+      case _: InterruptedException => logWarning(
+          "BatchedWriteAheadLog Writer queue interrupted.")
     }
     try {
       var segment: WriteAheadLogRecordHandle = null

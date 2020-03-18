@@ -114,8 +114,7 @@ trait PerfTestSuite extends Logging {
       runner.startup()
 
       config.ingest foreach {
-        case (db, file) =>
-          runner.ingest(db, file).unsafePerformIO
+        case (db, file) => runner.ingest(db, file).unsafePerformIO
       }
 
       select(config.select getOrElse ((_, _) => true)) foreach { test =>
@@ -152,21 +151,16 @@ trait PerfTestSuite extends Logging {
                 baseline)
 
               withPrinter(_.println(config.format match {
-                case OutputFormat.Legible =>
-                  delta.toPrettyString
+                case OutputFormat.Legible => delta.toPrettyString
 
-                case OutputFormat.Json =>
-                  delta.toJson.renderCompact
+                case OutputFormat.Json => delta.toJson.renderCompact
               }))
             }
 
-          case None =>
-            withPrinter(_.println(config.format match {
-              case OutputFormat.Legible =>
-                result.toPrettyString
+          case None => withPrinter(_.println(config.format match {
+              case OutputFormat.Legible => result.toPrettyString
 
-              case OutputFormat.Json =>
-                result.toJson.renderCompact
+              case OutputFormat.Json => result.toJson.renderCompact
             }))
         }
       }
@@ -181,8 +175,7 @@ trait PerfTestSuite extends Logging {
         errors.list foreach { msg => System.err.println("\t" + msg) }
         System.err.println()
 
-      case Success(config) =>
-        run(config)
+      case Success(config) => run(config)
     }
   }
 
@@ -209,16 +202,12 @@ trait PerfTestSuite extends Logging {
         }
 
         loc.right match {
-          case Some(loc) =>
-            find(loc, p, matches)
+          case Some(loc) => find(loc, p, matches)
 
-          case None =>
-            loc.parent match {
-              case Some(loc) =>
-                find(loc, p, matches, retreat = true)
+          case None => loc.parent match {
+              case Some(loc) => find(loc, p, matches, retreat = true)
 
-              case _ =>
-                matches
+              case _ => matches
             }
         }
 
@@ -233,11 +222,9 @@ trait PerfTestSuite extends Logging {
           find(loc, p, loc.tree :: matches, retreat = true)
         } else {
           loc.firstChild match {
-            case Some(loc) =>
-              find(loc, p, matches)
+            case Some(loc) => find(loc, p, matches)
 
-            case None =>
-              find(loc, p, matches, retreat = true)
+            case None => find(loc, p, matches, retreat = true)
           }
         }
       }

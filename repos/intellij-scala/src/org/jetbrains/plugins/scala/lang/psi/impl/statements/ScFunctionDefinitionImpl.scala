@@ -88,8 +88,7 @@ class ScFunctionDefinitionImpl protected (
   def returnTypeInner: TypeResult[ScType] =
     returnTypeElement match {
       case None if !hasAssign => Success(Unit, Some(this))
-      case None =>
-        body match {
+      case None => body match {
           case Some(b) => b.getType(TypingContext.empty)
           case _       => Success(Unit, Some(this))
         }

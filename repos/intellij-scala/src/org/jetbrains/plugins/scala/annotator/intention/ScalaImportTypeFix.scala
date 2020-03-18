@@ -337,8 +337,7 @@ object ScalaImportTypeFix {
       PsiTreeUtil.getParentOfType(ref, classOf[ScImportsHolder])
     else {
       PsiTreeUtil.getParentOfType(ref, classOf[ScPackaging]) match {
-        case null =>
-          ref.getContainingFile match {
+        case null => ref.getContainingFile match {
             case holder: ScImportsHolder => holder
             case file =>
               throw new AssertionError(
@@ -361,12 +360,10 @@ object ScalaImportTypeFix {
           case Some(cl) => notInner(cl, ref)
           case _        => true
         }
-      case t: ScTypeDefinition =>
-        parent(t) match {
+      case t: ScTypeDefinition => parent(t) match {
           case _: ScalaFile   => true
           case _: ScPackaging => true
-          case _: ScTemplateBody =>
-            Option(t.containingClass) match {
+          case _: ScTemplateBody => Option(t.containingClass) match {
               case Some(obj: ScObject) =>
                 ResolveUtils.isAccessible(obj, ref) && notInner(obj, ref)
               case _ => false

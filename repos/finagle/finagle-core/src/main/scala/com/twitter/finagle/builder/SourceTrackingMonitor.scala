@@ -36,8 +36,7 @@ class SourceTrackingMonitor(logger: Logger, which: String) extends Monitor {
       case null => res.reverse
       case se: SourcedException =>
         unrollCauses(se.getCause, se.serviceName +: res)
-      case fail: Failure =>
-        fail.getSource(Failure.Source.Service) match {
+      case fail: Failure => fail.getSource(Failure.Source.Service) match {
           case Some(name) => unrollCauses(fail.getCause, name.toString +: res)
           case _          => unrollCauses(fail.getCause, res)
         }

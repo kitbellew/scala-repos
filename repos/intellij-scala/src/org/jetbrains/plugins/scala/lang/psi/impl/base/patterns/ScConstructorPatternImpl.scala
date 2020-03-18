@@ -86,8 +86,7 @@ class ScConstructorPatternImpl(node: ASTNode)
 
   override def getType(ctx: TypingContext): TypeResult[ScType] = {
     ref.bind() match {
-      case Some(r) =>
-        r.element match {
+      case Some(r) => r.element match {
           //todo: remove all classes?
           case td: ScClass if td.typeParameters.nonEmpty =>
             val refType: ScType = ScSimpleTypeElementImpl

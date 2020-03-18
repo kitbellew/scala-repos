@@ -27,8 +27,7 @@ object CompositeCertificateException {
           composite.getSourceExceptions.foreach { sourceException =>
             block(sourceException)
           }
-        case other =>
-          block(other)
+        case other => block(other)
       }
       cause = cause.getCause
     }

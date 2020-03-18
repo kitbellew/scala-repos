@@ -413,8 +413,7 @@ private[niflheim] class NIHDBActor private (
   private def close = {
     IO(logger.debug("Closing projection in " + baseDir)) >> quiesce
   } except {
-    case t: Throwable =>
-      IO { logger.error("Error during close", t) }
+    case t: Throwable => IO { logger.error("Error during close", t) }
   } ensuring { IO { workLock.release } }
 
   override def postStop() = { close.unsafePerformIO }
@@ -438,8 +437,7 @@ private[niflheim] class NIHDBActor private (
   }
 
   override def receive = {
-    case GetSnapshot =>
-      sender ! getSnapshot()
+    case GetSnapshot => sender ! getSnapshot()
 
     case Cooked(id, _, _, file) =>
       // This could be a replacement for an existing id, so we
@@ -524,8 +522,7 @@ private[niflheim] class NIHDBActor private (
         state.blockState.pending.size,
         state.blockState.rawLog.length)
 
-    case Quiesce =>
-      quiesce.unsafePerformIO
+    case Quiesce => quiesce.unsafePerformIO
   }
 }
 

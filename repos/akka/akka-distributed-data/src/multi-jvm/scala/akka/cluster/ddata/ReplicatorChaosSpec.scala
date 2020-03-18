@@ -73,8 +73,7 @@ class ReplicatorChaosSpec
       awaitAssert {
         replicator ! Get(key, ReadLocal)
         val value = expectMsgPF() {
-          case g @ GetSuccess(`key`, _) ⇒
-            g.dataValue match {
+          case g @ GetSuccess(`key`, _) ⇒ g.dataValue match {
               case c: GCounter ⇒ c.value
               case c: PNCounter ⇒ c.value
               case c: GSet[_] ⇒ c.elements

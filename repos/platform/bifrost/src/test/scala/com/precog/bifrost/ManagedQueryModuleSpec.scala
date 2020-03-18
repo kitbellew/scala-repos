@@ -112,8 +112,7 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
       finalJob <- job.state match {
         case NotStarted | Started(_, _) | Cancelled(_, _, _) =>
           waitForJobCompletion(jobId)
-        case _ =>
-          Future(job)
+        case _ => Future(job)
       }
     } yield finalJob
   }
@@ -328,8 +327,7 @@ trait TestManagedQueryModule
                         Some((CharBuffer.wrap("."), i + 1))
                       }.liftM[JobQueryT]
 
-                    case _ =>
-                      M0.point { None }
+                    case _ => M0.point { None }
                   }
 
                   (Tag(M0.jobId map (_ -> ticks)), completeJob(result))

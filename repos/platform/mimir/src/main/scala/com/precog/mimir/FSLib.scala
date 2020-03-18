@@ -66,8 +66,7 @@ trait FSLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                   }
                 } flatMap { paths => walk(m, paths.flatten) }
 
-              case token =>
-                walk(m, prefixes.map(_ / Path(token)))
+              case token => walk(m, prefixes.map(_ / Path(token)))
             }
           } else { M.point(prefixes) }
         }

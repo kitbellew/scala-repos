@@ -28,8 +28,7 @@ object JsData extends lila.Steroids {
         "fen" -> opening.fen,
         "color" -> opening.color.name,
         "moves" -> JsArray(opening.qualityMoves.map {
-          case QualityMove(move, quality) =>
-            Json.obj(
+          case QualityMove(move, quality) => Json.obj(
               "uci" -> move.first,
               "san" -> move.line.headOption,
               "cp" -> move.cp,

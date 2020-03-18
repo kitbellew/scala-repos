@@ -114,8 +114,7 @@ class BsonRecordListField[OwnerType <: BsonRecord[
   override def setFromJValue(jvalue: JValue) =
     jvalue match {
       case JNothing | JNull if optional_? => setBox(Empty)
-      case JArray(arr) =>
-        setBox(Full(arr.map(jv => {
+      case JArray(arr) => setBox(Full(arr.map(jv => {
           valueMeta.fromJValue(jv) openOr valueMeta.createRecord
         })))
       case other => setBox(FieldHelpers.expectedA("JArray", other))

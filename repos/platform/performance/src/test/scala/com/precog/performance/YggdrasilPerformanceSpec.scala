@@ -377,8 +377,7 @@ histogram
       """
       val jvals = JParser.parse(nullReal)
       val msgs = jvals match {
-        case JArray(jvals) =>
-          jvals.zipWithIndex.map {
+        case JArray(jvals) => jvals.zipWithIndex.map {
             case (jval, idx) =>
               val event = Event(Path("/test/null"), "apiKey", jval, Map.empty)
               EventMessage(EventId(1, idx), event)
@@ -465,8 +464,7 @@ histogram
       """
       val jvalues = JsonParser.parse(mixedReal)
       val msgs = jvalues match {
-        case JArray(jvals) =>
-          jvals.zipWithIndex.map {
+        case JArray(jvals) => jvals.zipWithIndex.map {
             case (jval, idx) =>
               val event = Event(Path("/test/mixed"), "apiKey", jval, Map.empty)
               EventMessage(EventId(2, idx), event)

@@ -193,8 +193,7 @@ class GradientBoostedTreesSuite
         val sameModel = GradientBoostedTreesModel.load(sc, path)
         assert(model.algo == sameModel.algo)
         model.trees.zip(sameModel.trees).foreach {
-          case (treeA, treeB) =>
-            DecisionTreeSuite.checkEqual(treeA, treeB)
+          case (treeA, treeB) => DecisionTreeSuite.checkEqual(treeA, treeB)
         }
         assert(model.treeWeights === sameModel.treeWeights)
       } finally { Utils.deleteRecursively(tempDir) }

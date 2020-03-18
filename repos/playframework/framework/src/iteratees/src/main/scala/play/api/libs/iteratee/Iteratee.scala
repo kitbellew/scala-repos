@@ -189,12 +189,9 @@ object Iteratee {
       if (accum.length >= n) Done(accum)
       else
         Cont {
-          case Input.EOF =>
-            Done(accum, Input.EOF)
-          case Input.Empty =>
-            stepWith(accum)
-          case Input.El(el) =>
-            stepWith(accum :+ el)
+          case Input.EOF    => Done(accum, Input.EOF)
+          case Input.Empty  => stepWith(accum)
+          case Input.El(el) => stepWith(accum :+ el)
         }
     }
     stepWith(Seq.empty)
@@ -214,12 +211,9 @@ object Iteratee {
     */
   def isEmpty[E]: Iteratee[E, Boolean] =
     Cont {
-      case Input.EOF =>
-        Done(true, Input.EOF)
-      case Input.Empty =>
-        isEmpty[E]
-      case input @ Input.El(_) =>
-        Done(false, input)
+      case Input.EOF           => Done(true, Input.EOF)
+      case Input.Empty         => isEmpty[E]
+      case input @ Input.El(_) => Done(false, input)
     }
 
   /**
@@ -299,8 +293,7 @@ object Iteratee {
 
         case Input.Empty => Cont(step(s))
 
-        case Input.El(e) =>
-          i.pureFlatFold {
+        case Input.El(e) => i.pureFlatFold {
             case Step.Done(a, e) => Done(s :+ a, input)
             case Step.Cont(k) =>
               k(input)
@@ -438,8 +431,7 @@ trait Iteratee[E, +A] {
   def run: Future[A] =
     fold({
       case Step.Done(a, _) => Future.successful(a)
-      case Step.Cont(k) =>
-        k(Input.EOF).fold({
+      case Step.Cont(k) => k(Input.EOF).fold({
           case Step.Done(a1, _)   => Future.successful(a1)
           case Step.Cont(_)       => sys.error("diverging iteratee after Input.EOF")
           case Step.Error(msg, e) => sys.error(msg)
@@ -652,8 +644,7 @@ trait Iteratee[E, +A] {
     val pec = ec.prepare()
     self.pureFlatFold {
       case Step.Done(a, Input.Empty) => f(a)
-      case Step.Done(a, e) =>
-        executeIteratee(f(a))(pec).pureFlatFold {
+      case Step.Done(a, e) => executeIteratee(f(a))(pec).pureFlatFold {
           case Step.Done(a, eIn) => {
             val fullIn = (e, eIn) match {
               case (Input.Empty, in)            => in
@@ -733,15 +724,13 @@ trait Iteratee[E, +A] {
     def recoveringIteratee(it: Iteratee[E, A]): Iteratee[E, B] = {
       val futureRecoveringIteratee: Future[Iteratee[E, B]] = it
         .pureFlatFold[E, B] {
-          case Step.Cont(k) =>
-            Cont { input: Input[E] =>
+          case Step.Cont(k) => Cont { input: Input[E] =>
               val orig: Iteratee[E, A] = k(input)
               val recovering: Iteratee[E, B] = recoveringIteratee(orig)
               recovering
             }
-          case Step.Error(msg, _) =>
-            throw new IterateeException(msg)
-          case done => done.it
+          case Step.Error(msg, _) => throw new IterateeException(msg)
+          case done               => done.it
         }(dec)
         .unflatten
         .map(_.it)(dec)
@@ -757,8 +746,7 @@ trait Iteratee[E, +A] {
       val inner = in(a)
       inner.pureFlatFold[E, AIn] {
         case Step.Done(a, _) => Done(a, Input.Empty)
-        case Step.Cont(k) =>
-          k(Input.EOF).pureFlatFold[E, AIn] {
+        case Step.Cont(k) => k(Input.EOF).pureFlatFold[E, AIn] {
             case Step.Done(a, _) => Done(a, Input.Empty)
             case Step.Cont(k) =>
               Error("divergent inner iteratee on joinI after EOF", Input.EOF)
@@ -777,8 +765,7 @@ trait Iteratee[E, +A] {
       val inner = in(a)
       inner.pureFlatFold[E, AIn] {
         case Step.Done(a, e) => Done(a, e)
-        case Step.Cont(k) =>
-          k(Input.EOF).pureFlatFold[E, AIn] {
+        case Step.Cont(k) => k(Input.EOF).pureFlatFold[E, AIn] {
             case Step.Done(a, e) => Done(a, e)
             case Step.Cont(k) =>
               Error("divergent inner iteratee on joinI after EOF", Input.EOF)

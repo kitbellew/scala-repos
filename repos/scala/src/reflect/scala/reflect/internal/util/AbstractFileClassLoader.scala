@@ -114,8 +114,7 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
   override def getPackage(name: String): Package =
     findAbstractDir(name) match {
       case null => super.getPackage(name)
-      case file =>
-        packages.getOrElseUpdate(
+      case file => packages.getOrElseUpdate(
           name, {
             val ctor = classOf[Package].getDeclaredConstructor(
               classOf[String],

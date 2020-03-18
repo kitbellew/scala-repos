@@ -26,8 +26,7 @@ case class BigDecimalRootRefinement(
 
   def refine(scale: Int): BigDecimalRootRefinement =
     context match {
-      case AbsoluteContext(poly, oldScale) if oldScale >= scale =>
-        this
+      case AbsoluteContext(poly, oldScale) if oldScale >= scale => this
       case _ =>
         val newContext = AbsoluteContext(context.poly, scale)
         BigDecimalRootRefinement(newContext, refineApproximation(newContext))
@@ -36,8 +35,7 @@ case class BigDecimalRootRefinement(
   def refine(mc: MathContext): BigDecimalRootRefinement =
     context match {
       case RelativeContext(poly, oldmc)
-          if oldmc.getPrecision >= mc.getPrecision =>
-        this
+          if oldmc.getPrecision >= mc.getPrecision => this
       case _ =>
         val newContext = RelativeContext(context.poly, mc)
         BigDecimalRootRefinement(newContext, refineApproximation(newContext))
@@ -45,10 +43,8 @@ case class BigDecimalRootRefinement(
 
   def refineApproximation(ctx: ApproximationContext): Approximation =
     approximation match {
-      case ExactRoot(_) =>
-        approximation
-      case Bounded(lb, lby, ub, uby, n) =>
-        QIR(ctx, lb, lby, ub, uby, n)
+      case ExactRoot(_)                 => approximation
+      case Bounded(lb, lby, ub, uby, n) => QIR(ctx, lb, lby, ub, uby, n)
       case BoundedLeft(lb, ubApprox) =>
         val lbApprox = ctx.ceil(lb)
         val ub = Rational(new BigDecimal(ubApprox, MathContext.UNLIMITED))

@@ -65,8 +65,7 @@ class ClientTransportParams[A <: Stack.Parameterized[A]](
     val socketAddressToEngine: SocketAddress => Engine = {
       case sa: InetSocketAddress =>
         Ssl.clientWithoutCertificateValidation(sa.getHostName, sa.getPort)
-      case _ =>
-        Ssl.clientWithoutCertificateValidation()
+      case _ => Ssl.clientWithoutCertificateValidation()
     }
 
     self.configured(Transport.TLSClientEngine(Some(socketAddressToEngine)))

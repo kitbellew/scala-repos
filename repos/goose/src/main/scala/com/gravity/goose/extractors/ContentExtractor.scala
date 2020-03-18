@@ -486,8 +486,8 @@ trait ContentExtractor {
             e) || !isNodeScoreThreshholdMet(node, e)) {
         try { e.remove() }
         catch {
-          case ex: IllegalArgumentException =>
-            trace("Cannot remove node: " + ex.toString)
+          case ex: IllegalArgumentException => trace(
+              "Cannot remove node: " + ex.toString)
         }
       }
     }

@@ -19,10 +19,7 @@ object SCL4662 {
       /*start*/
       methods.flatMap(e =>
         try { Some(lookAtMe.reflectMethod(e)) }
-        catch {
-          case e: Throwable =>
-            e.printStackTrace(); None
-        }) /*end*/
+        catch { case e: Throwable => e.printStackTrace(); None }) /*end*/
     }
   }
 }

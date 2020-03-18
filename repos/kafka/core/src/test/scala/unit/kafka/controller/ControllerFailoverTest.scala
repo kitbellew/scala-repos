@@ -127,8 +127,7 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
     while (!found && counter < 10) {
       for (server <- this.servers) {
         val previousEpoch = (epochMap get server.config.brokerId) match {
-          case Some(epoch) =>
-            epoch
+          case Some(epoch) => epoch
           case None =>
             val msg = String.format(
               "Missing element in epoch map %s",

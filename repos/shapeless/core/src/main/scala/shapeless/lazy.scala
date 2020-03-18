@@ -176,17 +176,14 @@ trait OpenImplicitMacros {
 
   def openImplicitTpeParam: Option[Type] =
     openImplicitTpe.map {
-      case TypeRef(_, _, List(tpe)) =>
-        tpe.map(_.dealias)
-      case other =>
-        c.abort(c.enclosingPosition, s"Bad materialization: $other")
+      case TypeRef(_, _, List(tpe)) => tpe.map(_.dealias)
+      case other                    => c.abort(c.enclosingPosition, s"Bad materialization: $other")
     }
 
   def secondOpenImplicitTpe: Option[Type] =
     c.openImplicits match {
-      case (List(_, second, _ @_*)) =>
-        Some(second.pt)
-      case _ => None
+      case (List(_, second, _ @_*)) => Some(second.pt)
+      case _                        => None
     }
 }
 
@@ -311,8 +308,7 @@ class LazyMacros(val c: whitebox.Context)
                       msg.format(
                         TermName("evidence").asInstanceOf[global.TermName],
                         gTpe)
-                    case _ =>
-                      s"Implicit value of type $tpe not found"
+                    case _ => s"Implicit value of type $tpe not found"
                   }
                   setAnnotation(errorMsg)
                 }
@@ -349,8 +345,7 @@ class LazyMacros(val c: whitebox.Context)
               ${mkInst(q"$valNme", actualType)}
               """
             } else mkInst(tree, actualType)
-          case Left(err) =>
-            abort(err)
+          case Left(err) => abort(err)
         }
       }
     }
@@ -410,9 +405,8 @@ class LazyMacros(val c: whitebox.Context)
             tpes: List[List[Type]],
             acc: List[Instance]): List[Instance] =
           tpes match {
-            case Nil => acc
-            case Nil :: t =>
-              helper(t, acc)
+            case Nil      => acc
+            case Nil :: t => helper(t, acc)
             case (h :: t0) :: t =>
               if (acc.exists(_.instTpe =:= h)) helper(t0 :: t, acc)
               else {
@@ -445,8 +439,7 @@ class LazyMacros(val c: whitebox.Context)
         .orElse(stripRefinements(tpe).flatMap(State.resolveInstance(state)))
 
       extInstOpt.map {
-        case (state0, extInst) =>
-          (state0, extInst, extInst.tpe.finalResultType)
+        case (state0, extInst) => (state0, extInst, extInst.tpe.finalResultType)
       }
     }
 
@@ -536,15 +529,13 @@ class LazyMacros(val c: whitebox.Context)
                   Apply(
                     Select(qual, nme.unapply | nme.unapplySeq),
                     List(Ident(nme.SELECTOR_DUMMY))),
-                  args) =>
-              Apply(transform(qual), transformTrees(args))
+                  args) => Apply(transform(qual), transformTrees(args))
             case UnApply(
                   Apply(
                     TypeApply(Select(qual, nme.unapply | nme.unapplySeq), _),
                     List(Ident(nme.SELECTOR_DUMMY))),
-                  args) =>
-              Apply(transform(qual), transformTrees(args))
-            case t => t
+                  args) => Apply(transform(qual), transformTrees(args))
+            case t      => t
           }
         }
       }
@@ -567,8 +558,7 @@ class LazyMacros(val c: whitebox.Context)
           case Some(inst) =>
             val cleanInst = clean(inst)
             (q"$cleanInst.asInstanceOf[$actualTpe]", actualTpe)
-          case None =>
-            abort(s"Uninitialized $instTpe lazy implicit")
+          case None => abort(s"Uninitialized $instTpe lazy implicit")
         }
       } else {
         val instTrees = instances.map { instance =>
@@ -577,8 +567,7 @@ class LazyMacros(val c: whitebox.Context)
             case Some(inst) =>
               val cleanInst = clean(inst)
               q"""lazy val $name: $actualTpe = $cleanInst.asInstanceOf[$actualTpe]"""
-            case None =>
-              abort(s"Uninitialized $instTpe lazy implicit")
+            case None => abort(s"Uninitialized $instTpe lazy implicit")
           }
         }
 
@@ -612,8 +601,7 @@ object LazyMacros {
         val dc = new lm.DerivationContext
         dcRef = Some(dc)
         (dc, true)
-      case Some(dc) =>
-        (dc.asInstanceOf[lm.DerivationContext], false)
+      case Some(dc) => (dc.asInstanceOf[lm.DerivationContext], false)
     }
 
     if (root)

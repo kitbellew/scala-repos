@@ -155,8 +155,7 @@ class IngestServiceHandler(
       storeMode: WriteMode)
       : EitherT[Future, NonEmptyList[String], IngestResult] =
     right(chooseProcessing(apiKey, path, authorities, request)) flatMap {
-      case Some(processing) =>
-        EitherT {
+      case Some(processing) => EitherT {
           (processing.forRequest(request) tuple request.content.toSuccess(nels(
             "Ingest request missing body content."))) traverse {
             case (processor, data) =>
@@ -179,8 +178,7 @@ class IngestServiceHandler(
         jobManager
           .addMessage(jobId, channel, JString(message))
           .map(_ => PrecogUnit)
-      case LocalDurability =>
-        right(Promise successful PrecogUnit)
+      case LocalDurability => right(Promise successful PrecogUnit)
     }
 
   private def jobErrorResponse(message: String) = {
@@ -307,8 +305,7 @@ class IngestServiceHandler(
                         "failed" -> JNum(failed),
                         "skipped" -> JNum(total - ingested - failed),
                         "errors" -> JArray(errs map {
-                          case (line, msg) =>
-                            JObject(
+                          case (line, msg) => JObject(
                               "line" -> JNum(line),
                               "reason" -> JString(msg))
                         }: _*),

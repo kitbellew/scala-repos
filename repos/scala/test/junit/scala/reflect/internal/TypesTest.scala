@@ -59,8 +59,7 @@ class TypesTest {
     }
     results.toList match {
       case Nil => // okay
-      case xs =>
-        Assert.fail(xs.mkString("\n"))
+      case xs  => Assert.fail(xs.mkString("\n"))
     }
   }
 }

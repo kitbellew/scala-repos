@@ -143,12 +143,10 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] {
           dist = dist.rebuild(newNodes.toVector)
           adds.incr(numNew)
 
-        case Rebuild(_dist) if _dist == dist =>
-          dist = dist.rebuild()
+        case Rebuild(_dist) if _dist == dist => dist = dist.rebuild()
 
         case Rebuild(_stale) =>
-        case Invoke(fn) =>
-          fn(dist)
+        case Invoke(fn)      => fn(dist)
       }
   }
 

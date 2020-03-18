@@ -129,8 +129,7 @@ trait StateRules {
         results: List[A]): Result[S, List[A], X] = {
       rules match {
         case Nil => Success(in, results.reverse)
-        case rule :: tl =>
-          rule(in) match {
+        case rule :: tl => rule(in) match {
             case Failure         => Failure
             case Error(x)        => Error(x)
             case Success(out, v) => rep(out, tl, v :: results)

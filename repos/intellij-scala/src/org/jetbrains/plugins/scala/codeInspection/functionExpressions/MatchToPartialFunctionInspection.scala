@@ -38,8 +38,7 @@ class MatchToPartialFunctionInspection
           Some(ms @ ScMatchStmt(ref: ScReferenceExpression, _)))
         if ref.resolve() == param && !(
           param.typeElement.isDefined && notExpectedType(fun)
-        ) && checkSameResolve(fun) =>
-      registerProblem(holder, ms, fun)
+        ) && checkSameResolve(fun) => registerProblem(holder, ms, fun)
     case fun @ ScFunctionExpr(
           Seq(param),
           Some(ScBlock(ms @ ScMatchStmt(ref: ScReferenceExpression, _))))
@@ -52,8 +51,7 @@ class MatchToPartialFunctionInspection
         fun
       ) //if fun is last statement in block, result can be block without braces
     case ms @ ScMatchStmt(und: ScUnderscoreSection, _)
-        if checkSameResolve(ms) =>
-      registerProblem(holder, ms, ms)
+        if checkSameResolve(ms) => registerProblem(holder, ms, ms)
   }
 
   private def notExpectedType(expr: ScExpression) = {
@@ -156,10 +154,8 @@ class MatchToPartialFunctionQuickFix(
             call.getInvokedExpr.getText + " " + newBlock.getText,
             fExpr.getManager)
           call.replace(newMethCall)
-        case block @ ScBlock(`fExpr`) =>
-          block.replace(newBlock)
-        case _ =>
-          fExpr.replace(newBlock)
+        case block @ ScBlock(`fExpr`) => block.replace(newBlock)
+        case _                        => fExpr.replace(newBlock)
       }
       PsiDocumentManager.getInstance(project).commitAllDocuments()
     }
@@ -212,8 +208,7 @@ class MatchToPartialFunctionQuickFix(
     p match {
       case _: ScReferencePattern | _: ScLiteralPattern |
           _: ScConstructorPattern | _: ScParenthesisedPattern |
-          _: ScTuplePattern | _: ScStableReferenceElementPattern =>
-        false
-      case _ => true
+          _: ScTuplePattern | _: ScStableReferenceElementPattern => false
+      case _                                                     => true
     }
 }

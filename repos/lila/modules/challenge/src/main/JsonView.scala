@@ -35,8 +35,7 @@ final class JsonView(getLightUser: String => Option[lila.common.LightUser]) {
       "initialFen" -> c.initialFen,
       "rated" -> c.mode.rated,
       "timeControl" -> (c.timeControl match {
-        case c @ TimeControl.Clock(l, i) =>
-          Json.obj(
+        case c @ TimeControl.Clock(l, i) => Json.obj(
             "type" -> "clock",
             "limit" -> l,
             "increment" -> i,

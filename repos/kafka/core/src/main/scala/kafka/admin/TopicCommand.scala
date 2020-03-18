@@ -221,8 +221,7 @@ object TopicCommand extends Logging {
       } catch {
         case e: ZkNodeExistsException =>
           println("Topic %s is already marked for deletion.".format(topic))
-        case e: AdminOperationException =>
-          throw e
+        case e: AdminOperationException => throw e
         case e: Throwable =>
           throw new AdminOperationException(
             "Error while deleting topic %s".format(topic))
@@ -289,8 +288,7 @@ object TopicCommand extends Logging {
               }
             }
           }
-        case None =>
-          println("Topic " + topic + " doesn't exist!")
+        case None => println("Topic " + topic + " doesn't exist!")
       }
     }
   }

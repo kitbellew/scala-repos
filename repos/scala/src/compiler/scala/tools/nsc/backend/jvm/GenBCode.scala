@@ -160,8 +160,7 @@ abstract class GenBCode extends BCodeSyncAndTry {
         caseInsensitively.get(lowercaseJavaClassName) match {
           case None =>
             caseInsensitively.put(lowercaseJavaClassName, claszSymbol)
-          case Some(dupClassSym) =>
-            reporter.warning(
+          case Some(dupClassSym) => reporter.warning(
               claszSymbol.pos,
               s"Class ${claszSymbol.javaClassName} differs only in case from ${dupClassSym.javaClassName}. " +
                 "Such classes will overwrite one another on case-insensitive filesystems."
@@ -422,8 +421,8 @@ abstract class GenBCode extends BCodeSyncAndTry {
               jclassBytes,
               outFile)
           } catch {
-            case e: FileConflictException =>
-              error(s"error writing $jclassName: ${e.getMessage}")
+            case e: FileConflictException => error(
+                s"error writing $jclassName: ${e.getMessage}")
           }
         }
       }

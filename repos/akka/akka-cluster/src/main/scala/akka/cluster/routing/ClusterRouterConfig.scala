@@ -200,8 +200,7 @@ final case class ClusterRouterGroup(
           "ClusterRouterGroup is not allowed to wrap a ClusterRouterGroup")
       case ClusterRouterGroup(local, _) ⇒
         copy(local = this.local.withFallback(local).asInstanceOf[Group])
-      case _ ⇒
-        copy(local = this.local.withFallback(other).asInstanceOf[Group])
+      case _ ⇒ copy(local = this.local.withFallback(other).asInstanceOf[Group])
     }
 
 }
@@ -271,8 +270,7 @@ final case class ClusterRouterPool(
           "ClusterRouterPool is not allowed to wrap a ClusterRouterPool")
       case ClusterRouterPool(otherLocal, _) ⇒
         copy(local = this.local.withFallback(otherLocal).asInstanceOf[Pool])
-      case _ ⇒
-        copy(local = this.local.withFallback(other).asInstanceOf[Pool])
+      case _ ⇒ copy(local = this.local.withFallback(other).asInstanceOf[Pool])
     }
 
 }
@@ -519,18 +517,15 @@ private[akka] trait ClusterRouterActor {
       nodes = s.members.collect { case m if isAvailable(m) ⇒ m.address }
       addRoutees()
 
-    case m: MemberEvent if isAvailable(m.member) ⇒
-      addMember(m.member)
+    case m: MemberEvent if isAvailable(m.member) ⇒ addMember(m.member)
 
     case other: MemberEvent ⇒
       // other events means that it is no longer interesting, such as
       // MemberExited, MemberRemoved
       removeMember(other.member)
 
-    case UnreachableMember(m) ⇒
-      removeMember(m)
+    case UnreachableMember(m) ⇒ removeMember(m)
 
-    case ReachableMember(m) ⇒
-      if (isAvailable(m)) addMember(m)
+    case ReachableMember(m) ⇒ if (isAvailable(m)) addMember(m)
   }
 }

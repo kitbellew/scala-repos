@@ -466,8 +466,7 @@ case class ScTypePolymorphicType(
     val newVisited = visited + this
     update(this) match {
       case (true, res) => res
-      case _ =>
-        ScTypePolymorphicType(
+      case _ => ScTypePolymorphicType(
           internalType.recursiveUpdate(update, newVisited),
           typeParameters.map(tp => {
             TypeParameter(
@@ -492,8 +491,7 @@ case class ScTypePolymorphicType(
       variance: Int = 1): ScType = {
     update(this, variance, data) match {
       case (true, res, _) => res
-      case (_, _, newData) =>
-        ScTypePolymorphicType(
+      case (_, _, newData) => ScTypePolymorphicType(
           internalType
             .recursiveVarianceUpdateModifiable(newData, update, variance),
           typeParameters.map(tp => {
@@ -553,8 +551,7 @@ case class ScTypePolymorphicType(
                   new ScTypeParameterType(
                     tuple._2.name,
                     tuple._2.ptp match {
-                      case p: ScTypeParam =>
-                        p.typeParameters.toList.map {
+                      case p: ScTypeParam => p.typeParameters.toList.map {
                           new ScTypeParameterType(_, ScSubstitutor.empty)
                         }
                       case _ => Nil

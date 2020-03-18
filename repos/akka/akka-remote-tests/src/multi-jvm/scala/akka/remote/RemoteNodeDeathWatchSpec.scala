@@ -50,8 +50,7 @@ object RemoteNodeDeathWatchMultiJvmSpec extends MultiNodeConfig {
       case UnwatchIt(watchee) ⇒
         context unwatch watchee
         sender() ! Ack
-      case t: Terminated ⇒
-        testActor forward WrappedTerminated(t)
+      case t: Terminated ⇒ testActor forward WrappedTerminated(t)
       case msg ⇒ testActor forward msg
     }
   }

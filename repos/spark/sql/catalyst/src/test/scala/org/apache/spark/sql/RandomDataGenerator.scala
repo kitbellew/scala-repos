@@ -137,8 +137,7 @@ object RandomDataGenerator {
       rand: Random = new Random): Option[() => Any] = {
     val valueGenerator: Option[() => Any] = dataType match {
       case StringType => Some(() => rand.nextString(rand.nextInt(MAX_STR_LEN)))
-      case BinaryType =>
-        Some(() => {
+      case BinaryType => Some(() => {
           val arr = new Array[Byte](rand.nextInt(MAX_STR_LEN))
           rand.nextBytes(arr)
           arr
@@ -174,8 +173,7 @@ object RandomDataGenerator {
           DateTimeUtils.toJavaTimestamp(milliseconds * 1000)
         }
         Some(generator)
-      case CalendarIntervalType =>
-        Some(() => {
+      case CalendarIntervalType => Some(() => {
           val months = rand.nextInt(1000)
           val ns = rand.nextLong()
           new CalendarInterval(months, ns)
@@ -188,8 +186,7 @@ object RandomDataGenerator {
               scale,
               new MathContext(precision))
             .bigDecimal)
-      case DoubleType =>
-        randomNumeric[Double](
+      case DoubleType => randomNumeric[Double](
           rand,
           r => longBitsToDouble(r.nextLong()),
           Seq(
@@ -201,8 +198,7 @@ object RandomDataGenerator {
             Double.NaN,
             0.0)
         )
-      case FloatType =>
-        randomNumeric[Float](
+      case FloatType => randomNumeric[Float](
           rand,
           r => intBitsToFloat(r.nextInt()),
           Seq(

@@ -35,8 +35,7 @@ class PluginsActor(engineVariant: String) extends Actor {
           .outputSniffers(h.pluginName)
           .handleREST(h.pluginArgs)
       } catch {
-        case e: Exception =>
-          sender() ! s"""{"message":"${e.getMessage}"}"""
+        case e: Exception => sender() ! s"""{"message":"${e.getMessage}"}"""
       }
     case _ =>
       log.error(

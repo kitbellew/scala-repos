@@ -29,8 +29,7 @@ object ActorPublisherDocSpec {
     var buf = Vector.empty[Job]
 
     def receive = {
-      case job: Job if buf.size == MaxBufferSize =>
-        sender() ! JobDenied
+      case job: Job if buf.size == MaxBufferSize => sender() ! JobDenied
       case job: Job =>
         sender() ! JobAccepted
         if (buf.isEmpty && totalDemand > 0) onNext(job)
@@ -38,10 +37,8 @@ object ActorPublisherDocSpec {
           buf :+= job
           deliverBuf()
         }
-      case Request(_) =>
-        deliverBuf()
-      case Cancel =>
-        context.stop(self)
+      case Request(_) => deliverBuf()
+      case Cancel     => context.stop(self)
     }
 
     @tailrec

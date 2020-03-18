@@ -244,8 +244,7 @@ object Iterator {
         case 1 =>
           state = 0
           lhs.next()
-        case _ =>
-          rhs.next()
+        case _ => rhs.next()
       }
 
     override def ++[B >: A](that: => GenTraversableOnce[B]) =

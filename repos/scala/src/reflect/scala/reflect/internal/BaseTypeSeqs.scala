@@ -88,8 +88,7 @@ trait BaseTypeSeqs {
                     variants mkString ", and "
                   ) + " leads to a cycle.")
             }
-          case tp =>
-            tp
+          case tp => tp
         }
 
     def rawElem(i: Int) = elems(i)
@@ -222,8 +221,7 @@ trait BaseTypeSeqs {
             nextRawElem(i) match {
               case RefinedType(variants, decls) =>
                 for (tp <- variants) if (!alreadyInMinTypes(tp)) minTypes ::= tp
-              case tp =>
-                if (!alreadyInMinTypes(tp)) minTypes ::= tp
+              case tp => if (!alreadyInMinTypes(tp)) minTypes ::= tp
             }
             index(i) = index(i) + 1
           }

@@ -77,8 +77,7 @@ trait MultiMap[A, B] extends Map[A, Set[B]] {
         val set = makeSet
         set += value
         this(key) = set
-      case Some(set) =>
-        set += value
+      case Some(set) => set += value
     }
     this
   }

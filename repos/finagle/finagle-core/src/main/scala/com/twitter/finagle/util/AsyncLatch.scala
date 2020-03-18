@@ -56,10 +56,8 @@ class AsyncLatch(initialCount: Int = 0) {
     }
 
     pendingTasks match {
-      case Left(tasks) =>
-        tasks foreach { _() }; 0
-      case Right(count) =>
-        count
+      case Left(tasks)  => tasks foreach { _() }; 0
+      case Right(count) => count
     }
   }
 

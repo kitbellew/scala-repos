@@ -31,9 +31,8 @@ import org.apache.spark.sql.types._
 private[sql] class MyDenseVector(val data: Array[Double]) extends Serializable {
   override def equals(other: Any): Boolean =
     other match {
-      case v: MyDenseVector =>
-        java.util.Arrays.equals(this.data, v.data)
-      case _ => false
+      case v: MyDenseVector => java.util.Arrays.equals(this.data, v.data)
+      case _                => false
     }
 }
 
@@ -54,8 +53,7 @@ private[sql] class MyDenseVectorUDT extends UserDefinedType[MyDenseVector] {
 
   override def deserialize(datum: Any): MyDenseVector = {
     datum match {
-      case data: ArrayData =>
-        new MyDenseVector(data.toDoubleArray())
+      case data: ArrayData => new MyDenseVector(data.toDoubleArray())
     }
   }
 

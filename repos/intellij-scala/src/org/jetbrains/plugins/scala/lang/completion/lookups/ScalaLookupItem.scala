@@ -124,8 +124,7 @@ class ScalaLookupItem(
             .map(param => presentationString(param, substitutor))
             .mkString("[", ", ", "]")
         else ""
-      case t: ScTypeParametersOwner =>
-        t.typeParametersClause match {
+      case t: ScTypeParametersOwner => t.typeParametersClause match {
           case Some(tp) => presentationString(tp, substitutor)
           case None     => ""
         }
@@ -425,8 +424,8 @@ object ScalaLookupItem {
   @tailrec
   def original(element: LookupElement): LookupElement =
     element match {
-      case decorator: LookupElementDecorator[_] =>
-        original(decorator.getDelegate)
+      case decorator: LookupElementDecorator[_] => original(
+          decorator.getDelegate)
       case it => it
     }
 }

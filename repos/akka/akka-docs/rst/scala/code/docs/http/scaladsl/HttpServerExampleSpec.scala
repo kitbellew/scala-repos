@@ -174,11 +174,9 @@ class HttpServerExampleSpec
       case HttpRequest(GET, Uri.Path("/ping"), _, _, _) =>
         HttpResponse(entity = "PONG!")
 
-      case HttpRequest(GET, Uri.Path("/crash"), _, _, _) =>
-        sys.error("BOOM!")
+      case HttpRequest(GET, Uri.Path("/crash"), _, _, _) => sys.error("BOOM!")
 
-      case _: HttpRequest =>
-        HttpResponse(404, entity = "Unknown resource!")
+      case _: HttpRequest => HttpResponse(404, entity = "Unknown resource!")
     }
 
     val bindingFuture: Future[Http.ServerBinding] = serverSource
@@ -219,8 +217,7 @@ class HttpServerExampleSpec
           case HttpRequest(GET, Uri.Path("/crash"), _, _, _) =>
             sys.error("BOOM!")
 
-          case _: HttpRequest =>
-            HttpResponse(404, entity = "Unknown resource!")
+          case _: HttpRequest => HttpResponse(404, entity = "Unknown resource!")
         }
 
         val bindingFuture = Http().bindAndHandleSync(

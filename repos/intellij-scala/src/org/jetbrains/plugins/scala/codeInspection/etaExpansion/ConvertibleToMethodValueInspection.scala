@@ -94,9 +94,8 @@ class ConvertibleToMethodValueInspection
       case _: ScNewTemplateDefinition => false
       case Both(
             _: ScReferenceExpression | ScConstructor.byReference(_),
-            ResolvesTo(named: PsiNamedElement)) =>
-        isStable(named)
-      case _ => true
+            ResolvesTo(named: PsiNamedElement)) => isStable(named)
+      case _                                    => true
     }
   }
 

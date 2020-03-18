@@ -110,8 +110,7 @@ trait KMediansCoreSetClustering {
         tree0 match {
           case (`level0`, coreset1) :: tail =>
             rec(tail, mergeCoreSets(coreset0, coreset1, level0), level0 + 1)
-          case _ =>
-            (level0, coreset0) :: tree0
+          case _ => (level0, coreset0) :: tree0
         }
       }
 
@@ -122,8 +121,7 @@ trait KMediansCoreSetClustering {
       if (coreSetTree.k < k) { coreSetTree ++ this }
       else {
         coreSetTree.tree.foldLeft(this) {
-          case (acc, (level, coreset)) =>
-            acc.insertCoreSet(coreset, level)
+          case (acc, (level, coreset)) => acc.insertCoreSet(coreset, level)
         }
       }
     }
@@ -752,8 +750,7 @@ trait ClusteringLibModule[M[+_]]
                   table map { tbl =>
                     merge(Some(tbl.cross(head)(modelConcat)), tail).run
                   } getOrElse { merge(Some(head), tail).run }
-                case None =>
-                  M.point(table)
+                case None => M.point(table)
               })
             }
 

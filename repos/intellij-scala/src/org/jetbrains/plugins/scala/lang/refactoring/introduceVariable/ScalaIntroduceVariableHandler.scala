@@ -59,9 +59,8 @@ class ScalaIntroduceVariableHandler
         val element: PsiElement = file.findElementAt(offset) match {
           case w: PsiWhiteSpace
               if w.getTextRange.getStartOffset == offset &&
-                w.getText.contains("\n") =>
-            file.findElementAt(offset - 1)
-          case p => p
+                w.getText.contains("\n") => file.findElementAt(offset - 1)
+          case p                         => p
         }
         ScalaRefactoringUtil.getExpressions(element).nonEmpty
       }
@@ -102,9 +101,8 @@ class ScalaIntroduceVariableHandler
     }
 
     val typeElement = selectedElement match {
-      case Some(te: ScTypeElement) =>
-        Option(te)
-      case _ => getTypeElementAtOffset
+      case Some(te: ScTypeElement) => Option(te)
+      case _                       => getTypeElementAtOffset
     }
 
     if (typeElement.isDefined) {

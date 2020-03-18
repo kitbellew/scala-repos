@@ -175,10 +175,9 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
         @scala.annotation.tailrec
         def applyp(in0: Input): ParseResult[List[T]] =
           p0(in0) match {
-            case Success(x, rest) =>
-              elems += x; applyp(rest)
-            case Failure(_, _) => Success(elems.toList, in0)
-            case err: Error    => err
+            case Success(x, rest) => elems += x; applyp(rest)
+            case Failure(_, _)    => Success(elems.toList, in0)
+            case err: Error       => err
           }
         applyp(in)
       }

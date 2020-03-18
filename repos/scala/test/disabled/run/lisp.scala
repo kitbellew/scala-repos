@@ -159,8 +159,8 @@ object LispCaseClasses extends Lisp {
           list(SYM("def"), SYM(name), list(SYM("lambda"), args, body), expr))
       case CONS(
             SYM("cond"),
-            CONS(CONS(SYM("else"), CONS(expr, NIL())), NIL())) =>
-        normalize(expr)
+            CONS(CONS(SYM("else"), CONS(expr, NIL())), NIL())) => normalize(
+          expr)
       case CONS(SYM("cond"), CONS(CONS(test, CONS(expr, NIL())), rest)) =>
         normalize(list(SYM("if"), test, expr, CONS(SYM("cond"), rest)))
       case CONS(h, t) => CONS(normalize(h), normalize(t))
@@ -187,8 +187,7 @@ object LispCaseClasses extends Lisp {
 
   def eval1(x: Data, env: Environment): Data =
     x match {
-      case SYM(name) =>
-        env lookup name
+      case SYM(name) => env lookup name
       case CONS(SYM("def"), CONS(SYM(name), CONS(y, CONS(z, NIL())))) =>
         eval(z, env.extendRec(name, (env1 => eval(y, env1))))
       case CONS(SYM("val"), CONS(SYM(name), CONS(y, CONS(z, NIL())))) =>
@@ -197,15 +196,13 @@ object LispCaseClasses extends Lisp {
         mkLambda(params, y, env)
       case CONS(SYM("if"), CONS(c, CONS(t, CONS(e, NIL())))) =>
         if (toBoolean(eval(c, env))) eval(t, env) else eval(e, env)
-      case CONS(SYM("quote"), CONS(x, NIL())) =>
-        x
+      case CONS(SYM("quote"), CONS(x, NIL())) => x
       case CONS(y, xs) =>
         apply(eval(y, env), toList(xs) map (x => eval(x, env)))
       case NUM(_) => x
       case STR(_) => x
       case FUN(_) => x
-      case _ =>
-        lispError("illegal term")
+      case _      => lispError("illegal term")
     }
 
   def apply(fn: Data, args: List[Data]): Data =
@@ -221,12 +218,10 @@ object LispCaseClasses extends Lisp {
         ps: List[String],
         args: List[Data]): Environment =
       (ps, args) match {
-        case (List(), List()) =>
-          env
+        case (List(), List()) => env
         case (p :: ps1, arg :: args1) =>
           extendEnv(env.extend(p, arg), ps1, args1)
-        case _ =>
-          lispError("wrong number of arguments")
+        case _ => lispError("wrong number of arguments")
       }
 
     val ps: List[String] = toList(params) map {
@@ -340,23 +335,16 @@ object LispAny extends Lisp {
 
   def normalize(x: Data): Data =
     x match {
-      case 'and :: x :: y :: Nil =>
-        normalize('if :: x :: y :: 0 :: Nil)
-      case 'or :: x :: y :: Nil =>
-        normalize('if :: x :: 1 :: y :: Nil)
-      case 'def :: (name :: args) :: body :: expr :: Nil =>
-        normalize(
+      case 'and :: x :: y :: Nil => normalize('if :: x :: y :: 0 :: Nil)
+      case 'or :: x :: y :: Nil  => normalize('if :: x :: 1 :: y :: Nil)
+      case 'def :: (name :: args) :: body :: expr :: Nil => normalize(
           'def :: name :: ('lambda :: args :: body :: Nil) :: expr :: Nil)
-      case 'cond :: ('else :: expr :: Nil) :: rest =>
-        normalize(expr);
-      case 'cond :: (test :: expr :: Nil) :: rest =>
-        normalize('if :: test :: expr :: ('cond :: rest) :: Nil)
-      case 'cond :: 'else :: expr :: Nil =>
-        normalize(expr)
-      case h :: t =>
-        normalize(h) :: asList(normalize(t))
-      case _ =>
-        x
+      case 'cond :: ('else :: expr :: Nil) :: rest => normalize(expr);
+      case 'cond :: (test :: expr :: Nil) :: rest => normalize(
+          'if :: test :: expr :: ('cond :: rest) :: Nil)
+      case 'cond :: 'else :: expr :: Nil => normalize(expr)
+      case h :: t                        => normalize(h) :: asList(normalize(t))
+      case _                             => x
     }
 
   def eval(x: Data, env: Environment): Data = {
@@ -379,24 +367,20 @@ object LispAny extends Lisp {
 
   def eval1(x: Data, env: Environment): Data =
     x match {
-      case Symbol(name) =>
-        env lookup name
+      case Symbol(name) => env lookup name
       case 'def :: Symbol(name) :: y :: z :: Nil =>
         eval(z, env.extendRec(name, (env1 => eval(y, env1))))
       case 'val :: Symbol(name) :: y :: z :: Nil =>
         eval(z, env.extend(name, eval(y, env)))
-      case 'lambda :: params :: y :: Nil =>
-        mkLambda(params, y, env)
+      case 'lambda :: params :: y :: Nil => mkLambda(params, y, env)
       case 'if :: c :: y :: z :: Nil =>
         if (asBoolean(eval(c, env))) eval(y, env) else eval(z, env)
-      case 'quote :: y :: Nil =>
-        y
-      case y :: z =>
-        apply(eval(y, env), z map (x => eval(x, env)))
-      case Lambda(_) => x
-      case y: String => x
-      case y: Int    => x
-      case y         => lispError("illegal term")
+      case 'quote :: y :: Nil => y
+      case y :: z             => apply(eval(y, env), z map (x => eval(x, env)))
+      case Lambda(_)          => x
+      case y: String          => x
+      case y: Int             => x
+      case y                  => lispError("illegal term")
     }
 
   def lisp2string(x: Data): String =
@@ -426,12 +410,10 @@ object LispAny extends Lisp {
         ps: List[String],
         args: List[Data]): Environment =
       (ps, args) match {
-        case (List(), List()) =>
-          env
+        case (List(), List()) => env
         case (p :: ps1, arg :: args1) =>
           extendEnv(env.extend(p, arg), ps1, args1)
-        case _ =>
-          lispError("wrong number of arguments")
+        case _ => lispError("wrong number of arguments")
       }
 
     val ps: List[String] = asList(params) map {

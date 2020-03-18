@@ -352,13 +352,11 @@ object DBLog {
         }
 
         // These are from wrapper and are required
-        case "isWrapperFor" =>
-          args(0).getClass match {
+        case "isWrapperFor" => args(0).getClass match {
             case `representative` => Boolean.box(true)
             case _                => chain(method, args)
           }
-        case "unwrap" =>
-          args(0).getClass match {
+        case "unwrap" => args(0).getClass match {
             case `representative` => underlying
             case _                => chain(method, args)
           }
@@ -414,8 +412,7 @@ object DBLog {
       val sb = new StringBuilder(500)
       def substitute(in: String, index: Int): Unit =
         in.indexOf('?') match {
-          case -1 =>
-            sb.append(in)
+          case -1 => sb.append(in)
 
           case j =>
             sb.append(in.substring(0, j))

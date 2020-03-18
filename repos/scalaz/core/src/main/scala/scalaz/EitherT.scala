@@ -436,13 +436,11 @@ private trait EitherTPlus[F[_], E] extends Plus[EitherT[F, E, ?]] {
 
   def plus[A](a: EitherT[F, E, A], b: => EitherT[F, E, A]): EitherT[F, E, A] =
     EitherT(F.bind(a.run) {
-      case -\/(l) =>
-        F.map(b.run) {
+      case -\/(l) => F.map(b.run) {
           case -\/(ll)    => -\/(G.append(l, ll))
           case r @ \/-(_) => r
         }
-      case r =>
-        F.point(r)
+      case r => F.point(r)
     })
 }
 

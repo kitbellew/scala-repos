@@ -54,8 +54,7 @@ object SideEffectsUtil {
             case Both(
                   b: ScBindingPattern,
                   ScalaPsiUtil.inNameContext(pd: ScPatternDefinition))
-                if pd.hasModifierProperty("lazy") =>
-              false
+                if pd.hasModifierProperty("lazy") => false
             case bp: ScBindingPattern =>
               val tp = bp.getType(TypingContext.empty)
               !ScFunctionType.isFunctionType(tp.getOrAny)

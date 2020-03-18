@@ -67,8 +67,7 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     Await.result(client.set("foo", Buf.Utf8("bar")))
     Await.result(client.set("baz", Buf.Utf8("boing")))
     val result = Await.result(client.get(Seq("foo", "baz", "notthere"))).map {
-      case (key, Buf.Utf8(value)) =>
-        (key, value)
+      case (key, Buf.Utf8(value)) => (key, value)
     }
     assert(result == Map("foo" -> "bar", "baz" -> "boing"))
   }

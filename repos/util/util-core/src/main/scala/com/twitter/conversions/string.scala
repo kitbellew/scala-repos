@@ -131,8 +131,7 @@ object string {
     def unhexlify(): Array[Byte] = {
       val buffer = new Array[Byte]((wrapped.length + 1) / 2)
       wrapped.grouped(2).toSeq.zipWithIndex.foreach {
-        case (substr, i) =>
-          buffer(i) = Integer.parseInt(substr, 16).toByte
+        case (substr, i) => buffer(i) = Integer.parseInt(substr, 16).toByte
       }
       buffer
     }

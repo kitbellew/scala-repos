@@ -122,8 +122,7 @@ object ScalaRuntimeTypeEvaluator {
 
   def isSubtypeable(scType: ScType): Boolean = {
     scType match {
-      case ExtractClass(psiClass) =>
-        psiClass match {
+      case ExtractClass(psiClass) => psiClass match {
           case _: ScObject                                => false
           case owner: ScModifierListOwner                 => !owner.hasFinalModifier
           case _ if scType.isInstanceOf[PsiPrimitiveType] => false

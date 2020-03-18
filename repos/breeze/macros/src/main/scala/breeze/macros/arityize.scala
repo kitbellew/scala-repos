@@ -97,10 +97,8 @@ object arityize {
         expandValDef(c, order, bindings)(vdef)
       case vdef @ TypeDef(mods, name, tpt, rhs) =>
         expandTypeDef(c, order, bindings)(vdef)
-      case Annotated(ann, tree) =>
-        ann match {
-          case q"new arityize.relative($sym)" =>
-            tree match {
+      case Annotated(ann, tree) => ann match {
+          case q"new arityize.relative($sym)" => tree match {
               case Ident(nme) if nme.isTypeName =>
                 Seq(Ident(newTypeName(nme.encoded + bindings(sym.toString))))
               case Ident(nme) if nme.isTermName =>
@@ -115,8 +113,7 @@ object arityize {
 //                println(tree + " " + tree.getClass); ???
                 ???
             }
-          case q"new arityize.replicate()" =>
-            tree match {
+          case q"new arityize.replicate()" => tree match {
               case Ident(nme) if nme.isTypeName =>
                 List.tabulate(order) { i =>
                   Ident(newTypeName(nme.encoded + (i + 1)))
@@ -127,13 +124,10 @@ object arityize {
                 }
               case _ => ???
             }
-          case q"new arityize.repeat()" =>
-            tree match {
-              case Ident(nme) if nme.isTypeName =>
-                List.fill(order) { tree }
-              case Ident(nme) if nme.isTermName =>
-                List.fill(order) { tree }
-              case _ => ???
+          case q"new arityize.repeat()" => tree match {
+              case Ident(nme) if nme.isTypeName => List.fill(order) { tree }
+              case Ident(nme) if nme.isTermName => List.fill(order) { tree }
+              case _                            => ???
             }
           case _ =>
 //            println("???" + ann + " " + tree)
@@ -161,9 +155,8 @@ object arityize {
         val newTargs = targs.flatMap(arg =>
           expandArity(c, order, bindings)(arg))
         Seq(AppliedTypeTree(newLHS, newTargs))
-      case New(tree) =>
-        Seq(New(expandArity(c, order, bindings)(tree).head))
-      case _ =>
+      case New(tree) => Seq(New(expandArity(c, order, bindings)(tree).head))
+      case _         =>
 //        println("???" + tree + " " + tree.getClass)
         Seq(tree)
     }
@@ -219,8 +212,7 @@ object arityize {
             newTypeName(vdef.name.encoded + bindings(x)),
             vdef.tparams,
             vdef.rhs))
-        case _ =>
-          List(vdef)
+        case _ => List(vdef)
       }
     }
 

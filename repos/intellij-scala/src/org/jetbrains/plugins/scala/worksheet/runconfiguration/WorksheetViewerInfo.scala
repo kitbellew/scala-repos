@@ -17,10 +17,8 @@ object WorksheetViewerInfo {
   def addViewer(viewer: Editor, editor: Editor) {
     synchronized {
       allViewers.get(editor) match {
-        case null =>
-          allViewers.put(editor, viewer :: Nil)
-        case list: List[Editor] =>
-          allViewers.put(editor, viewer :: list)
+        case null               => allViewers.put(editor, viewer :: Nil)
+        case list: List[Editor] => allViewers.put(editor, viewer :: list)
       }
     }
   }

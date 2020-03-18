@@ -52,8 +52,8 @@ package object security {
           case JString(dt) =>
             (Thrown.apply _) <-: Validation.fromTryCatch(
               isoFormat.parseDateTime(dt))
-          case _ =>
-            Failure(Invalid("Date time must be represented as JSON string"))
+          case _ => Failure(
+              Invalid("Date time must be represented as JSON string"))
         }
     }
 }

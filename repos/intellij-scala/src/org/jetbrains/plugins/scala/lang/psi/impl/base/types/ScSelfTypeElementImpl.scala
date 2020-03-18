@@ -47,8 +47,7 @@ class ScSelfTypeElementImpl private (
       classOf[ScTemplateDefinition])
     assert(parent != null)
     typeElement match {
-      case Some(ste) =>
-        for {
+      case Some(ste) => for {
           templateType <- parent.getType(ctx)
           selfType <- ste.getType(ctx)
           ct = ScCompoundType(Seq(templateType, selfType), Map.empty, Map.empty)
@@ -62,8 +61,7 @@ class ScSelfTypeElementImpl private (
     if (stub != null) {
       return stub.asInstanceOf[ScSelfTypeElementStub].getTypeElementText match {
         case "" => None
-        case text =>
-          Some(
+        case text => Some(
             ScalaPsiElementFactory.createTypeElementFromText(text, this, this))
       }
     }
@@ -78,15 +76,13 @@ class ScSelfTypeElementImpl private (
     val names = new ArrayBuffer[String]()
     def fillNames(typeElement: ScTypeElement) {
       typeElement match {
-        case s: ScSimpleTypeElement =>
-          s.reference match {
+        case s: ScSimpleTypeElement => s.reference match {
             case Some(ref) => names += ref.refName
             case _         =>
           }
         case p: ScParameterizedTypeElement => fillNames(p.typeElement)
-        case c: ScCompoundTypeElement =>
-          c.components.foreach(fillNames)
-        case _ => //do nothing
+        case c: ScCompoundTypeElement      => c.components.foreach(fillNames)
+        case _                             => //do nothing
       }
     }
     typeElement.foreach(fillNames)

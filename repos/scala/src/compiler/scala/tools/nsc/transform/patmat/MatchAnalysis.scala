@@ -106,13 +106,11 @@ trait TreeAndTypeAnalysis extends Debugging {
     def enumerateSubtypes(tp: Type, grouped: Boolean): List[List[Type]] =
       tp.typeSymbol match {
         // TODO case _ if tp.isTupleType => // recurse into component types?
-        case UnitClass if !grouped =>
-          List(List(UnitTpe))
+        case UnitClass if !grouped => List(List(UnitTpe))
         case BooleanClass if !grouped =>
           List(ConstantTrue :: ConstantFalse :: Nil)
         // TODO case _ if tp.isTupleType => // recurse into component types
-        case modSym: ModuleClassSymbol if !grouped =>
-          List(List(tp))
+        case modSym: ModuleClassSymbol if !grouped => List(List(tp))
         case sym: RefinementClassSymbol =>
           val parentSubtypes = tp.parents.flatMap(parent =>
             enumerateSubtypes(parent, grouped))
@@ -192,8 +190,7 @@ trait TreeAndTypeAnalysis extends Debugging {
                 filterChildren(subclasses)
               })
           }
-        case sym if sym.isCase =>
-          List(List(tp))
+        case sym if sym.isCase => List(List(tp))
 
         case sym =>
           debug.patmat(
@@ -222,8 +219,7 @@ trait TreeAndTypeAnalysis extends Debugging {
             case TypeRef(pre, sym, args)
                 if args.nonEmpty && (sym ne ArrayClass) =>
               TypeRef(pre, sym, args map (_ => WildcardType))
-            case _ =>
-              mapOver(tp)
+            case _ => mapOver(tp)
           }
       }
       val result = typeArgsToWildcardsExceptArray(tp)
@@ -420,20 +416,18 @@ trait MatchApproximation
               uniqueEqualityProp(
                 binderToUniqueTree(prevBinder),
                 unique(patTree))
-            case AlternativesTreeMaker(_, altss, _) =>
-              \/(altss map (alts => /\(alts map this)))
+            case AlternativesTreeMaker(_, altss, _) => \/(
+                altss map (alts => /\(alts map this)))
             case ProductExtractorTreeMaker(testedBinder, None) =>
               uniqueNonNullProp(binderToUniqueTree(testedBinder))
             case SubstOnlyTreeMaker(_, _) => True
-            case GuardTreeMaker(guard) =>
-              guard.tpe match {
+            case GuardTreeMaker(guard) => guard.tpe match {
                 case ConstantTrue  => True
                 case ConstantFalse => False
                 case _             => handleUnknown(tm)
               }
             case ExtractorTreeMaker(_, _, _) | ProductExtractorTreeMaker(_, _) |
-                BodyTreeMaker(_, _) =>
-              handleUnknown(tm)
+                BodyTreeMaker(_, _) => handleUnknown(tm)
           }
         }
       }

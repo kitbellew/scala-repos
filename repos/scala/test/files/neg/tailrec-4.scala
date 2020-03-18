@@ -35,7 +35,6 @@ object Tail {
             @tailrec
             def foo: Int = foo + 1
             foo == 42
-          } =>
-        true
+          } => true
     }
 }

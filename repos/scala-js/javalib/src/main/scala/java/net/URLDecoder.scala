@@ -40,8 +40,7 @@ object URLDecoder {
           charBuffer.append(' ')
           i += 1
 
-        case '%' if i + 3 > len =>
-          throwIllegalHex()
+        case '%' if i + 3 > len => throwIllegalHex()
 
         case '%' =>
           val decoder = charsetDecoder

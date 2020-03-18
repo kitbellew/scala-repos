@@ -264,8 +264,7 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
                     Select(Select(Ident(nme.ROOTPKG), nme.scala_), nme.xml),
                     tpnme.Text)),
                 nme.CONSTRUCTOR),
-              List(uri @ Literal(Constant(_)))) =>
-          mkAssign(uri)
+              List(uri @ Literal(Constant(_)))) => mkAssign(uri)
         case Select(_, nme.Nil) =>
           mkAssign(const(null)) // allow for xmlns="" -- bug #1626
         case x => mkAssign(x)

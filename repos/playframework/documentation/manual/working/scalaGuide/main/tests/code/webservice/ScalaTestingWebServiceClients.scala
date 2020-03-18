@@ -47,8 +47,7 @@ package test {
       "get all repositories" in {
 
         Server.withRouter() {
-          case GET(p"/repositories") =>
-            Action {
+          case GET(p"/repositories") => Action {
               Results.Ok(
                 Json.arr(Json.obj("full_name" -> "octocat/Hello-World")))
             }
@@ -88,8 +87,7 @@ object ScalaTestingWebServiceClients
       import play.core.server.Server
 
       Server.withRouter() {
-        case GET(p"/repositories") =>
-          Action {
+        case GET(p"/repositories") => Action {
             Results.Ok(Json.arr(Json.obj("full_name" -> "octocat/Hello-World")))
           }
       } { implicit port =>
@@ -107,8 +105,9 @@ object ScalaTestingWebServiceClients
       import play.core.server.Server
 
       Server.withRouter() {
-        case GET(p"/repositories") =>
-          Action { Results.Ok.sendResource("github/repositories.json") }
+        case GET(p"/repositories") => Action {
+            Results.Ok.sendResource("github/repositories.json")
+          }
       } { implicit port =>
         implicit val materializer = Play.current.materializer
         //#send-resource
@@ -130,8 +129,9 @@ object ScalaTestingWebServiceClients
 
       def withGitHubClient[T](block: GitHubClient => T): T = {
         Server.withRouter() {
-          case GET(p"/repositories") =>
-            Action { Results.Ok.sendResource("github/repositories.json") }
+          case GET(p"/repositories") => Action {
+              Results.Ok.sendResource("github/repositories.json")
+            }
         } { implicit port =>
           implicit val materializer = Play.current.materializer
           WsTestClient.withClient { client =>

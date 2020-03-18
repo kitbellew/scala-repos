@@ -90,10 +90,7 @@ trait SegmentFormatSupport {
   def genArray[A: Manifest](length: Int, g: Gen[A]): Gen[Array[A]] =
     for { values <- listOfN(length, g) } yield {
       val array = manifest[A].newArray(length)
-      values.zipWithIndex foreach {
-        case (v, i) =>
-          array(i) = v
-      }
+      values.zipWithIndex foreach { case (v, i) => array(i) = v }
       array
     }
 
@@ -164,8 +161,7 @@ trait SegmentFormatMatchers {
         xs must_== ys
       case (x: BooleanSegment, y: BooleanSegment) =>
         (x.values & x0.defined) must_== (y.values & x0.defined)
-      case (x: NullSegment, y: NullSegment) =>
-        ok
+      case (x: NullSegment, y: NullSegment) => ok
     }
   }
 

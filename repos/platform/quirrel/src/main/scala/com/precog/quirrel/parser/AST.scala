@@ -516,31 +516,24 @@ trait AST extends Phases {
         case (Observe(_, data1, samples1), Observe(_, data2, samples2)) =>
           (data1 equalsIgnoreLoc data2) && (samples1 equalsIgnoreLoc samples2)
 
-        case (New(_, child1), New(_, child2)) =>
-          child1 equalsIgnoreLoc child2
+        case (New(_, child1), New(_, child2)) => child1 equalsIgnoreLoc child2
 
         case (Relate(_, from1, to1, in1), Relate(_, from2, to2, in2)) =>
           (from1 equalsIgnoreLoc from2) &&
             (to1 equalsIgnoreLoc to2) &&
             (in1 equalsIgnoreLoc in2)
 
-        case (TicVar(_, id1), TicVar(_, id2)) =>
-          id1 == id2
+        case (TicVar(_, id1), TicVar(_, id2)) => id1 == id2
 
-        case (StrLit(_, value1), StrLit(_, value2)) =>
-          value1 == value2
+        case (StrLit(_, value1), StrLit(_, value2)) => value1 == value2
 
-        case (NumLit(_, value1), NumLit(_, value2)) =>
-          value1 == value2
+        case (NumLit(_, value1), NumLit(_, value2)) => value1 == value2
 
-        case (BoolLit(_, value1), BoolLit(_, value2)) =>
-          value1 == value2
+        case (BoolLit(_, value1), BoolLit(_, value2)) => value1 == value2
 
-        case (UndefinedLit(_), UndefinedLit(_)) =>
-          true
+        case (UndefinedLit(_), UndefinedLit(_)) => true
 
-        case (NullLit(_), NullLit(_)) =>
-          true
+        case (NullLit(_), NullLit(_)) => true
 
         case (ObjectDef(_, props1), ObjectDef(_, props2)) => { // TODO ordering
           val sizing = props1.length == props2.length
@@ -664,8 +657,7 @@ trait AST extends Phases {
             _.hashCodeIgnoreLoc
           } sum) + child.hashCodeIgnoreLoc
 
-        case Import(_, spec, child) =>
-          spec.hashCode + child.hashCodeIgnoreLoc
+        case Import(_, spec, child) => spec.hashCode + child.hashCodeIgnoreLoc
 
         case Assert(_, pred, child) =>
           pred.hashCodeIgnoreLoc + child.hashCodeIgnoreLoc
@@ -696,8 +688,7 @@ trait AST extends Phases {
           } sum
         }
 
-        case ArrayDef(_, values) =>
-          values map { _.hashCodeIgnoreLoc } sum
+        case ArrayDef(_, values) => values map { _.hashCodeIgnoreLoc } sum
 
         case Descent(_, child, property) =>
           child.hashCodeIgnoreLoc + property.hashCode

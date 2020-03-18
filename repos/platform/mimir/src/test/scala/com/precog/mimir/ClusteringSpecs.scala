@@ -303,8 +303,7 @@ trait ClusteringLibSpecs[M[+_]]
                   clusterMap("cluster1") must beLike {
                     case SArray(arr) if arr.size == 6 =>
                       isGoodCluster(clusterMap, pointsA, centersA, k, dimension)
-                    case SArray(arr) if arr.size == 9 =>
-                      ok
+                    case SArray(arr) if arr.size == 9 => ok
                   }
               }
 
@@ -326,8 +325,7 @@ trait ClusteringLibSpecs[M[+_]]
 
   def makeClusters(centers: Array[Array[Double]]) = {
     RObject(pointsToJson(centers).zipWithIndex.map {
-      case (ctr, idx) =>
-        ("cluster" + (idx + 1), ctr)
+      case (ctr, idx) => ("cluster" + (idx + 1), ctr)
     }.toMap)
   }
 
@@ -358,8 +356,7 @@ trait ClusteringLibSpecs[M[+_]]
     model.keySet mustEqual Set("clusterId", "clusterCenter")
 
     model("clusterId") must beLike {
-      case SString(clusterId) =>
-        clusterId must_== assignments(point)
+      case SString(clusterId) => clusterId must_== assignments(point)
     }
 
     model("clusterCenter") must beLike {

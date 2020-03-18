@@ -3,8 +3,6 @@ object Test {
     val q = scala.collection.mutable.Queue[String]()
     assert(q.length == 0)
     try { assert(q.front != null) }
-    catch {
-      case _: Throwable =>
-    }
+    catch { case _: Throwable => }
   }
 }

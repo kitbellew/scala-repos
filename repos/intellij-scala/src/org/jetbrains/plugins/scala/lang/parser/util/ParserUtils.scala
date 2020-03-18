@@ -73,9 +73,8 @@ object ParserUtils extends ParserUtilsBase {
     id.charAt(id.length - 1) match {
       case '='
           if id != "<=" && id != ">=" && id != "!=" && (id.charAt(
-            0) != '=' || id == "=") =>
-        true
-      case _ => false
+            0) != '=' || id == "=") => true
+      case _                        => false
     }
 
   //Defines priority
@@ -167,8 +166,7 @@ object ParserUtils extends ParserUtilsBase {
       case ScalaTokenTypes.tRSQBRACKET   => false
       case ScalaTokenTypes.tRPARENTHESIS => false
       case ScalaTokenTypes.tRBRACE       => false
-      case ScalaTokenTypes.kCASE =>
-        caseLookAheadFunction(builder) match {
+      case ScalaTokenTypes.kCASE => caseLookAheadFunction(builder) match {
           case ScalaTokenTypes.kOBJECT => true
           case ScalaTokenTypes.kCLASS  => true
           case _                       => false

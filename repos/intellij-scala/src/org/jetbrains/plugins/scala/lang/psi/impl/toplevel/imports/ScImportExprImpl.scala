@@ -61,9 +61,8 @@ class ScImportExprImpl private (
       Some(findChildByType[PsiElement](ScalaTokenTypes.tUNDER))
     } else {
       selectorSet match {
-        case Some(set) =>
-          set.wildcardElement
-        case None => None
+        case Some(set) => set.wildcardElement
+        case None      => None
       }
     }
   }

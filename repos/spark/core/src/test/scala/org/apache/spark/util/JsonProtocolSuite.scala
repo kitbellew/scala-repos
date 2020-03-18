@@ -793,8 +793,8 @@ private[spark] object JsonProtocolSuite extends Assertions {
         assertEquals(e1.executorInfo, e2.executorInfo)
       case (
             e1: SparkListenerExecutorRemoved,
-            e2: SparkListenerExecutorRemoved) =>
-        assert(e1.executorId === e1.executorId)
+            e2: SparkListenerExecutorRemoved) => assert(
+          e1.executorId === e1.executorId)
       case (
             e1: SparkListenerExecutorMetricsUpdate,
             e2: SparkListenerExecutorMetricsUpdate) =>
@@ -814,9 +814,8 @@ private[spark] object JsonProtocolSuite extends Assertions {
               (a, b) => a.equals(b))
           }
         )
-      case (e1, e2) =>
-        assert(e1 === e2)
-      case _ => fail("Events don't match in types!")
+      case (e1, e2) => assert(e1 === e2)
+      case _        => fail("Events don't match in types!")
     }
   }
 
@@ -1008,10 +1007,7 @@ private[spark] object JsonProtocolSuite extends Assertions {
       seq2: Seq[T],
       assertEquals: (T, T) => Unit) {
     assert(seq1.length === seq2.length)
-    seq1.zip(seq2).foreach {
-      case (t1, t2) =>
-        assertEquals(t1, t2)
-    }
+    seq1.zip(seq2).foreach { case (t1, t2) => assertEquals(t1, t2) }
   }
 
   private def assertOptionEquals[T](

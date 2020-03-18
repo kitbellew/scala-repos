@@ -19,8 +19,7 @@ object SAdd {
         SAdd(
           ChannelBuffers.wrappedBuffer(head),
           tail map ChannelBuffers.wrappedBuffer)
-      case _ =>
-        throw ClientError("Invalid use of SAdd")
+      case _ => throw ClientError("Invalid use of SAdd")
     }
 }
 

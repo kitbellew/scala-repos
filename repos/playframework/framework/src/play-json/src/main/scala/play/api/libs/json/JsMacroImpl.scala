@@ -110,8 +110,7 @@ object JsMacroImpl {
             s"Unapply of $companionObject has no parameters. Are you using an empty case class?")
           None
 
-        case TypeRef(_, _, args) =>
-          args.head match {
+        case TypeRef(_, _, args) => args.head match {
             case t @ TypeRef(_, _, Nil) => Some(List(t))
             case t @ TypeRef(_, _, args) =>
               import c.universe.definitions.TupleClass
@@ -146,12 +145,10 @@ object JsMacroImpl {
                 lastUnapply <- someUnapplyLast
               } yield lastApply <:< lastUnapply).getOrElse(false)
             initsMatch && lastMatch
-          } =>
-        apply
+          } => apply
       case (apply: MethodSymbol)
           if apply.paramLists.headOption.map(
-            _.map(_.asTerm.typeSignature)) == unapplyReturnTypes =>
-        apply
+            _.map(_.asTerm.typeSignature)) == unapplyReturnTypes => apply
     }
 
     val params = maybeApply match {
@@ -181,8 +178,7 @@ object JsMacroImpl {
               args.head
             else implType
           (isRec, tp)
-        case TypeRef(_, t, _) =>
-          (false, implType)
+        case TypeRef(_, t, _) => (false, implType)
       }
 
       // builds M implicit from expected type

@@ -174,10 +174,8 @@ object ThriftServiceIface {
             case Some(exception) =>
               setServiceName(exception, method.serviceName)
               Future.exception(exception)
-            case None =>
-              response.successField match {
-                case Some(result) =>
-                  Future.value(result)
+            case None => response.successField match {
+                case Some(result) => Future.value(result)
                 case None =>
                   Future.exception(new TApplicationException(
                     TApplicationException.MISSING_RESULT,

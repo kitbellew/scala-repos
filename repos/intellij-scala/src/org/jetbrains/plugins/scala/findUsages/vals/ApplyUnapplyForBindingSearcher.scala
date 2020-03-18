@@ -142,9 +142,8 @@ class ApplyUnapplyForBindingSearcher
             case Some(resolve @ ScalaResolveResult(`binding`, _)) =>
               resolve.innerResolveResult match {
                 case Some(ScalaResolveResult(fun: ScFunctionDefinition, _))
-                    if fun.name == "apply" =>
-                  Some(sref)
-                case _ => None
+                    if fun.name == "apply" => Some(sref)
+                case _                     => None
               }
             case _ => None
           }

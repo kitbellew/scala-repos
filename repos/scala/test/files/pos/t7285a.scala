@@ -3,10 +3,7 @@ sealed abstract class Base
 object Test {
   case object Up extends Base
 
-  def foo(d1: Base) =
-    d1 match {
-      case Up =>
-    }
+  def foo(d1: Base) = d1 match { case Up => }
 
   // Sealed subtype: ModuleTypeRef   <empty>.this.Test.Up.type
   // Pattern:        UniqueThisType  Test.this.type

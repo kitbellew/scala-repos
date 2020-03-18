@@ -428,8 +428,7 @@ class CommandCodec extends UnifiedProtocolCodec {
             decodeUnifiedFormat(NumberFormat.toLong(line), doneFn)
           }
         }
-      case b: Byte =>
-        decodeInlineRequest(b.asInstanceOf[Char])
+      case b: Byte => decodeInlineRequest(b.asInstanceOf[Char])
     }
   }
 

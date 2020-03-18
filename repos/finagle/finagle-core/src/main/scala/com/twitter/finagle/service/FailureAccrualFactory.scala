@@ -190,11 +190,9 @@ object FailureAccrualFactory {
               timer)
               .andThen(next)
 
-          case Param.Replaced(f) =>
-            f(params[param.Timer].timer).andThen(next)
+          case Param.Replaced(f) => f(params[param.Timer].timer).andThen(next)
 
-          case Param.Disabled =>
-            next
+          case Param.Disabled => next
         }
       }
     }

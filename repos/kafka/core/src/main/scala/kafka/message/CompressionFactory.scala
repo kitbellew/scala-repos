@@ -37,8 +37,7 @@ object CompressionFactory {
       case SnappyCompressionCodec =>
         import org.xerial.snappy.SnappyOutputStream
         new SnappyOutputStream(stream)
-      case LZ4CompressionCodec =>
-        new KafkaLZ4BlockOutputStream(stream)
+      case LZ4CompressionCodec => new KafkaLZ4BlockOutputStream(stream)
       case _ =>
         throw new kafka.common.UnknownCodecException(
           "Unknown Codec: " + compressionCodec)
@@ -54,8 +53,7 @@ object CompressionFactory {
       case SnappyCompressionCodec =>
         import org.xerial.snappy.SnappyInputStream
         new SnappyInputStream(stream)
-      case LZ4CompressionCodec =>
-        new KafkaLZ4BlockInputStream(stream)
+      case LZ4CompressionCodec => new KafkaLZ4BlockInputStream(stream)
       case _ =>
         throw new kafka.common.UnknownCodecException(
           "Unknown Codec: " + compressionCodec)

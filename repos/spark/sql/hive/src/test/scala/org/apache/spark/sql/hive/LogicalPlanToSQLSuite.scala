@@ -76,8 +76,7 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
     val convertedSQL =
       try new SQLBuilder(df).toSQL
       catch {
-        case NonFatal(e) =>
-          fail(
+        case NonFatal(e) => fail(
             s"""Cannot convert the following HiveQL query plan back to SQL query string:
              |
              |# Original HiveQL query string:
@@ -92,8 +91,7 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
 
     try { checkAnswer(sql(convertedSQL), df) }
     catch {
-      case cause: Throwable =>
-        fail(
+      case cause: Throwable => fail(
           s"""Failed to execute converted SQL string or got wrong answer:
            |
            |# Converted SQL query string:

@@ -175,8 +175,7 @@ class DefaultPromiseTest {
             MaybeIllegalThrown,
             NoMerge
           ) // Won't be thrown if happen to link a promise to itself
-        case (Right(_), Right(_)) =>
-          (IllegalThrown, NoMerge)
+        case (Right(_), Right(_)) => (IllegalThrown, NoMerge)
       }
 
       // Perform the linking and merge the chains, if appropriate
@@ -208,10 +207,8 @@ class DefaultPromiseTest {
       val promise = promises(p)
       val (cid, chain) = promiseChain(p).get
       val (attachEffect, newState) = chain.state match {
-        case Left(handlers) =>
-          (NoEffect, Left(handlers + hid))
-        case Right(result) =>
-          (HandlersFired(result, Set(hid)), Right(result))
+        case Left(handlers) => (NoEffect, Left(handlers + hid))
+        case Right(result)  => (HandlersFired(result, Set(hid)), Right(result))
       }
       implicit val ec = new ExecutionContext {
         def execute(r: Runnable) { r.run() }

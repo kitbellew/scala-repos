@@ -82,8 +82,7 @@ object ResourceUtil {
       // FIXME: too expensive?
       val diminished = baseRanges.flatMap { baseRange =>
         usedRanges.foldLeft(Seq(baseRange)) {
-          case (result, used) =>
-            result.flatMap(deductRange(_, used))
+          case (result, used) => result.flatMap(deductRange(_, used))
         }
       }
 

@@ -91,11 +91,9 @@ case class BroadcastHashJoin(
       val resultProj = createResultProjection
 
       joinType match {
-        case Inner =>
-          hashJoin(streamedIter, hashTable, numOutputRows)
+        case Inner => hashJoin(streamedIter, hashTable, numOutputRows)
 
-        case LeftOuter =>
-          streamedIter.flatMap { currentRow =>
+        case LeftOuter => streamedIter.flatMap { currentRow =>
             val rowKey = keyGenerator(currentRow)
             joinedRow.withLeft(currentRow)
             leftOuterIterator(
@@ -106,8 +104,7 @@ case class BroadcastHashJoin(
               numOutputRows)
           }
 
-        case RightOuter =>
-          streamedIter.flatMap { currentRow =>
+        case RightOuter => streamedIter.flatMap { currentRow =>
             val rowKey = keyGenerator(currentRow)
             joinedRow.withRight(currentRow)
             rightOuterIterator(
@@ -118,8 +115,7 @@ case class BroadcastHashJoin(
               numOutputRows)
           }
 
-        case LeftSemi =>
-          hashSemiJoin(streamedIter, hashTable, numOutputRows)
+        case LeftSemi => hashSemiJoin(streamedIter, hashTable, numOutputRows)
 
         case x =>
           throw new IllegalArgumentException(

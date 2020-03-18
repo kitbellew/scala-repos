@@ -134,9 +134,7 @@ class CorrelationSuite
     try {
       Correlations.getCorrelationFromName("kendall")
       assert(false)
-    } catch {
-      case ie: IllegalArgumentException =>
-    }
+    } catch { case ie: IllegalArgumentException => }
   }
 
   def approxEqual(v1: Double, v2: Double, threshold: Double = 1e-6): Boolean = {

@@ -499,8 +499,7 @@ object List extends SeqFactory[List] {
         case ListSerializeEnd =>
           orig = builder.result()
           return
-        case a =>
-          builder += a.asInstanceOf[A]
+        case a => builder += a.asInstanceOf[A]
       }
     }
 

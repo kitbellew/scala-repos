@@ -21,8 +21,7 @@ final class Player(moveDb: MoveDB, uciMemo: UciMemo) {
     if (game.toChess.situation playable true)
       if (game.turns <= maxPlies)
         GameRepo.initialFen(game) zip uciMemo.get(game) map {
-          case (initialFen, moves) =>
-            Work.Move(
+          case (initialFen, moves) => Work.Move(
               _id = Work.makeId,
               game = Work.Game(
                 id = game.id,

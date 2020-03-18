@@ -71,8 +71,7 @@ private[spire] trait Fuser[C <: Context, A] {
 
   private def extract(tree: Tree): Fused =
     resetLocalAttrs(c)(tree) match {
-      case block @ Block(stats, expr) =>
-        extract(expr) match {
+      case block @ Block(stats, expr) => extract(expr) match {
           case Fused(Nil, apx, mes, ind, exact) =>
             Fused(stats, apx, mes, ind, exact)
 
@@ -94,11 +93,9 @@ private[spire] trait Fuser[C <: Context, A] {
       case _ if typeCheck(c)(tree).tpe <:< c.weakTypeOf[FpFilterApprox[A]] =>
         liftApprox(tree)
 
-      case q"$lift($exact)($ev)" if isExactLift(tree) =>
-        liftExact(exact)
+      case q"$lift($exact)($ev)" if isExactLift(tree) => liftExact(exact)
 
-      case q"$lift($approx)($ev)" if isApproxLift(tree) =>
-        liftApprox(approx)
+      case q"$lift($approx)($ev)" if isApproxLift(tree) => liftApprox(approx)
 
       case expr =>
         val tmp = freshTermName(c)("fpf$tmp$")

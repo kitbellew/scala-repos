@@ -74,8 +74,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
   def toBinary(obj: AnyRef): Array[Byte] =
     obj match {
-      case ClusterHeartbeatSender.Heartbeat(from) ⇒
-        addressToProtoByteArray(from)
+      case ClusterHeartbeatSender.Heartbeat(from) ⇒ addressToProtoByteArray(
+          from)
       case ClusterHeartbeatSender.HeartbeatRsp(from) ⇒
         uniqueAddressToProtoByteArray(from)
       case m: GossipEnvelope ⇒ gossipEnvelopeToProto(m).toByteArray
@@ -83,14 +83,14 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
       case m: MetricsGossipEnvelope ⇒ compress(metricsGossipEnvelopeToProto(m))
       case InternalClusterAction.Join(node, roles) ⇒
         joinToProto(node, roles).toByteArray
-      case InternalClusterAction.Welcome(from, gossip) ⇒
-        compress(welcomeToProto(from, gossip))
+      case InternalClusterAction.Welcome(from, gossip) ⇒ compress(
+          welcomeToProto(from, gossip))
       case ClusterUserAction.Leave(address) ⇒ addressToProtoByteArray(address)
       case ClusterUserAction.Down(address) ⇒ addressToProtoByteArray(address)
       case InternalClusterAction.InitJoin ⇒
         cm.Empty.getDefaultInstance.toByteArray
-      case InternalClusterAction.InitJoinAck(address) ⇒
-        addressToProtoByteArray(address)
+      case InternalClusterAction.InitJoinAck(address) ⇒ addressToProtoByteArray(
+          address)
       case InternalClusterAction.InitJoinNack(address) ⇒
         addressToProtoByteArray(address)
       case _ ⇒

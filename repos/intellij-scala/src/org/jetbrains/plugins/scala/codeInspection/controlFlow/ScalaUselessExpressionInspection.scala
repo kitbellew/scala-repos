@@ -63,9 +63,8 @@ class ScalaUselessExpressionInspection
       case ChildOf(bl: ScBlock) => bl.lastExpr.contains(expr)
       case ChildOf(
             _: ScPatternDefinition | _: ScFunctionDefinition |
-            _: ScVariableDefinition) =>
-        !expr.isInstanceOf[ScBlock]
-      case _ => false
+            _: ScVariableDefinition) => !expr.isInstanceOf[ScBlock]
+      case _                         => false
     }
 
   private def isInBlock(expr: ScExpression): Boolean =
@@ -78,17 +77,14 @@ class ScalaUselessExpressionInspection
     def isNotLastInBlock: Boolean = {
       val parents = expr.parentsInFile.takeWhile {
         case ms: ScMatchStmt
-            if ms.expr.exists(PsiTreeUtil.isAncestor(_, expr, false)) =>
-          false
+            if ms.expr.exists(PsiTreeUtil.isAncestor(_, expr, false)) => false
         case ifStmt: ScIfStmt
             if ifStmt.condition.exists(
-              PsiTreeUtil.isAncestor(_, expr, false)) =>
-          false
+              PsiTreeUtil.isAncestor(_, expr, false)) => false
         case _: ScBlock | _: ScParenthesisedExpr | _: ScIfStmt |
             _: ScCaseClause | _: ScCaseClauses | _: ScMatchStmt | _: ScTryStmt |
-            _: ScCatchBlock =>
-          true
-        case _ => false
+            _: ScCatchBlock => true
+        case _              => false
       }
       (expr +: parents.toSeq).exists {
         case e: ScExpression => isInBlock(e) && !isLastInBlock(e)

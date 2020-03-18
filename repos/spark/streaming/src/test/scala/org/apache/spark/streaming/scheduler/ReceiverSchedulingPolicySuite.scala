@@ -212,8 +212,7 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
       receivers,
       Seq.empty)
     scheduledLocations.foreach {
-      case (receiverId, executors) =>
-        assert(executors.isEmpty)
+      case (receiverId, executors) => assert(executors.isEmpty)
     }
   }
 

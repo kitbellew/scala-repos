@@ -57,8 +57,7 @@ case class ScExistentialType(
         new HashSet[String],
         (tp: ScType, _: Int, rejected: HashSet[String]) => {
           tp match {
-            case ScDesignatorType(element) =>
-              element match {
+            case ScDesignatorType(element) => element match {
                 case a: ScTypeAlias
                     if a.getContext.isInstanceOf[ScExistentialClause] =>
                   if (!rejected.contains(a.name)) {
@@ -258,8 +257,7 @@ case class ScExistentialType(
               s.substitutedTypes.foreach(_.foreach(f =>
                 checkRecursive(f(), newSet)))
               s.typeParams.foreach {
-                case tParam: TypeParameter =>
-                  tParam.update {
+                case tParam: TypeParameter => tParam.update {
                     case tp: ScType => checkRecursive(tp, newSet); tp
                   }
               }
@@ -268,8 +266,7 @@ case class ScExistentialType(
           typeMap.foreach(_._2.updateTypes {
             case tp: ScType => checkRecursive(tp, newSet); tp
           })
-        case ScDesignatorType(elem) =>
-          elem match {
+        case ScDesignatorType(elem) => elem match {
             case ta: ScTypeAlias if ta.isExistentialTypeAlias =>
               wildcards.foreach(arg =>
                 if (arg.name == ta.name && !rejected.contains(arg.name)) {
@@ -397,14 +394,10 @@ case class ScExistentialType(
       case JavaArrayType(_)          => tp
       case ScParameterizedType(designator, typeArgs) =>
         val parameteresIterator = designator match {
-          case tpt: ScTypeParameterType =>
-            tpt.args.map(_.param).iterator
-          case undef: ScUndefinedType =>
-            undef.tpt.args.map(_.param).iterator
-          case tp: ScType =>
-            ScType.extractClass(tp) match {
-              case Some(owner) =>
-                owner match {
+          case tpt: ScTypeParameterType => tpt.args.map(_.param).iterator
+          case undef: ScUndefinedType   => undef.tpt.args.map(_.param).iterator
+          case tp: ScType => ScType.extractClass(tp) match {
+              case Some(owner) => owner match {
                   case td: ScTypeDefinition => td.typeParameters.iterator
                   case _                    => owner.getTypeParameters.iterator
                 }
@@ -421,8 +414,7 @@ case class ScExistentialType(
               newTypeArgs += updateRecursive(arg, rejected, variance)
             case tp: ScTypeParam if tp.isContravariant =>
               newTypeArgs += updateRecursive(arg, rejected, -variance)
-            case _ =>
-              newTypeArgs += arg
+            case _ => newTypeArgs += arg
           }
         }
         ScParameterizedType(
@@ -446,8 +438,7 @@ case class ScExistentialType(
             ))
         )
       case ScThisType(clazz) => tp
-      case ScDesignatorType(element) =>
-        element match {
+      case ScDesignatorType(element) => element match {
           case a: ScTypeAlias if a.isExistentialTypeAlias =>
             if (!rejected.contains(a.name)) {
               wildcards.find(_.name == a.name) match {
@@ -471,8 +462,7 @@ case class ScExistentialType(
         updateRecursive(arg, rejected, -variance).asInstanceOf[ScTypeParameterType]),
         new Suspension[ScType](updateRecursive(lower.v, rejected, -variance)),
         new Suspension[ScType](updateRecursive(upper.v, rejected, variance)), param)*/
-      case ScSkolemizedType(name, args, lower, upper) =>
-        ScSkolemizedType(
+      case ScSkolemizedType(name, args, lower, upper) => ScSkolemizedType(
           name,
           args.map(arg =>
             updateRecursive(arg, rejected, -variance)
@@ -493,8 +483,7 @@ case class ScExistentialType(
               rejected,
               -variance))),
           isImplicit)(m.project, m.scope)
-      case ScAbstractType(tpt, lower, upper) =>
-        ScAbstractType(
+      case ScAbstractType(tpt, lower, upper) => ScAbstractType(
           updateRecursive(tpt, rejected, variance)
             .asInstanceOf[ScTypeParameterType],
           updateRecursive(lower, rejected, -variance),
@@ -554,8 +543,7 @@ case class ScExistentialType(
     def hasWildcards(tp: ScType): Boolean = {
       var res = false
       tp.recursiveUpdate {
-        case tp @ ScDesignatorType(element) =>
-          element match {
+        case tp @ ScDesignatorType(element) => element match {
             case a: ScTypeAlias
                 if a.getContext.isInstanceOf[ScExistentialClause]
                   && wildcards.exists(_.name == a.name) =>
@@ -571,8 +559,7 @@ case class ScExistentialType(
       res
     }
     val res = updateRecursive(this, HashSet.empty, 1) {
-      case (variance, arg, tp) =>
-        variance match {
+      case (variance, arg, tp) => variance match {
           case 1 if !hasWildcards(arg.upperBound) =>
             updated = true
             arg.upperBound

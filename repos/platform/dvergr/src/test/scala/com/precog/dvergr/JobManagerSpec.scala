@@ -371,8 +371,7 @@ trait JobManagerSpec[M[+_]] extends Specification {
                 Cancelled(
                   "I didn't like the way it looked at me.",
                   _,
-                  `state`))) =>
-          ok
+                  `state`))) => ok
       }
 
       jobs.findJob(jobId).copoint must beLike {
@@ -405,8 +404,7 @@ trait JobManagerSpec[M[+_]] extends Specification {
                 _,
                 _,
                 _,
-                Aborted("The mission was compromised.", _, `job1State`))) =>
-          ok
+                Aborted("The mission was compromised.", _, `job1State`))) => ok
       }
 
       val job2Id = jobs
@@ -425,8 +423,7 @@ trait JobManagerSpec[M[+_]] extends Specification {
                     _,
                     _,
                     _,
-                    Aborted("Blagawaga", _, `job2State`))) =>
-              ok
+                    Aborted("Blagawaga", _, `job2State`))) => ok
           }
       }
 
@@ -441,8 +438,7 @@ trait JobManagerSpec[M[+_]] extends Specification {
                 _,
                 _,
                 _,
-                Aborted("Because I could.", _, NotStarted))) =>
-          ok
+                Aborted("Because I could.", _, NotStarted))) => ok
       }
     }
 

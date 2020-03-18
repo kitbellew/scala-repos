@@ -145,8 +145,8 @@ case class BooleanValueStats(count: Long, trueCount: Long)
 
   def merge(that: Metadata) =
     that match {
-      case BooleanValueStats(count, trueCount) =>
-        Some(BooleanValueStats(this.count + count, this.trueCount + trueCount))
+      case BooleanValueStats(count, trueCount) => Some(
+          BooleanValueStats(this.count + count, this.trueCount + trueCount))
       case _ => None
     }
 }

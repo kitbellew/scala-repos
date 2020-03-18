@@ -100,8 +100,7 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       }
     } else if (expectNaN) {
       domain.foreach {
-        case (v1, v2) =>
-          checkNaN(c(Literal(v1), Literal(v2)), EmptyRow)
+        case (v1, v2) => checkNaN(c(Literal(v1), Literal(v2)), EmptyRow)
       }
     } else {
       domain.foreach {

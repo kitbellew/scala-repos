@@ -252,13 +252,11 @@ sealed abstract class Validation[+E, +A] extends Product with Serializable {
       M1: Semigroup[AA],
       M2: Semigroup[EE]): Validation[EE, AA] =
     this match {
-      case Failure(a1) =>
-        x match {
+      case Failure(a1) => x match {
           case Failure(a2) => Failure(M2.append(a1, a2))
           case Success(b2) => this
         }
-      case Success(b1) =>
-        x match {
+      case Success(b1) => x match {
           case b2 @ Failure(_) => b2
           case Success(b2)     => Success(M1.append(b1, b2))
         }
@@ -272,13 +270,11 @@ sealed abstract class Validation[+E, +A] extends Product with Serializable {
   def ===[EE >: E, AA >: A](
       x: Validation[EE, AA])(implicit EE: Equal[EE], EA: Equal[AA]): Boolean =
     this match {
-      case Failure(e1) =>
-        x match {
+      case Failure(e1) => x match {
           case Failure(e2) => Equal[EE].equal(e1, e2)
           case Success(_)  => false
         }
-      case Success(a1) =>
-        x match {
+      case Success(a1) => x match {
           case Success(a2) => Equal[AA].equal(a1, a2)
           case Failure(_)  => false
         }
@@ -288,13 +284,11 @@ sealed abstract class Validation[+E, +A] extends Product with Serializable {
   def compare[EE >: E, AA >: A](
       x: Validation[EE, AA])(implicit EE: Order[EE], EA: Order[AA]): Ordering =
     this match {
-      case Failure(e1) =>
-        x match {
+      case Failure(e1) => x match {
           case Failure(e2) => Order[EE].apply(e1, e2)
           case Success(_)  => Ordering.LT
         }
-      case Success(a1) =>
-        x match {
+      case Success(a1) => x match {
           case Success(a2) => Order[AA].apply(a1, a2)
           case Failure(_)  => Ordering.GT
         }
@@ -327,8 +321,7 @@ sealed abstract class Validation[+E, +A] extends Product with Serializable {
   def findSuccess[EE >: E, AA >: A](that: => Validation[EE, AA])(implicit
       es: Semigroup[EE]): Validation[EE, AA] =
     this match {
-      case Failure(e) =>
-        that match {
+      case Failure(e) => that match {
           case Failure(e0) => Failure(es.append(e, e0))
           case success     => success
         }
@@ -389,8 +382,7 @@ object Validation extends ValidationInstances {
       failure: E => X): X =
     d match {
       case Failure(e) => failure(e)
-      case Success(a) =>
-        success(a) match {
+      case Success(a) => success(a) match {
           case -\/(x) => x
           case \/-(q) => loopSuccess(q, success, failure)
         }
@@ -403,8 +395,7 @@ object Validation extends ValidationInstances {
       success: A => X,
       failure: E => X \/ Validation[E, A]): X =
     d match {
-      case Failure(e) =>
-        failure(e) match {
+      case Failure(e) => failure(e) match {
           case -\/(x) => x
           case \/-(q) => loopFailure(q, success, failure)
         }
@@ -527,8 +518,7 @@ sealed abstract class ValidationInstances2 extends ValidationInstances3 {
       def cozip[A, B](x: Validation[L, A \/ B]) =
         x match {
           case l @ Failure(_) => -\/(l)
-          case Success(e) =>
-            e match {
+          case Success(e) => e match {
               case -\/(a) => -\/(Success(a))
               case \/-(b) => \/-(Success(b))
             }

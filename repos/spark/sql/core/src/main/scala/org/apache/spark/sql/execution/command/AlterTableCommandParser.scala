@@ -47,8 +47,7 @@ object AlterTableCommandParser {
         val partSpec = getClauseOption("TOK_PARTSPEC", node.children)
           .map(parsePartitionSpec)
         matchAlterTableCommands(node, otherNodes, tableIdent, partSpec)
-      case _ =>
-        parseFailed("Could not parse ALTER TABLE command", node)
+      case _ => parseFailed("Could not parse ALTER TABLE command", node)
     }
   }
 
@@ -85,8 +84,7 @@ object AlterTableCommandParser {
               cleanAndUnquoteString(constant.text))
           case Token("TOK_PARTVAL", ident :: Nil) =>
             (cleanAndUnquoteString(ident.text), null)
-          case _ =>
-            parseFailed("Invalid ALTER TABLE command", node)
+          case _ => parseFailed("Invalid ALTER TABLE command", node)
         }.toMap
       case _ =>
         parseFailed("Expected partition spec in ALTER TABLE command", node)
@@ -111,8 +109,7 @@ object AlterTableCommandParser {
     node match {
       case Token("TOK_TABLEPROPERTIES", propsList) =>
         propsList.flatMap {
-          case Token("TOK_TABLEPROPLIST", props) =>
-            props.map {
+          case Token("TOK_TABLEPROPLIST", props) => props.map {
               case Token("TOK_TABLEPROPERTY", key :: value :: Nil) =>
                 val k = cleanAndUnquoteString(key.text)
                 val v = value match {
@@ -121,8 +118,7 @@ object AlterTableCommandParser {
                 }
                 (k, v)
             }
-          case _ =>
-            parseFailed("Invalid ALTER TABLE command", node)
+          case _ => parseFailed("Invalid ALTER TABLE command", node)
         }.toMap
       case _ =>
         parseFailed("Expected table properties in ALTER TABLE command", node)
@@ -204,10 +200,8 @@ object AlterTableCommandParser {
                   (col, Descending)
               }.unzip
               (cols, directions, numBucketsNode.text.toInt)
-            case numBucketsNode :: Nil =>
-              (Nil, Nil, numBucketsNode.text.toInt)
-            case _ =>
-              parseFailed("Invalid ALTER TABLE command", node)
+            case numBucketsNode :: Nil => (Nil, Nil, numBucketsNode.text.toInt)
+            case _                     => parseFailed("Invalid ALTER TABLE command", node)
           }
         }
         AlterTableStorageProperties(
@@ -255,19 +249,18 @@ object AlterTableCommandParser {
         //   +- TOK_STOREASDIR
         val names = colNames.map { n => cleanAndUnquoteString(n.text) }
         val values = colValues match {
-          case Token("TOK_TABCOLVALUE", vals) =>
-            Seq(vals.map { n => cleanAndUnquoteString(n.text) })
-          case Token("TOK_TABCOLVALUE_PAIR", pairs) =>
-            pairs.map {
+          case Token("TOK_TABCOLVALUE", vals) => Seq(vals.map { n =>
+              cleanAndUnquoteString(n.text)
+            })
+          case Token("TOK_TABCOLVALUE_PAIR", pairs) => pairs.map {
               case Token(
                     "TOK_TABCOLVALUES",
-                    Token("TOK_TABCOLVALUE", vals) :: Nil) =>
-                vals.map { n => cleanAndUnquoteString(n.text) }
-              case _ =>
-                parseFailed("Invalid ALTER TABLE command", node)
+                    Token("TOK_TABCOLVALUE", vals) :: Nil) => vals.map { n =>
+                  cleanAndUnquoteString(n.text)
+                }
+              case _ => parseFailed("Invalid ALTER TABLE command", node)
             }
-          case _ =>
-            parseFailed("Invalid ALTER TABLE command", node)
+          case _ => parseFailed("Invalid ALTER TABLE command", node)
         }
         val storedAsDirs = rest match {
           case Token("TOK_STOREDASDIRS", Nil) :: Nil => true
@@ -316,15 +309,13 @@ object AlterTableCommandParser {
                   cleanAndUnquoteString(loc.text)))
               case Token(
                     "TOK_TABCOLVALUES",
-                    Token("TOK_TABCOLVALUE", keys) :: Nil) =>
-                keys.map { k =>
+                    Token("TOK_TABCOLVALUE", keys) :: Nil) => keys.map { k =>
                   (
                     cleanAndUnquoteString(k.text),
                     cleanAndUnquoteString(loc.text))
                 }
             }
-          case _ =>
-            parseFailed("Invalid ALTER TABLE command", node)
+          case _ => parseFailed("Invalid ALTER TABLE command", node)
         }.toMap
         AlterTableSkewedLocation(tableIdent, skewedMaps)(node.source)
 
@@ -347,8 +338,7 @@ object AlterTableCommandParser {
               val (spec, _) = parsedParts.remove(parsedParts.length - 1)
               parsedParts += ((spec, Some(unquoteString(loc.text))))
             }
-          case _ =>
-            parseFailed("Invalid ALTER TABLE command", node)
+          case _ => parseFailed("Invalid ALTER TABLE command", node)
         }
         AlterTableAddPartition(tableIdent, parsedParts, ifNotExists)(
           node.source)
@@ -489,8 +479,7 @@ object AlterTableCommandParser {
         AlterTableReplaceCol(tableIdent, partition, columns, restrict, cascade)(
           node.source)
 
-      case _ =>
-        parseFailed("Unsupported ALTER TABLE command", node)
+      case _ => parseFailed("Unsupported ALTER TABLE command", node)
     }
   }
 

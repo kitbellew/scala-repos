@@ -72,8 +72,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
         case ser2: SerializerWithStringManifest ⇒
           val manifest = ser2.manifest(snapshot)
           if (manifest != "") headerOut.write(manifest.getBytes(UTF_8))
-        case _ ⇒
-          if (snapshotSerializer.includeManifest)
+        case _ ⇒ if (snapshotSerializer.includeManifest)
             headerOut.write(snapshot.getClass.getName.getBytes(UTF_8))
       }
 
@@ -90,8 +89,9 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
 
     // serialize actor references with full address information (defaultAddress)
     transportInformation match {
-      case Some(ti) ⇒
-        Serialization.currentTransportInformation.withValue(ti) { serialize() }
+      case Some(ti) ⇒ Serialization.currentTransportInformation.withValue(ti) {
+          serialize()
+        }
       case None ⇒ serialize()
     }
   }

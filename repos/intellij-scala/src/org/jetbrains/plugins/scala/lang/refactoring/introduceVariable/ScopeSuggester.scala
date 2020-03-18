@@ -89,15 +89,13 @@ object ScopeSuggester {
           PsiTreeUtil.getParentOfType(
             parent,
             classOf[ScTemplateDefinition]) match {
-            case classType: ScClass =>
-              "class " + classType.name
+            case classType: ScClass => "class " + classType.name
             case objectType: ScObject =>
               occInCompanionObj = getOccurrencesFromCompanionObject(
                 currentElement,
                 objectType)
               "object " + objectType.name
-            case traitType: ScTrait =>
-              "trait " + traitType.name
+            case traitType: ScTrait => "trait " + traitType.name
           }
       }
 
@@ -170,11 +168,9 @@ object ScopeSuggester {
     val parent: PsiElement = objectType.getParent
     val name = objectType.name
     val companion = parent.getChildren.find({
-      case classType: ScClass if classType.name == name =>
-        true
-      case traitType: ScTrait if traitType.name == name =>
-        true
-      case _ => false
+      case classType: ScClass if classType.name == name => true
+      case traitType: ScTrait if traitType.name == name => true
+      case _                                            => false
     })
 
     if (companion.isDefined)
@@ -269,10 +265,7 @@ object ScopeSuggester {
 
           val processor = new Processor[PsiFile] {
             override def process(file: PsiFile): Boolean = {
-              file match {
-                case scalaFile: ScalaFile =>
-                  buffer += scalaFile
-              }
+              file match { case scalaFile: ScalaFile => buffer += scalaFile }
               true
             }
           }
@@ -333,9 +326,8 @@ object ScopeSuggester {
           file)
         allOcurrences += occurrences
         val parent = file match {
-          case scalaFile: ScalaFile if scalaFile.isScriptFile() =>
-            file
-          case _ => PsiTreeUtil.findChildOfType(file, classOf[ScTemplateBody])
+          case scalaFile: ScalaFile if scalaFile.isScriptFile() => file
+          case _                                                => PsiTreeUtil.findChildOfType(file, classOf[ScTemplateBody])
         }
         if (parent != null) {
           allValidators += ScalaTypeValidator(

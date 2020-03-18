@@ -52,8 +52,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
               s"Raw JS type ${classDef.name} cannot " +
                 "have instance members")
           }
-        case _ =>
-          checkScalaClassDef(classDef)
+        case _ => checkScalaClassDef(classDef)
       }
     }
     errorCount
@@ -159,8 +158,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     name match {
       case _: Ident =>
       // ok
-      case _: StringLiteral =>
-        if (!classDef.kind.isJSClass)
+      case _: StringLiteral => if (!classDef.kind.isJSClass)
           reportError(s"FieldDef '$name' cannot have a string literal name")
     }
 
@@ -401,15 +399,13 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         typecheckExpect(rhs, env, vtpe)
         env.withLocal(LocalDef(ident.name, vtpe, mutable)(tree.pos))
 
-      case Skip() =>
-        env
+      case Skip() => env
 
       case Assign(select, rhs) =>
         select match {
           case Select(This(), Ident(_, _)) if env.inConstructor =>
           // ok
-          case Select(receiver, Ident(name, _)) =>
-            receiver.tpe match {
+          case Select(receiver, Ident(name, _)) => receiver.tpe match {
               case ClassType(clazz) =>
                 for {
                   c <- tryLookupClass(clazz).right
@@ -426,8 +422,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         val expectedRhsTpe = select match {
           case _: JSDotSelect | _: JSBracketSelect | _: JSSuperBracketSelect =>
             AnyType
-          case _ =>
-            lhsTpe
+          case _ => lhsTpe
         }
         typecheckExpect(rhs, env, expectedRhsTpe)
         env
@@ -485,8 +480,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         typecheckStat(default, env)
         env
 
-      case Debugger() =>
-        env
+      case Debugger() => env
 
       case JSDelete(JSDotSelect(obj, prop)) =>
         typecheckExpr(obj, env)
@@ -523,8 +517,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       case JSSpread(items) =>
         typecheckExpr(items, env)
         AnyType
-      case _ =>
-        typecheckExpr(tree, env)
+      case _ => typecheckExpr(tree, env)
     }
   }
 
@@ -579,8 +572,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         typecheckExpect(elsep, env, tpe)
 
       case While(BooleanLiteral(true), body, label)
-          if tree.tpe == NothingType =>
-        typecheckStat(body, env)
+          if tree.tpe == NothingType => typecheckStat(body, env)
 
       case Try(block, errVar, handler, finalizer) =>
         val tpe = tree.tpe
@@ -592,8 +584,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         }
         if (finalizer != EmptyTree) { typecheckStat(finalizer, env) }
 
-      case Throw(expr) =>
-        typecheckExpr(expr, env)
+      case Throw(expr) => typecheckExpr(expr, env)
 
       case Continue(label) =>
       /* Here we could check that it is indeed legal to break to the
@@ -623,8 +614,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
           NoType,
           isStatic = false)
 
-      case LoadModule(cls) =>
-        if (!cls.className.endsWith("$"))
+      case LoadModule(cls) => if (!cls.className.endsWith("$"))
           reportError("LoadModule of non-module class $cls")
 
       case Select(qualifier, Ident(item, _)) =>
@@ -649,8 +639,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
             }
           case NullType | NothingType =>
           // always ok
-          case _ =>
-            reportError(s"Cannot select $item of non-class type $qualType")
+          case _ => reportError(
+              s"Cannot select $item of non-class type $qualType")
         }
 
       case Apply(receiver, Ident(method, _), args) =>
@@ -683,14 +673,11 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       case UnaryOp(op, lhs) =>
         import UnaryOp._
         (op: @switch) match {
-          case IntToLong =>
-            typecheckExpect(lhs, env, IntType)
-          case LongToInt | LongToDouble =>
-            typecheckExpect(lhs, env, LongType)
+          case IntToLong                => typecheckExpect(lhs, env, IntType)
+          case LongToInt | LongToDouble => typecheckExpect(lhs, env, LongType)
           case DoubleToInt | DoubleToFloat | DoubleToLong =>
             typecheckExpect(lhs, env, DoubleType)
-          case Boolean_! =>
-            typecheckExpect(lhs, env, BooleanType)
+          case Boolean_! => typecheckExpect(lhs, env, BooleanType)
         }
 
       case BinaryOp(op, lhs, rhs) =>
@@ -738,25 +725,20 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       case ArraySelect(array, index) =>
         typecheckExpect(index, env, IntType)
         typecheckExpr(array, env) match {
-          case arrayType: ArrayType =>
-            if (tree.tpe != arrayElemType(arrayType))
+          case arrayType: ArrayType => if (tree.tpe != arrayElemType(arrayType))
               reportError(
                 s"Array select of array type $arrayType typed as ${tree.tpe}")
-          case arrayType =>
-            reportError(s"Array type expected but $arrayType found")
+          case arrayType => reportError(
+              s"Array type expected but $arrayType found")
         }
 
-      case IsInstanceOf(expr, cls) =>
-        typecheckExpr(expr, env)
+      case IsInstanceOf(expr, cls) => typecheckExpr(expr, env)
 
-      case AsInstanceOf(expr, cls) =>
-        typecheckExpr(expr, env)
+      case AsInstanceOf(expr, cls) => typecheckExpr(expr, env)
 
-      case Unbox(expr, _) =>
-        typecheckExpr(expr, env)
+      case Unbox(expr, _) => typecheckExpr(expr, env)
 
-      case GetClass(expr) =>
-        typecheckExpr(expr, env)
+      case GetClass(expr) => typecheckExpr(expr, env)
 
       // JavaScript expressions
 
@@ -764,8 +746,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         typecheckExpr(ctor, env)
         for (arg <- args) typecheckExprOrSpread(arg, env)
 
-      case JSDotSelect(qualifier, item) =>
-        typecheckExpr(qualifier, env)
+      case JSDotSelect(qualifier, item) => typecheckExpr(qualifier, env)
 
       case JSBracketSelect(qualifier, item) =>
         typecheckExpr(qualifier, env)
@@ -812,8 +793,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         if (clazz.kind != ClassKind.JSModuleClass)
           reportError(s"JS module class type expected but $cls found")
 
-      case JSUnaryOp(op, lhs) =>
-        typecheckExpr(lhs, env)
+      case JSUnaryOp(op, lhs) => typecheckExpr(lhs, env)
 
       case JSBinaryOp(op, lhs, rhs) =>
         typecheckExpr(lhs, env)
@@ -842,8 +822,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
                     s"typed as ${tree.tpe}")
           }
 
-      case This() =>
-        if (!isSubtype(env.thisTpe, tree.tpe))
+      case This() => if (!isSubtype(env.thisTpe, tree.tpe))
           reportError(s"this of type ${env.thisTpe} typed as ${tree.tpe}")
 
       case Closure(captureParams, params, body, captureValues) =>
@@ -877,8 +856,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
           AnyType)
         typecheckExpect(body, bodyEnv, AnyType)
 
-      case _ =>
-        reportError(s"Invalid expression tree")
+      case _ => reportError(s"Invalid expression tree")
     }
 
     tree.tpe

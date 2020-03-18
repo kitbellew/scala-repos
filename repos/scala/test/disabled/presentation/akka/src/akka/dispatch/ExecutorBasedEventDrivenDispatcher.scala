@@ -226,9 +226,8 @@ trait ExecutableMailbox extends Runnable {
 
   final def run = {
     try { processMailbox() }
-    catch {
-      case ie: InterruptedException =>
-    } finally { dispatcherLock.unlock() }
+    catch { case ie: InterruptedException => }
+    finally { dispatcherLock.unlock() }
     if (!self.isEmpty) dispatcher.reRegisterForExecution(this)
   }
 

@@ -145,8 +145,7 @@ class HistoryServerSuite
   // run a bunch of characterization tests -- just verify the behavior is the same as what is saved
   // in the test resource folder
   cases.foreach {
-    case (name, path) =>
-      test(name) {
+    case (name, path) => test(name) {
         val (code, jsonOpt, errOpt) = getContentAndCode(path)
         code should be(HttpServletResponse.SC_OK)
         jsonOpt should be('defined)
@@ -196,8 +195,7 @@ class HistoryServerSuite
     val url = attemptId match {
       case Some(id) =>
         new URL(s"${generateURL(s"applications/$appId")}/$id/logs")
-      case None =>
-        new URL(s"${generateURL(s"applications/$appId")}/logs")
+      case None => new URL(s"${generateURL(s"applications/$appId")}/logs")
     }
 
     val (code, inputStream, error) = HistoryServerSuite
@@ -522,8 +520,7 @@ object HistoryServerSuite {
     try {
       suite.init()
       suite.cases.foreach {
-        case (name, path) =>
-          suite.generateExpectation(name, path)
+        case (name, path) => suite.generateExpectation(name, path)
       }
     } finally { suite.stop() }
   }

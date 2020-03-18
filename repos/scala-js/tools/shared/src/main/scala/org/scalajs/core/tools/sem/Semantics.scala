@@ -51,8 +51,7 @@ final class Semantics private (
           this.moduleInit == that.moduleInit &&
           this.strictFloats == that.strictFloats &&
           this.productionMode == that.productionMode
-      case _ =>
-        false
+      case _ => false
     }
 
   override def hashCode(): Int = {

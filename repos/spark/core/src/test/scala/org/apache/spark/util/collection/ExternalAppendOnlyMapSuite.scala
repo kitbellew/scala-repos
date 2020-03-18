@@ -203,8 +203,7 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     val result = rdd1.cogroup(rdd2).collect()
 
     result.foreach {
-      case (i, (seq1, seq2)) =>
-        i match {
+      case (i, (seq1, seq2)) => i match {
           case 0 =>
             assert(seq1.toSet === Set[Int]() && seq2.toSet === Set[Int](2, 4))
           case 1 =>

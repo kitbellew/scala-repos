@@ -121,24 +121,20 @@ sealed abstract class \&/[+A, +B] extends Product with Serializable {
 
   def bitraverse[F[_]: Apply, C, D](f: A => F[C], g: B => F[D]): F[C \&/ D] =
     this match {
-      case This(a) =>
-        Functor[F].map(f(a))(This(_))
-      case That(b) =>
-        Functor[F].map(g(b))(That(_))
-      case Both(a, b) =>
-        Apply[F].apply2(f(a), g(b)) { case (c, d) => Both(c, d): C \&/ D }
+      case This(a) => Functor[F].map(f(a))(This(_))
+      case That(b) => Functor[F].map(g(b))(That(_))
+      case Both(a, b) => Apply[F].apply2(f(a), g(b)) {
+          case (c, d) => Both(c, d): C \&/ D
+        }
     }
 
   def map[D](g: B => D): (A \&/ D) = bimap(identity, g)
 
   def traverse[F[_]: Applicative, AA >: A, D](g: B => F[D]): F[AA \&/ D] =
     this match {
-      case a @ This(_) =>
-        Applicative[F].point(a)
-      case That(b) =>
-        Functor[F].map(g(b))(That(_))
-      case Both(a, b) =>
-        Functor[F].map(g(b))(Both(a, _): A \&/ D)
+      case a @ This(_) => Applicative[F].point(a)
+      case That(b)     => Functor[F].map(g(b))(That(_))
+      case Both(a, b)  => Functor[F].map(g(b))(Both(a, _): A \&/ D)
     }
 
   def foreach(g: B => Unit): Unit = bimap(_ => (), g)
@@ -146,18 +142,12 @@ sealed abstract class \&/[+A, +B] extends Product with Serializable {
   def flatMap[AA >: A, D](g: B => (AA \&/ D))(implicit
       M: Semigroup[AA]): (AA \&/ D) =
     this match {
-      case a @ This(_) =>
-        a
-      case That(b) =>
-        g(b)
-      case Both(a, b) =>
-        g(b) match {
-          case This(aa) =>
-            This(M.append(a, aa))
-          case That(bb) =>
-            Both(a, bb)
-          case Both(aa, bb) =>
-            Both(M.append(a, aa), bb)
+      case a @ This(_) => a
+      case That(b)     => g(b)
+      case Both(a, b) => g(b) match {
+          case This(aa)     => This(M.append(a, aa))
+          case That(bb)     => Both(a, bb)
+          case Both(aa, bb) => Both(M.append(a, aa), bb)
         }
     }
 
@@ -201,48 +191,33 @@ sealed abstract class \&/[+A, +B] extends Product with Serializable {
 
   def valueOr[BB >: B](x: A => BB)(implicit M: Semigroup[BB]): BB =
     this match {
-      case This(a) =>
-        x(a)
-      case That(b) =>
-        b
-      case Both(a, b) =>
-        M.append(x(a), b)
+      case This(a)    => x(a)
+      case That(b)    => b
+      case Both(a, b) => M.append(x(a), b)
     }
 
   def ===[AA >: A, BB >: B](
       x: AA \&/ BB)(implicit EA: Equal[AA], EB: Equal[BB]): Boolean =
     this match {
-      case This(a) =>
-        x match {
-          case This(aa) =>
-            EA.equal(a, aa)
-          case _ =>
-            false
+      case This(a) => x match {
+          case This(aa) => EA.equal(a, aa)
+          case _        => false
         }
-      case That(b) =>
-        x match {
-          case That(bb) =>
-            EB.equal(b, bb)
-          case _ =>
-            false
+      case That(b) => x match {
+          case That(bb) => EB.equal(b, bb)
+          case _        => false
         }
-      case Both(a, b) =>
-        x match {
-          case Both(aa, bb) =>
-            EA.equal(a, aa) && EB.equal(b, bb)
-          case _ =>
-            false
+      case Both(a, b) => x match {
+          case Both(aa, bb) => EA.equal(a, aa) && EB.equal(b, bb)
+          case _            => false
         }
     }
 
   def show[AA >: A, BB >: B](implicit SA: Show[AA], SB: Show[BB]): Cord =
     this match {
-      case This(a) =>
-        "This(" +: SA.show(a) :+ ")"
-      case That(b) =>
-        "That(" +: SB.show(b) :+ ")"
-      case Both(a, b) =>
-        ("Both(" +: SA.show(a) :+ ",") ++ SB.show(b) :+ ")"
+      case This(a)    => "This(" +: SA.show(a) :+ ")"
+      case That(b)    => "That(" +: SB.show(b) :+ ")"
+      case Both(a, b) => ("Both(" +: SA.show(a) :+ ",") ++ SB.show(b) :+ ")"
     }
 
 }
@@ -266,12 +241,9 @@ object \&/ extends TheseInstances {
 
   def concatThis[F[_], A, B](x: F[A \&/ B])(implicit M: MonadPlus[F]): F[A] =
     M.bind(x) {
-      case This(a) =>
-        M.point(a)
-      case That(_) =>
-        M.empty
-      case Both(a, _) =>
-        M.point(a)
+      case This(a)    => M.point(a)
+      case That(_)    => M.empty
+      case Both(a, _) => M.point(a)
     }
 
   def concatThatList[A, B](x: List[A \&/ B]): List[B] =
@@ -282,12 +254,9 @@ object \&/ extends TheseInstances {
 
   def concatThat[F[_], A, B](x: F[A \&/ B])(implicit M: MonadPlus[F]): F[B] =
     M.bind(x) {
-      case This(_) =>
-        M.empty
-      case That(b) =>
-        M.point(b)
-      case Both(_, b) =>
-        M.point(b)
+      case This(_)    => M.empty
+      case That(b)    => M.point(b)
+      case Both(_, b) => M.point(b)
     }
 
   def unalignList[A, B](x: List[A \&/ B]): (List[A], List[B]) =
@@ -302,12 +271,9 @@ object \&/ extends TheseInstances {
 
   def merge[A](t: A \&/ A)(implicit S: Semigroup[A]): A =
     t match {
-      case This(a) =>
-        a
-      case That(a) =>
-        a
-      case Both(a1, a2) =>
-        S.append(a1, a2)
+      case This(a)      => a
+      case That(a)      => a
+      case Both(a1, a2) => S.append(a1, a2)
     }
 
   @annotation.tailrec
@@ -370,31 +336,21 @@ sealed abstract class TheseInstances0 extends TheseInstances1 {
       override def equal(x: A \&/ B, y: A \&/ B) = x === y
       override def order(x: A \&/ B, y: A \&/ B) =
         x match {
-          case \&/.This(a1) =>
-            y match {
-              case \&/.This(a2) =>
-                A.order(a1, a2)
-              case _ =>
-                Ordering.GT
+          case \&/.This(a1) => y match {
+              case \&/.This(a2) => A.order(a1, a2)
+              case _            => Ordering.GT
             }
-          case \&/.That(b1) =>
-            y match {
-              case \&/.That(b2) =>
-                B.order(b1, b2)
-              case _ =>
-                Ordering.LT
+          case \&/.That(b1) => y match {
+              case \&/.That(b2) => B.order(b1, b2)
+              case _            => Ordering.LT
             }
-          case \&/.Both(a1, b1) =>
-            y match {
-              case \&/.Both(a2, b2) =>
-                A.order(a1, a2) match {
+          case \&/.Both(a1, b1) => y match {
+              case \&/.Both(a2, b2) => A.order(a1, a2) match {
                   case Ordering.EQ => B.order(b1, b2)
                   case o           => o
                 }
-              case \&/.This(_) =>
-                Ordering.LT
-              case \&/.That(_) =>
-                Ordering.GT
+              case \&/.This(_) => Ordering.LT
+              case \&/.That(_) => Ordering.GT
             }
         }
     }

@@ -63,8 +63,7 @@ trait ScModificationTrackerOwner
   def isValidModificationTrackerOwner(
       checkForChangedReturn: Boolean = false): Boolean = {
     getContext match {
-      case f: ScFunction =>
-        f.returnTypeElement match {
+      case f: ScFunction => f.returnTypeElement match {
           case Some(ret)            => true
           case None if !f.hasAssign => true
           case _ =>

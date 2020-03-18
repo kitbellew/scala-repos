@@ -184,9 +184,8 @@ abstract class ScTypeDefinitionImpl protected (
   private def hasSameScalaKind(other: PsiClass) =
     (this, other) match {
       case (_: ScTrait, _: ScTrait) | (_: ScObject, _: ScObject) |
-          (_: ScClass, _: ScClass) =>
-        true
-      case _ => false
+          (_: ScClass, _: ScClass) => true
+      case _                       => false
     }
 
   def getSourceMirrorClass: PsiClass = {
@@ -225,9 +224,8 @@ abstract class ScTypeDefinitionImpl protected (
       case _                                => null
     }
     stub match {
-      case memberOrLocal: ScMemberOrLocal =>
-        return memberOrLocal.isLocal
-      case _ =>
+      case memberOrLocal: ScMemberOrLocal => return memberOrLocal.isLocal
+      case _                              =>
     }
     containingClass == null && PsiTreeUtil.getParentOfType(
       this,
@@ -513,13 +511,11 @@ abstract class ScTypeDefinitionImpl protected (
         val innerClasses = ownInnerClasses
         res ++= innerClasses
         o.members.foreach {
-          case o: ScObject =>
-            o.fakeCompanionClass match {
+          case o: ScObject => o.fakeCompanionClass match {
               case Some(clazz) =>
                 res += o
                 res += clazz
-              case None =>
-                res += o
+              case None => res += o
             }
           case t: ScTrait =>
             res += t

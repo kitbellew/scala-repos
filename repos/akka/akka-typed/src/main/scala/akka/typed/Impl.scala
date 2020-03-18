@@ -89,13 +89,11 @@ private[typed] class ActorContextAdapter[T](ctx: akka.actor.ActorContext)
       case f: akka.actor.FunctionRef ⇒
         val cell = ctx.asInstanceOf[akka.actor.ActorCell]
         cell.removeFunctionRef(f)
-      case _ ⇒
-        ctx.child(child.path.name) match {
+      case _ ⇒ ctx.child(child.path.name) match {
           case Some(ref) if ref == child.untypedRef ⇒
             ctx.stop(child.untypedRef)
             true
-          case _ ⇒
-            false // none of our business
+          case _ ⇒ false // none of our business
         }
     }
   def watch[U](other: ActorRef[U]) = { ctx.watch(other.untypedRef); other }

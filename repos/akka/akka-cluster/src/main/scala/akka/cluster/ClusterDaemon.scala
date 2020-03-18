@@ -417,8 +417,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
     case ClusterUserAction.Leave(address) ⇒ leaving(address)
     case SendGossipTo(address) ⇒ sendGossipTo(address)
     case msg: SubscriptionMessage ⇒ publisher forward msg
-    case QuarantinedEvent(address, uid) ⇒
-      quarantined(UniqueAddress(address, uid))
+    case QuarantinedEvent(address, uid) ⇒ quarantined(
+        UniqueAddress(address, uid))
     case ClusterUserAction.JoinTo(address) ⇒
       logInfo(
         "Trying to join [{}] when already part of a cluster, ignoring",
@@ -679,8 +679,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
 
         publish(latestGossip)
       case Some(_) ⇒ // already down
-      case None ⇒
-        logInfo("Ignoring down of unknown node [{}] as [{}]", address)
+      case None ⇒ logInfo("Ignoring down of unknown node [{}] as [{}]", address)
     }
 
   }
@@ -1165,8 +1164,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         .allUnreachableFrom(selfUniqueAddress) collect {
         case node
             if node != selfUniqueAddress && failureDetector.isAvailable(
-              node.address) ⇒
-          localGossip.member(node)
+              node.address) ⇒ localGossip.member(node)
       }
 
       if (newlyDetectedUnreachableMembers.nonEmpty || newlyDetectedReachableMembers.nonEmpty) {
@@ -1425,10 +1423,8 @@ private[cluster] class OnMemberStatusChangedListener(
   import ClusterEvent._
   private val cluster = Cluster(context.system)
   private val to = status match {
-    case Up ⇒
-      classOf[MemberUp]
-    case Removed ⇒
-      classOf[MemberRemoved]
+    case Up ⇒ classOf[MemberUp]
+    case Removed ⇒ classOf[MemberRemoved]
   }
 
   override def preStart(): Unit = cluster.subscribe(self, to)
@@ -1441,10 +1437,8 @@ private[cluster] class OnMemberStatusChangedListener(
   def receive = {
     case state: CurrentClusterState ⇒
       if (state.members.exists(isTriggered)) done()
-    case MemberUp(member) ⇒
-      if (isTriggered(member)) done()
-    case MemberRemoved(member, _) ⇒
-      if (isTriggered(member)) done()
+    case MemberUp(member) ⇒ if (isTriggered(member)) done()
+    case MemberRemoved(member, _) ⇒ if (isTriggered(member)) done()
   }
 
   private def done(): Unit = {

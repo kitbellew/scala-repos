@@ -54,8 +54,7 @@ class CrossValidationTest
     val trainingData = dataSplit._1.labeledPoints
     val queryActual = dataSplit._3
     val testingData = queryActual.map {
-      case (query, actual) =>
-        LabeledPoint(actual.label, query.features)
+      case (query, actual) => LabeledPoint(actual.label, query.features)
     }
     (trainingData, testingData.collect().toSeq)
   }
@@ -85,8 +84,7 @@ class CrossValidationTest
     val labeledPointsRDD = sc.parallelize(labeledPoints)
     val splits = evalKs.map(k => k -> splitData(k, labeledPointsRDD))
     val diffs = splits.map {
-      case (k, folds) =>
-        folds.map(fold => fold._3.count() - dataCount / k)
+      case (k, folds) => folds.map(fold => fold._3.count() - dataCount / k)
     }
     forAll(diffs) { foldDiffs => foldDiffs.max should be <= 1L }
     diffs.map(folds => folds.sum) should be(evalKs.map(k => dataCount % k))

@@ -89,8 +89,7 @@ object Hashers {
     def mixTree(tree: Tree): Unit = {
       mixPos(tree.pos)
       tree match {
-        case EmptyTree =>
-          mixTag(TagEmptyTree)
+        case EmptyTree => mixTag(TagEmptyTree)
 
         case VarDef(ident, vtpe, mutable, rhs) =>
           mixTag(TagVarDef)
@@ -111,8 +110,7 @@ object Hashers {
            */
           if (rest) mixBoolean(rest)
 
-        case Skip() =>
-          mixTag(TagSkip)
+        case Skip() => mixTag(TagSkip)
 
         case Block(stats) =>
           mixTag(TagBlock)
@@ -180,8 +178,7 @@ object Hashers {
           mixTree(default)
           mixType(tree.tpe)
 
-        case Debugger() =>
-          mixTag(TagDebugger)
+        case Debugger() => mixTag(TagDebugger)
 
         case New(cls, ctor, args) =>
           mixTag(TagNew)
@@ -375,18 +372,15 @@ object Hashers {
               mixTree(value)
           }
 
-        case JSLinkingInfo() =>
-          mixTag(TagJSLinkingInfo)
+        case JSLinkingInfo() => mixTag(TagJSLinkingInfo)
 
-        case Undefined() =>
-          mixTag(TagUndefined)
+        case Undefined() => mixTag(TagUndefined)
 
         case UndefinedParam() =>
           mixTag(TagUndefinedParam)
           mixType(tree.tpe)
 
-        case Null() =>
-          mixTag(TagNull)
+        case Null() => mixTag(TagNull)
 
         case BooleanLiteral(value) =>
           mixTag(TagBooleanLiteral)
@@ -432,8 +426,7 @@ object Hashers {
           mixTree(body)
           mixTrees(captureValues)
 
-        case _ =>
-          sys.error(s"Unable to hash tree of class ${tree.getClass}")
+        case _ => sys.error(s"Unable to hash tree of class ${tree.getClass}")
 
       }
     }

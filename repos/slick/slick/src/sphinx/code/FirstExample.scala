@@ -97,8 +97,7 @@ object FirstExample extends App {
         println("Coffees:")
         db.run(coffees.result)
           .map(_.foreach {
-            case (name, supID, price, sales, total) =>
-              println(
+            case (name, supID, price, sales, total) => println(
                 "  " + name + "\t" + supID + "\t" + price + "\t" + sales + "\t" + total)
           })
         // Equivalent SQL code:

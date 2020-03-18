@@ -18,16 +18,11 @@ final class Master(frameworkName: String) extends BridgeBase(frameworkName) {
   protected def handleMsgImpl(cmd: String, strArg: => String): Unit = {
     def jsonArg = js.JSON.parse(strArg)
     cmd match {
-      case "newRunner" =>
-        reply(newRunner(jsonArg))
-      case "runnerDone" =>
-        reply(runnerDone())
-      case "tasks" =>
-        reply(tasks(jsonArg))
-      case "msg" =>
-        reply(inboundMessage(strArg))
-      case cmd =>
-        throw new IllegalArgumentException(s"Unknown command: $cmd")
+      case "newRunner"  => reply(newRunner(jsonArg))
+      case "runnerDone" => reply(runnerDone())
+      case "tasks"      => reply(tasks(jsonArg))
+      case "msg"        => reply(inboundMessage(strArg))
+      case cmd          => throw new IllegalArgumentException(s"Unknown command: $cmd")
     }
   }
 

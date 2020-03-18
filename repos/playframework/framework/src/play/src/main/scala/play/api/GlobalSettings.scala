@@ -100,16 +100,14 @@ trait GlobalSettings {
       request.method match {
         case HttpVerbs.HEAD =>
           onRouteRequest(request.copy(method = HttpVerbs.GET)) match {
-            case Some(action: EssentialAction) =>
-              action match {
+            case Some(action: EssentialAction) => action match {
                 case handler: RequestTaggingHandler =>
                   (handler.tagRequest(request), action)
                 case _ => (request, action)
               }
             case None => (request, notFoundHandler)
           }
-        case _ =>
-          (request, notFoundHandler)
+        case _ => (request, notFoundHandler)
       }
     }
 

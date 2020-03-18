@@ -125,8 +125,7 @@ trait GenTrees {
               Select(migrated, nme.tree)
           }
         }
-      case _ =>
-        EmptyTree
+      case _ => EmptyTree
     }
   }
 
@@ -247,8 +246,8 @@ trait GenTrees {
       case Select(qual, name) if name != sym.name =>
         reifyBoundType(Select(qual, sym.name))
 
-      case Select(_, _) | SelectFromTypeTree(_, _) | Ident(_) =>
-        reifyBoundType(tree)
+      case Select(_, _) | SelectFromTypeTree(_, _) | Ident(_) => reifyBoundType(
+          tree)
 
       case _ =>
         throw new Error("internal error: %s (%s, %s) is not supported".format(

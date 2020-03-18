@@ -64,8 +64,8 @@ object ResponseShortcutException {
 
   def redirect(to: String, func: () => Unit): ResponseShortcutException =
     S.session match {
-      case Full(liftSession) =>
-        redirect(liftSession.attachRedirectFunc(to, Full(func)))
+      case Full(liftSession) => redirect(
+          liftSession.attachRedirectFunc(to, Full(func)))
       case _ => redirect(to)
     }
 
@@ -77,8 +77,8 @@ object ResponseShortcutException {
 
   def seeOther(to: String, func: () => Unit): ResponseShortcutException =
     S.session match {
-      case Full(liftSession) =>
-        seeOther(liftSession.attachRedirectFunc(to, Full(func)))
+      case Full(liftSession) => seeOther(
+          liftSession.attachRedirectFunc(to, Full(func)))
       case _ => seeOther(to)
     }
 }

@@ -48,9 +48,8 @@ object CofreeTest extends SpecLite {
     new (OneAndList ~> CofreeOption) {
       def apply[A](fa: OneAndList[A]): CofreeOption[A] =
         Cofree.unfold(fa) {
-          case OneAnd(a, h :: t) =>
-            (a, Some(OneAnd(h, t)))
-          case OneAnd(a, _) => (a, None)
+          case OneAnd(a, h :: t) => (a, Some(OneAnd(h, t)))
+          case OneAnd(a, _)      => (a, None)
         }
     }
 

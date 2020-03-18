@@ -28,8 +28,7 @@ class TemplateFilter extends ElementFilter {
       val tuple = ScalaCompletionUtil.getForAll(parent, leaf)
       if (tuple._1) return tuple._2
       parent match {
-        case _: ScReferenceExpression =>
-          parent.getParent match {
+        case _: ScReferenceExpression => parent.getParent match {
             case y: ScStableReferenceElementPattern => {
               y.getParent match {
                 case x: ScCaseClause => {

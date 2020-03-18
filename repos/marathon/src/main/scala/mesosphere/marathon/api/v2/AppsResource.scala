@@ -132,8 +132,7 @@ class AppsResource @Inject() (
               allAuthorized,
               resolvedEmbed))
             ok(jsonObjString("*" -> appsWithTasks))
-          case None =>
-            unknownGroup(groupId)
+          case None => unknownGroup(groupId)
         }
       }
 
@@ -301,8 +300,7 @@ class AppsResource @Inject() (
       case Some(app) =>
         // we can only rollback existing apps because we deleted all old versions when dropping an app
         updateOrRollback(app)
-      case None =>
-        createApp()
+      case None => createApp()
     }
   }
 

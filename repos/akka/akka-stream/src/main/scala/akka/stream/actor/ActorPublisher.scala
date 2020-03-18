@@ -299,8 +299,7 @@ trait ActorPublisher[T] extends Actor {
           super.aroundReceive(receive, msg)
         }
 
-      case Subscribe(sub: Subscriber[_]) ⇒
-        lifecycleState match {
+      case Subscribe(sub: Subscriber[_]) ⇒ lifecycleState match {
           case PreSubscriber ⇒
             scheduledSubscriptionTimeout.cancel()
             subscriber = sub
@@ -338,8 +337,7 @@ trait ActorPublisher[T] extends Actor {
           super.aroundReceive(receive, msg)
         }
 
-      case _ ⇒
-        super.aroundReceive(receive, msg)
+      case _ ⇒ super.aroundReceive(receive, msg)
     }
 
   private def cancelSelf() {

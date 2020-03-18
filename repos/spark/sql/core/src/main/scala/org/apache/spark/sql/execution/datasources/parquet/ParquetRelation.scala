@@ -641,8 +641,7 @@ private[sql] object ParquetRelation extends Logging {
       case (mSchema, pSchema)
           if mSchema.name.toLowerCase == pSchema.name.toLowerCase =>
         mSchema.copy(name = pSchema.name)
-      case _ =>
-        throw new SparkException(schemaConflictMessage)
+      case _ => throw new SparkException(schemaConflictMessage)
     })
   }
 

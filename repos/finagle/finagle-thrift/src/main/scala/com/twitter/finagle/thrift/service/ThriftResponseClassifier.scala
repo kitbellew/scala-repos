@@ -140,9 +140,7 @@ object ThriftResponseClassifier {
               .getOrElse(DeserializeCtx.Key, NoDeserializerFn)
             if (deserCtx ne NoDeserializeCtx) {
               try { deserCtx.deserialize(bytes) }
-              catch {
-                case _: Throwable =>
-              }
+              catch { case _: Throwable => }
             }
           case _ =>
         }

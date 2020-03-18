@@ -350,8 +350,7 @@ class AnalysisErrorSuite extends AnalysisTest {
       )
 
       shouldSuccess match {
-        case true =>
-          assertAnalysisSuccess(plan, true)
+        case true => assertAnalysisSuccess(plan, true)
         case false =>
           assertAnalysisError(
             plan,

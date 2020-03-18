@@ -79,8 +79,9 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
         req match {
           case Message.Tdispatch(tag, _, _, _, _) if !canDispatch =>
             Future.value(Message.Rerr(tag, "Tdispatch not enabled"))
-          case Message.Tping(tag) =>
-            ping().before { Future.value(Message.Rping(tag)) }
+          case Message.Tping(tag) => ping().before {
+              Future.value(Message.Rping(tag))
+            }
           case req => service(req)
         }
     }

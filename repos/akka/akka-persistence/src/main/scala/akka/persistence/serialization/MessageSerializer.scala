@@ -67,18 +67,16 @@ class MessageSerializer(val system: ExtendedActorSystem)
   def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): Message =
     manifest match {
       case None ⇒ persistent(mf.PersistentMessage.parseFrom(bytes))
-      case Some(c) ⇒
-        c match {
-          case PersistentImplClass ⇒
-            persistent(mf.PersistentMessage.parseFrom(bytes))
-          case PersistentReprClass ⇒
-            persistent(mf.PersistentMessage.parseFrom(bytes))
+      case Some(c) ⇒ c match {
+          case PersistentImplClass ⇒ persistent(
+              mf.PersistentMessage.parseFrom(bytes))
+          case PersistentReprClass ⇒ persistent(
+              mf.PersistentMessage.parseFrom(bytes))
           case AtomicWriteClass ⇒ atomicWrite(mf.AtomicWrite.parseFrom(bytes))
-          case AtLeastOnceDeliverySnapshotClass ⇒
-            atLeastOnceDeliverySnapshot(
+          case AtLeastOnceDeliverySnapshotClass ⇒ atLeastOnceDeliverySnapshot(
               mf.AtLeastOnceDeliverySnapshot.parseFrom(bytes))
-          case PersistentStateChangeEventClass ⇒
-            stateChange(mf.PersistentStateChangeEvent.parseFrom(bytes))
+          case PersistentStateChangeEventClass ⇒ stateChange(
+              mf.PersistentStateChangeEvent.parseFrom(bytes))
           case _ ⇒
             throw new IllegalArgumentException(
               s"Can't deserialize object of type ${c}")
@@ -182,8 +180,7 @@ class MessageSerializer(val system: ExtendedActorSystem)
           val manifest = ser2.manifest(payload)
           if (manifest != PersistentRepr.Undefined)
             builder.setPayloadManifest(ByteString.copyFromUtf8(manifest))
-        case _ ⇒
-          if (serializer.includeManifest)
+        case _ ⇒ if (serializer.includeManifest)
             builder.setPayloadManifest(
               ByteString.copyFromUtf8(payload.getClass.getName))
       }
@@ -195,8 +192,7 @@ class MessageSerializer(val system: ExtendedActorSystem)
 
     // serialize actor references with full address information (defaultAddress)
     transportInformation match {
-      case Some(ti) ⇒
-        Serialization.currentTransportInformation.withValue(ti) {
+      case Some(ti) ⇒ Serialization.currentTransportInformation.withValue(ti) {
           payloadBuilder()
         }
       case None ⇒ payloadBuilder()

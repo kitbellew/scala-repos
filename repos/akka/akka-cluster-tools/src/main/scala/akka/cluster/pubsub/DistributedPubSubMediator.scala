@@ -360,8 +360,7 @@ object DistributedPubSubMediator {
           context unwatch ref
           remove(ref)
           context.parent ! Unsubscribed(UnsubscribeAck(msg), sender())
-        case Terminated(ref) ⇒
-          remove(ref)
+        case Terminated(ref) ⇒ remove(ref)
         case Prune ⇒
           for (d ← pruneDeadline if d.isOverdue) {
             pruneDeadline = None
@@ -370,8 +369,7 @@ object DistributedPubSubMediator {
         case TerminateRequest ⇒
           if (subscribers.isEmpty && context.children.isEmpty) context stop self
           else context.parent ! NewSubscriberArrived
-        case msg ⇒
-          subscribers foreach { _ forward msg }
+        case msg ⇒ subscribers foreach { _ forward msg }
       }
 
       def business: Receive
@@ -406,10 +404,8 @@ object DistributedPubSubMediator {
               case None ⇒ // no such group here
             }
           }
-        case msg: Subscribed ⇒
-          context.parent forward msg
-        case msg: Unsubscribed ⇒
-          context.parent forward msg
+        case msg: Subscribed ⇒ context.parent forward msg
+        case msg: Unsubscribed ⇒ context.parent forward msg
         case NoMoreSubscribers ⇒
           val key = mkKey(sender())
           initializeGrouping(key)
@@ -435,8 +431,7 @@ object DistributedPubSubMediator {
     class Group(val emptyTimeToLive: FiniteDuration, routingLogic: RoutingLogic)
         extends TopicLike {
       def business = {
-        case SendToOneSubscriber(msg) ⇒
-          if (subscribers.nonEmpty)
+        case SendToOneSubscriber(msg) ⇒ if (subscribers.nonEmpty)
             Router(routingLogic, (subscribers map ActorRefRoutee).toVector)
               .route(wrapIfNeeded(msg), sender())
       }
@@ -628,8 +623,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
         context.watch(ref)
       }
 
-    case Remove(key) ⇒
-      registry(selfAddress).content.get(key) match {
+    case Remove(key) ⇒ registry(selfAddress).content.get(key) match {
         case Some(ValueHolder(_, Some(ref))) ⇒
           context.unwatch(ref)
           put(key, None)
@@ -648,8 +642,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
         }
       }
 
-    case msg @ RegisterTopic(t) ⇒
-      registerTopic(t)
+    case msg @ RegisterTopic(t) ⇒ registerTopic(t)
 
     case NoMoreSubscribers ⇒
       val key = mkKey(sender())
@@ -662,8 +655,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
 
     case GetTopics ⇒ { sender ! CurrentTopics(getCurrentTopics()) }
 
-    case msg @ Subscribed(ack, ref) ⇒
-      ref ! ack
+    case msg @ Subscribed(ack, ref) ⇒ ref ! ack
 
     case msg @ Unsubscribe(topic, _, _) ⇒
       val encTopic = encName(topic)
@@ -674,8 +666,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
         }
       }
 
-    case msg @ Unsubscribed(ack, ref) ⇒
-      ref ! ack
+    case msg @ Unsubscribed(ack, ref) ⇒ ref ! ack
 
     case Status(otherVersions) ⇒
       // gossip chat starts with a Status message, containing the bucket versions of the other node
@@ -722,11 +713,9 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
           m.address
       }
 
-    case MemberUp(m) ⇒
-      if (matchingRole(m)) nodes += m.address
+    case MemberUp(m) ⇒ if (matchingRole(m)) nodes += m.address
 
-    case MemberWeaklyUp(m) ⇒
-      if (matchingRole(m)) nodes += m.address
+    case MemberWeaklyUp(m) ⇒ if (matchingRole(m)) nodes += m.address
 
     case MemberRemoved(m, _) ⇒
       if (m.address == selfAddress) context stop self
@@ -739,8 +728,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
 
     case Count ⇒
       val count = registry.map {
-        case (owner, bucket) ⇒
-          bucket.content.count {
+        case (owner, bucket) ⇒ bucket.content.count {
             case (_, valueHolder) ⇒ valueHolder.ref.isDefined
           }
       }.sum
@@ -859,8 +847,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
       case (owner, bucket) ⇒
         val oldRemoved = bucket.content.collect {
           case (key, ValueHolder(version, None))
-              if (bucket.version - version > removedTimeToLiveMillis) ⇒
-            key
+              if (bucket.version - version > removedTimeToLiveMillis) ⇒ key
         }
         if (oldRemoved.nonEmpty)
           registry += owner -> bucket.copy(content =

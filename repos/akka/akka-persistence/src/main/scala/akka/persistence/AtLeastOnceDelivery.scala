@@ -384,11 +384,9 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
       receive: Receive,
       message: Any): Unit =
     message match {
-      case RedeliveryTick ⇒
-        redeliverOverdue()
+      case RedeliveryTick ⇒ redeliverOverdue()
 
-      case x ⇒
-        super.aroundReceive(receive, message)
+      case x ⇒ super.aroundReceive(receive, message)
     }
 }
 

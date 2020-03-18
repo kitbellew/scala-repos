@@ -110,8 +110,7 @@ object Serializers {
       import buffer._
       writePosition(tree.pos)
       tree match {
-        case EmptyTree =>
-          writeByte(TagEmptyTree)
+        case EmptyTree => writeByte(TagEmptyTree)
 
         case VarDef(ident, vtpe, mutable, rhs) =>
           writeByte(TagVarDef)
@@ -123,8 +122,7 @@ object Serializers {
           writeIdent(ident); writeType(ptpe); writeBoolean(mutable);
           writeBoolean(rest)
 
-        case Skip() =>
-          writeByte(TagSkip)
+        case Skip() => writeByte(TagSkip)
 
         case Block(stats) =>
           writeByte(TagBlock)
@@ -177,8 +175,7 @@ object Serializers {
           writeTree(default)
           writeType(tree.tpe)
 
-        case Debugger() =>
-          writeByte(TagDebugger)
+        case Debugger() => writeByte(TagDebugger)
 
         case New(cls, ctor, args) =>
           writeByte(TagNew)
@@ -335,14 +332,11 @@ object Serializers {
             writePropertyName(field._1); writeTree(field._2)
           }
 
-        case JSLinkingInfo() =>
-          writeByte(TagJSLinkingInfo)
+        case JSLinkingInfo() => writeByte(TagJSLinkingInfo)
 
-        case Undefined() =>
-          writeByte(TagUndefined)
+        case Undefined() => writeByte(TagUndefined)
 
-        case Null() =>
-          writeByte(TagNull)
+        case Null() => writeByte(TagNull)
 
         case BooleanLiteral(value) =>
           writeByte(TagBooleanLiteral)
@@ -690,8 +684,8 @@ object Serializers {
         case TagJSUnaryOp              => JSUnaryOp(readInt(), readTree())
         case TagJSBinaryOp             => JSBinaryOp(readInt(), readTree(), readTree())
         case TagJSArrayConstr          => JSArrayConstr(readTrees())
-        case TagJSObjectConstr =>
-          JSObjectConstr(List.fill(readInt())((readPropertyName(), readTree())))
+        case TagJSObjectConstr => JSObjectConstr(
+            List.fill(readInt())((readPropertyName(), readTree())))
         case TagJSLinkingInfo => JSLinkingInfo()
 
         case TagJSEnvInfo =>
@@ -733,16 +727,14 @@ object Serializers {
               defs0.filter {
                 case MethodDef(_, Ident(name, _), _, _, _) =>
                   !Definitions.isReflProxyName(name)
-                case _ =>
-                  true
+                case _ => true
               }
             } else { defs0 }
           val optimizerHints = new OptimizerHints(readInt())
           ClassDef(name, kind, superClass, parents, jsName, defs)(
             optimizerHints)
 
-        case TagFieldDef =>
-          FieldDef(readIdent(), readType(), readBoolean())
+        case TagFieldDef          => FieldDef(readIdent(), readType(), readBoolean())
         case TagStringLitFieldDef =>
           /* TODO Merge this into TagFieldDef and use readPropertyName()
            * when we can break binary compatibility.
@@ -790,10 +782,8 @@ object Serializers {
             new RewriteArgumentsTransformer()
               .transformConstructorExportDef(result)
           } else { result }
-        case TagJSClassExportDef =>
-          JSClassExportDef(readString())
-        case TagModuleExportDef =>
-          ModuleExportDef(readString())
+        case TagJSClassExportDef => JSClassExportDef(readString())
+        case TagModuleExportDef  => ModuleExportDef(readString())
       }
       if (UseDebugMagic) {
         val magic = readInt()
@@ -991,8 +981,7 @@ object Serializers {
                 JSBracketSelect(argumentsRef, IntLiteral(paramIndex))
             }
 
-        case _ =>
-          super.transform(tree, isStat)
+        case _ => super.transform(tree, isStat)
       }
   }
 

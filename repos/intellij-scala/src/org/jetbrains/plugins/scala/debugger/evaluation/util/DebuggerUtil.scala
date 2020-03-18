@@ -143,8 +143,7 @@ object DebuggerUtil {
         buff.append(getJVMQualifiedName(arg))
         buff.append("[]")
         buff.toName
-      case _ =>
-        ScType.extractClass(tp) match {
+      case _ => ScType.extractClass(tp) match {
           case Some(clazz) => getClassJVMName(clazz)
           case None        => JVMNameUtil.getJVMRawText(ScType.canonicalText(tp))
         }
@@ -173,8 +172,7 @@ object DebuggerUtil {
       case ScParameterizedType(ScDesignatorType(clazz: PsiClass), Seq(arg))
           if clazz.qualifiedName == "scala.Array" =>
         "[" + getJVMStringForType(arg)
-      case _ =>
-        ScType.extractClass(tp) match {
+      case _ => ScType.extractClass(tp) match {
           case Some(obj: ScObject) =>
             "L" + obj.getQualifiedNameForDebugger.replace('.', '/') + "$;"
           case Some(obj: ScTypeDefinition) =>
@@ -238,8 +236,7 @@ object DebuggerUtil {
   def constructorSignature(named: PsiNamedElement): JVMName = {
     named match {
       case fun: ScFunction => DebuggerUtil.getFunctionJVMSignature(fun)
-      case constr: ScPrimaryConstructor =>
-        constr.containingClass match {
+      case constr: ScPrimaryConstructor => constr.containingClass match {
           case td: ScTypeDefinition if td.isTopLevel =>
             DebuggerUtil.getFunctionJVMSignature(constr)
           case clazz => new JVMConstructorSignature(clazz)
@@ -281,8 +278,7 @@ object DebuggerUtil {
     param match {
       case p: ScParameter if p.isRepeatedParameter   => "Lscala/collection/Seq;"
       case p: ScParameter if p.isCallByNameParameter => "Lscala/Function0;"
-      case _ =>
-        getJVMStringForType(
+      case _ => getJVMStringForType(
           subst.subst(param.getType(TypingContext.empty).getOrAny))
     }
 
@@ -600,8 +596,7 @@ object DebuggerUtil {
       case _: PsiLocalVariable => true
       case _: ScClassParameter => false
       case _: PsiParameter     => true
-      case b: ScBindingPattern =>
-        ScalaPsiUtil.nameContext(b) match {
+      case b: ScBindingPattern => ScalaPsiUtil.nameContext(b) match {
           case v @ (_: ScValue | _: ScVariable) =>
             !v.getContext.isInstanceOf[ScTemplateBody] && !v.getContext
               .isInstanceOf[ScEarlyDefinitions]
@@ -657,8 +652,7 @@ object DebuggerUtil {
         val firstSignificant = elem.children.find {
           case ElementType(t)
               if ScalaTokenTypes.WHITES_SPACES_AND_COMMENTS_TOKEN_SET.contains(
-                t) =>
-            false
+                t)                       => false
           case _: ScAnnotations          => false
           case e if e.getTextLength == 0 => false
           case _                         => true

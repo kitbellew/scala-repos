@@ -87,8 +87,7 @@ private[server] class ForwardedHeaderHandler(
               ForwardedHeaderHandler.logger.debug(
                 s"Error with info in forwarding header $entry, using $prev instead: $error.")
               prev
-            case Right(connection) =>
-              scan(connection)
+            case Right(connection) => scan(connection)
           }
         } else {
           // 'prev' is not a trusted proxy, so we don't scan ahead in the list of

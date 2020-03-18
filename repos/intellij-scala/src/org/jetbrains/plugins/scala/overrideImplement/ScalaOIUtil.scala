@@ -52,8 +52,8 @@ object ScalaOIUtil {
               x.containingClass != null,
               "Containing Class is null: " + x.getText)
             named match {
-              case y: ScTypedDefinition =>
-                Some(new ScValueMember(x, y, subst, !isImplement))
+              case y: ScTypedDefinition => Some(
+                  new ScValueMember(x, y, subst, !isImplement))
               case _ =>
                 throw new IncorrectOperationException("Not supported type:" + x)
             }
@@ -62,8 +62,8 @@ object ScalaOIUtil {
               x.containingClass != null,
               "Containing Class is null: " + x.getText)
             named match {
-              case y: ScTypedDefinition =>
-                Some(new ScVariableMember(x, y, subst, !isImplement))
+              case y: ScTypedDefinition => Some(
+                  new ScVariableMember(x, y, subst, !isImplement))
               case _ =>
                 throw new IncorrectOperationException("Not supported type:" + x)
             }
@@ -217,23 +217,20 @@ object ScalaOIUtil {
     sign.method match {
       case _ if isProductAbstractMethod(sign.method, clazz) => true
       case f: ScFunctionDeclaration
-          if f.hasAnnotation("scala.native") == None =>
-        false
+          if f.hasAnnotation("scala.native") == None   => false
       case x if x.name == "$tag" || x.name == "$init$" => false
       case x: ScFunction if x.isSyntheticCopy          => false
       case x if x.containingClass == clazz             => false
       case x: PsiModifierListOwner
           if (x.hasModifierPropertyScala("abstract") &&
             !x.isInstanceOf[ScFunctionDefinition])
-            || x.hasModifierPropertyScala("final") =>
-        false
-      case x if x.isConstructor => false
+            || x.hasModifierPropertyScala("final") => false
+      case x if x.isConstructor                    => false
       case method
           if !ResolveUtils.isAccessible(
             method,
             clazz.extendsBlock,
-            forCompletion = false) =>
-        false
+            forCompletion = false) => false
       case method =>
         var flag = false
         if (method match {
@@ -269,18 +266,15 @@ object ScalaOIUtil {
       case x
           if x.containingClass != null && x.containingClass.isInterface &&
             !x.containingClass.isInstanceOf[ScTrait] && x.hasModifierProperty(
-            "abstract") =>
-        true
+            "abstract") => true
       case x
           if x.hasModifierPropertyScala("abstract") && !x
             .isInstanceOf[ScFunctionDefinition] &&
             !x.isInstanceOf[ScPatternDefinition] && !x
-            .isInstanceOf[ScVariableDefinition] =>
-        true
+            .isInstanceOf[ScVariableDefinition] => true
       case x: ScFunctionDeclaration
-          if x.hasAnnotation("scala.native") == None =>
-        true
-      case _ => false
+          if x.hasAnnotation("scala.native") == None => true
+      case _                                         => false
     }
   }
 
@@ -294,8 +288,7 @@ object ScalaOIUtil {
           if !ResolveUtils.isAccessible(
             m,
             clazz.extendsBlock,
-            forCompletion = false) =>
-        false
+            forCompletion = false) => false
       case x @ (_: ScPatternDefinition | _: ScVariableDefinition)
           if x.asInstanceOf[ScMember].containingClass != clazz =>
         val declaredElements = x match {
@@ -335,8 +328,7 @@ object ScalaOIUtil {
           if !ResolveUtils.isAccessible(
             m,
             clazz.extendsBlock,
-            forCompletion = false) =>
-        false
+            forCompletion = false) => false
       case x: ScValueDeclaration if withOwn || x.containingClass != clazz =>
         true
       case x: ScVariableDeclaration if withOwn || x.containingClass != clazz =>

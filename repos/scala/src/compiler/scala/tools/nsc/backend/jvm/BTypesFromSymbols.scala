@@ -589,8 +589,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
               // For top-level modules without a companion class, see doc of mirrorClassClassBType.
               mirrorClassClassBType(exitingPickler(innerClassSym.rawowner))
 
-            case companionClass =>
-              classBTypeFromSymbol(companionClass)
+            case companionClass => classBTypeFromSymbol(companionClass)
           }
         } else { classBTypeFromSymbol(innerClassSym.rawowner) }
       }
@@ -651,8 +650,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       // symbols being compiled. For non-compiled classes, we could not build MethodInlineInfos
       // for those mixin members, which prevents inlining.
       byteCodeRepository.classNode(internalName) match {
-        case Right(classNode) =>
-          inlineInfoFromClassfile(classNode)
+        case Right(classNode) => inlineInfoFromClassfile(classNode)
         case Left(missingClass) =>
           EmptyInlineInfo.copy(warning = Some(
             ClassNotFoundWhenBuildingInlineInfoFromSymbol(missingClass)))

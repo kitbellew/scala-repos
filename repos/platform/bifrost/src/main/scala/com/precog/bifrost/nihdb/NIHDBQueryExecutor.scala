@@ -257,10 +257,7 @@ trait NIHDBQueryExecutorComponent {
             shardQueryMonad,
             implicitly)
           override def freshIdScanner = platform.freshIdScanner
-        } map {
-          case (faults, result) =>
-            result
-        }
+        } map { case (faults, result) => result }
       }
 
       def shutdown() =

@@ -29,8 +29,7 @@ object Bakery {
             tail.foldLeft[Tree](Ident(newTermName(head)))((tree, name) ⇒
               Select(tree, newTermName(name))),
             tpeName)
-        case Nil ⇒
-          Ident(tpeName)
+        case Nil ⇒ Ident(tpeName)
       }
     }
 

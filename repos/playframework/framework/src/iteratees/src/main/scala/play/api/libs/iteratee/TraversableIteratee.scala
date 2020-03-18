@@ -46,8 +46,7 @@ object Traversable {
         def step(inner: Iteratee[M, A], leftToTake: Long)(
             in: Input[M]): Iteratee[M, Iteratee[M, A]] = {
           in match {
-            case in @ Input.El(e) =>
-              inner.pureFlatFold {
+            case in @ Input.El(e) => inner.pureFlatFold {
                 case Step.Cont(k) if leftToTake < Int.MaxValue =>
                   e.splitAt(leftToTake.toInt) match {
                     case (all, x) if x.isEmpty =>
@@ -80,8 +79,7 @@ object Traversable {
         def step(inner: Iteratee[M, A], leftToTake: Int)(
             in: Input[M]): Iteratee[M, Iteratee[M, A]] = {
           in match {
-            case in @ Input.El(e) =>
-              e.splitAt(leftToTake) match {
+            case in @ Input.El(e) => e.splitAt(leftToTake) match {
                 case (all, x) if x.isEmpty =>
                   inner.pureFlatFold {
                     case Step.Done(_, _) =>
@@ -135,8 +133,7 @@ object Traversable {
                 new CheckDone[M, M] {
                   def continue[A](k: K[M, A]) = Cont(step(k))
                 } &> k(Input.El(prefix))
-              case (prefix, suffix) =>
-                Done(
+              case (prefix, suffix) => Done(
                   if (prefix.isEmpty) Cont(k) else k(Input.El(prefix)),
                   Input.El(suffix.drop(1)))
             }(dec))

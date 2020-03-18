@@ -334,8 +334,7 @@ package json {
           value
         case JSONObject(fields) if lastReadTag != FastTypeTag.Ref.key =>
           mkNestedReader(fields("value")).primitives(lastReadTag)()
-        case _ =>
-          primitives(lastReadTag)()
+        case _ => primitives(lastReadTag)()
       }
     }
     def atObject: Boolean = datum.isInstanceOf[JSONObject]

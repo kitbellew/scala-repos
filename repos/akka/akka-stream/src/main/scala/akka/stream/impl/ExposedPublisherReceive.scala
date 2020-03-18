@@ -26,8 +26,7 @@ private[akka] abstract class ExposedPublisherReceive(
             activeReceive.applyOrElse(msg, unhandled)
           }
         }
-      case other ⇒
-        stash ::= other
+      case other ⇒ stash ::= other
     }
 
   def receiveExposedPublisher(ep: ExposedPublisher): Unit

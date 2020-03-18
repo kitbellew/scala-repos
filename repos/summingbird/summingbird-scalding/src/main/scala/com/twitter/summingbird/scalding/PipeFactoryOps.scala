@@ -22,10 +22,7 @@ import com.twitter.scalding.TypedPipe
 class PipeFactoryOps[+T](pipeFactory: PipeFactory[T]) {
 
   def flatMapElements[U](fn: (T => TraversableOnce[U])): PipeFactory[U] =
-    mapPipe(_.flatMap {
-      case (time, tup) =>
-        fn(tup).map((time, _))
-    })
+    mapPipe(_.flatMap { case (time, tup) => fn(tup).map((time, _)) })
 
   def mapElements[U](fn: (T => U)): PipeFactory[U] =
     flatMapElements({ tup => List(fn(tup)) })

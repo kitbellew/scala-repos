@@ -302,8 +302,7 @@ object Combinators {
       def rec(s: Sequence[R, R, R]): Flat[R] = {
         val ev2 = s.ev2.asInstanceOf[Implicits.Sequencer[R, R, R]]
         s.p1 match {
-          case f: Flat[R] =>
-            f.copy(ps = f.ps :+ Chain[R](s.p2, s.cut)(ev2))
+          case f: Flat[R] => f.copy(ps = f.ps :+ Chain[R](s.p2, s.cut)(ev2))
           case p: Sequence[R, R, R] =>
             val res = rec(p)
             res.copy(ps = res.ps :+ Chain[R](s.p2, s.cut)(ev2))

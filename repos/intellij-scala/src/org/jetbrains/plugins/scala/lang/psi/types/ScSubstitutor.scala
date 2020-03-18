@@ -196,8 +196,7 @@ class ScSubstitutor(
       override def visitAbstractType(a: ScAbstractType): Unit = {
         result = tvMap.get((a.tpt.name, a.tpt.getId)) match {
           case None => a
-          case Some(v) =>
-            v match {
+          case Some(v) => v match {
               case tpt: ScTypeParameterType if tpt.param == a.tpt.param => a
               case _                                                    => extractTpt(a.tpt, v)
             }
@@ -219,8 +218,7 @@ class ScSubstitutor(
       override def visitUndefinedType(u: ScUndefinedType): Unit = {
         result = tvMap.get((u.tpt.name, u.tpt.getId)) match {
           case None => u
-          case Some(v) =>
-            v match {
+          case Some(v) => v match {
               case tpt: ScTypeParameterType if tpt.param == u.tpt.param => u
               case _                                                    => extractTpt(u.tpt, v)
             }
@@ -299,9 +297,8 @@ class ScSubstitutor(
                                 while (iter.hasNext) {
                                   val tps = iter.next()
                                   ScType.extractClass(tps) match {
-                                    case Some(cl) =>
-                                      if (cl == clazz) return tp
-                                    case _ =>
+                                    case Some(cl) => if (cl == clazz) return tp
+                                    case _        =>
                                   }
                                 }
                               case _ =>
@@ -325,8 +322,8 @@ class ScSubstitutor(
                   if (cl == clazz) tp
                   else if (ScalaPsiUtil.cachedDeepIsInheritor(cl, clazz)) tp
                   else null
-                case Some((named: ScTypedDefinition, subst)) =>
-                  update(named.getType(TypingContext.empty).getOrAny)
+                case Some((named: ScTypedDefinition, subst)) => update(
+                    named.getType(TypingContext.empty).getOrAny)
                 case _ =>
                   typez match {
                     case ScCompoundType(types, _, _) =>
@@ -409,8 +406,7 @@ class ScSubstitutor(
                     param.designator,
                     typeArgs.map(substInternal))
                 }
-              case _ =>
-                substInternal(tpt) match {
+              case _ => substInternal(tpt) match {
                   case ScParameterizedType(des, _) =>
                     ScParameterizedType(des, typeArgs map substInternal)
                   case des =>
@@ -427,16 +423,14 @@ class ScSubstitutor(
                     param.designator,
                     typeArgs map substInternal)
                 }
-              case _ =>
-                substInternal(u) match {
+              case _ => substInternal(u) match {
                   case ScParameterizedType(des, _) =>
                     ScParameterizedType(des, typeArgs map substInternal)
                   case des =>
                     ScParameterizedType(des, typeArgs map substInternal)
                 }
             }
-          case u: ScAbstractType =>
-            tvMap.get((u.tpt.name, u.tpt.getId)) match {
+          case u: ScAbstractType => tvMap.get((u.tpt.name, u.tpt.getId)) match {
               case Some(param: ScParameterizedType) if pt != param =>
                 if (u.tpt.args.isEmpty) {
                   substInternal(param) //to prevent types like T[A][A]
@@ -445,16 +439,14 @@ class ScSubstitutor(
                     param.designator,
                     typeArgs map substInternal)
                 }
-              case _ =>
-                substInternal(u) match {
+              case _ => substInternal(u) match {
                   case ScParameterizedType(des, _) =>
                     ScParameterizedType(des, typeArgs map substInternal)
                   case des =>
                     ScParameterizedType(des, typeArgs map substInternal)
                 }
             }
-          case designator =>
-            substInternal(designator) match {
+          case designator => substInternal(designator) match {
               case ScParameterizedType(des, _) =>
                 ScParameterizedType(des, typeArgs map substInternal)
               case des => ScParameterizedType(des, typeArgs map substInternal)
@@ -607,12 +599,10 @@ class ScUndefinedSubstitutor(
       case ScAbstractType(_, absLower, upper) =>
         if (absLower.equiv(Nothing)) return this
         absLower //upper will be added separately
-      case _ =>
-        _lower.recursiveVarianceUpdate(
+      case _ => _lower.recursiveVarianceUpdate(
           (tp: ScType, i: Int) => {
             tp match {
-              case ScAbstractType(_, absLower, upper) =>
-                i match {
+              case ScAbstractType(_, absLower, upper) => i match {
                   case -1 => (true, absLower)
                   case 1  => (true, upper)
                   case 0 =>
@@ -621,8 +611,7 @@ class ScUndefinedSubstitutor(
                       absLower /*ScSkolemizedType(s"_$$${index += 1; index}", Nil, absLower, upper)*/
                     ) //todo: why this is right?
                 }
-              case ScSkolemizedType(_, _, skoLower, upper) =>
-                i match {
+              case ScSkolemizedType(_, _, skoLower, upper) => i match {
                   case -1 => (true, skoLower)
                   case 1  => (true, upper)
                   case 0 =>
@@ -664,14 +653,11 @@ class ScUndefinedSubstitutor(
         if (absUpper.equiv(Any)) return this
         absUpper // lower will be added separately
       case ScAbstractType(_, lower, absUpper)
-          if variance == 1 && absUpper.equiv(Any) =>
-        return this
-      case _ =>
-        _upper.recursiveVarianceUpdate(
+          if variance == 1 && absUpper.equiv(Any) => return this
+      case _ => _upper.recursiveVarianceUpdate(
           (tp: ScType, i: Int) => {
             tp match {
-              case ScAbstractType(_, lower, absUpper) =>
-                i match {
+              case ScAbstractType(_, lower, absUpper) => i match {
                   case -1 => (true, lower)
                   case 1  => (true, absUpper)
                   case 0 =>
@@ -685,8 +671,7 @@ class ScUndefinedSubstitutor(
                       )
                     ) //todo: why this is right?
                 }
-              case ScSkolemizedType(_, _, lower, skoUpper) =>
-                i match {
+              case ScSkolemizedType(_, _, lower, skoUpper) => i match {
                   case -1 => (true, lower)
                   case 1  => (true, skoUpper)
                   case 0 =>

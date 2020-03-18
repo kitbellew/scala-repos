@@ -58,10 +58,8 @@ class IntIntParallelConcurrentTrieMapCheck(val tasksupport: TaskSupport)
 
   override def printDataStructureDebugInfo(ds: AnyRef) =
     ds match {
-      case pm: ParTrieMap[k, v] =>
-        println("Mutable parallel ctrie")
-      case _ =>
-        println("could not match data structure type: " + ds.getClass)
+      case pm: ParTrieMap[k, v] => println("Mutable parallel ctrie")
+      case _                    => println("could not match data structure type: " + ds.getClass)
     }
 
   override def checkDataStructureInvariants(

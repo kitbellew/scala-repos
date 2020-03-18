@@ -17,8 +17,6 @@ class `a` {
 object Test {
   def main(args: Array[String]) {
     `a`()
-    1 match {
-      case `a`(i) =>
-    }
+    1 match { case `a`(i) => }
   }
 }

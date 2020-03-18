@@ -17,8 +17,7 @@ class RollupStatsReceiver(val self: StatsReceiver)
 
   private[this] def tails[A](s: Seq[A]): Seq[Seq[A]] = {
     s match {
-      case s @ Seq(_) =>
-        Seq(s)
+      case s @ Seq(_) => Seq(s)
 
       case Seq(hd, tl @ _*) =>
         Seq(Seq(hd)) ++ (tails(tl) map { t => Seq(hd) ++ t })

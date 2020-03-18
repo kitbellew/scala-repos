@@ -286,8 +286,7 @@ private[akka] trait HandleBackoff {
         case _ ⇒ // ignore
       }
 
-    case Reset ⇒
-      reset match {
+    case Reset ⇒ reset match {
         case ManualReset ⇒ restartCount = 0
         case msg ⇒ unhandled(msg)
       }
@@ -295,18 +294,15 @@ private[akka] trait HandleBackoff {
     case ResetRestartCount(current) ⇒
       if (current == restartCount) restartCount = 0
 
-    case GetRestartCount ⇒
-      sender() ! RestartCount(restartCount)
+    case GetRestartCount ⇒ sender() ! RestartCount(restartCount)
 
-    case GetCurrentChild ⇒
-      sender() ! CurrentChild(child)
+    case GetCurrentChild ⇒ sender() ! CurrentChild(child)
 
     case msg if child.contains(sender()) ⇒
       // use the BackoffSupervisor as sender
       context.parent ! msg
 
-    case msg ⇒
-      child match {
+    case msg ⇒ child match {
         case Some(c) ⇒ c.forward(msg)
         case None ⇒ context.system.deadLetters.forward(msg)
       }

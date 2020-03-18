@@ -141,8 +141,7 @@ private[macros] case class CheckedRewriter[C <: Context](c: C) {
           ((lt weak_<:< tpe) && (rt <:< tpe)) || (
             (lt <:< tpe) && (rt weak_<:< tpe)
           )
-        case _ =>
-          false
+        case _ => false
       }
 
     def isSimple(tree: Tree): Boolean =

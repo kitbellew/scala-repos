@@ -1046,8 +1046,7 @@ trait ArgumentCapture {
       .map({
         case (
               ((((((((((((a, b), c), d), e), f), g), h), i), j), k), l), m),
-              n) =>
-          (a, b, c, d, e, f, g, h, i, j, k, l, m, n)
+              n) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n)
       })
       .toSeq
   }
@@ -1202,8 +1201,7 @@ trait ArgumentCapture {
               (
                 ((((((((((((a, b), c), d), e), f), g), h), i), j), k), l), m),
                 n),
-              o) =>
-          (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
+              o) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
       })
       .toSeq
   }
@@ -1369,8 +1367,7 @@ trait ArgumentCapture {
                   ((((((((((((a, b), c), d), e), f), g), h), i), j), k), l), m),
                   n),
                 o),
-              p) =>
-          (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p)
+              p) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p)
       })
       .toSeq
   }
@@ -1549,8 +1546,7 @@ trait ArgumentCapture {
                     n),
                   o),
                 p),
-              q) =>
-          (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q)
+              q) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q)
       })
       .toSeq
   }
@@ -1744,8 +1740,7 @@ trait ArgumentCapture {
                     o),
                   p),
                 q),
-              r) =>
-          (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r)
+              r) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r)
       })
       .toSeq
   }
@@ -1969,8 +1964,7 @@ trait ArgumentCapture {
                     p),
                   q),
                 r),
-              s) =>
-          (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s)
+              s) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s)
       })
       .toSeq
   }
@@ -2208,8 +2202,7 @@ trait ArgumentCapture {
                     q),
                   r),
                 s),
-              t) =>
-          (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)
+              t) => (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)
       })
       .toSeq
   }

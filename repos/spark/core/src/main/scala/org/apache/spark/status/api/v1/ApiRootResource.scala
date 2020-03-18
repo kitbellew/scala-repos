@@ -210,9 +210,8 @@ private[spark] trait UIRoot {
       f: SparkUI => T): T = {
     val appKey = attemptId.map(appId + "/" + _).getOrElse(appId)
     getSparkUI(appKey) match {
-      case Some(ui) =>
-        f(ui)
-      case None => throw new NotFoundException("no such app: " + appId)
+      case Some(ui) => f(ui)
+      case None     => throw new NotFoundException("no such app: " + appId)
     }
   }
   def securityManager: SecurityManager

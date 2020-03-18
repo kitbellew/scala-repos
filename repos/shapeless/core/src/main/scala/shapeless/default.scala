@@ -249,8 +249,7 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
 
     val primaryConstructor = tpe.decls
       .collectFirst {
-        case m if m.isMethod && m.asMethod.isPrimaryConstructor =>
-          m.asMethod
+        case m if m.isMethod && m.asMethod.isPrimaryConstructor => m.asMethod
       }
       .getOrElse {
         c.abort(c.enclosingPosition, s"Cannot get primary constructor of $tpe")
@@ -297,15 +296,13 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
             (
               appliedType(someTpe, argTpe),
               q"_root_.scala.Some($companion.$method)")
-          case None =>
-            (noneTpe, q"_root_.scala.None")
+          case None => (noneTpe, q"_root_.scala.None")
         }
       } else (noneTpe, q"_root_.scala.None")
     }
 
     val wrapTpeTrees = fieldsOf(tpe).zipWithIndex.map {
-      case ((_, argTpe), idx) =>
-        wrapTpeTree(idx, devarargify(argTpe))
+      case ((_, argTpe), idx) => wrapTpeTree(idx, devarargify(argTpe))
     }
 
     val resultTpe = mkHListTpe(wrapTpeTrees.map {
@@ -313,8 +310,7 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
     })
 
     val resultTree = wrapTpeTrees.foldRight(q"_root_.shapeless.HNil": Tree) {
-      case ((_, value), acc) =>
-        q"_root_.shapeless.::($value, $acc)"
+      case ((_, value), acc) => q"_root_.shapeless.::($value, $acc)"
     }
 
     q"_root_.shapeless.Default.mkDefault[$tpe, $resultTpe]($resultTree)"

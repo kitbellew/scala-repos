@@ -76,8 +76,7 @@ class SbtProjectResolver
       listener.onStatusChange(
         new ExternalSystemTaskNotificationEvent(id, message.trim))
     } match {
-      case Left(errors) =>
-        errors match {
+      case Left(errors) => errors match {
           case _: SbtRunner.ImportCancelledException => return null
           case _                                     => throw new ExternalSystemException(errors)
         }

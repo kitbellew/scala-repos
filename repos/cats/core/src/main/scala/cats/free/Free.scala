@@ -93,8 +93,7 @@ sealed abstract class Free[S[_], A] extends Product with Serializable {
     this match {
       case Pure(a)    => Right(a)
       case Suspend(t) => Left(S.map(t)(Pure(_)))
-      case Gosub(c, f) =>
-        c match {
+      case Gosub(c, f) => c match {
           case Pure(a)     => f(a).resume
           case Suspend(t)  => Left(S.map(t)(f))
           case Gosub(d, g) => d.flatMap(dd => g(dd).flatMap(f)).resume

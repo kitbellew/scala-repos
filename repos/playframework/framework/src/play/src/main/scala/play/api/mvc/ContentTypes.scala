@@ -441,8 +441,7 @@ trait BodyParsers {
       BodyParser("json reader") { request =>
         import play.api.libs.iteratee.Execution.Implicits.trampoline
         json(request) mapFuture {
-          case Left(simpleResult) =>
-            Future.successful(Left(simpleResult))
+          case Left(simpleResult) => Future.successful(Left(simpleResult))
           case Right(jsValue) =>
             jsValue.validate(reader) map { a =>
               Future.successful(Right(a))
@@ -748,8 +747,7 @@ trait BodyParsers {
               statusFuture.flatMap {
                 case exceeded: MaxSizeExceeded =>
                   Future.successful(Right(Left(exceeded)))
-                case _ =>
-                  resultFuture.map {
+                case _ => resultFuture.map {
                     case Left(result) => Left(result)
                     case Right(a)     => Right(Right(a))
                   }

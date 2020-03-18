@@ -157,8 +157,7 @@ class ZkResolver(factory: ZkClientFactory) extends Resolver {
   def bind(arg: String) =
     arg.split("!") match {
       // zk!host:2181!/path
-      case Array(hosts, path) =>
-        resolve(zkHosts(hosts), path, None)
+      case Array(hosts, path) => resolve(zkHosts(hosts), path, None)
 
       // zk!host:2181!/path!endpoint
       case Array(hosts, path, endpoint) =>

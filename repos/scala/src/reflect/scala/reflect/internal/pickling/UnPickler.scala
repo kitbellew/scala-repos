@@ -41,11 +41,9 @@ abstract class UnPickler {
       filename: String) {
     try { new Scan(bytes, offset, classRoot, moduleRoot, filename).run() }
     catch {
-      case ex: IOException =>
-        throw ex
-      case ex: MissingRequirementError =>
-        throw ex
-      case ex: Throwable =>
+      case ex: IOException             => throw ex
+      case ex: MissingRequirementError => throw ex
+      case ex: Throwable               =>
         /*if (settings.debug.value)*/
         ex.printStackTrace()
         throw new RuntimeException(
@@ -383,8 +381,7 @@ abstract class UnPickler {
             abort(s"VALsym at module root: owner = $owner, name = $name")
           } else owner.newTermSymbol(name.toTermName, NoPosition, pflags)
 
-        case _ =>
-          errorBadSignature("bad symbol tag: " + tag)
+        case _ => errorBadSignature("bad symbol tag: " + tag)
       })
     }
 
@@ -602,8 +599,9 @@ abstract class UnPickler {
           case SELECTtree => Select(ref, nameRef)
           case APPLYtree  => fixApply(Apply(ref, all(ref)), tpe) // !!!
           case BINDtree   => Bind(nameRef, ref)
-          case BLOCKtree =>
-            all(ref) match { case stats :+ expr => Block(stats, expr) }
+          case BLOCKtree => all(ref) match {
+              case stats :+ expr => Block(stats, expr)
+            }
           case IFtree           => If(ref, ref, ref)
           case LITERALtree      => Literal(constRef)
           case TYPEAPPLYtree    => TypeApply(ref, all(ref))
@@ -719,38 +717,32 @@ abstract class UnPickler {
     protected def readTemplateRef(): Template =
       readTreeRef() match {
         case templ: Template => templ
-        case other =>
-          errorBadSignature("expected a template (" + other + ")")
+        case other           => errorBadSignature("expected a template (" + other + ")")
       }
     protected def readCaseDefRef(): CaseDef =
       readTreeRef() match {
         case tree: CaseDef => tree
-        case other =>
-          errorBadSignature("expected a case def (" + other + ")")
+        case other         => errorBadSignature("expected a case def (" + other + ")")
       }
     protected def readValDefRef(): ValDef =
       readTreeRef() match {
         case tree: ValDef => tree
-        case other =>
-          errorBadSignature("expected a ValDef (" + other + ")")
+        case other        => errorBadSignature("expected a ValDef (" + other + ")")
       }
     protected def readIdentRef(): Ident =
       readTreeRef() match {
         case tree: Ident => tree
-        case other =>
-          errorBadSignature("expected an Ident (" + other + ")")
+        case other       => errorBadSignature("expected an Ident (" + other + ")")
       }
     protected def readTypeDefRef(): TypeDef =
       readTreeRef() match {
         case tree: TypeDef => tree
-        case other =>
-          errorBadSignature("expected an TypeDef (" + other + ")")
+        case other         => errorBadSignature("expected an TypeDef (" + other + ")")
       }
     protected def readMemberDefRef(): MemberDef =
       readTreeRef() match {
         case tree: MemberDef => tree
-        case other =>
-          errorBadSignature("expected an MemberDef (" + other + ")")
+        case other           => errorBadSignature("expected an MemberDef (" + other + ")")
       }
 
     protected def errorBadSignature(msg: String) =

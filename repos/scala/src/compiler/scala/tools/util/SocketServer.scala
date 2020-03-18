@@ -88,15 +88,14 @@ abstract class SocketServer(fixPort: Int = 0) extends CompileOutputCommon {
           warn("Idle timeout exceeded on port %d; exiting" format port)
           timeout()
           return
-        case _ =>
-          warn("Accept on port %d failed")
+        case _ => warn("Accept on port %d failed")
       }
       if (!shutdown) loop()
     }
     try loop()
     catch {
-      case ex: SocketException =>
-        fatal("Compile server caught fatal exception: " + ex)
+      case ex: SocketException => fatal(
+          "Compile server caught fatal exception: " + ex)
     } finally serverSocket.close()
   }
 }

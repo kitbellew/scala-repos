@@ -64,12 +64,9 @@ object FreeT extends FreeTInstances {
     new IsoFunctorTemplate[FreeT[S, Id.Id, ?], Free[S, ?]] {
       override def to[A](fa: FreeT[S, Id.Id, A]) =
         fa match {
-          case Suspend(\/-(a)) =>
-            Free.liftF(a)
-          case Suspend(-\/(a)) =>
-            Free.point(a)
-          case a @ Gosub() =>
-            to(a.a).flatMap(a.f.andThen(to(_)))
+          case Suspend(\/-(a)) => Free.liftF(a)
+          case Suspend(-\/(a)) => Free.point(a)
+          case a @ Gosub()     => to(a.a).flatMap(a.f.andThen(to(_)))
         }
       override def from[A](ga: Free[S, A]) = ga.toFreeT
     }
@@ -88,10 +85,8 @@ sealed abstract class FreeT[S[_], M[_], A] {
     */
   def hoist[N[_]](mn: M ~> N): FreeT[S, N, A] =
     this match {
-      case e @ Gosub() =>
-        gosub(e.a.hoist(mn))(e.f.andThen(_.hoist(mn)))
-      case Suspend(m) =>
-        Suspend(mn(m))
+      case e @ Gosub() => gosub(e.a.hoist(mn))(e.f.andThen(_.hoist(mn)))
+      case Suspend(m)  => Suspend(mn(m))
     }
 
   @deprecated("Alias for `hoist`", "7.3")
@@ -103,10 +98,8 @@ sealed abstract class FreeT[S[_], M[_], A] {
   /** Change the base functor `S` for a `FreeT` action. */
   def interpret[T[_]](st: S ~> T)(implicit M: Functor[M]): FreeT[T, M, A] =
     this match {
-      case e @ Gosub() =>
-        gosub(e.a.interpret(st))(e.f.andThen(_.interpret(st)))
-      case Suspend(m) =>
-        Suspend(M.map(m)(_.map(s => st(s))))
+      case e @ Gosub() => gosub(e.a.interpret(st))(e.f.andThen(_.interpret(st)))
+      case Suspend(m)  => Suspend(M.map(m)(_.map(s => st(s))))
     }
 
   @deprecated("Alias for `interpret`", "7.3")
@@ -125,10 +118,8 @@ sealed abstract class FreeT[S[_], M[_], A] {
     def go(ft: FreeT[S, M, A]): M[FreeT[S, M, A] \/ (A \/ S[FreeT[S, M, A]])] =
       ft match {
         case Suspend(f) => M0.map(f)(as => \/.right(as.map(S.map(_)(point(_)))))
-        case g1 @ Gosub() =>
-          g1.a match {
-            case Suspend(m1) =>
-              M0.map(m1) {
+        case g1 @ Gosub() => g1.a match {
+            case Suspend(m1) => M0.map(m1) {
                 case -\/(a)  => -\/(g1.f(a))
                 case \/-(fc) => \/-(\/-(S.map(fc)(g1.f(_))))
               }
@@ -164,15 +155,12 @@ sealed abstract class FreeT[S[_], M[_], A] {
   @annotation.tailrec
   private[scalaz] final def toM(implicit M: Applicative[M]): M[FreeT[S, M, A]] =
     this match {
-      case Suspend(m) =>
-        M.map(m) {
+      case Suspend(m) => M.map(m) {
           case -\/(a) => point(a)
           case \/-(s) => liftF(s)
         }
-      case g1 @ Gosub() =>
-        g1.a match {
-          case Suspend(m) =>
-            M.map(m) {
+      case g1 @ Gosub() => g1.a match {
+          case Suspend(m) => M.map(m) {
               case -\/(a) => g1.f(a)
               case \/-(s) => liftF[S, M, g1.C](s).flatMap(g1.f)
             }
@@ -334,10 +322,8 @@ private trait FreeTFoldable[S[_], M[_]]
 
   override final def foldMap[A, B: Monoid](fa: FreeT[S, M, A])(f: A => B): B =
     M2.foldMap(fa.resume) {
-      case \/-(a) =>
-        F.foldMap(a)(foldMap(_)(f))
-      case -\/(a) =>
-        f(a)
+      case \/-(a) => F.foldMap(a)(foldMap(_)(f))
+      case -\/(a) => f(a)
     }
 }
 
@@ -356,7 +342,6 @@ private trait FreeTTraverse[S[_], M[_]]
     G.map(M2.traverseImpl(fa.resume) {
       case \/-(a) =>
         G.map(F.traverseImpl(a)(traverseImpl(_)(f)))(FreeT.roll(_)(M))
-      case -\/(a) =>
-        G.map(f(a))(FreeT.point[S, M, B])
+      case -\/(a) => G.map(f(a))(FreeT.point[S, M, B])
     })(FreeT.liftM(_)(M).flatMap(identity))
 }

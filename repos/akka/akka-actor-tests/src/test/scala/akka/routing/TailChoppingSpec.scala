@@ -113,9 +113,7 @@ class TailChoppingSpec
           interval = 50.milliseconds).props())
 
       probe.send(routedActor, "")
-      probe.expectMsgPF() {
-        case Failure(timeoutEx: AskTimeoutException) ⇒
-      }
+      probe.expectMsgPF() { case Failure(timeoutEx: AskTimeoutException) ⇒ }
 
       allShouldEqual(1, actor1, actor2)(ref ⇒
         Await.result(ref ? "times", timeout.duration))

@@ -115,8 +115,7 @@ private[kinesis] class KinesisCheckpointer(
           checkpoint(shardId, checkpointers.get(shardId))
         }
       } catch {
-        case NonFatal(e) =>
-          logWarning("Failed to checkpoint to DynamoDB.", e)
+        case NonFatal(e) => logWarning("Failed to checkpoint to DynamoDB.", e)
       }
     }
 

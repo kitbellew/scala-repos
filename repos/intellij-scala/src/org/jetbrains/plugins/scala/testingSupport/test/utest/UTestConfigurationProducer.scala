@@ -105,9 +105,7 @@ with AbstractTestConfigurationProducer {
     try {
       val module = ScalaPsiUtil.getModule(element)
       if (module != null) { runConfiguration.setModule(module) }
-    } catch {
-      case e: Exception =>
-    }
+    } catch { case e: Exception => }
     JavaRunConfigurationExtensionManager.getInstance
       .extendCreatedConfiguration(runConfiguration, location)
     Some((testClass, settings))
@@ -123,10 +121,9 @@ with AbstractTestConfigurationProducer {
     */
   private def getTestSuiteName(testSuite: ScMethodCall): Option[String] = {
     testSuite.getParent match {
-      case patternDef: ScPatternDefinition =>
-        Some(patternDef.bindings.head.getName)
-      case tuple: ScTuple =>
-        tuple.getParent match {
+      case patternDef: ScPatternDefinition => Some(
+          patternDef.bindings.head.getName)
+      case tuple: ScTuple => tuple.getParent match {
           case patternDef: ScPatternDefinition =>
             val patterns = patternDef.pList.patterns
             if (patterns.size == 1 && patterns.head
@@ -148,12 +145,9 @@ with AbstractTestConfigurationProducer {
       testExpr: ScExpression,
       testScopeName: String): Option[String] = {
     testExpr match {
-      case (_: ScInfixExpr) | (_: ScMethodCall) =>
-        testExpr.getParent match {
-          case block: ScBlockExpr =>
-            block.getParent match {
-              case argList: ScArguments =>
-                argList.getParent match {
+      case (_: ScInfixExpr) | (_: ScMethodCall) => testExpr.getParent match {
+          case block: ScBlockExpr => block.getParent match {
+              case argList: ScArguments => argList.getParent match {
                   case call: ScMethodCall
                       if TestNodeProvider.isUTestSuiteApplyCall(call) =>
                     getTestSuiteName(call).map(_ + "\\" + testScopeName)

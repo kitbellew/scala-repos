@@ -120,8 +120,7 @@ object Comet extends DispatchSnippet with LazyLoggable {
                 s"Type: ${cometType}, name: ${cometName}; result was: $failedResult")
           }
 
-        case _ =>
-          throw NoCometTypeException
+        case _ => throw NoCometTypeException
       }
     } catch {
       case _: StateInStatelessException =>

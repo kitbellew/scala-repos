@@ -19,9 +19,7 @@ class NeedsToBeMixinTest extends AnnotatorTestBase(NeedsToBeMixin) {
         |  abstract override def base: Int = 1
         |}
         |class C extends T
-      """.stripMargin)) {
-      case Error("C", Message) :: Nil =>
-    }
+      """.stripMargin)) { case Error("C", Message) :: Nil => }
   }
 
   def testFine() {

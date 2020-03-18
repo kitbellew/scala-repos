@@ -92,8 +92,7 @@ final private[stream] class OutputStreamSourceStage(
             p.complete(Success(()))
             flush = None
             true
-          case None ⇒
-            close match {
+          case None ⇒ close match {
               case Some(p) ⇒
                 p.complete(Success(()))
                 close = None

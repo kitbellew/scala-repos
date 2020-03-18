@@ -74,8 +74,7 @@ class OAuthSpec extends PlaySpecification {
     val promise = Promise[(RequestHeader, ByteString)]()
     val app = GuiceApplicationBuilder()
       .routes {
-        case _ =>
-          Action(BodyParsers.parse.raw) { request =>
+        case _ => Action(BodyParsers.parse.raw) { request =>
             promise.success(
               (request, request.body.asBytes().getOrElse(ByteString.empty)))
             Results.Ok

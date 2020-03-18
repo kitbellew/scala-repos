@@ -61,8 +61,7 @@ case class JsonLine(
       (path, node) match {
         case (_, None)            => null
         case (h :: Nil, Some(fs)) => fs.get(h).orNull
-        case (h :: tail, Some(fs)) =>
-          fs.get(h).orNull match {
+        case (h :: tail, Some(fs)) => fs.get(h).orNull match {
             case fs: Map[String, AnyRef] => nestedRetrieval(Option(fs), tail)
             case _                       => null
           }

@@ -646,8 +646,7 @@ trait InlineParsers extends BaseParsers {
     val sb = new StringBuffer(20)
     while (pos < end && pos < last) {
       s.charAt(pos) match {
-        case ';' if pos > i + 1 =>
-          return validEntitySet.contains(sb.toString)
+        case ';' if pos > i + 1 => return validEntitySet.contains(sb.toString)
         case c if c == '#' || Character.isLetter(c) || Character.isDigit(c) =>
           sb.append(c)
         case _ => return false

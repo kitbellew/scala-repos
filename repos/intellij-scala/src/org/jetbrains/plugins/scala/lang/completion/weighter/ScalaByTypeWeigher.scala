@@ -40,16 +40,14 @@ class ScalaByTypeWeigher extends CompletionWeigher {
 
     def typedWeight =
       ScalaLookupItem.original(element) match {
-        case s: ScalaLookupItem =>
-          s.element match {
+        case s: ScalaLookupItem => s.element match {
             case ta: ScTypeAlias if ta.isLocal => localType
             case ta: ScTypeAlias               => typeDefinition
             case te: ScTypeDefinition
-                if !te.isObject && (te.isLocal || inFunction(te)) =>
-              localType
-            case te: ScTypeDefinition => typeDefinition
-            case te: PsiClass         => typeDefinition
-            case _                    => normal
+                if !te.isObject && (te.isLocal || inFunction(te)) => localType
+            case te: ScTypeDefinition                             => typeDefinition
+            case te: PsiClass                                     => typeDefinition
+            case _                                                => normal
           }
         case _ => null
       }

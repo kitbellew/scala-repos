@@ -28,17 +28,15 @@ object Transformers {
 
         // Control flow constructs
 
-        case Block(stats :+ expr) =>
-          Block(stats.map(transformStat) :+ transform(expr, isStat))
+        case Block(stats :+ expr) => Block(
+            stats.map(transformStat) :+ transform(expr, isStat))
 
         case Labeled(label, tpe, body) =>
           Labeled(label, tpe, transform(body, isStat))
 
-        case Assign(lhs, rhs) =>
-          Assign(transformExpr(lhs), transformExpr(rhs))
+        case Assign(lhs, rhs) => Assign(transformExpr(lhs), transformExpr(rhs))
 
-        case Return(expr, label) =>
-          Return(transformExpr(expr), label)
+        case Return(expr, label) => Return(transformExpr(expr), label)
 
         case If(cond, thenp, elsep) =>
           If(
@@ -59,8 +57,7 @@ object Transformers {
             transform(handler, isStat),
             transformStat(finalizer))(tree.tpe)
 
-        case Throw(expr) =>
-          Throw(transformExpr(expr))
+        case Throw(expr) => Throw(transformExpr(expr))
 
         case Match(selector, cases, default) =>
           Match(
@@ -70,11 +67,9 @@ object Transformers {
 
         // Scala expressions
 
-        case New(cls, ctor, args) =>
-          New(cls, ctor, args map transformExpr)
+        case New(cls, ctor, args) => New(cls, ctor, args map transformExpr)
 
-        case StoreModule(cls, value) =>
-          StoreModule(cls, transformExpr(value))
+        case StoreModule(cls, value) => StoreModule(cls, transformExpr(value))
 
         case Select(qualifier, item) =>
           Select(transformExpr(qualifier), item)(tree.tpe)
@@ -93,20 +88,16 @@ object Transformers {
         case ApplyStatic(cls, method, args) =>
           ApplyStatic(cls, method, args map transformExpr)(tree.tpe)
 
-        case UnaryOp(op, lhs) =>
-          UnaryOp(op, transformExpr(lhs))
+        case UnaryOp(op, lhs) => UnaryOp(op, transformExpr(lhs))
 
         case BinaryOp(op, lhs, rhs) =>
           BinaryOp(op, transformExpr(lhs), transformExpr(rhs))
 
-        case NewArray(tpe, lengths) =>
-          NewArray(tpe, lengths map transformExpr)
+        case NewArray(tpe, lengths) => NewArray(tpe, lengths map transformExpr)
 
-        case ArrayValue(tpe, elems) =>
-          ArrayValue(tpe, elems map transformExpr)
+        case ArrayValue(tpe, elems) => ArrayValue(tpe, elems map transformExpr)
 
-        case ArrayLength(array) =>
-          ArrayLength(transformExpr(array))
+        case ArrayLength(array) => ArrayLength(transformExpr(array))
 
         case ArraySelect(array, index) =>
           ArraySelect(transformExpr(array), transformExpr(index))(tree.tpe)
@@ -114,17 +105,13 @@ object Transformers {
         case RecordValue(tpe, elems) =>
           RecordValue(tpe, elems map transformExpr)
 
-        case IsInstanceOf(expr, cls) =>
-          IsInstanceOf(transformExpr(expr), cls)
+        case IsInstanceOf(expr, cls) => IsInstanceOf(transformExpr(expr), cls)
 
-        case AsInstanceOf(expr, cls) =>
-          AsInstanceOf(transformExpr(expr), cls)
+        case AsInstanceOf(expr, cls) => AsInstanceOf(transformExpr(expr), cls)
 
-        case Unbox(expr, charCode) =>
-          Unbox(transformExpr(expr), charCode)
+        case Unbox(expr, charCode) => Unbox(transformExpr(expr), charCode)
 
-        case GetClass(expr) =>
-          GetClass(transformExpr(expr))
+        case GetClass(expr) => GetClass(transformExpr(expr))
 
         case CallHelper(helper, args) =>
           CallHelper(helper, args map transformExpr)(tree.tpe)
@@ -168,26 +155,21 @@ object Transformers {
             transformExpr(method),
             args map transformExpr)
 
-        case JSSuperConstructorCall(args) =>
-          JSSuperConstructorCall(args map transformExpr)
+        case JSSuperConstructorCall(args) => JSSuperConstructorCall(
+            args map transformExpr)
 
-        case JSSpread(items) =>
-          JSSpread(transformExpr(items))
+        case JSSpread(items) => JSSpread(transformExpr(items))
 
-        case JSDelete(prop) =>
-          JSDelete(transformExpr(prop))
+        case JSDelete(prop) => JSDelete(transformExpr(prop))
 
-        case JSUnaryOp(op, lhs) =>
-          JSUnaryOp(op, transformExpr(lhs))
+        case JSUnaryOp(op, lhs) => JSUnaryOp(op, transformExpr(lhs))
 
         case JSBinaryOp(op, lhs, rhs) =>
           JSBinaryOp(op, transformExpr(lhs), transformExpr(rhs))
 
-        case JSArrayConstr(items) =>
-          JSArrayConstr(items map transformExpr)
+        case JSArrayConstr(items) => JSArrayConstr(items map transformExpr)
 
-        case JSObjectConstr(fields) =>
-          JSObjectConstr(fields map {
+        case JSObjectConstr(fields) => JSObjectConstr(fields map {
             case (name, value) => (name, transformExpr(value))
           })
 
@@ -224,8 +206,7 @@ object Transformers {
       implicit val pos = tree.pos
 
       tree match {
-        case FieldDef(_, _, _) =>
-          tree
+        case FieldDef(_, _, _) => tree
 
         case tree: MethodDef =>
           val MethodDef(static, name, args, resultType, body) = tree
@@ -243,8 +224,7 @@ object Transformers {
         case ConstructorExportDef(fullName, args, body) =>
           ConstructorExportDef(fullName, args, transformStat(body))
 
-        case _: JSClassExportDef | _: ModuleExportDef =>
-          tree
+        case _: JSClassExportDef | _: ModuleExportDef => tree
 
         case _ =>
           sys.error(s"Invalid tree in transformDef() of class ${tree.getClass}")

@@ -151,9 +151,8 @@ final class TestWildcardSelector(_testWildcard: String)
 
   override def equals(that: Any): Boolean =
     that match {
-      case that: TestWildcardSelector =>
-        this.testWildcard == that.testWildcard
-      case _ => false
+      case that: TestWildcardSelector => this.testWildcard == that.testWildcard
+      case _                          => false
     }
 
   override def hashCode(): Int = testWildcard.hashCode()

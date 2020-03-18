@@ -17,8 +17,8 @@ class JUnitMixinTestCheck {
       "org.scalajs.testsuite.junit.JUnitMixinTest")
     try { boot.invoke(boot.newInstance(), "mixinTest") }
     catch {
-      case _: Throwable =>
-        fail("Could not invoke JUnitMixinTest.mixinTest as a test.")
+      case _: Throwable => fail(
+          "Could not invoke JUnitMixinTest.mixinTest as a test.")
     }
   }
 }

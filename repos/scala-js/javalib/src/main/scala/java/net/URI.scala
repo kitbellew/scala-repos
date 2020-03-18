@@ -207,10 +207,8 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
           case ".." :: xs if okToDropFrom(resRev) =>
             // Remove preceeding non-".." segment
             loop(xs, resRev.tail)
-          case x :: xs =>
-            loop(xs, x :: resRev)
-          case Nil =>
-            resRev.reverse
+          case x :: xs => loop(xs, x :: resRev)
+          case Nil     => resRev.reverse
         }
 
       // Split into segments. -1 since we want empty trailing ones

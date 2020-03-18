@@ -2,47 +2,34 @@ package TestTestters
 
 trait Test1 {
   private[this] var _st: Int = 0
-  def close: PartialFunction[Any, Any] = {
-    case x: Int =>
-      _st = identity(_st)
-  }
+  def close: PartialFunction[Any, Any] = { case x: Int => _st = identity(_st) }
 }
 
 object Base1 {
   trait Test2 {
     private[this] var _st: Int = 0
     def close: PartialFunction[Any, Any] = {
-      case x: Int =>
-        _st = identity(_st)
+      case x: Int => _st = identity(_st)
     }
   }
 }
 
 class Test3 {
   private[this] var _st: Int = 0
-  def close: PartialFunction[Any, Any] = {
-    case x: Int =>
-      _st = 1
-  }
+  def close: PartialFunction[Any, Any] = { case x: Int => _st = 1 }
 }
 
 object Base2 {
   class Test4 {
     private[this] var _st: Int = 0
-    def close: PartialFunction[Any, Any] = {
-      case x: Int =>
-        _st = 1
-    }
+    def close: PartialFunction[Any, Any] = { case x: Int => _st = 1 }
   }
 }
 
 class Base3 {
   trait Test5 {
     private[this] var _st: Int = 0
-    def close: PartialFunction[Any, Any] = {
-      case x: Int =>
-        _st = 1
-    }
+    def close: PartialFunction[Any, Any] = { case x: Int => _st = 1 }
   }
 }
 

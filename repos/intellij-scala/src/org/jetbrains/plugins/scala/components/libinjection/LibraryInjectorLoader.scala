@@ -176,10 +176,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
     try {
       stream.writeObject(c)
       stream.flush()
-    } catch {
-      case e: Throwable =>
-        Error.cacheSaveError(e)
-    } finally { stream.close() }
+    } catch { case e: Throwable => Error.cacheSaveError(e) }
+    finally { stream.close() }
   }
 
   private def verifyLibraryCache(

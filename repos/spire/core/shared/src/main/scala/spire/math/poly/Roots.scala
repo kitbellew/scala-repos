@@ -59,8 +59,7 @@ object Roots {
     if (poly == Polynomial.zero[BigDecimal]) { Polynomial.zero[BigInt] }
     else {
       val terms = poly.terms.map {
-        case Term(c, e) =>
-          Term(c.bigDecimal.stripTrailingZeros, e)
+        case Term(c, e) => Term(c.bigDecimal.stripTrailingZeros, e)
       }
       val maxScale = terms.map(_.coeff.scale).max
       Polynomial(terms.map {
@@ -108,14 +107,12 @@ private[poly] class BigDecimalSimpleRoots(
     if (i < 0 || i >= count) { throw new IndexOutOfBoundsException(i.toString) }
     else {
       isolated(i) match {
-        case Point(value) =>
-          value.toBigDecimal(scale, RoundingMode.HALF_EVEN)
+        case Point(value) => value.toBigDecimal(scale, RoundingMode.HALF_EVEN)
         case Bounded(lb, ub, _) =>
           new BigDecimal(
             BigDecimalRootRefinement(poly, lb, ub, scale).approximateValue,
             MathContext.UNLIMITED)
-        case _ =>
-          throw new RuntimeException("invalid isolated root interval")
+        case _ => throw new RuntimeException("invalid isolated root interval")
       }
     }
 }
@@ -133,12 +130,10 @@ private[poly] class BigDecimalRelativeRoots(
     if (i < 0 || i >= count) { throw new IndexOutOfBoundsException(i.toString) }
     else {
       isolated(i) match {
-        case Point(value) =>
-          value.toBigDecimal(mc)
+        case Point(value) => value.toBigDecimal(mc)
         case Bounded(lb, ub, _) =>
           Algebraic.unsafeRoot(zpoly, i, lb, ub).toBigDecimal(mc)
-        case _ =>
-          throw new RuntimeException("invalid isolated root interval")
+        case _ => throw new RuntimeException("invalid isolated root interval")
       }
     }
 }
@@ -158,16 +153,14 @@ private[poly] class FixedRealRoots(val poly: Polynomial[Real])
     if (i < 0 || i >= count) { throw new IndexOutOfBoundsException(i.toString) }
     else {
       isolated(i) match {
-        case Point(value) =>
-          Real(value)
+        case Point(value) => Real(value)
         case Bounded(lb, ub, _) =>
           Real(
             Algebraic
               .unsafeRoot(zpoly, i, lb, ub)
               .toBigDecimal(
                 new MathContext(Real.digits, RoundingMode.HALF_EVEN)))
-        case _ =>
-          throw new RuntimeException("invalid isolated root interval")
+        case _ => throw new RuntimeException("invalid isolated root interval")
       }
     }
 }

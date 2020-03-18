@@ -25,22 +25,18 @@ abstract class Comment {
     val stack = mutable.ListBuffer.empty[HtmlTag]
     def scan(i: Inline) {
       i match {
-        case Chain(list) =>
-          list foreach scan
+        case Chain(list) => list foreach scan
         case tag: HtmlTag => {
           if (stack.length > 0 && tag.canClose(stack.last)) {
             stack.remove(stack.length - 1)
           } else {
             tag.close match {
-              case Some(t) =>
-                stack += t
-              case None =>
-                ;
+              case Some(t) => stack += t
+              case None    => ;
             }
           }
         }
-        case _ =>
-          ;
+        case _ => ;
       }
     }
     scan(inline)
@@ -51,10 +47,8 @@ abstract class Comment {
     *  first sentence of the body. */
   def short: Inline = {
     shortDescription orElse body.summary match {
-      case Some(s) =>
-        closeHtmlTags(s)
-      case _ =>
-        Text("")
+      case Some(s) => closeHtmlTags(s)
+      case _       => Text("")
     }
   }
 

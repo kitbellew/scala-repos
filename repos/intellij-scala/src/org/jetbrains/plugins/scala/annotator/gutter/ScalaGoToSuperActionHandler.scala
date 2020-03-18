@@ -88,9 +88,8 @@ private object ScalaGoToSuperActionHandler {
     def test(e: PsiElement): Boolean =
       e match {
         case _: ScTemplateDefinition | _: ScFunction | _: ScValue |
-            _: ScVariable | _: ScTypeAlias | _: ScObject =>
-          true
-        case _ => false
+            _: ScVariable | _: ScTypeAlias | _: ScObject => true
+        case _                                           => false
       }
     while (element != null && !test(element)) element = element.getParent
 

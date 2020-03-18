@@ -51,12 +51,10 @@ object ScProjectionType {
       superReference: Boolean /* todo: find a way to remove it*/ ): ScType = {
     val res = new ScProjectionType(projected, element, superReference)
     projected match {
-      case c: ScCompoundType =>
-        res.isAliasType match {
+      case c: ScCompoundType => res.isAliasType match {
           case Some(AliasType(td: ScTypeAliasDefinition, _, upper))
-              if td.typeParameters.isEmpty =>
-            upper.getOrElse(res)
-          case _ => res
+              if td.typeParameters.isEmpty => upper.getOrElse(res)
+          case _                           => res
         }
       case _ => res
     }
@@ -94,8 +92,7 @@ class ScProjectionType private (
           ta match {
             case ta: ScTypeAliasDefinition => //hack for simple cases, it doesn't cover more complicated examples
               ta.aliasedType match {
-                case Success(tp, _) =>
-                  actualSubst.subst(tp) match {
+                case Success(tp, _) => actualSubst.subst(tp) match {
                     case ScParameterizedType(des, typeArgs) =>
                       val taArgs = ta.typeParameters
                       if (taArgs.length == typeArgs.length && taArgs
@@ -104,9 +101,8 @@ class ScProjectionType private (
                               case (
                                     tParam: ScTypeParam,
                                     ScTypeParameterType(_, _, _, _, param))
-                                  if tParam == param =>
-                                true
-                              case _ => false
+                                  if tParam == param => true
+                              case _                 => false
                             })
                         return Some(AliasType(
                           ta,
@@ -208,8 +204,7 @@ class ScProjectionType private (
       }
       ScType.extractClass(projected, Some(element.getProject)) match {
         case Some(clazz: ScTypeDefinition) => fromClazz(clazz)
-        case _ =>
-          projected match {
+        case _ => projected match {
             case ScThisType(clazz: ScTypeDefinition) => fromClazz(clazz)
             case _                                   => element
           }
@@ -312,16 +307,14 @@ class ScProjectionType private (
       case _ =>
     }
     r match {
-      case t: StdType =>
-        element match {
+      case t: StdType => element match {
           case synth: ScSyntheticClass =>
             Equivalence.equivInner(synth.t, t, uSubst, falseUndef)
           case _ => (false, uSubst)
         }
       case param @ ScParameterizedType(
             proj2 @ ScProjectionType(p1, element1, _),
-            typeArgs) =>
-        r.isAliasType match {
+            typeArgs) => r.isAliasType match {
           case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
             Equivalence.equivInner(
               this,
@@ -401,19 +394,15 @@ class ScProjectionType private (
           return (false, uSubst)
         }
         Equivalence.equivInner(projected, p1, uSubst, falseUndef)
-      case ScThisType(clazz) =>
-        element match {
+      case ScThisType(clazz) => element match {
           case o: ScObject => (false, uSubst)
           case t: ScTypedDefinition if t.isStable =>
             t.getType(TypingContext.empty) match {
               case Success(singl, _) if ScType.isSingletonType(singl) =>
                 val newSubst = actualSubst.followed(
                   new ScSubstitutor(Map.empty, Map.empty, Some(projected)))
-                Equivalence.equivInner(
-                  r,
-                  newSubst.subst(singl),
-                  uSubst,
-                  falseUndef)
+                Equivalence
+                  .equivInner(r, newSubst.subst(singl), uSubst, falseUndef)
               case _ => (false, uSubst)
             }
           case _ => (false, uSubst)
@@ -473,14 +462,12 @@ case class ScThisType(clazz: ScTemplateDefinition) extends ValueType {
         (ScEquivalenceUtil.areClassesEquivalent(clazz1, clazz2), uSubst)
       case (ScThisType(obj1: ScObject), ScDesignatorType(obj2: ScObject)) =>
         (ScEquivalenceUtil.areClassesEquivalent(obj1, obj2), uSubst)
-      case (_, ScDesignatorType(obj: ScObject)) =>
-        (false, uSubst)
+      case (_, ScDesignatorType(obj: ScObject)) => (false, uSubst)
       case (_, ScDesignatorType(typed: ScTypedDefinition)) if typed.isStable =>
         typed.getType(TypingContext.empty) match {
           case Success(tp, _) if ScType.isSingletonType(tp) =>
             Equivalence.equivInner(this, tp, uSubst, falseUndef)
-          case _ =>
-            (false, uSubst)
+          case _ => (false, uSubst)
         }
       case (_, ScProjectionType(_, o: ScObject, _)) => (false, uSubst)
       case (_, p @ ScProjectionType(tp, elem: ScTypedDefinition, _))
@@ -517,8 +504,7 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
         ta match {
           case ta: ScTypeAliasDefinition => //hack for simple cases, it doesn't cover more complicated examples
             ta.aliasedType match {
-              case Success(tp, _) =>
-                tp match {
+              case Success(tp, _) => tp match {
                   case ScParameterizedType(des, typeArgs) =>
                     val taArgs = ta.typeParameters
                     if (taArgs.length == typeArgs.length && taArgs
@@ -527,9 +513,8 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
                             case (
                                   tParam: ScTypeParam,
                                   ScTypeParameterType(_, _, _, _, param))
-                                if tParam == param =>
-                              true
-                            case _ => false
+                                if tParam == param => true
+                            case _                 => false
                           })
                       return Some(AliasType(
                         ta,
@@ -569,10 +554,9 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
 
   override def getValType: Option[StdType] = {
     element match {
-      case o: ScObject => None
-      case clazz: PsiClass =>
-        ScType.baseTypesQualMap.get(clazz.qualifiedName)
-      case _ => None
+      case o: ScObject     => None
+      case clazz: PsiClass => ScType.baseTypesQualMap.get(clazz.qualifiedName)
+      case _               => None
     }
   }
 

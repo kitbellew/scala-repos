@@ -53,8 +53,7 @@ abstract class SimpleParentRunner[T](testClass: Class[_])
         t.getFailures.asScala.foreach(t2 => addFailure(t2, notifier, desc))
       case i: InvocationTargetException =>
         addFailure(i.getTargetException, notifier, desc)
-      case t: Throwable =>
-        notifier.fireTestFailure(new Failure(desc, t))
+      case t: Throwable => notifier.fireTestFailure(new Failure(desc, t))
     }
 
   def getDescription = {

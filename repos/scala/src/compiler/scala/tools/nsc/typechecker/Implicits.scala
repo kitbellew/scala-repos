@@ -309,15 +309,12 @@ trait Implicits {
       */
     private def containsError(tp: Type): Boolean =
       tp match {
-        case PolyType(tparams, restpe) =>
-          containsError(restpe)
-        case NullaryMethodType(restpe) =>
-          containsError(restpe)
+        case PolyType(tparams, restpe)  => containsError(restpe)
+        case NullaryMethodType(restpe)  => containsError(restpe)
         case mt @ MethodType(_, restpe) =>
           // OPT avoiding calling `mt.paramTypes` which creates a new list.
           (mt.params exists symTypeIsError) || containsError(restpe)
-        case _ =>
-          tp.isError
+        case _ => tp.isError
       }
 
     def isStablePrefix = pre.isStable
@@ -392,10 +389,8 @@ trait Implicits {
     }
     def unapply(pt: Type): Option[(Name, List[Type], Type)] =
       pt match {
-        case RefinedType(List(WildcardType), decls) =>
-          decls.toList match {
-            case List(sym) =>
-              sym.tpe match {
+        case RefinedType(List(WildcardType), decls) => decls.toList match {
+            case List(sym) => sym.tpe match {
                 case MethodType(params, restpe)
                     if (params forall (_.tpe
                       .isInstanceOf[BoundedWildcardType])) =>
@@ -527,11 +522,13 @@ trait Implicits {
             intersectionType(parents map core, tp.typeSymbol.owner)
           case AnnotatedType(annots, tp) => core(tp)
           case ExistentialType(tparams, result) =>
-            core(result)
-              .subst(tparams, tparams map (t => core(t.info.bounds.hi)))
+            core(result).subst(
+              tparams,
+              tparams map (t => core(t.info.bounds.hi)))
           case PolyType(tparams, result) =>
-            core(result)
-              .subst(tparams, tparams map (t => core(t.info.bounds.hi)))
+            core(result).subst(
+              tparams,
+              tparams map (t => core(t.info.bounds.hi)))
           case _ => tp
         }
       def stripped(tp: Type): Type = {
@@ -667,8 +664,7 @@ trait Implicits {
           case HasMethodMatching(name, argtpes, restpe) =>
             (tpres.member(name) filter (m =>
               isApplicableSafe(undet, m.tpe, argtpes, restpe))) != NoSymbol
-          case _ =>
-            tpres <:< ptres
+          case _ => tpres <:< ptres
         }
       }
 
@@ -948,10 +944,7 @@ trait Implicits {
               itree3.tpe,
               ptInstantiated))
         }
-      } catch {
-        case ex: TypeError =>
-          fail(ex.getMessage())
-      }
+      } catch { case ex: TypeError => fail(ex.getMessage()) }
     }
 
     /** Should implicit definition symbol `sym` be considered for applicability testing?
@@ -1196,8 +1189,9 @@ trait Implicits {
         // So if there is any element not improved upon by the first it is an error.
         rankImplicits(eligible, Nil) match {
           case Nil => ()
-          case (chosenResult, chosenInfo) :: rest =>
-            rest find { case (_, alt) => !improves(chosenInfo, alt) } match {
+          case (chosenResult, chosenInfo) :: rest => rest find {
+              case (_, alt) => !improves(chosenInfo, alt)
+            } match {
               case Some((competingResult, competingInfo)) =>
                 AmbiguousImplicitError(
                   chosenInfo,
@@ -1290,8 +1284,7 @@ trait Implicits {
           seen: mutable.Set[Type],
           pending: Set[Symbol]) =
         tp match {
-          case TypeRef(pre, sym, args) =>
-            infoMap get sym match {
+          case TypeRef(pre, sym, args) => infoMap get sym match {
               case Some(infos1) =>
                 if (infos1.nonEmpty && !(pre =:= infos1.head.pre.prefix)) {
                   log(
@@ -1358,22 +1351,16 @@ trait Implicits {
                 tp.normalize
               ) // SI-7180 Normalize needed to expand HK type refs
             } else if (sym.isAbstractType) { getParts(tp.bounds.hi) }
-          case ThisType(_) =>
-            getParts(tp.widen)
-          case _: SingletonType =>
-            getParts(tp.widen)
+          case ThisType(_)      => getParts(tp.widen)
+          case _: SingletonType => getParts(tp.widen)
           case HasMethodMatching(_, argtpes, restpe) =>
             for (tp <- argtpes) getParts(tp)
             getParts(restpe)
-          case RefinedType(ps, _) =>
-            for (p <- ps) getParts(p)
-          case AnnotatedType(_, t) =>
-            getParts(t)
-          case ExistentialType(_, t) =>
-            getParts(t)
-          case PolyType(_, t) =>
-            getParts(t)
-          case _ =>
+          case RefinedType(ps, _)    => for (p <- ps) getParts(p)
+          case AnnotatedType(_, t)   => getParts(t)
+          case ExistentialType(_, t) => getParts(t)
+          case PolyType(_, t)        => getParts(t)
+          case _                     =>
         }
       }
 
@@ -1446,8 +1433,7 @@ trait Implicits {
             case None      => new SearchResult(tree1, EmptyTreeTypeSubstituter, Nil)
           }
         } catch {
-          case ex: TypeError =>
-            processMacroExpansionError(ex.pos, ex.msg)
+          case ex: TypeError => processMacroExpansionError(ex.pos, ex.msg)
         }
       }
 
@@ -1460,9 +1446,8 @@ trait Implicits {
               case SingleType(prePre, preSym) =>
                 gen.mkAttributedRef(prePre, preSym) setType pre
               // necessary only to compile typetags used inside the Universe cake
-              case ThisType(thisSym) =>
-                gen.mkAttributedThis(thisSym)
-              case _ =>
+              case ThisType(thisSym) => gen.mkAttributedThis(thisSym)
+              case _                 =>
                 // if `pre` is not a PDT, e.g. if someone wrote
                 //   implicitly[scala.reflect.macros.blackbox.Context#TypeTag[Int]]
                 // then we need to fail, because we don't know the prefix to use during type reification
@@ -1613,8 +1598,7 @@ trait Implicits {
             else mot(erasure.intersectionDominator(parents), from, to)
           case ExistentialType(tparams, result) =>
             mot(tp1.skolemizeExistential, from, to)
-          case _ =>
-            EmptyTree
+          case _ => EmptyTree
         }
       }
 
@@ -1681,8 +1665,7 @@ trait Implicits {
           materializeImplicit(
             pt.dealias.bounds.lo
           ) // #3977: use pt.dealias, not pt (if pt is a type alias, pt.bounds.lo == pt)
-        case pt @ TypeRef(pre, sym, arg :: Nil) =>
-          sym match {
+        case pt @ TypeRef(pre, sym, arg :: Nil) => sym match {
             case sym if ManifestSymbols(sym) => manifestOfType(arg, sym)
             case sym if TagSymbols(sym)      => tagOfType(pre, arg, sym)
             // as of late ClassManifest is an alias of ClassTag
@@ -1695,8 +1678,7 @@ trait Implicits {
             case sym if sym.isAliasType => materializeImplicit(pt.betaReduce)
             case _                      => SearchFailure
           }
-        case _ =>
-          SearchFailure
+        case _ => SearchFailure
       }
 
     /** The result of the implicit search:

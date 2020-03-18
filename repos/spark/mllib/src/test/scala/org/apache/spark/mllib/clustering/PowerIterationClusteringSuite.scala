@@ -165,10 +165,7 @@ class PowerIterationClusteringSuite
     val u = Array(0.3, 0.2, 0.7 / 3.0, 0.2)
     val norm = u.sum
     val u1 = u.map(x => x / norm)
-    v1.foreach {
-      case (i, x) =>
-        assert(x ~== u1(i.toInt) absTol 1e-14)
-    }
+    v1.foreach { case (i, x) => assert(x ~== u1(i.toInt) absTol 1e-14) }
   }
 
   test("model save/load") {

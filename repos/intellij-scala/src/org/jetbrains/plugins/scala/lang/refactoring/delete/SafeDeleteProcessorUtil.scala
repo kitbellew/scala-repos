@@ -386,9 +386,8 @@ object SafeDeleteProcessorUtil {
           if (parent.isInstanceOf[PsiCodeBlock]) {
             parent = parent.getParent
             parent match {
-              case method: PsiMethod if method.isConstructor =>
-                return method
-              case _ =>
+              case method: PsiMethod if method.isConstructor => return method
+              case _                                         =>
             }
           }
         }
@@ -478,13 +477,10 @@ object SafeDeleteProcessorUtil {
         val element: PsiElement = reference.getElement
         var call: PsiCall = null
         element match {
-          case psiCall: PsiCall =>
-            call = psiCall
-          case _ =>
-            element.getParent match {
-              case psiCall: PsiCall =>
-                call = psiCall
-              case _ =>
+          case psiCall: PsiCall => call = psiCall
+          case _ => element.getParent match {
+              case psiCall: PsiCall => call = psiCall
+              case _                =>
             }
         }
         if (call != null) {

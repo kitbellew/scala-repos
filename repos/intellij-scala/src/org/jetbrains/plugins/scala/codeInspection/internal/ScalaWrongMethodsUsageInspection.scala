@@ -56,8 +56,7 @@ class ScalaWrongMethodsUsageInspection extends LocalInspectionTool {
             "hasModifierProperty",
             Seq("com.intellij.psi.PsiModifierListOwner")))
         resolve match {
-          case m: PsiMethod =>
-            map.get(m.name) match {
+          case m: PsiMethod => map.get(m.name) match {
               case Some(classes) =>
                 val containingClass = m.containingClass
                 classes.find {
@@ -77,8 +76,7 @@ class ScalaWrongMethodsUsageInspection extends LocalInspectionTool {
                     var parent: PsiElement = ref.getParent
                     while (parent != null) {
                       parent match {
-                        case f: ScDocCommentOwner =>
-                          f.docComment match {
+                        case f: ScDocCommentOwner => f.docComment match {
                             case Some(d) =>
                               if (d.getText.contains("for Java only")) return
                             case _ =>

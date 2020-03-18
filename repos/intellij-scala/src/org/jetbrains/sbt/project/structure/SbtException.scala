@@ -24,8 +24,7 @@ object SbtException {
       return handleUnresolvedDeps(lines)
 
     trimLogIfNecessary(lines) match {
-      case NotTrimmed =>
-        new SbtException(SbtBundle("sbt.import.error", log))
+      case NotTrimmed => new SbtException(SbtBundle("sbt.import.error", log))
       case Trimmed(whatsLeft) =>
         new SbtException(SbtBundle(
           "sbt.import.errorLogIsTooLong",

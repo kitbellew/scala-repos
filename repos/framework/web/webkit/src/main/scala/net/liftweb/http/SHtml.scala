@@ -195,8 +195,7 @@ trait SHtml extends Loggable {
           s"Browser sent back something that wasn't JSON to a jsonCall function: $rawJsonText")
         None
 
-      case anythingElse =>
-        anythingElse
+      case anythingElse => anythingElse
     }
   }
 
@@ -1390,9 +1389,8 @@ trait SHtml extends Loggable {
       "name",
       name,
       elem.attributes.filter {
-        case up: UnprefixedAttribute =>
-          up.key != "name"
-        case _ => true
+        case up: UnprefixedAttribute => up.key != "name"
+        case _                       => true
       }))
   }
 
@@ -1578,9 +1576,8 @@ trait SHtml extends Loggable {
             // button
             case e: Elem if e.label == "button" =>
               _formGroup.is match {
-                case Empty =>
-                  formGroup(1)(fmapFunc(func) { dupWithName(e, _) })
-                case _ => fmapFunc(func) { dupWithName(e, _) }
+                case Empty => formGroup(1)(fmapFunc(func) { dupWithName(e, _) })
+                case _     => fmapFunc(func) { dupWithName(e, _) }
               }
 
             // textarea
@@ -1595,8 +1592,7 @@ trait SHtml extends Loggable {
             case e: Elem if e.label == "input" && isRadio(e.attributes) =>
               radioName match {
                 case Full(name) => dupWithName(e, name)
-                case _ =>
-                  fmapFunc(func) { name =>
+                case _ => fmapFunc(func) { name =>
                     {
                       radioName = Full(name)
                       dupWithName(e, name)
@@ -1610,8 +1606,7 @@ trait SHtml extends Loggable {
                 case Full(name) =>
                   checkBoxCnt += 1
                   dupWithName(e, name)
-                case _ =>
-                  fmapFunc(func) { name =>
+                case _ => fmapFunc(func) { name =>
                     {
                       checkBoxName = Full(name)
                       checkBoxCnt += 1
@@ -1626,9 +1621,8 @@ trait SHtml extends Loggable {
                   .attribute("type")
                   .map(_.text) == Some("submit") =>
               _formGroup.is match {
-                case Empty =>
-                  formGroup(1)(fmapFunc(func) { dupWithName(e, _) })
-                case _ => fmapFunc(func) { dupWithName(e, _) }
+                case Empty => formGroup(1)(fmapFunc(func) { dupWithName(e, _) })
+                case _     => fmapFunc(func) { dupWithName(e, _) }
               }
 
             // generic input
@@ -1979,9 +1973,8 @@ trait SHtml extends Loggable {
     */
   def ajaxOnSubmit(func: () => JsCmd): (NodeSeq) => NodeSeq = {
     val functionId = _formGroup.is match {
-      case Empty =>
-        formGroup(1)(fmapFunc(func)(id => id))
-      case _ => fmapFunc(func)(id => id)
+      case Empty => formGroup(1)(fmapFunc(func)(id => id))
+      case _     => fmapFunc(func)(id => id)
     }
 
     (in: NodeSeq) => {
@@ -1998,8 +1991,7 @@ trait SHtml extends Loggable {
           case e: Elem
               if (e.label == "button") ||
                 (e.label == "input" && e.attribute("type").map(_.text) == Some(
-                  "submit")) =>
-            addAttributes(e, functionId)
+                  "submit")) => addAttributes(e, functionId)
         }
       }
 
@@ -2064,8 +2056,7 @@ trait SHtml extends Loggable {
             Helpers.nextFuncName
 
           val newMeta = e.attributes.filter {
-            case up: UnprefixedAttribute =>
-              up.key match {
+            case up: UnprefixedAttribute => up.key match {
                 case "id"       => false
                 case "action"   => false
                 case "onsubmit" => false

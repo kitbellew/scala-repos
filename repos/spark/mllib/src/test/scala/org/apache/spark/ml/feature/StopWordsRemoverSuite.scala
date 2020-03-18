@@ -28,8 +28,7 @@ object StopWordsRemoverSuite extends SparkFunSuite {
       .select("filtered", "expected")
       .collect()
       .foreach {
-        case Row(tokens, wantedTokens) =>
-          assert(tokens === wantedTokens)
+        case Row(tokens, wantedTokens) => assert(tokens === wantedTokens)
       }
   }
 }

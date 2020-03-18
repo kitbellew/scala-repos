@@ -29,8 +29,7 @@ class SimulatedDriver(driverProps: Props) extends SchedulerDriver {
       case Some(driverActor) =>
         log.debug(s"send driver cmd $cmd")
         driverActor ! cmd
-      case None =>
-        log.debug("no driver actor configured")
+      case None => log.debug("no driver actor configured")
     }
     status
   }

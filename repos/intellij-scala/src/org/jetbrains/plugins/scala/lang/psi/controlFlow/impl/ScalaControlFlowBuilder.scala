@@ -329,9 +329,8 @@ class ScalaControlFlowBuilder(
     startNode(Some(stmt)) { ifStmtInstr =>
       checkPendingEdges(ifStmtInstr)
       stmt.condition match {
-        case Some(cond) =>
-          cond.accept(this)
-        case None =>
+        case Some(cond) => cond.accept(this)
+        case None       =>
       }
 
       val head = Option(myHead).getOrElse(ifStmtInstr)
@@ -440,9 +439,8 @@ class ScalaControlFlowBuilder(
           case p: ScParameter if parameters.contains(p) =>
           case named: PsiNamedElement
               if !PsiTreeUtil.isAncestor(paramOwner, named, false) && policy
-                .isElementAccepted(named) =>
-            collectedRefs += ref
-          case _ =>
+                .isElementAccepted(named) => collectedRefs += ref
+          case _                          =>
         }
       }
     }
@@ -483,8 +481,7 @@ class ScalaControlFlowBuilder(
   override def visitTryExpression(tryStmt: ScTryStmt) {
     val handledExnTypes = tryStmt.catchBlock match {
       case None => Nil
-      case Some(cb) =>
-        cb.expression match {
+      case Some(cb) => cb.expression match {
           case Some(b: ScBlockExpr) if b.hasCaseClauses =>
             for (t <- b.caseClauses.toSeq.flatMap(_.caseClauses))
               yield CatchInfo(t)

@@ -380,8 +380,7 @@ object TypedActor
     }
 
     def receive = {
-      case m: MethodCall ⇒
-        withContext {
+      case m: MethodCall ⇒ withContext {
           if (m.isOneWay) m(me)
           else {
             try {
@@ -510,8 +509,7 @@ object TypedActor
           implicit val dispatcher = extension.system.dispatcher
           import akka.pattern.ask
           MethodCall(method, args) match {
-            case m if m.isOneWay ⇒
-              actor ! m; null //Null return value
+            case m if m.isOneWay ⇒ actor ! m; null //Null return value
             case m if m.returnsFuture ⇒
               ask(actor, m)(timeout) map {
                 case NullResponse ⇒ null
@@ -524,8 +522,7 @@ object TypedActor
                 case None | Some(Success(NullResponse)) | Some(
                       Failure(_: AskTimeoutException)) ⇒
                   if (m.returnsJOption) JOption.none[Any] else None
-                case Some(t: Try[_]) ⇒
-                  t.get.asInstanceOf[AnyRef]
+                case Some(t: Try[_]) ⇒ t.get.asInstanceOf[AnyRef]
               }
             case m ⇒
               Await.result(ask(actor, m)(timeout), timeout.duration) match {
@@ -836,8 +833,7 @@ class TypedActorExtension(val system: ExtendedActorSystem)
           typedActor.getClass) && Proxy.isProxyClass(typedActor.getClass))
       typedActor match {
         case null ⇒ null
-        case other ⇒
-          Proxy.getInvocationHandler(other) match {
+        case other ⇒ Proxy.getInvocationHandler(other) match {
             case null ⇒ null
             case handler: TypedActorInvocationHandler ⇒ handler
             case _ ⇒ null

@@ -77,9 +77,8 @@ case class DecimalType(precision: Int, scale: Int) extends FractionalType {
     other match {
       case dt: DecimalType =>
         (precision - scale) >= (dt.precision - dt.scale) && scale >= dt.scale
-      case dt: IntegralType =>
-        isWiderThan(DecimalType.forType(dt))
-      case _ => false
+      case dt: IntegralType => isWiderThan(DecimalType.forType(dt))
+      case _                => false
     }
 
   /**
@@ -90,9 +89,8 @@ case class DecimalType(precision: Int, scale: Int) extends FractionalType {
     other match {
       case dt: DecimalType =>
         (precision - scale) <= (dt.precision - dt.scale) && scale <= dt.scale
-      case dt: IntegralType =>
-        isTighterThan(DecimalType.forType(dt))
-      case _ => false
+      case dt: IntegralType => isTighterThan(DecimalType.forType(dt))
+      case _                => false
     }
 
   /**
@@ -163,9 +161,8 @@ object DecimalType extends AbstractDataType {
     */
   def is32BitDecimalType(dt: DataType): Boolean = {
     dt match {
-      case t: DecimalType =>
-        t.precision <= Decimal.MAX_INT_DIGITS
-      case _ => false
+      case t: DecimalType => t.precision <= Decimal.MAX_INT_DIGITS
+      case _              => false
     }
   }
 
@@ -174,9 +171,8 @@ object DecimalType extends AbstractDataType {
     */
   def is64BitDecimalType(dt: DataType): Boolean = {
     dt match {
-      case t: DecimalType =>
-        t.precision <= Decimal.MAX_LONG_DIGITS
-      case _ => false
+      case t: DecimalType => t.precision <= Decimal.MAX_LONG_DIGITS
+      case _              => false
     }
   }
 
@@ -185,9 +181,8 @@ object DecimalType extends AbstractDataType {
     */
   def isByteArrayDecimalType(dt: DataType): Boolean = {
     dt match {
-      case t: DecimalType =>
-        t.precision > Decimal.MAX_LONG_DIGITS
-      case _ => false
+      case t: DecimalType => t.precision > Decimal.MAX_LONG_DIGITS
+      case _              => false
     }
   }
 

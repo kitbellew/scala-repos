@@ -200,8 +200,7 @@ class BinaryFieldTestRecord
     // compare the elements of the Array
     override def equals(other: Any): Boolean =
       other match {
-        case that: BinaryField[_] =>
-          (this.valueBox, that.valueBox) match {
+        case that: BinaryField[_] => (this.valueBox, that.valueBox) match {
             case (Empty, Empty) => true
             case (Full(a), Full(b)) =>
               a.zip(b).filter(t => t._1 != t._2).length == 0

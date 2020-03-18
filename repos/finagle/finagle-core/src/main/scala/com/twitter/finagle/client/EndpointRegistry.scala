@@ -63,14 +63,12 @@ private[twitter] class EndpointRegistry {
     val observation = (ar, closable)
     synchronized {
       registry.get(client) match {
-        case Some(dtabMap) =>
-          dtabMap.get(dtab) match {
+        case Some(dtabMap) => dtabMap.get(dtab) match {
             case Some(dtabEntry) =>
               // If the path already exists, replace it and close the observation
               val prev = dtabEntry.put(path, observation)
               prev.foreach { case (_, closable) => closable.close() }
-            case None =>
-              dtabMap += ((dtab, mutable.Map(path -> observation)))
+            case None => dtabMap += ((dtab, mutable.Map(path -> observation)))
           }
         case None =>
           val endpointMap: EndpointMap = mutable.Map(path -> observation)

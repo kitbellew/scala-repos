@@ -19,8 +19,7 @@ object NetUtil {
         else if (addr(0) == 192.toByte && addr(1) == 168.toByte) // 192.168/16
           true
         else false
-      case _ =>
-        false
+      case _ => false
     }
 
   def ipToInt(ip: String): Int = {
@@ -128,10 +127,8 @@ object NetUtil {
   def getLocalHostName(): String = {
     try { InetAddress.getLocalHost().getHostName() }
     catch {
-      case uhe: UnknownHostException =>
-        Option(uhe.getMessage) match {
-          case Some(host) =>
-            host.split(":") match {
+      case uhe: UnknownHostException => Option(uhe.getMessage) match {
+          case Some(host) => host.split(":") match {
               case Array(hostName, _) => hostName
               case _                  => "unknown_host"
             }

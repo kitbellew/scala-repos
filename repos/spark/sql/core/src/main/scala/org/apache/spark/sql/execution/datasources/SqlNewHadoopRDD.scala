@@ -109,9 +109,8 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
     val conf = getConf(isDriverSide = true)
     val inputFormat = inputFormatClass.newInstance
     inputFormat match {
-      case configurable: Configurable =>
-        configurable.setConf(conf)
-      case _ =>
+      case configurable: Configurable => configurable.setConf(conf)
+      case _                          =>
     }
     val jobContext = new JobContextImpl(conf, jobId)
     val rawSplits = inputFormat.getSplits(jobContext).toArray
@@ -166,9 +165,8 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
 
       val format = inputFormatClass.newInstance
       format match {
-        case configurable: Configurable =>
-          configurable.setConf(conf)
-        case _ =>
+        case configurable: Configurable => configurable.setConf(conf)
+        case _                          =>
       }
       val attemptId =
         new TaskAttemptID(jobTrackerId, id, TaskType.MAP, split.index, 0)

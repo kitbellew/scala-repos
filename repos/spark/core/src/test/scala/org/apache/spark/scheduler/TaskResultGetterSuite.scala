@@ -149,8 +149,7 @@ class TaskResultGetterSuite
     // If this test hangs, it's probably because no resource offers were made after the task
     // failed.
     val scheduler: TaskSchedulerImpl = sc.taskScheduler match {
-      case taskScheduler: TaskSchedulerImpl =>
-        taskScheduler
+      case taskScheduler: TaskSchedulerImpl => taskScheduler
       case _ =>
         assert(false, "Expect local cluster to use TaskSchedulerImpl")
         throw new ClassCastException

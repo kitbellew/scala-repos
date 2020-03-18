@@ -101,8 +101,7 @@ class SbtRunner(
         val processBuilder = new ProcessBuilder(processCommands.asJava)
         processBuilder.directory(directory)
         environment.foreach {
-          case (name, value) =>
-            processBuilder.environment().put(name, value)
+          case (name, value) => processBuilder.environment().put(name, value)
         }
         val process = processBuilder.start()
         using(new PrintWriter(new BufferedWriter(

@@ -29,8 +29,8 @@ abstract class SQLBuilderTest extends QueryTest with TestHiveSingleton {
     val actualSQL = e.sql
     try { assert(actualSQL === expectedSQL) }
     catch {
-      case cause: Throwable =>
-        fail(s"""Wrong SQL generated for the following expression:
+      case cause: Throwable => fail(
+          s"""Wrong SQL generated for the following expression:
              |
              |${e.prettyName}
              |
@@ -43,8 +43,8 @@ abstract class SQLBuilderTest extends QueryTest with TestHiveSingleton {
     val generatedSQL =
       try new SQLBuilder(plan, hiveContext).toSQL
       catch {
-        case NonFatal(e) =>
-          fail(s"""Cannot convert the following logical query plan to SQL:
+        case NonFatal(e) => fail(
+            s"""Cannot convert the following logical query plan to SQL:
            |
            |${plan.treeString}
          """.stripMargin)
@@ -52,8 +52,8 @@ abstract class SQLBuilderTest extends QueryTest with TestHiveSingleton {
 
     try { assert(generatedSQL === expectedSQL) }
     catch {
-      case cause: Throwable =>
-        fail(s"""Wrong SQL generated for the following logical query plan:
+      case cause: Throwable => fail(
+          s"""Wrong SQL generated for the following logical query plan:
              |
              |${plan.treeString}
              |

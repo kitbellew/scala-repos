@@ -47,8 +47,7 @@ class MessageSerializer(val system: ExtendedActorSystem)
 
   override def toBinary(obj: AnyRef): Array[Byte] =
     obj match {
-      case m: MetricsGossipEnvelope ⇒
-        compress(metricsGossipEnvelopeToProto(m))
+      case m: MetricsGossipEnvelope ⇒ compress(metricsGossipEnvelopeToProto(m))
       case _ ⇒
         throw new IllegalArgumentException(
           s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
@@ -83,8 +82,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     manifest match {
-      case MetricsGossipEnvelopeManifest ⇒
-        metricsGossipEnvelopeFromBinary(bytes)
+      case MetricsGossipEnvelopeManifest ⇒ metricsGossipEnvelopeFromBinary(
+          bytes)
       case _ ⇒
         throw new IllegalArgumentException(
           s"Unimplemented deserialization of message with manifest [$manifest] in [${getClass.getName}")

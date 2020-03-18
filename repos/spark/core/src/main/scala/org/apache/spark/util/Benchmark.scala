@@ -76,8 +76,7 @@ private[spark] class Benchmark(
       "-----------------------------------------------------------------------------------" +
         "--------")
     results.zip(benchmarks).foreach {
-      case (result, benchmark) =>
-        printf(
+      case (result, benchmark) => printf(
           "%-35s %16s %12s %13s %10s\n",
           benchmark.name,
           "%5.0f / %4.0f" format (result.bestMs, result.avgMs),

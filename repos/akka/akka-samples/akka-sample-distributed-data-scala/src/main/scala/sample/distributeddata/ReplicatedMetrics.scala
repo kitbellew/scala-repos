@@ -101,8 +101,7 @@ class ReplicatedMetrics(
         }
       }
 
-    case c @ Changed(MaxHeapKey) ⇒
-      maxHeap = c.get(MaxHeapKey).entries
+    case c @ Changed(MaxHeapKey) ⇒ maxHeap = c.get(MaxHeapKey).entries
 
     case c @ Changed(UsedHeapKey) ⇒
       val usedHeapPercent = UsedHeap(c.get(UsedHeapKey).entries.collect {
@@ -114,8 +113,7 @@ class ReplicatedMetrics(
 
     case _: UpdateResponse[_] ⇒ // ok
 
-    case MemberUp(m) ⇒
-      nodesInCluster += nodeKey(m.address)
+    case MemberUp(m) ⇒ nodesInCluster += nodeKey(m.address)
 
     case MemberRemoved(m, _) ⇒
       nodesInCluster -= nodeKey(m.address)

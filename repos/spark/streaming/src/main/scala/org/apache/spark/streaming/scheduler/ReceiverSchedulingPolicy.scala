@@ -230,8 +230,8 @@ private[streaming] class ReceiverSchedulingPolicy {
               1.0 / scheduledLocations.size
             )
           }
-      case ReceiverState.ACTIVE =>
-        Seq(receiverTrackingInfo.runningExecutor.get -> 1.0)
+      case ReceiverState.ACTIVE => Seq(
+          receiverTrackingInfo.runningExecutor.get -> 1.0)
     }
   }
 }

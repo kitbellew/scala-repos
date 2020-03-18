@@ -37,8 +37,7 @@ trait ServerIntegrationSpecificationSpec
   "ServerIntegrationSpecification" should {
 
     val httpServerTagRoutes: PartialFunction[(String, String), Handler] = {
-      case ("GET", "/httpServerTag") =>
-        Action { implicit request =>
+      case ("GET", "/httpServerTag") => Action { implicit request =>
           val httpServer = request.tags.get("HTTP_SERVER")
           Ok(httpServer.toString)
         }

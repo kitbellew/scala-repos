@@ -14,21 +14,11 @@ class ParametersAnnotatorTest extends SimpleTestCase {
   final val Header = "class A; class B; class C;\n"
 
   def testFine(): Unit = {
-    assertMatches(messages("def f(a: A) {}")) {
-      case Nil =>
-    }
-    assertMatches(messages("def f(a: A*) {}")) {
-      case Nil =>
-    }
-    assertMatches(messages("def f(a: A, b: B) {}")) {
-      case Nil =>
-    }
-    assertMatches(messages("def f(a: A, b: B*) {}")) {
-      case Nil =>
-    }
-    assertMatches(messages("def f(a: A, b: B, c: C*) {}")) {
-      case Nil =>
-    }
+    assertMatches(messages("def f(a: A) {}")) { case Nil              => }
+    assertMatches(messages("def f(a: A*) {}")) { case Nil             => }
+    assertMatches(messages("def f(a: A, b: B) {}")) { case Nil        => }
+    assertMatches(messages("def f(a: A, b: B*) {}")) { case Nil       => }
+    assertMatches(messages("def f(a: A, b: B, c: C*) {}")) { case Nil => }
   }
 
   def testMalformed(): Unit = {
@@ -100,8 +90,7 @@ class ParametersAnnotatorTest extends SimpleTestCase {
       .filterByType(classOf[ScParameterOwner])
       .collectFirst {
         case named: ScNamedElement
-            if !Set("A", "B", "C").contains(named.name) =>
-          named
+            if !Set("A", "B", "C").contains(named.name) => named
       }
       .get
 

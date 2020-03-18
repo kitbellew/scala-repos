@@ -65,8 +65,7 @@ private[pickling] trait PicklingMacros
         c.abort(
           c.enclosingPosition,
           s"cannot generate pickling logic for primitive type: $tpe")
-      case tpe1 if tpe1.typeSymbol.isClass =>
-        () // This case is fine.
+      case tpe1 if tpe1.typeSymbol.isClass => () // This case is fine.
       case _ =>
         c.abort(
           c.enclosingPosition,

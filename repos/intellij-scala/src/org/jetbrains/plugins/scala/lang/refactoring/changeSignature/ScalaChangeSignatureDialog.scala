@@ -140,10 +140,8 @@ class ScalaChangeSignatureDialog(
       private def clearEditorListeners() {
         val editor: TableCellEditor = getCellEditor
         editor match {
-          case ed: StringTableCellEditor =>
-            ed.clearListeners()
-          case _ =>
-            editor match {
+          case ed: StringTableCellEditor => ed.clearListeners()
+          case _ => editor match {
               case base: CodeFragmentTableCellEditorBase =>
                 base.clearListeners()
               case _ =>
@@ -169,10 +167,8 @@ class ScalaChangeSignatureDialog(
           }
         }
         editor match {
-          case ed: StringTableCellEditor =>
-            ed.addDocumentListener(listener)
-          case _ =>
-            editor match {
+          case ed: StringTableCellEditor => ed.addDocumentListener(listener)
+          case _ => editor match {
               case base: CodeFragmentTableCellEditorBase =>
                 base.addDocumentListener(listener)
               case _ =>

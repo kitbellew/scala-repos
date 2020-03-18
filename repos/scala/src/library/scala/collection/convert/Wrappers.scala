@@ -145,13 +145,11 @@ private[collection] trait Wrappers {
         def next = { val e = ui.next(); prev = Some(e); e }
         def remove =
           prev match {
-            case Some(e) =>
-              underlying match {
+            case Some(e) => underlying match {
                 case ms: mutable.Set[a] =>
                   ms remove e
                   prev = None
-                case _ =>
-                  throw new UnsupportedOperationException("remove")
+                case _ => throw new UnsupportedOperationException("remove")
               }
             case _ =>
               throw new IllegalStateException(
@@ -245,13 +243,11 @@ private[collection] trait Wrappers {
 
             def remove() {
               prev match {
-                case Some(k) =>
-                  underlying match {
+                case Some(k) => underlying match {
                     case mm: mutable.Map[a, _] =>
                       mm remove k
                       prev = None
-                    case _ =>
-                      throw new UnsupportedOperationException("remove")
+                    case _ => throw new UnsupportedOperationException("remove")
                   }
                 case _ =>
                   throw new IllegalStateException(
@@ -351,10 +347,7 @@ private[collection] trait Wrappers {
 
     def remove(k: AnyRef, v: AnyRef) =
       try { underlying.remove(k.asInstanceOf[A], v.asInstanceOf[B]) }
-      catch {
-        case ex: ClassCastException =>
-          false
-      }
+      catch { case ex: ClassCastException => false }
 
     def replace(k: A, v: B): B =
       underlying.replace(k, v) match {

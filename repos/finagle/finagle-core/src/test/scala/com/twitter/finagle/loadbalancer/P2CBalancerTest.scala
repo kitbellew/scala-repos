@@ -121,10 +121,8 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
 
     for (i <- 0 until R) {
       i % 3 match {
-        case 0 =>
-          pending += Await.result(bal())
-        case 1 if rng.nextInt(2) == 0 =>
-          pending += Await.result(bal())
+        case 0                        => pending += Await.result(bal())
+        case 1 if rng.nextInt(2) == 0 => pending += Await.result(bal())
         case _ if pending.nonEmpty =>
           val hd = pending.head
           pending -= hd

@@ -9,34 +9,20 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScInterpolatedStringLiteral
   * Pavel Fatin
   */
 class InterpolatedStringParserTest extends SimpleTestCase {
-  def testEmpty() {
-    assertMatches(parse("")) {
-      case Nil =>
-    }
-  }
+  def testEmpty() { assertMatches(parse("")) { case Nil => } }
 
-  def testText() {
-    assertMatches(parse("foo")) {
-      case Text("foo") :: Nil =>
-    }
-  }
+  def testText() { assertMatches(parse("foo")) { case Text("foo") :: Nil => } }
 
   def testEscapeChar() {
-    assertMatches(parse("\\n")) {
-      case Text("\n") :: Nil =>
-    }
+    assertMatches(parse("\\n")) { case Text("\n") :: Nil => }
   }
 
   def testEscapeCharInMultilineString() {
-    assertMatches(parse("\n", multiline = true)) {
-      case Text("\n") :: Nil =>
-    }
+    assertMatches(parse("\n", multiline = true)) { case Text("\n") :: Nil => }
   }
 
   def testDollarEscapeChar() {
-    assertMatches(parse("$$")) {
-      case Text("$") :: Nil =>
-    }
+    assertMatches(parse("$$")) { case Text("$") :: Nil => }
   }
 
   def testExpression() {

@@ -52,10 +52,7 @@ private[twitter] object ServerAdmissionControl {
     * be called before the server construction to take effect.
     */
   def register(pairs: (String, TypeAgnostic)*): Unit =
-    pairs.foreach {
-      case (name, filter) =>
-        acs.putIfAbsent(name, filter)
-    }
+    pairs.foreach { case (name, filter) => acs.putIfAbsent(name, filter) }
 
   /**
     * Remove a filter from the list of admission control filters. If the map
@@ -84,8 +81,7 @@ private[twitter] object ServerAdmissionControl {
           // assume the order of filters doesn't matter
           val typeAgnosticFilters = acs.values.asScala
             .foldLeft(Filter.TypeAgnostic.Identity) {
-              case (sum, f) =>
-                f.andThen(sum)
+              case (sum, f) => f.andThen(sum)
             }
           typeAgnosticFilters.toFilter.andThen(next)
         }

@@ -138,10 +138,7 @@ final class RhinoJSEnv private (
               console,
               optChannel)
             promise.success(())
-          } catch {
-            case t: Throwable =>
-              promise.failure(t)
-          }
+          } catch { case t: Throwable => promise.failure(t) }
         }
       }
 
@@ -186,8 +183,7 @@ final class RhinoJSEnv private (
     def receive(timeout: Duration): String = {
       try { channel.recvJVM(timeout) }
       catch {
-        case _: ChannelClosedException =>
-          throw new ComJSEnv.ComClosedException
+        case _: ChannelClosedException => throw new ComJSEnv.ComClosedException
       }
     }
 
@@ -406,8 +402,7 @@ final class RhinoJSEnv private (
             val cb: String => Unit =
               msg => f.call(context, scope, scope, Array(msg))
             setCallback(cb)
-          case _ =>
-            sys.error("First argument to init must be a function")
+          case _ => sys.error("First argument to init must be a function")
         }
     )
 
@@ -440,8 +435,7 @@ final class RhinoJSEnv private (
           ScriptableObject.putProperty(scope, "__ScalaJSEnv", newScalaJSenv)
           newScalaJSenv
 
-        case oldScalaJSenv: Scriptable =>
-          oldScalaJSenv
+        case oldScalaJSenv: Scriptable => oldScalaJSenv
       }
 
       scalaJSenv.addFunction(

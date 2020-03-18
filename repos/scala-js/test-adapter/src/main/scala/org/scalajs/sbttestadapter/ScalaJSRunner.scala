@@ -225,9 +225,7 @@ final class ScalaJSRunner private[testadapter] (
     }
 
     master.send("newRunner:" + jsonToString(data))
-    ComUtils.receiveResponse(master) {
-      case ("ok", "") =>
-    }
+    ComUtils.receiveResponse(master) { case ("ok", "") => }
   }
 
 }

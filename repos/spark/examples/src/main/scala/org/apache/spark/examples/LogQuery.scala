@@ -90,9 +90,8 @@ object LogQuery {
                 status,
                 bytes,
                 referer,
-                ua)) =>
-          new Stats(1, bytes.toInt)
-        case _ => new Stats(1, 0)
+                ua)) => new Stats(1, bytes.toInt)
+        case _       => new Stats(1, 0)
       }
     }
 

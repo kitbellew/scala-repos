@@ -236,8 +236,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
     "when processing a response" should {
 
       "handle as JSON" in withServer {
-        case ("GET", "/") =>
-          Action {
+        case ("GET", "/") => Action {
             import play.api.libs.json._
             implicit val personWrites = Json.writes[Person]
             Ok(Json.obj("person" -> Person("Steve", 23)))
@@ -253,8 +252,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       }
 
       "handle as JSON with an implicit" in withServer {
-        case ("GET", "/") =>
-          Action {
+        case ("GET", "/") => Action {
             import play.api.libs.json._
             implicit val personWrites = Json.writes[Person]
             Ok(Json.obj("person" -> Person("Steve", 23)))
@@ -278,8 +276,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       }
 
       "handle as XML" in withServer {
-        case ("GET", "/") =>
-          Action {
+        case ("GET", "/") => Action {
             Ok("""<?xml version="1.0" encoding="utf-8"?>
                 |<wrapper><message status="OK">Hello</message></wrapper>
               """.stripMargin).as("text/xml")
@@ -375,8 +372,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
                         body,
                         Some(length.toLong),
                         Some(contentType)))
-                    case _ =>
-                      Ok.chunked(body).as(contentType)
+                    case _ => Ok.chunked(body).as(contentType)
                   }
                 } else { BadGateway }
             }
@@ -426,12 +422,13 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
     }
 
     "work with for comprehensions" in withServer {
-      case ("GET", "/one") =>
-        Action { Ok(s"http://localhost:$testServerPort/two") }
-      case ("GET", "/two") =>
-        Action { Ok(s"http://localhost:$testServerPort/three") }
-      case ("GET", "/three") =>
-        Action { Ok("finished!") }
+      case ("GET", "/one") => Action {
+          Ok(s"http://localhost:$testServerPort/two")
+        }
+      case ("GET", "/two") => Action {
+          Ok(s"http://localhost:$testServerPort/three")
+        }
+      case ("GET", "/three") => Action { Ok("finished!") }
     } { ws =>
       val urlOne = s"http://localhost:$testServerPort/one"
       val exceptionUrl = s"http://localhost:$testServerPort/fallback"

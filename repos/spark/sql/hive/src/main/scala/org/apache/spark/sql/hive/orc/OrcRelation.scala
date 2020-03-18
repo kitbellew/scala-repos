@@ -95,8 +95,7 @@ private[sql] class DefaultSource extends FileFormat with DataSourceRegister {
     }
 
     job.getConfiguration match {
-      case conf: JobConf =>
-        conf.setOutputFormat(classOf[OrcOutputFormat])
+      case conf: JobConf => conf.setOutputFormat(classOf[OrcOutputFormat])
       case conf =>
         conf.setClass(
           "mapred.output.format.class",
@@ -269,8 +268,7 @@ private[orc] case class OrcTableScan(
     maybeStructOI
       .map { soi =>
         val (fieldRefs, fieldOrdinals) = nonPartitionKeyAttrs.zipWithIndex.map {
-          case (attr, ordinal) =>
-            soi.getStructFieldRef(attr.name) -> ordinal
+          case (attr, ordinal) => soi.getStructFieldRef(attr.name) -> ordinal
         }.unzip
         val unwrappers = fieldRefs.map(unwrapperFor)
         // Map each tuple to a row object

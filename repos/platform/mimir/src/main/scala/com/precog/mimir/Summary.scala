@@ -80,8 +80,7 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
             .flatten(jtpe, List.empty[ColumnRef])
             .groupBy(_.selector)
           val numerics = grouped filter {
-            case (cpath, refs) =>
-              refs.map(_.ctype).exists(_.isNumeric)
+            case (cpath, refs) => refs.map(_.ctype).exists(_.isNumeric)
           }
 
           // handles case when we have multiple numeric columns at same path
@@ -91,8 +90,7 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
           val sortedNumerics = singleNumerics.distinct.sortBy(_._1).reverse
 
           sortedNumerics map {
-            case (cpath, ctype) =>
-              Schema.mkType(Seq(ColumnRef(cpath, ctype)))
+            case (cpath, ctype) => Schema.mkType(Seq(ColumnRef(cpath, ctype)))
           }
         }
 
@@ -160,8 +158,7 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
 
         val resultTables: M[Seq[Table]] = tablesWithType flatMap {
           _.map {
-            case (table, jtype) =>
-              reduceTable(table, jtype, ctx)
+            case (table, jtype) => reduceTable(table, jtype, ctx)
           }.toStream.sequence map (_.toSeq)
         }
 

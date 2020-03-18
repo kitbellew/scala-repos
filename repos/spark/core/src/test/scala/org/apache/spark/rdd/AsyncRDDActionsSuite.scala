@@ -117,17 +117,13 @@ class AsyncRDDActionsSuite
     val sem = new Semaphore(0)
 
     f.onComplete {
-      case scala.util.Success(res) =>
-        sem.release()
+      case scala.util.Success(res) => sem.release()
       case scala.util.Failure(e) =>
         info(
           "Should not have reached this code path (onComplete matching Failure)")
         throw new Exception("Task should succeed")
     }
-    f.onSuccess {
-      case a: Any =>
-        sem.release()
-    }
+    f.onSuccess { case a: Any => sem.release() }
     f.onFailure {
       case t =>
         info("Should not have reached this code path (onFailure)")
@@ -157,18 +153,14 @@ class AsyncRDDActionsSuite
         info(
           "Should not have reached this code path (onComplete matching Success)")
         throw new Exception("Task should fail")
-      case scala.util.Failure(e) =>
-        sem.release()
+      case scala.util.Failure(e) => sem.release()
     }
     f.onSuccess {
       case a: Any =>
         info("Should not have reached this code path (onSuccess)")
         throw new Exception("Task should fail")
     }
-    f.onFailure {
-      case t =>
-        sem.release()
-    }
+    f.onFailure { case t => sem.release() }
     intercept[SparkException] { f.get() }
 
     failAfter(10 seconds) { sem.acquire(2) }

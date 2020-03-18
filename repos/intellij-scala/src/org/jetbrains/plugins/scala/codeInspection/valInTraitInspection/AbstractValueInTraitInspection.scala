@@ -29,8 +29,7 @@ class AbstractValueInTraitInspection
             ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         case _ =>
       }
-    case v: ScVariableDeclaration =>
-      v.containingClass match {
+    case v: ScVariableDeclaration => v.containingClass match {
         case t: ScTrait =>
           holder.registerProblem(
             v,

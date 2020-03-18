@@ -109,8 +109,8 @@ object ZipkinTracer {
             val data = Json.Envelope(id, when.inMilliseconds, t, s, ann)
             Try(Buf.Utf8(Json.serialize(data)))
 
-          case _ =>
-            Throw(new IllegalArgumentException("unknown format: " + event))
+          case _ => Throw(
+              new IllegalArgumentException("unknown format: " + event))
         }
 
       def deserialize(buf: Buf) =

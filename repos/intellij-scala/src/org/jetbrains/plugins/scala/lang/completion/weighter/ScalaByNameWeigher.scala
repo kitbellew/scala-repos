@@ -76,9 +76,8 @@ class ScalaByNameWeigher extends CompletionWeigher {
         val result = newTemplateDefinition.map(_.getContext).flatMap {
           case patterDef: ScPatternDefinition =>
             patterDef.bindings.headOption.map(_.name)
-          case assignement: ScAssignStmt =>
-            assignement.assignName
-          case _ => None
+          case assignement: ScAssignStmt => assignement.assignName
+          case _                         => None
         }
 
         if (result.isDefined) textForPosition.put(position, result.get)
@@ -137,9 +136,8 @@ class ScalaByNameWeigher extends CompletionWeigher {
           lazy val byTextResult = handleByText(s.element)
           s.element match {
             case _: ScTypeAlias | _: ScTypeDefinition | _: PsiClass
-                if byTextResult.isDefined =>
-              byTextResult.get
-            case _ => null
+                if byTextResult.isDefined => byTextResult.get
+            case _                        => null
           }
         case _ => null
       }

@@ -53,8 +53,7 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
               elems("height") must beLike {
                 case SObject(obj) =>
                   obj("estimate") must beLike {
-                    case SDecimal(d) =>
-                      elems must haveSize(1)
+                    case SDecimal(d) => elems must haveSize(1)
                   }
               }
           }

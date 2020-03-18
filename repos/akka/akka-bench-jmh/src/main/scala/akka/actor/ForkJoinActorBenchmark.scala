@@ -104,8 +104,7 @@ object ForkJoinActorBenchmark {
   final val messages = 400000
   class Pipe(next: Option[ActorRef]) extends Actor {
     def receive = {
-      case m @ `message` =>
-        if (next.isDefined) next.get forward m
+      case m @ `message` => if (next.isDefined) next.get forward m
       case s @ `stop` =>
         context stop self
         if (next.isDefined) next.get forward s

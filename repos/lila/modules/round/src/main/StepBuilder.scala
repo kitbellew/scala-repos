@@ -46,8 +46,7 @@ object StepBuilder {
         }
         JsArray(
           a.fold[Seq[Step]](steps) {
-              case (pgn, analysis) =>
-                applyAnalysisAdvices(
+              case (pgn, analysis) => applyAnalysisAdvices(
                   id,
                   applyAnalysisEvals(steps, analysis),
                   pgn,

@@ -316,8 +316,7 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
                         _,
                         content,
                         _,
-                        StreamRef.Create(id, _))) =>
-                  sys.error("todo")
+                        StreamRef.Create(id, _))) => sys.error("todo")
 
                 case (
                       acc,
@@ -329,8 +328,7 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
                         _,
                         content,
                         _,
-                        StreamRef.Replace(id, _))) =>
-                  sys.error("todo")
+                        StreamRef.Replace(id, _))) => sys.error("todo")
 
                 case (acc, _: ArchiveMessage) =>
                   acc ++ acc

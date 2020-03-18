@@ -64,8 +64,7 @@ abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
         Trace.recordClientAddr(localAddress)
 
         p.setInterruptHandler {
-          case intr =>
-            if (p.updateIfEmpty(Throw(intr))) trans.close()
+          case intr => if (p.updateIfEmpty(Throw(intr))) trans.close()
         }
 
         dispatch(req, p)
@@ -75,16 +74,13 @@ abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
     val p = new Promise[Rep]
 
     semaphore.acquire().respond {
-      case Return(permit) =>
-        tryDispatch(req, p).respond {
+      case Return(permit) => tryDispatch(req, p).respond {
           case t @ Throw(_) =>
             p.updateIfEmpty(t.cast[Rep])
             permit.release()
-          case Return(_) =>
-            permit.release()
+          case Return(_) => permit.release()
         }
-      case t @ Throw(_) =>
-        p.update(t.cast[Rep])
+      case t @ Throw(_) => p.update(t.cast[Rep])
     }
 
     p

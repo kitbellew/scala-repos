@@ -133,8 +133,7 @@ class JavaCopyPastePostProcessor
       val data = getRefs
       for (part <- topElements) {
         part match {
-          case TextPart(s) =>
-            resultNode.addChild(LiteralExpression(s))
+          case TextPart(s) => resultNode.addChild(LiteralExpression(s))
           case ElementPart(element) =>
             val result = JavaToScala.convertPsiToIntermdeiate(element, null)(
               associationsHelper,

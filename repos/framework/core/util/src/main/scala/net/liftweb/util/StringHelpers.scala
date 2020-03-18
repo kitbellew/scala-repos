@@ -322,8 +322,8 @@ trait StringHelpers {
     else
       what.indexOf(sep) match {
         case -1 => Nil
-        case n =>
-          List((what.substring(0, n).trim, what.substring(n + sep.length).trim))
+        case n => List(
+            (what.substring(0, n).trim, what.substring(n + sep.length).trim))
       }
   }
 

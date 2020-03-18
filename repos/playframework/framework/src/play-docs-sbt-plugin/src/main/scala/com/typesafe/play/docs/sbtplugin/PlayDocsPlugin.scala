@@ -261,8 +261,7 @@ object PlayDocsPlugin extends AutoPlugin {
       case Nil =>
         streams.value.log.error("No docs jar was resolved")
         None
-      case jar :: Nil =>
-        Option(jar)
+      case jar :: Nil => Option(jar)
       case multiple =>
         streams.value.log.error("Multiple docs jars were resolved: " + multiple)
         multiple.headOption
@@ -371,12 +370,10 @@ object PlayDocsPlugin extends AutoPlugin {
     consoleReader.getTerminal.setEchoEnabled(false)
     def waitEOF() {
       consoleReader.readCharacter() match {
-        case 4 => // STOP
-        case 11 =>
-          consoleReader.clearScreen(); waitEOF()
-        case 10 =>
-          println(); waitEOF()
-        case _ => waitEOF()
+        case 4  => // STOP
+        case 11 => consoleReader.clearScreen(); waitEOF()
+        case 10 => println(); waitEOF()
+        case _  => waitEOF()
       }
 
     }

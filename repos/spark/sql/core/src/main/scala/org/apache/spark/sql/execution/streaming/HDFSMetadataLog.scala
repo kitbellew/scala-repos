@@ -177,10 +177,7 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
     batchIds.sorted
       .map(batchId => (batchId, get(batchId)))
       .filter(_._2.isDefined)
-      .map {
-        case (batchId, metadataOption) =>
-          (batchId, metadataOption.get)
-      }
+      .map { case (batchId, metadataOption) => (batchId, metadataOption.get) }
   }
 
   override def getLatest(): Option[(Long, T)] = {

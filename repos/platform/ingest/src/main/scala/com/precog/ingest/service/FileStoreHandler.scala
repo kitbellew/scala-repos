@@ -89,8 +89,7 @@ class FileStoreHandler(
       fileName: Option[String],
       storeMode: WriteMode): Validation[String, Path => Path] = {
     (storeMode: @unchecked) match {
-      case AccessMode.Create =>
-        for {
+      case AccessMode.Create => for {
           fn0 <- fileName.toSuccess("X-File-Name header must be provided.")
           // if the filename after URL encoding is the same as before, accept it.
           _ <- (URLEncoder.encode(fn0, "UTF-8") == fn0)
@@ -165,8 +164,7 @@ class FileStoreHandler(
                       -\/(badRequest(
                         "File uploads are currently limited to 600KB"))
 
-                    case b =>
-                      \/-(b)
+                    case b => \/-(b)
                   }
                 }
                 storeFile = StoreFile(

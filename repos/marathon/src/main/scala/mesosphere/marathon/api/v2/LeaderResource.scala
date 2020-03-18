@@ -18,9 +18,8 @@ class LeaderResource @Inject() (
   @GET @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
   def index(): Response = {
     leaderInfo.currentLeaderHostPort() match {
-      case None => notFound("There is no leader")
-      case Some(leader) =>
-        ok(jsonObjString("leader" -> leader))
+      case None         => notFound("There is no leader")
+      case Some(leader) => ok(jsonObjString("leader" -> leader))
     }
   }
 

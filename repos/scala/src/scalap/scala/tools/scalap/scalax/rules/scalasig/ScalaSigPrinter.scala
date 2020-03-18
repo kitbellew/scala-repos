@@ -56,8 +56,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
         case c: ClassSymbol if !refinementClass(c) && !c.isModule =>
           indent
           printClass(level, c)
-        case m: MethodSymbol =>
-          printMethod(level, m, indent)
+        case m: MethodSymbol => printMethod(level, m, indent)
         case a: AliasSymbol =>
           indent
           printAlias(level, a)
@@ -100,8 +99,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     else if (symbol.isProtected) print("protected ")
     else
       symbol match {
-        case sym: SymbolInfoSymbol =>
-          sym.symbolInfo.privateWithin match {
+        case sym: SymbolInfoSymbol => sym.symbolInfo.privateWithin match {
             case Some(t: Symbol) => print("private[" + t.name + "] ")
             case _               =>
           }
@@ -163,8 +161,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
         val printer = new ScalaSigPrinter(stream, printPrivates)
         printer.printMethodType(m.infoType, false)(())
         baos.toString
-      case _ =>
-        ""
+      case _ => ""
     }
   }
 
@@ -363,8 +360,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
         })
       case TypeRefType(prefix, symbol, typeArgs) =>
         sep + (symbol.path match {
-          case "scala.<repeated>" =>
-            flags match {
+          case "scala.<repeated>" => flags match {
               case TypeFlags(true) => toString(typeArgs.head) + "*"
               case _               => "scala.Seq" + typeArgString(typeArgs)
             }

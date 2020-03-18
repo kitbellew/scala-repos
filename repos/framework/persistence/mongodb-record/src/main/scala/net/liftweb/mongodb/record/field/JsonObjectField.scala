@@ -63,12 +63,12 @@ abstract class JsonObjectField[OwnerType <: BsonRecord[
     in match {
       case dbo: DBObject        => setFromDBObject(dbo)
       case value: JsonObject[_] => setBox(Full(value.asInstanceOf[JObjectType]))
-      case Some(value: JsonObject[_]) =>
-        setBox(Full(value.asInstanceOf[JObjectType]))
-      case Full(value: JsonObject[_]) =>
-        setBox(Full(value.asInstanceOf[JObjectType]))
-      case (value: JsonObject[_]) :: _ =>
-        setBox(Full(value.asInstanceOf[JObjectType]))
+      case Some(value: JsonObject[_]) => setBox(
+          Full(value.asInstanceOf[JObjectType]))
+      case Full(value: JsonObject[_]) => setBox(
+          Full(value.asInstanceOf[JObjectType]))
+      case (value: JsonObject[_]) :: _ => setBox(
+          Full(value.asInstanceOf[JObjectType]))
       case s: String           => setFromString(s)
       case Some(s: String)     => setFromString(s)
       case Full(s: String)     => setFromString(s)

@@ -62,9 +62,8 @@ object ValidationError {
     }
     val args = arguments filter {
       case _: FieldName | _: ErrorCode | Some(_: FieldName) |
-          Some(_: ErrorCode) =>
-        false
-      case _ => false
+          Some(_: ErrorCode) => false
+      case _                 => false
     }
     new ValidationError(msg, field, code, args)
   }
@@ -91,8 +90,8 @@ class ErrorCodeSerializer(knownCodes: ErrorCode*)
   }
 
   def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
-    case c: ErrorCode =>
-      JString(c.getClass.getSimpleName.replaceAll("\\$$", ""))
+    case c: ErrorCode => JString(
+        c.getClass.getSimpleName.replaceAll("\\$$", ""))
   }
 }
 

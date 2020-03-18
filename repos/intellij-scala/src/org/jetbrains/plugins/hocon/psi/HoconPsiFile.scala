@@ -26,8 +26,8 @@ class HoconPsiFile(provider: FileViewProvider)
       child match {
         case obj: HObject        => obj.entries
         case ets: HObjectEntries => ets
-        case comment: PsiComment =>
-          entriesInner(comment.getNextSiblingNotWhitespace)
+        case comment: PsiComment => entriesInner(
+            comment.getNextSiblingNotWhitespace)
       }
 
     entriesInner(getFirstChild)

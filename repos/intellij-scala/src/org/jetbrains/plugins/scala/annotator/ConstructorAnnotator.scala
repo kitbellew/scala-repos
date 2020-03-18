@@ -68,7 +68,9 @@ trait ConstructorAnnotator {
               //TODO investigate case when expression is null. It's possible when new Expression(ScType)
             }
           case MissedValueParameter(_) => // simultaneously handled above
-          case UnresolvedParameter(_)  => // don't show function inapplicability, unresolved
+          case UnresolvedParameter(
+                _
+              ) => // don't show function inapplicability, unresolved
           case MalformedDefinition() =>
             holder.createErrorAnnotation(
               constructor.typeElement,
@@ -114,8 +116,7 @@ trait ConstructorAnnotator {
       holder: AnnotationHolder) {
     val selfInvocation = constr.selfInvocation
     selfInvocation match {
-      case Some(self) =>
-        self.bind match {
+      case Some(self) => self.bind match {
           case Some(c: ScPrimaryConstructor) => //it's ok
           case Some(fun: ScFunction)         =>
             //check order
@@ -129,8 +130,7 @@ trait ConstructorAnnotator {
             }
           case _ =>
         }
-      case None =>
-        constr.getContainingFile match {
+      case None => constr.getContainingFile match {
           case file: ScalaFile if !file.isCompiled =>
             val annotation = holder.createErrorAnnotation(
               constr,

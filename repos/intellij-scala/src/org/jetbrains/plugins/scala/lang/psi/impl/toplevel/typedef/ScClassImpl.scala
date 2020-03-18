@@ -355,8 +355,7 @@ class ScClassImpl private (
 
   override def getFields: Array[PsiField] = {
     val fields = constructor match {
-      case Some(constr) =>
-        constr.parameters.map { param =>
+      case Some(constr) => constr.parameters.map { param =>
           param.getType(TypingContext.empty) match {
             case Success(tp: ScTypeParameterType, _)
                 if tp.param.findAnnotation("scala.specialized") != null =>

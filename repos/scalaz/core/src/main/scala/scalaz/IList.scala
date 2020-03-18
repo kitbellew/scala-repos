@@ -71,8 +71,7 @@ sealed abstract class IList[A] extends Product with Serializable {
         case ICons(h, t) =>
           if (seen.notMember(h)) { loop(t, seen.insert(h), h :: acc) }
           else { loop(t, seen, acc) }
-        case INil() =>
-          acc.reverse
+        case INil() => acc.reverse
       }
     loop(this, ISet.empty[A], empty[A])
   }
@@ -193,10 +192,8 @@ sealed abstract class IList[A] extends Product with Serializable {
     @tailrec
     def loop(xs: IList[A], ys: IList[A], acc: IList[A]): IList[A] =
       xs match {
-        case ICons(h, t) =>
-          loop(ys, t, h :: acc)
-        case INil() =>
-          acc reverse_::: ys
+        case ICons(h, t) => loop(ys, t, h :: acc)
+        case INil()      => acc reverse_::: ys
       }
     loop(this, that, IList.empty[A])
   }
@@ -546,10 +543,8 @@ sealed abstract class IListInstances extends IListInstance0 {
       @tailrec
       def loop(a: IList[A], x: Option[A]): Option[A] =
         a match {
-          case ICons(h, t) =>
-            loop(t, if (f(h)) Some(h) else x)
-          case INil() =>
-            x
+          case ICons(h, t) => loop(t, if (f(h)) Some(h) else x)
+          case INil()      => x
         }
       loop(fa, None)
     }
@@ -733,8 +728,7 @@ private trait IListOrder[A] extends Order[IList[A]] with IListEqual[A] {
       case (INil(), INil())      => EQ
       case (INil(), ICons(_, _)) => LT
       case (ICons(_, _), INil()) => GT
-      case (ICons(a, as), ICons(b, bs)) =>
-        A.order(a, b) match {
+      case (ICons(a, as), ICons(b, bs)) => A.order(a, b) match {
           case EQ => order(as, bs)
           case x  => x
         }

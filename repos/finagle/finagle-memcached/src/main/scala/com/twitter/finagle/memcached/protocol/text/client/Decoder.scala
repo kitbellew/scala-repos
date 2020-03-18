@@ -52,14 +52,14 @@ class Decoder extends AbstractDecoder with StateMachine {
       case AwaitingResponse =>
         decodeLine(buffer, needsData)(awaitingResponseContinue)
 
-      case AwaitingStatsOrEnd(linesSoFar) =>
-        decodeLine(buffer, needsData) { tokens =>
-          if (isEnd(tokens)) { StatLines(linesSoFar) }
-          else if (isStats(tokens)) {
-            awaitStatsOrEnd(
-              linesSoFar :+ Tokens(tokens.map(ChannelBufferBuf.Owned(_))))
-            NeedMoreData
-          } else { throw new ServerError("Invalid reply from STATS command") }
+      case AwaitingStatsOrEnd(linesSoFar) => decodeLine(buffer, needsData) {
+          tokens =>
+            if (isEnd(tokens)) { StatLines(linesSoFar) }
+            else if (isStats(tokens)) {
+              awaitStatsOrEnd(
+                linesSoFar :+ Tokens(tokens.map(ChannelBufferBuf.Owned(_))))
+              NeedMoreData
+            } else { throw new ServerError("Invalid reply from STATS command") }
         }
       case AwaitingData(valuesSoFar, tokens, bytesNeeded) =>
         decodeData(bytesNeeded, buffer) { data =>
@@ -70,10 +70,10 @@ class Decoder extends AbstractDecoder with StateMachine {
                 ChannelBufferBuf.Owned(data)))
           NeedMoreData
         }
-      case AwaitingResponseOrEnd(valuesSoFar) =>
-        decodeLine(buffer, needsData) { tokens =>
-          if (isEnd(tokens)) { ValueLines(valuesSoFar) }
-          else NeedMoreData
+      case AwaitingResponseOrEnd(valuesSoFar) => decodeLine(buffer, needsData) {
+          tokens =>
+            if (isEnd(tokens)) { ValueLines(valuesSoFar) }
+            else NeedMoreData
         }
     }
   }
@@ -82,8 +82,7 @@ class Decoder extends AbstractDecoder with StateMachine {
       tokens: Seq[ChannelBuffer],
       bytesNeeded: Int): Unit = {
     state match {
-      case AwaitingResponse =>
-        awaitData(Nil, tokens, bytesNeeded)
+      case AwaitingResponse => awaitData(Nil, tokens, bytesNeeded)
       case AwaitingResponseOrEnd(valuesSoFar) =>
         awaitData(valuesSoFar, tokens, bytesNeeded)
     }

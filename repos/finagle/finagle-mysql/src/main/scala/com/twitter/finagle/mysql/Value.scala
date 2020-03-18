@@ -269,8 +269,8 @@ object DateValue extends Injectable[Date] with Extractable[Date] {
         val str = new String(bytes, Charset(Charset.Binary))
         if (str == Zero.toString) Some(Zero) else Some(Date.valueOf(str))
 
-      case RawValue(Type.Date, Charset.Binary, true, bytes) =>
-        Some(fromBytes(bytes))
+      case RawValue(Type.Date, Charset.Binary, true, bytes) => Some(
+          fromBytes(bytes))
       case _ => None
     }
 
@@ -320,8 +320,8 @@ object BigDecimalValue
 
   def unapply(v: Value): Option[BigDecimal] =
     v match {
-      case RawValue(Type.NewDecimal, Charset.Binary, _, bytes) =>
-        Some(BigDecimal(new String(bytes, Charset(Charset.Binary))))
+      case RawValue(Type.NewDecimal, Charset.Binary, _, bytes) => Some(
+          BigDecimal(new String(bytes, Charset(Charset.Binary))))
       case _ => None
     }
 }

@@ -42,8 +42,7 @@ case class CookedBlockMetadata(
           i += 1
         }
         true
-      case _ =>
-        false
+      case _ => false
     }
 }
 

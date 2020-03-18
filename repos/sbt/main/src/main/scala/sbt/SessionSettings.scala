@@ -246,8 +246,7 @@ object SessionSettings {
         List[Setting[_]](),
         List[Setting[_]](),
         Set.empty[ScopedKey[_]]) /: original.reverse) {
-        case ((in, oth, keys), s) =>
-          s.pos match {
+        case ((in, oth, keys), s) => s.pos match {
             case RangePosition(`path`, _) if !keys.contains(s.key) =>
               (s :: in, oth, keys + s.key)
             case _ => (in, s :: oth, keys)

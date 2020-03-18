@@ -138,8 +138,7 @@ trait MarkupParsers {
           case '{' =>
             nextch()
             xEmbeddedExpr
-          case SU =>
-            throw TruncatedXMLControl
+          case SU => throw TruncatedXMLControl
           case _ =>
             errorAndResult(
               "' or \" delimited attribute value or '{' scala-expr '}' expected",
@@ -356,8 +355,7 @@ trait MarkupParsers {
         ifTruncated: String => Unit): Tree = {
       try return f()
       catch {
-        case c @ TruncatedXMLControl =>
-          ifTruncated(c.getMessage)
+        case c @ TruncatedXMLControl => ifTruncated(c.getMessage)
         case c @ (MissingEndTagControl | ConfusedAboutBracesControl) =>
           parser.syntaxError(debugLastPos, c.getMessage + debugLastElem + ">")
         case _: ArrayIndexOutOfBoundsException =>
@@ -484,8 +482,7 @@ trait MarkupParsers {
                 do { ts ++= xScalaPatterns } while (xCheckEmbeddedBlock)
                 assert(!xEmbeddedBlock, "problem with embedded block")
 
-              case SU =>
-                throw TruncatedXMLControl
+              case SU => throw TruncatedXMLControl
 
               case _ => // text
                 appendText(r2p(start1, start1, curOffset), ts, xText)

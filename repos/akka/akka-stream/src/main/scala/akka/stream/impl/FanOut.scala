@@ -238,8 +238,7 @@ private[akka] object FanOut {
       new SubReceive({
         case ExposedPublishers(publishers) ⇒
           publishers.zip(outputs) foreach {
-            case (pub, output) ⇒
-              output.subreceive(ExposedPublisher(pub))
+            case (pub, output) ⇒ output.subreceive(ExposedPublisher(pub))
           }
 
         case SubstreamRequestMore(id, demand) ⇒

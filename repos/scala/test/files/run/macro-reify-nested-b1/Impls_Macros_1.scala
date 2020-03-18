@@ -12,12 +12,10 @@ case class Utils[C <: Context](c: C) {
       super.transform {
         tree match {
           case Apply(TypeApply(Select(_this, termname), _), reification :: Nil)
-              if termname.toString == "factory" =>
-            c.unreifyTree(reification)
+              if termname.toString == "factory" => c.unreifyTree(reification)
           case Apply(Select(_this, termname), reification :: Nil)
-              if termname.toString == "factory" =>
-            c.unreifyTree(reification)
-          case _ => tree
+              if termname.toString == "factory" => c.unreifyTree(reification)
+          case _                                => tree
         }
       }
     }

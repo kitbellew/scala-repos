@@ -51,10 +51,9 @@ object Stress {
       Future.times(totalRequests / concurrency) {
         client(request) onSuccess { response =>
           responses.incrementAndGet(response.status)
-        } handle {
-          case e =>
-            errors.incrementAndGet()
-        } ensure { completedRequests.incrementAndGet() }
+        } handle { case e => errors.incrementAndGet() } ensure {
+          completedRequests.incrementAndGet()
+        }
       }
     }
 

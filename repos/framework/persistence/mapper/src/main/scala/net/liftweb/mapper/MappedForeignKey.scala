@@ -106,8 +106,7 @@ trait MappedForeignKey[KeyType, MyOwner <: Mapper[
         .flatMap {
           case Nil => Empty
 
-          case xs =>
-            Full(SHtml.selectObj(xs, Full(this.get), this.set))
+          case xs => Full(SHtml.selectObj(xs, Full(this.get), this.set))
         }
         .openOr(<span>{immutableMsg}</span>))
 

@@ -44,8 +44,7 @@ class ChannelBufferSnooper(val name: String) extends ChannelSnooper {
           if me.getMessage.isInstanceOf[ChannelBuffer] =>
         val buf = me.getMessage.asInstanceOf[ChannelBuffer]
         dump(printUp, ctx.getChannel, buf)
-      case _ =>
-        ()
+      case _ => ()
     }
 
     ctx.sendUpstream(e)
@@ -57,8 +56,7 @@ class ChannelBufferSnooper(val name: String) extends ChannelSnooper {
           if me.getMessage.isInstanceOf[ChannelBuffer] =>
         val buf = me.getMessage.asInstanceOf[ChannelBuffer]
         dump(printDown, ctx.getChannel, buf)
-      case _ =>
-        ()
+      case _ => ()
     }
 
     ctx.sendDownstream(e)

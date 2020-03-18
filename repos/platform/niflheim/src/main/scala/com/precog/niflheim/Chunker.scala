@@ -84,10 +84,7 @@ trait Chunker {
         while (chunk.remaining() > 0) { channel.write(chunk) }
       }
       Success(result)
-    } catch {
-      case ex: IOException =>
-        Failure(ex)
-    }
+    } catch { case ex: IOException => Failure(ex) }
   }
 
   def read(
@@ -107,9 +104,6 @@ trait Chunker {
       buffer.flip()
 
       Success(buffer)
-    } catch {
-      case ioe: IOException =>
-        Failure(ioe)
-    }
+    } catch { case ioe: IOException => Failure(ioe) }
   }
 }

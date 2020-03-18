@@ -79,8 +79,7 @@ private[streams] class FutureSubscription[T, U >: T](
       case Some(Failure(t)) =>
         subscriber.onError(t)
         onSubscriptionEnded(this)
-      case _ =>
-        subscriber.onSubscribe(this)
+      case _ => subscriber.onSubscribe(this)
     }
   }
 
@@ -105,25 +104,20 @@ private[streams] class FutureSubscription[T, U >: T](
         // onFutureCompleted. We call it immediately if we can, otherwise we
         // schedule the call for when the Future is completed.
         fut.value match {
-          case Some(result) =>
-            onFutureCompleted(result)
-          case None =>
+          case Some(result) => onFutureCompleted(result)
+          case None         =>
             // Safe to use trampoline because onFutureCompleted only schedules async operations
             fut.onComplete(onFutureCompleted)(Execution.trampoline)
         }
-      case _ =>
-        ()
+      case _ => ()
     }
   }
 
   override def cancel(): Unit =
     exclusive {
-      case AwaitingRequest =>
-        state = Cancelled
-      case Requested =>
-        state = Cancelled
-      case _ =>
-        ()
+      case AwaitingRequest => state = Cancelled
+      case Requested       => state = Cancelled
+      case _               => ()
     }
 
   /**
@@ -144,12 +138,10 @@ private[streams] class FutureSubscription[T, U >: T](
           case Success(value) =>
             subr.onNext(value)
             subr.onComplete()
-          case Failure(t) =>
-            subr.onError(t)
+          case Failure(t) => subr.onError(t)
         }
         onSubscriptionEnded(this)
-      case Cancelled =>
-        ()
+      case Cancelled => ()
       case Completed =>
         throw new IllegalStateException(
           "onFutureCompleted shouldn't be called when already in state Completed")

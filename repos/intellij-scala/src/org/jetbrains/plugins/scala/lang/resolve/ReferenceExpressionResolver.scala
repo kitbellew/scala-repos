@@ -58,8 +58,7 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
             inf.rOp match {
               case tuple: ScTuple   => Some(tuple.exprs) // See SCL-2001
               case unit: ScUnitExpr => Some(Nil) // See SCL-3485
-              case e: ScParenthesisedExpr =>
-                e.expr match {
+              case e: ScParenthesisedExpr => e.expr match {
                   case Some(expr) => Some(Seq(expr))
                   case _          => Some(Nil)
                 }

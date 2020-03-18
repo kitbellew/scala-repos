@@ -23,8 +23,7 @@ class JUnitSubClassTestCheck {
       "org.scalajs.testsuite.junit.JUnitSubClassTest")
     try { boot.invoke(boot.newInstance(), "test1") }
     catch {
-      case e: Throwable =>
-        fail(s"Could not invoke a test: ${e.getMessage}")
+      case e: Throwable => fail(s"Could not invoke a test: ${e.getMessage}")
     }
   }
 
@@ -34,8 +33,7 @@ class JUnitSubClassTestCheck {
       "org.scalajs.testsuite.junit.JUnitSubClassExtended1Test")
     try { boot.invoke(boot.newInstance(), "test1") }
     catch {
-      case e: Throwable =>
-        fail(s"Could not invoke a test: ${e.getMessage}")
+      case e: Throwable => fail(s"Could not invoke a test: ${e.getMessage}")
     }
   }
 
@@ -47,8 +45,7 @@ class JUnitSubClassTestCheck {
       boot.invoke(boot.newInstance(), "test1")
       boot.invoke(boot.newInstance(), "test2")
     } catch {
-      case e: Throwable =>
-        fail(s"Could not invoke a test: ${e.getMessage}")
+      case e: Throwable => fail(s"Could not invoke a test: ${e.getMessage}")
     }
   }
 }

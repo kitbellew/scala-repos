@@ -85,8 +85,7 @@ class RuntimeRefRenderer extends NodeRendererImpl {
           unwrapped.getValue,
           evaluationContext.createEvaluationContext(unwrapped.getValue),
           listener)
-      case r =>
-        r.calcLabel(unwrapped, evaluationContext, listener)
+      case r => r.calcLabel(unwrapped, evaluationContext, listener)
     }
   }
 

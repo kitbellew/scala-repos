@@ -138,8 +138,7 @@ class Interaction @Since("1.6.0") (override val uid: String)
             nominal.getNumValues.getOrElse(
               throw new SparkException(
                 "Nominal features must have attr numValues defined.")))
-        case _ =>
-          1 // numeric feature
+        case _ => 1 // numeric feature
       }
     }
     features.map { f =>

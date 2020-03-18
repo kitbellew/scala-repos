@@ -84,8 +84,7 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       expression: Expression): Projection = {
     try { generator }
     catch {
-      case e: Throwable =>
-        fail(s"""
+      case e: Throwable => fail(s"""
             |Code generation of $expression failed:
             |$e
             |${Utils.exceptionString(e)}
@@ -303,8 +302,7 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       case (result: Double, expected: Spread[Double @unchecked]) =>
         expected.asInstanceOf[Spread[Double]].isWithin(result)
       case (result: Double, expected: Double)
-          if result.isNaN && expected.isNaN =>
-        true
+          if result.isNaN && expected.isNaN => true
       case (result: Float, expected: Float) if result.isNaN && expected.isNaN =>
         true
       case _ => result == expected

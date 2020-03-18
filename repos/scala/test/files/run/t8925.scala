@@ -14,10 +14,7 @@ class A {
         try {
           x += "c"
           throw null
-        } catch {
-          case Ex(_) =>
-            x += "d"
-        }
+        } catch { case Ex(_) => x += "d" }
       }
     }
 }

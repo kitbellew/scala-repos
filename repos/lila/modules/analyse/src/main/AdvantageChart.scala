@@ -26,8 +26,7 @@ object AdvantageChart {
     Json stringify {
       Json toJson {
         advices map {
-          case (info, advice) =>
-            (info.score, info.mate) match {
+          case (info, advice) => (info.score, info.mate) match {
               case (Some(score), _) =>
                 point(move(info, advice), score.centipawns)
               case (_, Some(mate)) =>

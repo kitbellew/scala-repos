@@ -94,8 +94,7 @@ trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
           val parsedV = events.toStream
             .traverse[({ type λ[α] = Validation[ResourceError, α] })#λ, Stream[
               JObject]] {
-              case JString(pathStr) =>
-                success {
+              case JString(pathStr) => success {
                   indexLock synchronized { // block the WHOLE WORLD
                     val path = Path(pathStr)
 

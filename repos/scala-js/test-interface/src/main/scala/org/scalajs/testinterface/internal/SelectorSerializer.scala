@@ -28,10 +28,8 @@ object SelectorSerializer {
 
   def deserialize(obj: js.Dynamic): Selector = {
     obj.selType.asInstanceOf[String] match {
-      case "SuiteSelector" =>
-        new SuiteSelector()
-      case "TestSelector" =>
-        new TestSelector(obj.testName.asInstanceOf[String])
+      case "SuiteSelector" => new SuiteSelector()
+      case "TestSelector"  => new TestSelector(obj.testName.asInstanceOf[String])
       case "NestedSuiteSelector" =>
         new NestedSuiteSelector(obj.suiteId.asInstanceOf[String])
       case "NestedTestSelector" =>

@@ -55,8 +55,9 @@ object ScalaSirdRouter extends Specification {
     "allow extracting required query parameters" in {
       //#required
       val router = Router.from {
-        case GET(p"/search" ? q"query=$query") =>
-          Action { Results.Ok(s"Searching for $query") }
+        case GET(p"/search" ? q"query=$query") => Action {
+            Results.Ok(s"Searching for $query")
+          }
       }
       //#required
 
@@ -68,8 +69,7 @@ object ScalaSirdRouter extends Specification {
     "allow extracting optional query parameters" in {
       //#optional
       val router = Router.from {
-        case GET(p"/items" ? q_o"page=$page") =>
-          Action {
+        case GET(p"/items" ? q_o"page=$page") => Action {
             val thisPage = page.getOrElse("1")
             Results.Ok(s"Showing page $thisPage")
           }
@@ -84,8 +84,7 @@ object ScalaSirdRouter extends Specification {
     "allow extracting multi value query parameters" in {
       //#many
       val router = Router.from {
-        case GET(p"/items" ? q_s"tag=$tags") =>
-          Action {
+        case GET(p"/items" ? q_s"tag=$tags") => Action {
             val allTags = tags.mkString(", ")
             Results.Ok(s"Showing items tagged: $allTags")
           }
@@ -102,8 +101,7 @@ object ScalaSirdRouter extends Specification {
       val router = Router.from {
         case GET(
               p"/items" ? q_o"page=$page"
-              & q_o"per_page=$perPage") =>
-          Action {
+              & q_o"per_page=$perPage") => Action {
             val thisPage = page.getOrElse("1")
             val pageLength = perPage.getOrElse("10")
 
@@ -131,8 +129,7 @@ object ScalaSirdRouter extends Specification {
     "allow sub extractor on a query parameter" in {
       //#query-int
       val router = Router.from {
-        case GET(p"/items" ? q_o"page=${int(page)}") =>
-          Action {
+        case GET(p"/items" ? q_o"page=${int(page)}") => Action {
             val thePage = page.getOrElse(1)
             Results.Ok(s"Items page $thePage")
           }

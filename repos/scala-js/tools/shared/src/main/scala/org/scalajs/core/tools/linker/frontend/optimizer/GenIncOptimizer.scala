@@ -627,10 +627,8 @@ abstract class GenIncOptimizer private[optimizer] (
         }
       def isElidableStat(tree: Tree): Boolean =
         tree match {
-          case Block(stats) =>
-            stats.forall(isElidableStat)
-          case Assign(Select(This(), _), rhs) =>
-            isTriviallySideEffectFree(rhs)
+          case Block(stats)                   => stats.forall(isElidableStat)
+          case Assign(Select(This(), _), rhs) => isTriviallySideEffectFree(rhs)
           case ApplyStatic(ClassType(cls), methodName, List(This())) =>
             statics(cls).methods(methodName.name).originalDef.body match {
               case Skip() => true
@@ -645,10 +643,8 @@ abstract class GenIncOptimizer private[optimizer] (
                   .lookupMethod(methodName.name)
                   .exists(isElidableModuleConstructor)
               }
-          case StoreModule(_, _) =>
-            true
-          case _ =>
-            isTriviallySideEffectFree(tree)
+          case StoreModule(_, _) => true
+          case _                 => isTriviallySideEffectFree(tree)
         }
       isElidableStat(impl.originalDef.body)
     }
@@ -668,8 +664,7 @@ abstract class GenIncOptimizer private[optimizer] (
     final def lookupMethod(methodName: String): Option[MethodImpl] = {
       methods.get(methodName) match {
         case Some(impl) => Some(impl)
-        case none =>
-          superClass match {
+        case none => superClass match {
             case Some(p) => p.lookupMethod(methodName)
             case none    => None
           }

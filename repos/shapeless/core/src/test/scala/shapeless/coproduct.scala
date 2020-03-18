@@ -71,12 +71,9 @@ class CoproductTests {
   def testMatch {
     def cpMatch(v: ISB) =
       v match {
-        case Inl(x) =>
-          typed[Int](x)
-        case Inr(Inl(x)) =>
-          typed[String](x)
-        case Inr(Inr(Inl(x))) =>
-          typed[Boolean](x)
+        case Inl(x)           => typed[Int](x)
+        case Inr(Inl(x))      => typed[String](x)
+        case Inr(Inr(Inl(x))) => typed[Boolean](x)
         case Inr(Inr(Inr(_))) =>
           ??? // This impossible case required for exhaustivity
       }

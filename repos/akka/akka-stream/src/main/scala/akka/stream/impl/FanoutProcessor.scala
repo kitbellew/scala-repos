@@ -80,8 +80,7 @@ private[akka] abstract class FanoutOutputs(
   }
 
   protected def downstreamRunning: Actor.Receive = {
-    case SubscribePending ⇒
-      subscribePending()
+    case SubscribePending ⇒ subscribePending()
     case RequestMore(subscription, elements) ⇒
       moreRequested(
         subscription.asInstanceOf[ActorSubscriptionWithCursor[Any]],

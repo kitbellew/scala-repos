@@ -95,9 +95,8 @@ object ScalaPrefixPackageCompletionContributor {
         position.getContext,
         position) match {
         case ResolvesTo(pack: PsiPackage)
-            if pack.getQualifiedName == pckg.getQualifiedName =>
-          return
-        case _ =>
+            if pack.getQualifiedName == pckg.getQualifiedName => return
+        case _                                                =>
       }
 
       val resolveResult = new ScalaResolveResult(pckg, prefixCompletion = true)

@@ -130,8 +130,7 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
       val centers2 = model2.clusterCenters
 
       centers1.zip(centers2).foreach {
-        case (c1, c2) =>
-          assert(c1 ~== c2 absTol 1e-14)
+        case (c1, c2) => assert(c1 ~== c2 absTol 1e-14)
       }
     }
   }
@@ -358,10 +357,8 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
 object KMeansSuite extends SparkFunSuite {
   def createModel(dim: Int, k: Int, isSparse: Boolean): KMeansModel = {
     val singlePoint = isSparse match {
-      case true =>
-        Vectors.sparse(dim, Array.empty[Int], Array.empty[Double])
-      case _ =>
-        Vectors.dense(Array.fill[Double](dim)(0.0))
+      case true => Vectors.sparse(dim, Array.empty[Int], Array.empty[Double])
+      case _    => Vectors.dense(Array.fill[Double](dim)(0.0))
     }
     new KMeansModel(Array.fill[Vector](k)(singlePoint))
   }
@@ -369,10 +366,8 @@ object KMeansSuite extends SparkFunSuite {
   def checkEqual(a: KMeansModel, b: KMeansModel): Unit = {
     assert(a.k === b.k)
     a.clusterCenters.zip(b.clusterCenters).foreach {
-      case (ca: SparseVector, cb: SparseVector) =>
-        assert(ca === cb)
-      case (ca: DenseVector, cb: DenseVector) =>
-        assert(ca === cb)
+      case (ca: SparseVector, cb: SparseVector) => assert(ca === cb)
+      case (ca: DenseVector, cb: DenseVector)   => assert(ca === cb)
       case _ =>
         throw new AssertionError(
           "checkEqual failed since the two clusters were not identical.\n")

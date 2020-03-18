@@ -32,8 +32,7 @@ object ActorCreationPerfSpec {
   class TimingDriver(hist: Histogram) extends Actor {
 
     def receive = {
-      case IsAlive ⇒
-        sender() ! Alive
+      case IsAlive ⇒ sender() ! Alive
       case Create(number, propsCreator) ⇒
         for (i ← 1 to number) {
           val start = System.nanoTime()
@@ -68,8 +67,7 @@ object ActorCreationPerfSpec {
   class Driver extends Actor {
 
     def receive = {
-      case IsAlive ⇒
-        sender() ! Alive
+      case IsAlive ⇒ sender() ! Alive
       case Create(number, propsCreator) ⇒
         for (i ← 1 to number) { context.actorOf(propsCreator.apply()) }
         sender() ! Created

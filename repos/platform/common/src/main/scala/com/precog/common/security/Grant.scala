@@ -159,8 +159,9 @@ object Grant extends Logging {
 
       def minimize(grants: Seq[Grant], perms: Seq[Permission]): Set[Grant] =
         grants match {
-          case Seq(head, tail @ _*) =>
-            perms.partition { perm => tail.exists(_.implies(perm, at)) } match {
+          case Seq(head, tail @ _*) => perms.partition { perm =>
+              tail.exists(_.implies(perm, at))
+            } match {
               case (Nil, Nil)          => Set()
               case (rest, Nil)         => minimize(tail, rest)
               case (rest, requireHead) => minimize(tail, rest) + head

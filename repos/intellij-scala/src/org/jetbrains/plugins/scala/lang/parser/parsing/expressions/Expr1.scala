@@ -50,12 +50,10 @@ object Expr1 {
             builder.getTokenType match {
               case ScalaTokenTypes.tRPARENTHESIS =>
                 builder.advanceLexer() //Ate )
-              case _ =>
-                builder error ErrMsg("rparenthesis.expected")
+              case _ => builder error ErrMsg("rparenthesis.expected")
             }
             builder.restoreNewlinesState
-          case _ =>
-            builder error ErrMsg("condition.expected")
+          case _ => builder error ErrMsg("condition.expected")
         }
 
         ParserPatcher getSuitablePatcher builder parse builder
@@ -63,17 +61,15 @@ object Expr1 {
         if (!Expr.parse(builder)) { builder error ErrMsg("wrong.expression") }
         val rollbackMarker = builder.mark
         builder.getTokenType match {
-          case ScalaTokenTypes.tSEMICOLON =>
-            builder.advanceLexer() //Ate semi
-          case _ =>
+          case ScalaTokenTypes.tSEMICOLON => builder.advanceLexer() //Ate semi
+          case _                          =>
         }
         builder.getTokenType match {
           case ScalaTokenTypes.kELSE =>
             builder.advanceLexer()
             if (!Expr.parse(builder)) builder error ErrMsg("wrong.expression")
             rollbackMarker.drop()
-          case _ =>
-            rollbackMarker.rollbackTo()
+          case _ => rollbackMarker.rollbackTo()
         }
         exprMarker.done(ScalaElementTypes.IF_STMT)
         return true
@@ -88,12 +84,10 @@ object Expr1 {
             builder.getTokenType match {
               case ScalaTokenTypes.tRPARENTHESIS =>
                 builder.advanceLexer() //Ate )
-              case _ =>
-                builder error ErrMsg("rparenthesis.expected")
+              case _ => builder error ErrMsg("rparenthesis.expected")
             }
             builder.restoreNewlinesState
-          case _ =>
-            builder error ErrMsg("condition.expected")
+          case _ => builder error ErrMsg("condition.expected")
         }
         if (!Expr.parse(builder)) { builder error ErrMsg("wrong.expression") }
         exprMarker.done(ScalaElementTypes.WHILE_STMT)
@@ -127,8 +121,7 @@ object Expr1 {
               builder.error(ErrMsg("wrong.expression"))
             }
             catchMarker.done(ScalaElementTypes.CATCH_BLOCK)
-          case _ =>
-            catchMarker.drop()
+          case _ => catchMarker.drop()
         }
         val finallyMarker = builder.mark
         builder.getTokenType match {
@@ -138,8 +131,7 @@ object Expr1 {
               builder error ErrMsg("wrong.expression")
             }
             finallyMarker.done(ScalaElementTypes.FINALLY_BLOCK)
-          case _ =>
-            finallyMarker.drop()
+          case _ => finallyMarker.drop()
         }
         exprMarker.done(ScalaElementTypes.TRY_STMT)
         return true
@@ -148,9 +140,8 @@ object Expr1 {
         builder.advanceLexer() //Ate do
         if (!Expr.parse(builder)) builder error ErrMsg("wrong.expression")
         builder.getTokenType match {
-          case ScalaTokenTypes.tSEMICOLON =>
-            builder.advanceLexer() //Ate semi
-          case _ =>
+          case ScalaTokenTypes.tSEMICOLON => builder.advanceLexer() //Ate semi
+          case _                          =>
         }
         builder.getTokenType match {
           case ScalaTokenTypes.kWHILE =>
@@ -164,15 +155,12 @@ object Expr1 {
                 builder.getTokenType match {
                   case ScalaTokenTypes.tRPARENTHESIS =>
                     builder.advanceLexer() //Ate )
-                  case _ =>
-                    builder error ErrMsg("rparenthesis.expected")
+                  case _ => builder error ErrMsg("rparenthesis.expected")
                 }
                 builder.restoreNewlinesState
-              case _ =>
-                builder error ErrMsg("condition.expected")
+              case _ => builder error ErrMsg("condition.expected")
             }
-          case _ =>
-            builder error ErrMsg("while.expected")
+          case _ => builder error ErrMsg("while.expected")
         }
         exprMarker.done(ScalaElementTypes.DO_STMT)
         return true
@@ -201,8 +189,7 @@ object Expr1 {
               case _                             => builder error ErrMsg("rparenthesis.expected")
             }
             builder.restoreNewlinesState
-          case _ =>
-            builder error ErrMsg("enumerators.expected")
+          case _ => builder error ErrMsg("enumerators.expected")
         }
         if (builder.twoNewlinesBeforeCurrentToken) {
           builder.error(ErrMsg("wrong.expression"))
@@ -210,9 +197,8 @@ object Expr1 {
           return true
         }
         builder.getTokenType match {
-          case ScalaTokenTypes.kYIELD =>
-            builder.advanceLexer() //Ate yield
-          case _ =>
+          case ScalaTokenTypes.kYIELD => builder.advanceLexer() //Ate yield
+          case _                      =>
         }
         if (!Expr.parse(builder)) builder error ErrMsg("wrong.expression")
         exprMarker.done(ScalaElementTypes.FOR_STMT)
@@ -246,8 +232,7 @@ object Expr1 {
                 pmarker.drop()
                 ipmarker.drop()
             }
-          case _ =>
-            ipmarker.drop()
+          case _ => ipmarker.drop()
         }
 
       //---------------return statement-----------//

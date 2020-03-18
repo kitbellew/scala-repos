@@ -24,9 +24,8 @@ class ScalaIterableComponentTypeMacro extends Macro {
           case None =>
             ScType.extractClass(exprType, Some(context.getProject)) match {
               case Some(x: ScTypeDefinition)
-                  if x.functionsByName("foreach").nonEmpty =>
-                Some(exprType)
-              case _ => None
+                  if x.functionsByName("foreach").nonEmpty => Some(exprType)
+              case _                                       => None
             }
         }
       })

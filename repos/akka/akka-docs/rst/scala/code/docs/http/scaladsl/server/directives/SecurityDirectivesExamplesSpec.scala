@@ -109,8 +109,7 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     }
 
     val myUserPassAuthenticator: AsyncAuthenticatorPF[User] = {
-      case p @ Credentials.Provided(id) if p.verify("p4ssw0rd") =>
-        fetchUser(id)
+      case p @ Credentials.Provided(id) if p.verify("p4ssw0rd") => fetchUser(id)
     }
 
     val route = Route.seal {
@@ -152,8 +151,7 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     def myUserPassAuthenticator(
         credentials: Credentials): Future[Option[String]] =
       credentials match {
-        case p @ Credentials.Provided(id) =>
-          Future {
+        case p @ Credentials.Provided(id) => Future {
             // potentially
             if (p.verify("p4ssw0rd")) Some(id) else None
           }

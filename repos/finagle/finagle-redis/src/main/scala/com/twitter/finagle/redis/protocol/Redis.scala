@@ -91,8 +91,7 @@ private class RedisLoggingFilter(stats: StatsReceiver)
       response match {
         case StatusReply(_) | IntegerReply(_) | BulkReply(_) |
             EmptyBulkReply() | MBulkReply(_) | NilMBulkReply() |
-            EmptyMBulkReply() =>
-          succ.counter(command.command).incr()
+            EmptyMBulkReply()    => succ.counter(command.command).incr()
         case ErrorReply(message) => error.counter(command.command).incr()
         case _                   => error.counter(command.command).incr()
       }

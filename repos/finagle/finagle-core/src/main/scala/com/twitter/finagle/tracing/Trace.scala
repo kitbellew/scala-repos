@@ -148,8 +148,7 @@ object Trace {
     idOption match {
       case Some(id) =>
         TraceId(Some(id.traceId), Some(id.spanId), spanId, id.sampled, id.flags)
-      case None =>
-        TraceId(None, None, spanId, None, Flags())
+      case None => TraceId(None, None, spanId, None, Flags())
     }
   }
 

@@ -2472,8 +2472,7 @@ trait StatsLibSpecs[M[+_]]
 
       result must haveSize(1)
       result must haveAllElementsLike {
-        case (ids, SDecimal(d)) if ids.length == 0 =>
-          d.toDouble must_== 0.0
+        case (ids, SDecimal(d)) if ids.length == 0 => d.toDouble must_== 0.0
       }
     }
 

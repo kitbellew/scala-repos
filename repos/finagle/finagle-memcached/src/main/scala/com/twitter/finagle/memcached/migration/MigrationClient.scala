@@ -92,8 +92,7 @@ class MigrationClient(
           proxyClient = new FrontendClient(newClient) with FallbackRead {
             val backendClient = oldClient
           }
-        case MigrationState.Done =>
-          proxyClient = new FrontendClient(newClient)
+        case MigrationState.Done => proxyClient = new FrontendClient(newClient)
       }
     }
 }

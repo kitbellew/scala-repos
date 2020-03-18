@@ -280,8 +280,7 @@ object ValidatePullRequest extends AutoPlugin {
           .map(taskKey => Def.task { taskKey.value })
           .foldLeft(zero) { (acc, current) =>
             acc.zipWith(current) {
-              case (taskSeq, task) =>
-                taskSeq :+ task.asInstanceOf[Task[Any]]
+              case (taskSeq, task) => taskSeq :+ task.asInstanceOf[Task[Any]]
             }
           } apply { tasks: Seq[Task[Any]] =>
           tasks.join map { seq =>

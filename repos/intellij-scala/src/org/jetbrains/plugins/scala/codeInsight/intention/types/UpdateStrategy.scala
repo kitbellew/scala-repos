@@ -179,8 +179,7 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
           "_root_.java.lang.Object")
         comps.map(_.canonicalText).filterNot(uselessTypes.contains) match {
           case Seq(base) => Seq(typeElemfromText(base))
-          case types =>
-            (Seq(types.mkString(" with ")) ++ types).flatMap { t =>
+          case types => (Seq(types.mkString(" with ")) ++ types).flatMap { t =>
               Seq(typeElemfromText(t))
             }
         }
@@ -192,8 +191,7 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
           .find(_.canonicalText.startsWith("_root_.scala.Option"))
           .getOrElse(someOrNone)
         Seq(typeElemFromType(replacement))
-      case tp =>
-        ScType.extractClass(tp, Option(context.getProject)) match {
+      case tp => ScType.extractClass(tp, Option(context.getProject)) match {
           case Some(sc: ScTypeDefinition)
               if (sc +: sc.supers).exists(isSealed) =>
             val sealedType = BaseTypes

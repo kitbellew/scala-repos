@@ -46,8 +46,7 @@ class VerifySymbols extends Phase {
             verifyScoping(f1, syms)
             verifyScoping(f2, syms)
             verifyScoping(on, syms + s1 + s2)
-          case n =>
-            n.childrenForeach(ch => verifyScoping(ch, syms))
+          case n => n.childrenForeach(ch => verifyScoping(ch, syms))
         }
       verifyScoping(n2, Set.empty)
       n2

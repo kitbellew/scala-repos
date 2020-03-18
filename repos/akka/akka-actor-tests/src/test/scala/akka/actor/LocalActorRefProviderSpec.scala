@@ -158,8 +158,7 @@ class LocalActorRefProviderSpec
     "only create one instance of an actor from within the same message invocation" in {
       val supervisor = system.actorOf(Props(new Actor {
         def receive = {
-          case "" ⇒
-            val a, b = context.actorOf(Props.empty, "duplicate")
+          case "" ⇒ val a, b = context.actorOf(Props.empty, "duplicate")
         }
       }))
       EventFilter[InvalidActorNameException](occurrences = 1) intercept {

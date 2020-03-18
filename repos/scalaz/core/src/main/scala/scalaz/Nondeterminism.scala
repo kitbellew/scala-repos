@@ -42,16 +42,14 @@ trait Nondeterminism[F[_]] extends Monad[F] {
               a,
               map(br) {
                 case \/-(b) => b
-                case _ =>
-                  sys.error(
+                case _ => sys.error(
                     "broken residual handling in a Nondeterminism instance")
               }))
           case (\/-(b), Seq(ar)) =>
             \/-((
               map(ar) {
                 case -\/(a) => a
-                case _ =>
-                  sys.error(
+                case _ => sys.error(
                     "broken residual handling in a Nondeterminism instance")
               },
               b))
@@ -159,8 +157,7 @@ trait Nondeterminism[F[_]] extends Monad[F] {
     if (fs.isEmpty) point(R.zero)
     else
       bind(chooseAny(fs.head, fs.tail)) {
-        case (a, residuals) =>
-          map(reduceUnordered(residuals))(R.cons(a, _))
+        case (a, residuals) => map(reduceUnordered(residuals))(R.cons(a, _))
       }
 
   /**

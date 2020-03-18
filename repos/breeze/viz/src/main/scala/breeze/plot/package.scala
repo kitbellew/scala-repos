@@ -213,9 +213,8 @@ package object plot {
       val values = xv.domain(data).map(xv(data, _)).map(vv)
       val (min, max) = (values.min, values.max)
       val binner: StaticHistogramBins = bins match {
-        case static: StaticHistogramBins => static
-        case dynamic: DynamicHistogramBins =>
-          dynamic(min, max)
+        case static: StaticHistogramBins   => static
+        case dynamic: DynamicHistogramBins => dynamic(min, max)
       }
 
       val counts = new Array[Int](binner.splits.length + 1)

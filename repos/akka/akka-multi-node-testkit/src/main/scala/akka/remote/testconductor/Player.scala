@@ -250,8 +250,7 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
     case Event(ToServer(op), Data(channel, Some((token, _)))) ⇒
       log.error("cannot write {} while waiting for {}", op, token)
       stay
-    case Event(op: ClientOp, d @ Data(Some(channel), runningOp)) ⇒
-      op match {
+    case Event(op: ClientOp, d @ Data(Some(channel), runningOp)) ⇒ op match {
         case BarrierResult(b, success) ⇒
           runningOp match {
             case Some((barrier, requester)) ⇒
@@ -263,8 +262,7 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
                   Status.Failure(new RuntimeException("barrier failed: " + b))
                 else b
               requester ! response
-            case None ⇒
-              log.warning("did not expect {}", op)
+            case None ⇒ log.warning("did not expect {}", op)
           }
           stay using d.copy(runningOp = None)
         case AddressReply(node, addr) ⇒
@@ -324,8 +322,7 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
   }
 
   onTermination {
-    case StopEvent(_, _, Data(Some(channel), _)) ⇒
-      channel.close()
+    case StopEvent(_, _, Data(Some(channel), _)) ⇒ channel.close()
   }
 
   initialize()
@@ -414,8 +411,7 @@ private[akka] class PlayerHandler(
     val channel = event.getChannel
     log.debug("message from {}: {}", getAddrString(channel), event.getMessage)
     event.getMessage match {
-      case msg: NetworkOp ⇒
-        fsm ! msg
+      case msg: NetworkOp ⇒ fsm ! msg
       case msg ⇒
         log.info(
           "server {} sent garbage '{}', disconnecting",

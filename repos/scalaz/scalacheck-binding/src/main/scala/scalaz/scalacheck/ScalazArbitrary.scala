@@ -144,22 +144,17 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
   private[scalaz] def treeGenSized[A: NotNothing](size: Int)(implicit
       A: Arbitrary[A]): Gen[Tree[A]] =
     size match {
-      case n if n <= 1 =>
-        A.arbitrary.map(a => Tree.Leaf(a))
-      case 2 =>
-        arb[(A, A)].arbitrary.map {
-          case (a1, a2) =>
-            Tree.Node(a1, Stream(Tree.Leaf(a2)))
+      case n if n <= 1 => A.arbitrary.map(a => Tree.Leaf(a))
+      case 2 => arb[(A, A)].arbitrary.map {
+          case (a1, a2) => Tree.Node(a1, Stream(Tree.Leaf(a2)))
         }
-      case 3 =>
-        arb[(A, A, A)].arbitrary.flatMap {
+      case 3 => arb[(A, A, A)].arbitrary.flatMap {
           case (a1, a2, a3) =>
             Gen.oneOf(
               Tree.Node(a1, Stream(Tree.Leaf(a2), Tree.Leaf(a3))),
               Tree.Node(a1, Stream(Tree.Node(a2, Stream(Tree.Leaf(a3))))))
         }
-      case _ =>
-        withSize(size - 1)(treeGenSized[A]).flatMap { as =>
+      case _ => withSize(size - 1)(treeGenSized[A]).flatMap { as =>
           A.arbitrary.map(a => Tree.Node(a, as))
         }
     }

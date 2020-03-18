@@ -159,8 +159,8 @@ class CompileSocket extends CompileOutputCommon {
 
     try file writeAll secret
     catch {
-      case e @ (_: FileNotFoundException | _: SecurityException) =>
-        fatal("Cannot create file: %s".format(file.path))
+      case e @ (_: FileNotFoundException | _: SecurityException) => fatal(
+          "Cannot create file: %s".format(file.path))
     }
   }
 

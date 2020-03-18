@@ -129,8 +129,7 @@ object Future {
     val p = new Promise[Unit]
     val task = timer.schedule(howlong.fromNow) { p.setDone() }
     p.setInterruptHandler {
-      case e =>
-        if (p.updateIfEmpty(Throw(e))) task.cancel()
+      case e => if (p.updateIfEmpty(Throw(e))) task.cancel()
     }
     p
   }
@@ -230,8 +229,7 @@ object Future {
         f respond {
           case Return(_) =>
             if (count.decrementAndGet() == 0) p.update(Return.Unit)
-          case Throw(cause) =>
-            p.updateIfEmpty(Throw(cause))
+          case Throw(cause) => p.updateIfEmpty(Throw(cause))
         }
       }
       p
@@ -1070,8 +1068,7 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
               }
               p.setValue(resultsArray)
             }
-          case Throw(cause) =>
-            p.updateIfEmpty(Throw(cause))
+          case Throw(cause) => p.updateIfEmpty(Throw(cause))
         }
       }
       p
@@ -1236,8 +1233,7 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
   def each[A](next: => Future[A])(body: A => Unit): Future[Nothing] = {
     def go(): Future[Nothing] =
       try next flatMap { a => body(a); go() } catch {
-        case NonFatal(exc) =>
-          Future.exception(NextThrewException(exc))
+        case NonFatal(exc) => Future.exception(NextThrewException(exc))
       }
 
     go()
@@ -1806,8 +1802,7 @@ abstract class Future[+A] extends Awaitable[A] {
     val p = Promise.interrupts[(A, B)](this, other)
     this.respond {
       case Throw(t) => p.update(Throw(t))
-      case Return(a) =>
-        other.respond {
+      case Return(a) => other.respond {
           case Throw(t)  => p.update(Throw(t))
           case Return(b) => p.update(Return((a, b)))
         }
@@ -1970,8 +1965,7 @@ abstract class Future[+A] extends Awaitable[A] {
 
     val p = Promise.attached(this)
     p setInterruptHandler {
-      case t: Throwable =>
-        if (p.detach()) p.setException(t)
+      case t: Throwable => if (p.detach()) p.setException(t)
     }
     p
   }
@@ -2835,10 +2829,7 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     * to be satisfied and the rest of the futures.
     */
   def select[A](fs: JList[Future[A]]): Future[(Try[A], JList[Future[A]])] =
-    Future.select(fs.asScala) map {
-      case (first, rest) =>
-        (first, rest.asJava)
-    }
+    Future.select(fs.asScala) map { case (first, rest) => (first, rest.asJava) }
 
   /**
     * Collect the results from the given futures into a new future of

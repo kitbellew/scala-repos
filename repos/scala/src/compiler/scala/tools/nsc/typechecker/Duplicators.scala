@@ -118,8 +118,7 @@ abstract class Duplicators extends Analyzer {
               ThisType(sym1)
             } else super.mapOver(tpe)
 
-          case _ =>
-            super.mapOver(tpe)
+          case _ => super.mapOver(tpe)
         }
     }
 
@@ -176,8 +175,7 @@ abstract class Duplicators extends Analyzer {
             invalidateAll(vparams)
             tree.symbol = NoSymbol
 
-          case _ =>
-            tree.symbol = NoSymbol
+          case _ => tree.symbol = NoSymbol
         }
       }
     }

@@ -17,8 +17,7 @@ trait Translations {
   def isTreeSymbolPickled(code: Int): Boolean =
     (code: @annotation.switch) match {
       case PACKAGEtree | CLASStree | MODULEtree | VALDEFtree | DEFDEFtree |
-          TYPEDEFtree | LABELtree =>
-        true
+          TYPEDEFtree | LABELtree => true
       case IMPORTtree | TEMPLATEtree | BINDtree | FUNCTIONtree | RETURNtree =>
         true
       case APPLYDYNAMICtree | SUPERtree | THIStree | SELECTtree | IDENTtree =>

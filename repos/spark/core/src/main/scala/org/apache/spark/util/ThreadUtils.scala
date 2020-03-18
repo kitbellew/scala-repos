@@ -142,10 +142,7 @@ private[spark] object ThreadUtils {
     val thread = new Thread(threadName) {
       override def run(): Unit = {
         try { result = body }
-        catch {
-          case NonFatal(e) =>
-            exception = Some(e)
-        }
+        catch { case NonFatal(e) => exception = Some(e) }
       }
     }
     thread.setDaemon(isDaemon)
@@ -180,8 +177,7 @@ private[spark] object ThreadUtils {
         // Update the stack trace and rethrow the exception in the caller thread
         realException.setStackTrace(finalStackTrace)
         throw realException
-      case None =>
-        result
+      case None => result
     }
   }
 

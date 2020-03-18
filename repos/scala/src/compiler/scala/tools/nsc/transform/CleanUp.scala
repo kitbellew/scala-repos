@@ -330,8 +330,7 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
               case Some((operator, test)) =>
                 IF(test(qual1())) THEN genValueCall(
                   operator) ELSE genDefaultCall
-              case _ =>
-                genDefaultCall
+              case _ => genDefaultCall
             }
           }
 
@@ -421,8 +420,7 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
                   reporter.error(ad.pos, "Cannot resolve overload.")
                   (Nil, NoType)
               }
-            case NoType =>
-              abort(ad.symbol.toString)
+            case NoType => abort(ad.symbol.toString)
           }
           typedPos {
             val sym =
@@ -440,12 +438,11 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
         if (settings.debug) {
           def paramsToString(xs: Any*) = xs map (_.toString) mkString ", "
           val mstr = ad.symbol.tpe match {
-            case MethodType(mparams, resType) =>
-              sm"""|  with
+            case MethodType(mparams, resType) => sm"""|  with
                    |  - declared parameter types: '${paramsToString(mparams)}'
                    |  - passed argument types:    '${paramsToString(params)}'
                    |  - result type:              '${resType.toString}'"""
-            case _ => ""
+            case _                            => ""
           }
           log(
             s"""Dynamically application '$qual.${ad.symbol.name}(${paramsToString(
@@ -574,8 +571,7 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           super.transform(
             treeCopy.ArrayValue(rest, rest.elemtpt, elem0 :: rest.elems))
 
-        case _ =>
-          super.transform(tree)
+        case _ => super.transform(tree)
       }
 
   } // CleanUpTransformer

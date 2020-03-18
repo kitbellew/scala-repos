@@ -160,10 +160,8 @@ final class IntervalSeq[T] private (
         case (K10, None) =>
           f(Interval.fromBounds(Closed(vi), Closed(vi)))
           None
-        case (K11, None) =>
-          Some(Closed(vi))
-        case (K01, None) =>
-          Some(Open(vi))
+        case (K11, None) => Some(Closed(vi))
+        case (K01, None) => Some(Open(vi))
         // $COVERAGE-OFF$
         case _ => wrong
         // $COVERAGE-ON$

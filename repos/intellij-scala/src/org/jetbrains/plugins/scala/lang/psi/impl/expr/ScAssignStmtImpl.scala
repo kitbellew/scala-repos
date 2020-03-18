@@ -34,10 +34,8 @@ class ScAssignStmtImpl(node: ASTNode)
   protected override def innerType(ctx: TypingContext) = {
     getLExpression match {
       case call: ScMethodCall => call.getType(ctx)
-      case _ =>
-        resolveAssignment match {
-          case Some(resolveResult) =>
-            mirrorMethodCall match {
+      case _ => resolveAssignment match {
+          case Some(resolveResult) => mirrorMethodCall match {
               case Some(call) => call.getType(TypingContext.empty)
               case None       => Success(Unit, Some(this))
             }
@@ -98,8 +96,7 @@ class ScAssignStmtImpl(node: ASTNode)
   private def resolveAssignmentInner(
       shapeResolve: Boolean): Option[ScalaResolveResult] = {
     getLExpression match {
-      case ref: ScReferenceExpression =>
-        ref.bind() match {
+      case ref: ScReferenceExpression => ref.bind() match {
           case Some(r: ScalaResolveResult) =>
             ScalaPsiUtil.nameContext(r.element) match {
               case v: ScVariable                  => None
@@ -119,8 +116,7 @@ class ScAssignStmtImpl(node: ASTNode)
                   kinds = StdKinds.methodsOnly)
                 r.fromType match {
                   case Some(tp) => processor.processType(tp, ref)
-                  case None =>
-                    fun.getContext match {
+                  case None => fun.getContext match {
                       case d: ScDeclarationSequenceHolder =>
                         d.processDeclarations(
                           processor,

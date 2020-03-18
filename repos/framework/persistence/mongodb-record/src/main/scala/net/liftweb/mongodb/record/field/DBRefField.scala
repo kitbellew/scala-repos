@@ -88,8 +88,8 @@ class DBRefField[OwnerType <: BsonRecord[OwnerType], RefType <: MongoRecord[
     val dbo = JSON.parse(in).asInstanceOf[BasicDBObject]
     val id = dbo.get("$id").toString
     ObjectId.isValid(id) match {
-      case true =>
-        Full(set(new DBRef(dbo.get("$ref").toString, new ObjectId(id))))
+      case true => Full(
+          set(new DBRef(dbo.get("$ref").toString, new ObjectId(id))))
       case false => Full(set(new DBRef(dbo.get("$ref").toString, id)))
     }
   }

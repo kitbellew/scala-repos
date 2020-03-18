@@ -585,10 +585,8 @@ class Eval(target: Option[File]) {
 
       if (reporter.hasErrors || reporter.WARNING.count > 0) {
         val msgs: List[List[String]] = reporter match {
-          case collector: MessageCollector =>
-            collector.messages.toList
-          case _ =>
-            List(List(reporter.toString))
+          case collector: MessageCollector => collector.messages.toList
+          case _                           => List(List(reporter.toString))
         }
         throw new CompilerException(msgs)
       }

@@ -50,9 +50,8 @@ object EstimatorApp extends App {
               throw new IllegalArgumentException("bad weight, count pair " + w)
           }
         })
-    case Array("load", interval) =>
-      new LoadAverage(interval.toDouble)
-    case _ => throw new IllegalArgumentException("bad args ")
+    case Array("load", interval) => new LoadAverage(interval.toDouble)
+    case _                       => throw new IllegalArgumentException("bad args ")
   }
 
   val lines = scala.io.Source.stdin.getLines().drop(1)
@@ -73,8 +72,7 @@ object EstimatorApp extends App {
             ygct,
             fgc,
             fgct,
-            gct) =>
-        PoolState(ygc.toLong, ec.toLong.bytes, eu.toLong.bytes)
+            gct) => PoolState(ygc.toLong, ec.toLong.bytes, eu.toLong.bytes)
     }
 
   var elapsed = 1

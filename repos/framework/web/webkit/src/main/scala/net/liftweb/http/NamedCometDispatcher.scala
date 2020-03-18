@@ -49,8 +49,7 @@ class NamedCometDispatcher(name: Box[String]) extends LiftActor with Loggable {
     }
 
     //Catch the dummy message we send on comet creation
-    case CometName(name) =>
-    /**
+    case CometName(name) => /**
       * Go through the list of actors and send them a message
       */
     case msg => {

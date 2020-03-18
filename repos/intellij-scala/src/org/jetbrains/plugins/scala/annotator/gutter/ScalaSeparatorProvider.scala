@@ -50,8 +50,7 @@ trait ScalaSeparatorProvider {
     element match {
       case _: ScValue | _: ScVariable | _: ScTypeAlias | _: ScFunction |
           _: ScImportStmt | _: ScPackageContainer | _: ScClass | _: ScObject |
-          _: ScTrait | _: ScBlock =>
-        Some(DefaultGroup)
+          _: ScTrait | _: ScBlock => Some(DefaultGroup)
       case it: ScNewTemplateDefinition if it.extendsBlock != null =>
         Some(DefaultGroup)
       case _ => None

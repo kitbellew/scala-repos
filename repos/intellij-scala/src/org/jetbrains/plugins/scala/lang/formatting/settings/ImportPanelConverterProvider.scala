@@ -48,12 +48,12 @@ class ImportPanelConverterProvider
               val children = settings.getRootElement.getChildren
               import scala.collection.JavaConversions._
               children.find(_.getName == "component") match {
-                case Some(componentChild) =>
-                  componentChild.getChildren.filter { elem =>
-                    elem.getName == "option" && elem.getAttribute(
-                      "name") != null &&
-                    actualSettingsSet.contains(
-                      elem.getAttribute("name").getValue)
+                case Some(componentChild) => componentChild.getChildren.filter {
+                    elem =>
+                      elem.getName == "option" && elem.getAttribute(
+                        "name") != null &&
+                      actualSettingsSet.contains(
+                        elem.getAttribute("name").getValue)
                   }
                 case None => Seq.empty
               }
@@ -83,8 +83,7 @@ class ImportPanelConverterProvider
         context.getSettingsBaseDir
           .listFiles()
           .find(_.getName == "codeStyleSettings.xml") match {
-          case Some(file) =>
-            context match {
+          case Some(file) => context match {
               case context: ConversionContextImpl =>
                 val settings =
                   new ComponentManagerSettingsImpl(file, context) {}

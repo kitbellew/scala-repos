@@ -52,8 +52,7 @@ case class HookConfig(
       sid: Option[String],
       blocking: Set[String]): Either[Hook, Option[Seek]] =
     timeMode match {
-      case TimeMode.RealTime =>
-        Left(Hook.make(
+      case TimeMode.RealTime => Left(Hook.make(
           uid = uid,
           variant = variant,
           clock = justMakeClock,

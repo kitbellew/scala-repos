@@ -35,8 +35,7 @@ class ObjectIdSerializer extends Serializer[ObjectId] {
 
   def deserialize(implicit
       format: Formats): PartialFunction[(TypeInfo, JValue), ObjectId] = {
-    case (TypeInfo(ObjectIdClass, _), json) =>
-      json match {
+    case (TypeInfo(ObjectIdClass, _), json) => json match {
         case JsonObjectId(objectId) => objectId
         case x =>
           throw new MappingException("Can't convert " + x + " to ObjectId")
@@ -60,8 +59,7 @@ class PatternSerializer extends Serializer[Pattern] {
 
   def deserialize(implicit
       format: Formats): PartialFunction[(TypeInfo, JValue), Pattern] = {
-    case (TypeInfo(PatternClass, _), json) =>
-      json match {
+    case (TypeInfo(PatternClass, _), json) => json match {
         case JsonRegex(regex) => regex
         case x =>
           throw new MappingException("Can't convert " + x + " to Pattern")
@@ -84,8 +82,7 @@ class DateSerializer extends Serializer[Date] {
 
   def deserialize(implicit
       format: Formats): PartialFunction[(TypeInfo, JValue), Date] = {
-    case (TypeInfo(DateClass, _), json) =>
-      json match {
+    case (TypeInfo(DateClass, _), json) => json match {
         case JsonDate(dt) => dt
         case x            => throw new MappingException("Can't convert " + x + " to Date")
       }
@@ -107,8 +104,7 @@ class DateTimeSerializer extends Serializer[DateTime] {
 
   def deserialize(implicit
       format: Formats): PartialFunction[(TypeInfo, JValue), DateTime] = {
-    case (TypeInfo(DateTimeClass, _), json) =>
-      json match {
+    case (TypeInfo(DateTimeClass, _), json) => json match {
         case JsonDateTime(dt) => dt
         case x                => throw new MappingException("Can't convert " + x + " to Date")
       }
@@ -130,8 +126,7 @@ class UUIDSerializer extends Serializer[UUID] {
 
   def deserialize(implicit
       format: Formats): PartialFunction[(TypeInfo, JValue), UUID] = {
-    case (TypeInfo(UUIDClass, _), json) =>
-      json match {
+    case (TypeInfo(UUIDClass, _), json) => json match {
         case JsonUUID(uuid) => uuid
         case x              => throw new MappingException("Can't convert " + x + " to UUID")
       }

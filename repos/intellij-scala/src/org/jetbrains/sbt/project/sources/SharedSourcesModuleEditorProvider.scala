@@ -16,8 +16,7 @@ class SharedSourcesModuleEditorProvider
         Array(
           new ContentEntriesEditor(module.getName, state),
           new ClasspathEditor(state))
-      case _ =>
-        ModuleConfigurationEditor.EMPTY
+      case _ => ModuleConfigurationEditor.EMPTY
     }
   }
 }

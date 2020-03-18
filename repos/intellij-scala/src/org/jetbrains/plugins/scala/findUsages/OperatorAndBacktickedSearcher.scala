@@ -76,9 +76,7 @@ class OperatorAndBacktickedSearcher
             name,
             UsageSearchContext.IN_CODE,
             true)
-        } catch {
-          case ignore: IndexNotReadyException =>
-        }
+        } catch { case ignore: IndexNotReadyException => }
     }
     true
   }

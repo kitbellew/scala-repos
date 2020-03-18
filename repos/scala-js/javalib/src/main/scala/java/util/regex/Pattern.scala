@@ -113,9 +113,8 @@ object Pattern {
       val c = s.charAt(i)
       result += ((c: @switch) match {
         case '\\' | '.' | '(' | ')' | '[' | ']' | '{' | '}' | '|' | '?' | '*' |
-            '+' | '^' | '$' =>
-          "\\" + c
-        case _ => c
+            '+' | '^' | '$' => "\\" + c
+        case _              => c
       })
       i += 1
     }

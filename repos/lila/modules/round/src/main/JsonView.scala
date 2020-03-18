@@ -110,9 +110,9 @@ final class JsonView(
                   case _ if game.hasAi                                   => false
                   case ALWAYS                                            => true
                   case CORRESPONDENCE_UNLIMITED if game.isCorrespondence => true
-                  case CORRESPONDENCE_ONLY if game.hasCorrespondenceClock =>
-                    true
-                  case _ => false
+                  case CORRESPONDENCE_ONLY
+                      if game.hasCorrespondenceClock => true
+                  case _                             => false
                 }
               },
               "confirmResign" -> (pref.confirmResign == Pref.ConfirmResign.YES)

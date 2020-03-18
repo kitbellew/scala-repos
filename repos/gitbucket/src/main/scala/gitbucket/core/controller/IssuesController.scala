@@ -102,8 +102,7 @@ trait IssuesControllerBase extends ControllerBase {
 
   get("/:owner/:repository/issues/new")(readableUsersOnly { repository =>
     defining(repository.owner, repository.name) {
-      case (owner, name) =>
-        html.create(
+      case (owner, name) => html.create(
           (getCollaborators(owner, name) ::: (
             if (getAccountByUserName(owner).get.isGroupAccount) Nil
             else List(owner)
@@ -421,15 +420,13 @@ trait IssuesControllerBase extends ControllerBase {
     repository =>
       defining(params.get("value")) { action =>
         action match {
-          case Some("open") =>
-            executeBatch(repository) { issueId =>
+          case Some("open") => executeBatch(repository) { issueId =>
               getIssue(repository.owner, repository.name, issueId.toString)
                 .foreach { issue =>
                   handleComment(issue, None, repository, Some("reopen"))
                 }
             }
-          case Some("close") =>
-            executeBatch(repository) { issueId =>
+          case Some("close") => executeBatch(repository) { issueId =>
               getIssue(repository.owner, repository.name, issueId.toString)
                 .foreach { issue =>
                   handleComment(issue, None, repository, Some("close"))
@@ -506,8 +503,8 @@ trait IssuesControllerBase extends ControllerBase {
       execute: Int => Unit) = {
     params("checked").split(',') map (_.toInt) foreach execute
     params("from") match {
-      case "issues" =>
-        redirect(s"/${repository.owner}/${repository.name}/issues")
+      case "issues" => redirect(
+          s"/${repository.owner}/${repository.name}/issues")
       case "pulls" => redirect(s"/${repository.owner}/${repository.name}/pulls")
     }
   }

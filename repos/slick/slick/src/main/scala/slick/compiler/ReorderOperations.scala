@@ -87,8 +87,7 @@ class ReorderOperations extends Phase {
           if rs == s1 && defs1.find {
             case (f, n) if f == f1 => isRownumCalculation(n)
             case _                 => false
-          }.isDefined =>
-        sq.copy(child = filter.copy(from = bind)).infer()
+          }.isDefined => sq.copy(child = filter.copy(from = bind)).infer()
 
       // Push a BelowRowNumber boundary into SortBy
       case sq @ Subquery(n: SortBy, Subquery.BelowRowNumber) =>

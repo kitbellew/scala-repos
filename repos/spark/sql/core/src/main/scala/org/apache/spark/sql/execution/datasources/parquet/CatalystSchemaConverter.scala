@@ -152,8 +152,7 @@ private[parquet] class CatalystSchemaConverter(
 
       case DOUBLE => DoubleType
 
-      case INT32 =>
-        originalType match {
+      case INT32 => originalType match {
           case INT_8         => ByteType
           case INT_16        => ShortType
           case INT_32 | null => IntegerType
@@ -166,8 +165,7 @@ private[parquet] class CatalystSchemaConverter(
           case _             => illegalType()
         }
 
-      case INT64 =>
-        originalType match {
+      case INT64 => originalType match {
           case INT_64 | null    => LongType
           case DECIMAL          => makeDecimalType(Decimal.MAX_LONG_DIGITS)
           case UINT_64          => typeNotSupported()
@@ -183,8 +181,7 @@ private[parquet] class CatalystSchemaConverter(
         )
         TimestampType
 
-      case BINARY =>
-        originalType match {
+      case BINARY => originalType match {
           case UTF8 | ENUM | JSON           => StringType
           case null if assumeBinaryIsString => StringType
           case null                         => BinaryType
@@ -193,10 +190,9 @@ private[parquet] class CatalystSchemaConverter(
           case _                            => illegalType()
         }
 
-      case FIXED_LEN_BYTE_ARRAY =>
-        originalType match {
-          case DECIMAL =>
-            makeDecimalType(maxPrecisionForBytes(field.getTypeLength))
+      case FIXED_LEN_BYTE_ARRAY => originalType match {
+          case DECIMAL => makeDecimalType(
+              maxPrecisionForBytes(field.getTypeLength))
           case INTERVAL => typeNotImplemented()
           case _        => illegalType()
         }
@@ -349,8 +345,7 @@ private[parquet] class CatalystSchemaConverter(
       // Simple atomic types
       // ===================
 
-      case BooleanType =>
-        Types.primitive(BOOLEAN, repetition).named(field.name)
+      case BooleanType => Types.primitive(BOOLEAN, repetition).named(field.name)
 
       case ByteType =>
         Types.primitive(INT32, repetition).as(INT_8).named(field.name)
@@ -358,17 +353,13 @@ private[parquet] class CatalystSchemaConverter(
       case ShortType =>
         Types.primitive(INT32, repetition).as(INT_16).named(field.name)
 
-      case IntegerType =>
-        Types.primitive(INT32, repetition).named(field.name)
+      case IntegerType => Types.primitive(INT32, repetition).named(field.name)
 
-      case LongType =>
-        Types.primitive(INT64, repetition).named(field.name)
+      case LongType => Types.primitive(INT64, repetition).named(field.name)
 
-      case FloatType =>
-        Types.primitive(FLOAT, repetition).named(field.name)
+      case FloatType => Types.primitive(FLOAT, repetition).named(field.name)
 
-      case DoubleType =>
-        Types.primitive(DOUBLE, repetition).named(field.name)
+      case DoubleType => Types.primitive(DOUBLE, repetition).named(field.name)
 
       case StringType =>
         Types.primitive(BINARY, repetition).as(UTF8).named(field.name)
@@ -394,11 +385,9 @@ private[parquet] class CatalystSchemaConverter(
       // hasn't implemented `TIMESTAMP_MICROS` yet.
       //
       // TODO Converts `TIMESTAMP_MICROS` once parquet-mr implements that.
-      case TimestampType =>
-        Types.primitive(INT96, repetition).named(field.name)
+      case TimestampType => Types.primitive(INT96, repetition).named(field.name)
 
-      case BinaryType =>
-        Types.primitive(BINARY, repetition).named(field.name)
+      case BinaryType => Types.primitive(BINARY, repetition).named(field.name)
 
       // ======================
       // Decimals (legacy mode)
@@ -559,8 +548,8 @@ private[parquet] class CatalystSchemaConverter(
           }
           .named(field.name)
 
-      case udt: UserDefinedType[_] =>
-        convertField(field.copy(dataType = udt.sqlType))
+      case udt: UserDefinedType[_] => convertField(
+          field.copy(dataType = udt.sqlType))
 
       case _ =>
         throw new AnalysisException(s"Unsupported data type $field.dataType")

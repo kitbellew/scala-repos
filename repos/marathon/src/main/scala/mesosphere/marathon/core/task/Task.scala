@@ -169,8 +169,7 @@ object Task {
             networking,
             reservation))
 
-        case TaskStateOp.ReservationTimeout =>
-          TaskStateChange.Expunge
+        case TaskStateOp.ReservationTimeout => TaskStateChange.Expunge
 
         // failure case: MesosUpdate
         case _: TaskStateOp.MesosUpdate =>
@@ -379,8 +378,8 @@ object Task {
 
     def unapply(id: String): Option[(LocalVolumeId)] =
       id match {
-        case LocalVolumeEncoderRE(app, path, uuid) =>
-          Some(LocalVolumeId(PathId.fromSafePath(app), path, uuid))
+        case LocalVolumeEncoderRE(app, path, uuid) => Some(
+            LocalVolumeId(PathId.fromSafePath(app), path, uuid))
         case _ => None
       }
   }
@@ -460,9 +459,8 @@ object Task {
     def isTerminated(state: TaskState): Boolean =
       state match {
         case TASK_ERROR | TASK_FAILED | TASK_FINISHED | TASK_KILLED |
-            TASK_LOST =>
-          true
-        case _ => false
+            TASK_LOST => true
+        case _        => false
       }
 
     def unapply(state: TaskState): Option[TaskState] =

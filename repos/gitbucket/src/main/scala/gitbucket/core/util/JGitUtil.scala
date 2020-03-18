@@ -391,8 +391,7 @@ object JGitUtil {
       findLastCommits(List.empty, fileList.map(a => a -> nextParentsMap), it)
         .map(simplifyPath)
         .map {
-          case (objectId, fileMode, name, linkUrl, commit) =>
-            FileInfo(
+          case (objectId, fileMode, name, linkUrl, commit) => FileInfo(
               objectId,
               fileMode == FileMode.TREE || fileMode == FileMode.GITLINK,
               name,
@@ -834,11 +833,11 @@ object JGitUtil {
       git.branchCreate().setStartPoint(fromBranch).setName(newBranch).call()
       Right("Branch created.")
     } catch {
-      case e: RefAlreadyExistsException =>
-        Left("Sorry, that branch already exists.")
+      case e: RefAlreadyExistsException => Left(
+          "Sorry, that branch already exists.")
       // JGitInternalException occurs when new branch name is 'a' and the branch whose name is 'a/*' exists.
-      case _: InvalidRefNameException | _: JGitInternalException =>
-        Left("Sorry, that name is invalid.")
+      case _: InvalidRefNameException | _: JGitInternalException => Left(
+          "Sorry, that name is invalid.")
     }
   }
 

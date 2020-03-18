@@ -170,9 +170,7 @@ trait FlashMapSupport extends Handler {
     try {
       // Save flashMap to Session after (a session could stop existing during a request, so catch exception)
       session(SessionKey) = f
-    } catch {
-      case e: Throwable =>
-    }
+    } catch { case e: Throwable => }
   }
 
   private[this] def getFlash(req: HttpServletRequest): FlashMap =

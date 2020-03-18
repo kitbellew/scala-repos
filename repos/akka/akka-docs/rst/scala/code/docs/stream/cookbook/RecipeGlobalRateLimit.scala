@@ -66,8 +66,7 @@ class RecipeGlobalRateLimit extends RecipeSpec {
             permitTokens + tokenRefreshAmount,
             maxAvailableTokens)
           releaseWaiting()
-        case WantToPass =>
-          waitQueue = waitQueue.enqueue(sender())
+        case WantToPass => waitQueue = waitQueue.enqueue(sender())
       }
 
       private def releaseWaiting(): Unit = {

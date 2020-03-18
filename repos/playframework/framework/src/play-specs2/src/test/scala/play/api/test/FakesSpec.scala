@@ -43,8 +43,7 @@ object FakesSpec extends PlaySpecification {
     def app =
       GuiceApplicationBuilder()
         .routes {
-          case (PUT, "/process") =>
-            Action { req =>
+          case (PUT, "/process") => Action { req =>
               Results.Ok(req.headers.get(CONTENT_TYPE) getOrElse "")
             }
         }

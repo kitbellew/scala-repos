@@ -172,13 +172,11 @@ class DistributedProfile(val profiles: RelationalProfile*)
                       .asInstanceOf[RelationalProfile#Table[_]]
                       .tableProvider),
                   Set.empty)
-              case Ref(sym) =>
-                scope.get(sym) match {
+              case Ref(sym) => scope.get(sym) match {
                   case Some(nn) =>
                     val target = RefId(nn._1)
                     (Set.empty, needed(target) ++ taints(target))
-                  case None =>
-                    (Set.empty, Set.empty)
+                  case None => (Set.empty, Set.empty)
                 }
               case n =>
                 var nnd = Set.empty[RelationalProfile]

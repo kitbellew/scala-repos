@@ -42,8 +42,7 @@ trait Printers extends scala.reflect.internal.Printers {
           else { print(unit.body); println() }
           println()
           out.flush()
-        case arg =>
-          super.print(arg)
+        case arg => super.print(arg)
       }
   }
 
@@ -61,8 +60,7 @@ trait Printers extends scala.reflect.internal.Printers {
       case SelectFromArray(qualifier, name, _) =>
         treePrinter.print(qualifier, ".<arr>", symName(tree, name))
 
-      case _ =>
-        super.xprintTree(treePrinter, tree)
+      case _ => super.xprintTree(treePrinter, tree)
     }
 
   /** A tree printer which is stingier about vertical whitespace and unnecessary
@@ -112,8 +110,7 @@ trait Printers extends scala.reflect.internal.Printers {
           print("labeldef %s(%s) = ".format(name, params mkString ","))
           printTree(rhs)
 
-        case Ident(name) =>
-          print(decodedSymName(tree, name))
+        case Ident(name) => print(decodedSymName(tree, name))
 
         // target.method(arg) ==> target method arg
         case Apply(Select(target, method), List(arg)) =>
@@ -146,8 +143,7 @@ trait Printers extends scala.reflect.internal.Printers {
         case Apply(fn, Nil) => printTree(fn)
 
         // if a Block only continues one actual statement, just print it.
-        case Block(stats, expr) =>
-          allStatements(tree) match {
+        case Block(stats, expr) => allStatements(tree) match {
             case List(x) => printTree(x)
             case xs      => s()
           }

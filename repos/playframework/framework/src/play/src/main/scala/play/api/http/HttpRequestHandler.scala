@@ -162,16 +162,14 @@ class DefaultHttpRequestHandler(
       request.method match {
         case HttpVerbs.HEAD =>
           routeRequest(request.copy(method = HttpVerbs.GET)) match {
-            case Some(action: EssentialAction) =>
-              action match {
+            case Some(action: EssentialAction) => action match {
                 case handler: RequestTaggingHandler =>
                   (handler.tagRequest(request), action)
                 case _ => (request, action)
               }
             case None => (request, notFoundHandler)
           }
-        case _ =>
-          (request, notFoundHandler)
+        case _ => (request, notFoundHandler)
       }
     }
 
@@ -256,8 +254,8 @@ class JavaCompatibleHttpRequestHandler @Inject() (
 
   override def routeRequest(request: RequestHeader): Option[Handler] = {
     super.routeRequest(request) match {
-      case Some(javaHandler: JavaHandler) =>
-        Some(javaHandler.withComponents(components))
+      case Some(javaHandler: JavaHandler) => Some(
+          javaHandler.withComponents(components))
       case other => other
     }
   }

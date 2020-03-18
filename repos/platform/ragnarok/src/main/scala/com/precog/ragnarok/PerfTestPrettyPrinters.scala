@@ -40,8 +40,7 @@ trait JsonConverters {
           val row = JObject(JField("path", JArray(newPath)) :: f(a))
           row :: kids.toList.flatMap(values(newPath, _))
 
-        case Tree.Node(_, kids) =>
-          kids.toList.flatMap(values(path, _))
+        case Tree.Node(_, kids) => kids.toList.flatMap(values(path, _))
       }
 
     JArray(values(Nil, result))
@@ -66,14 +65,11 @@ trait JsonConverters {
           JField("stats", stats.toJson) ::
           JField("delta", JString("slower")) :: Nil
 
-      case MissingBaseline(stats) =>
-        JField("stats", stats.toJson) :: Nil
+      case MissingBaseline(stats) => JField("stats", stats.toJson) :: Nil
 
-      case MissingStats(baseline) =>
-        JField("baseline", baseline.toJson) :: Nil
+      case MissingStats(baseline) => JField("baseline", baseline.toJson) :: Nil
 
-      case Missing =>
-        Nil
+      case Missing => Nil
     }
   }
 
@@ -96,16 +92,14 @@ trait PrettyPrinters {
 
         case Tree.Node((RunSequential, result), kids) =>
           (kids.toList map (lines(_)) flatMap {
-            case head :: tail =>
-              (" + " + head) :: (tail map (" | " + _))
-            case Nil => Nil
+            case head :: tail => (" + " + head) :: (tail map (" | " + _))
+            case Nil          => Nil
           }) ++ List(" ' " + prettyResult(result), "")
 
         case Tree.Node((RunConcurrent, result), kids) =>
           (kids.toList map (lines(_)) flatMap {
-            case head :: tail =>
-              (" * " + head) :: (tail map (" | " + _))
-            case Nil => Nil
+            case head :: tail => (" * " + head) :: (tail map (" | " + _))
+            case Nil          => Nil
           }) ++ List(" ' " + prettyResult(result), "")
 
         case Tree.Node((RunQuery(q), result), kids) =>
@@ -135,10 +129,8 @@ trait PrettyPrinters {
         "SLOWER     %.1f ms (%.1 ms slower)" format (
           stats.mean, stats.mean - baseline.mean
         )
-      case MissingBaseline(stats) =>
-        "TOTAL      %.1f ms" format stats.mean
-      case MissingStats(_) | Missing =>
-        ""
+      case MissingBaseline(stats)    => "TOTAL      %.1f ms" format stats.mean
+      case MissingStats(_) | Missing => ""
     }
   }
 

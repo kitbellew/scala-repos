@@ -33,8 +33,7 @@ trait OptionInstances extends OptionInstances0 {
     override def length[A](fa: Option[A]) = if (fa.isEmpty) 0 else 1
     override def ap[A, B](fa: => Option[A])(f: => Option[A => B]) =
       f match {
-        case Some(f) =>
-          fa match {
+        case Some(f) => fa match {
             case Some(x) => Some(f(x))
             case None    => None
           }
@@ -55,8 +54,7 @@ trait OptionInstances extends OptionInstances0 {
     def cozip[A, B](a: Option[A \/ B]) =
       a match {
         case None => -\/(None)
-        case Some(e) =>
-          e match {
+        case Some(e) => e match {
             case -\/(a) => -\/(Some(a))
             case \/-(b) => \/-(Some(b))
           }
@@ -73,14 +71,10 @@ trait OptionInstances extends OptionInstances0 {
       }
 
     def alignWith[A, B, C](f: A \&/ B => C) = {
-      case (None, None) =>
-        None
-      case (Some(a), None) =>
-        Some(f(\&/.This(a)))
-      case (None, Some(b)) =>
-        Some(f(\&/.That(b)))
-      case (Some(a), Some(b)) =>
-        Some(f(\&/.Both(a, b)))
+      case (None, None)       => None
+      case (Some(a), None)    => Some(f(\&/.This(a)))
+      case (None, Some(b))    => Some(f(\&/.That(b)))
+      case (Some(a), Some(b)) => Some(f(\&/.Both(a, b)))
     }
 
     def cobind[A, B](fa: Option[A])(f: Option[A] => B) =

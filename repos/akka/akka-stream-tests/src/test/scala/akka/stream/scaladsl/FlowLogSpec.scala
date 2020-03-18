@@ -218,8 +218,7 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
             counter == 4
 
           case Logging.Debug(_, _, msg: String)
-              if msg contains "Upstream finished" ⇒
-            false
+              if msg contains "Upstream finished" ⇒ false
         }
       }
     }

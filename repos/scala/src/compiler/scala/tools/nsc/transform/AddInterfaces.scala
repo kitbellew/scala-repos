@@ -36,8 +36,7 @@ abstract class AddInterfaces extends InfoTransform {
           }
         }
         if (parents1 eq parents) tp else ClassInfoType(parents1, decls, clazz)
-      case _ =>
-        tp
+      case _ => tp
     }
 
 // Tree transformation --------------------------------------------------------------
@@ -105,8 +104,7 @@ abstract class AddInterfaces extends InfoTransform {
           val parents1 =
             sym.owner.info.parents map (t => TypeTree(t) setPos tree.pos)
           treeCopy.Template(tree, parents1, noSelfType, body)
-        case _ =>
-          tree
+        case _ => tree
       }
       super.transform(tree1)
     }

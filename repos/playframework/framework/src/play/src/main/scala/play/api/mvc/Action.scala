@@ -192,8 +192,7 @@ trait BodyParser[+A]
           case Right(a) =>
             // safe to execute `Right.apply` in same thread
             f(a).map(Right.apply)(Execution.trampoline)
-          case left =>
-            Future.successful(left.asInstanceOf[Either[Result, B]])
+          case left => Future.successful(left.asInstanceOf[Either[Result, B]])
         }(pec)
       override def toString = self.toString
     }
@@ -251,8 +250,7 @@ trait BodyParser[+A]
           case Right(a) =>
             // safe to execute `Done.apply` in same thread
             f(a)
-          case Left(e) =>
-            Future.successful(Left(e))
+          case Left(e) => Future.successful(Left(e))
         }(pec)
       override def toString = self.toString
     }

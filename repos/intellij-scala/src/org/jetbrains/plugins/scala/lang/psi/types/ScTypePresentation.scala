@@ -51,11 +51,10 @@ trait ScTypePresentation {
       },
       {
         case obj: ScObject
-            if Set("scala.Predef", "scala").contains(obj.qualifiedName) =>
-          ""
-        case pack: PsiPackage => ""
-        case c: PsiClass      => ScalaPsiUtil.nameWithPrefixIfNeeded(c) + "."
-        case e                => e.name + "."
+            if Set("scala.Predef", "scala").contains(obj.qualifiedName) => ""
+        case pack: PsiPackage                                           => ""
+        case c: PsiClass                                                => ScalaPsiUtil.nameWithPrefixIfNeeded(c) + "."
+        case e                                                          => e.name + "."
       }
     )
 
@@ -63,8 +62,7 @@ trait ScTypePresentation {
     def nameFun(e: PsiNamedElement, withPoint: Boolean): String = {
       e match {
         case obj: ScObject
-            if withPoint && obj.qualifiedName == "scala.Predef" =>
-          ""
+            if withPoint && obj.qualifiedName == "scala.Predef" => ""
         case e: PsiClass =>
           "<a href=\"psi_element://" + e.qualifiedName + "\"><code>" +
             StringEscapeUtils.escapeHtml(e.name) +
@@ -90,10 +88,8 @@ trait ScTypePresentation {
             "_root_." + qname
           else c.name
         case p: PsiPackage => "_root_." + p.getQualifiedName
-        case _ =>
-          ScalaPsiUtil.nameContext(e) match {
-            case m: ScMember =>
-              m.containingClass match {
+        case _ => ScalaPsiUtil.nameContext(e) match {
+            case m: ScMember => m.containingClass match {
                 case o: ScObject => nameFun(o, withPoint = true) + e.name
                 case _           => e.name
               }
@@ -169,9 +165,8 @@ trait ScTypePresentation {
       def checkIfStable(e: PsiElement): Boolean = {
         e match {
           case _: ScObject | _: ScBindingPattern | _: ScParameter |
-              _: ScFieldId =>
-            true
-          case _ => false
+              _: ScFieldId => true
+          case _           => false
         }
       }
       val typeTailForProjection = typeTail(checkIfStable(e) && needDotType)
@@ -368,8 +363,7 @@ trait ScTypePresentation {
       t match {
         case ScAbstractType(tpt, lower, upper) =>
           ScTypePresentation.ABSTRACT_TYPE_PREFIX + tpt.name.capitalize
-        case StdType(name, _) =>
-          name
+        case StdType(name, _) => name
         case f @ ScFunctionType(ret, params) if !t.isAliasType.isDefined =>
           val projectOption = ScType.extractClass(f).map(_.getProject)
           val arrow = projectOption
@@ -378,17 +372,13 @@ trait ScTypePresentation {
           typeSeqText(params, "(", ", ", s") $arrow ") + innerTypeText(ret)
         case ScThisType(clazz: ScTypeDefinition) =>
           clazz.name + ".this" + typeTail(needDotType)
-        case ScThisType(clazz) =>
-          "this" + typeTail(needDotType)
-        case ScTupleType(Seq(tpe)) =>
-          s"Tuple1[${innerTypeText(tpe)}]"
-        case ScTupleType(comps) =>
-          typeSeqText(comps, "(", ", ", ")")
+        case ScThisType(clazz)     => "this" + typeTail(needDotType)
+        case ScTupleType(Seq(tpe)) => s"Tuple1[${innerTypeText(tpe)}]"
+        case ScTupleType(comps)    => typeSeqText(comps, "(", ", ", ")")
         case ScDesignatorType(
               e @ (_: ScObject | _: ScReferencePattern | _: ScParameter)) =>
           nameFun(e) + typeTail(needDotType)
-        case ScDesignatorType(e) =>
-          nameFun(e)
+        case ScDesignatorType(e) => nameFun(e)
         case proj: ScProjectionType if proj != null =>
           projectionTypeText(proj, needDotType)
         case ScParameterizedType(des, typeArgs) =>
@@ -398,15 +388,13 @@ trait ScTypePresentation {
             ", ",
             "]",
             checkWildcard = true)
-        case j @ JavaArrayType(arg) =>
-          s"Array[${innerTypeText(arg)}]"
+        case j @ JavaArrayType(arg)                => s"Array[${innerTypeText(arg)}]"
         case ScSkolemizedType(name, _, _, _)       => name
         case ScTypeParameterType(name, _, _, _, _) => name
         case ScUndefinedType(tpt: ScTypeParameterType) =>
           "NotInfered" + tpt.name
-        case ScTypeVariable(name) => name
-        case c: ScCompoundType if c != null =>
-          compoundTypeText(c)
+        case ScTypeVariable(name)           => name
+        case c: ScCompoundType if c != null => compoundTypeText(c)
         case ex: ScExistentialType if ex != null =>
           existentialTypeText(ex, checkWildcard, needDotType)
         case ScTypePolymorphicType(internalType, typeParameters) =>

@@ -170,8 +170,7 @@ class CompoundTypeCheckSignatureProcessor(
               method.getTypeParameters,
               method match {
                 case fun: ScFunction => fun.returnType.getOrNothing
-                case method: PsiMethod =>
-                  ScType.create(
+                case method: PsiMethod => ScType.create(
                     method.getReturnType,
                     method.getProject,
                     method.getResolveScope)
@@ -294,8 +293,7 @@ class CompoundTypeCheckTypeAliasProcessor(
     }
 
     element match {
-      case tp: ScTypeAliasDefinition =>
-        sign.ta match {
+      case tp: ScTypeAliasDefinition => sign.ta match {
           case _: ScTypeAliasDefinition =>
             val t = Equivalence.equivInner(
               subst.subst(tp.aliasedType.getOrNothing),

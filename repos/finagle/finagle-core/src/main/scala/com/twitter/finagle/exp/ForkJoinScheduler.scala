@@ -82,8 +82,7 @@ private class ForkJoinScheduler(
 
   def submit(r: Runnable) {
     Thread.currentThread() match {
-      case t: ForkJoinWorkerThread if t.getPool eq pool =>
-        local.submit(r)
+      case t: ForkJoinWorkerThread if t.getPool eq pool => local.submit(r)
 
       case _ =>
         try pool.execute(ForkJoinTask.adapt(r))

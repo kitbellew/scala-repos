@@ -27,23 +27,17 @@ object EmitHtml {
     }
     def emitText(text: AbstractText) {
       text match {
-        case seq: SeqText =>
-          seq.components foreach emitText
+        case seq: SeqText => seq.components foreach emitText
 
-        case seq: SeqPara =>
-          seq.components foreach emitPara
+        case seq: SeqPara => seq.components foreach emitPara
 
-        case Text(text) =>
-          out print escape(text)
+        case Text(text) => out print escape(text)
 
-        case BSlash =>
-          out print "\\"
+        case BSlash => out print "\\"
 
-        case MDash =>
-          out print "&#8212;"
+        case MDash => out print "&#8212;"
 
-        case NDash =>
-          out print "&#8211;"
+        case NDash => out print "&#8211;"
 
         case Bold(text) =>
           out print "<b>"
@@ -87,8 +81,7 @@ object EmitHtml {
           emitText(label)
           out print "</a>"
 
-        case _ =>
-          sys.error("unknown text node: " + text)
+        case _ => sys.error("unknown text node: " + text)
       }
     }
 
@@ -130,11 +123,9 @@ object EmitHtml {
           out.println("<p><strong>" + escape(title) + "</strong></p>")
           emitText(text)
 
-        case EmbeddedSection(sect) =>
-          emitSection(sect, depth + 1)
+        case EmbeddedSection(sect) => emitSection(sect, depth + 1)
 
-        case _ =>
-          sys.error("unknown paragraph node: " + para)
+        case _ => sys.error("unknown paragraph node: " + para)
       }
     }
 

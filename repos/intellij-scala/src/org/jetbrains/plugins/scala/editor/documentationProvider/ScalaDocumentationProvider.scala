@@ -89,8 +89,7 @@ class ScalaDocumentationProvider extends CodeDocumentationProvider {
       element: PsiElement,
       originalElement: PsiElement): String = {
     val substitutor = originalElement match {
-      case ref: ScReferenceElement =>
-        ref.bind() match {
+      case ref: ScReferenceElement => ref.bind() match {
           case Some(ScalaResolveResult(_, subst)) => subst
           case _                                  => ScSubstitutor.empty
         }
@@ -633,10 +632,8 @@ object ScalaDocumentationProvider {
             .append(" ")
           annotation.constructor.args.foreach(a =>
             a.exprs.headOption.map {
-              case exprHead =>
-                exprHead.getType(TypingContext.empty) match {
-                  case Success(head, _) =>
-                    head match {
+              case exprHead => exprHead.getType(TypingContext.empty) match {
+                  case Success(head, _) => head match {
                       case ScParameterizedType(_, args) =>
                         args.headOption match {
                           case a: Some[ScType] =>
@@ -762,8 +759,7 @@ object ScalaDocumentationProvider {
     def accessQualifier(x: ScAccessModifier): String =
       (x.getReference match {
         case null => ""
-        case ref =>
-          ref.resolve match {
+        case ref => ref.resolve match {
             case clazz: PsiClass =>
               "[<a href=\"psi_element://" +
                 escapeHtml(clazz.qualifiedName) + "\"><code>" +
@@ -773,8 +769,7 @@ object ScalaDocumentationProvider {
                 }) + "</code></a>]"
             case pack: PsiPackage =>
               "[" + escapeHtml(pack.getQualifiedName) + "]"
-            case _ =>
-              x.idText match {
+            case _ => x.idText match {
                 case Some(text) => "[" + text + "]"
                 case None       => ""
               }
@@ -782,8 +777,7 @@ object ScalaDocumentationProvider {
       }) + " "
 
     buffer.append(elem.getModifierList.accessModifier match {
-      case Some(x: ScAccessModifier) =>
-        x.access match {
+      case Some(x: ScAccessModifier) => x.access match {
           case ScAccessModifier.Type.PRIVATE => "private" + accessQualifier(x)
           case ScAccessModifier.Type.PROTECTED =>
             "protected" + accessQualifier(x)
@@ -860,9 +854,8 @@ object ScalaDocumentationProvider {
           case f: ScFunction =>
             "class A {\n" + xText + "\npublic " + getTypeParams(
               f) + "int f" + getParams(f) + " {}\n}"
-          case m: PsiMethod =>
-            "class A {\n" + m.getText + "\n}"
-          case _ => xText + "\nclass A"
+          case m: PsiMethod => "class A {\n" + m.getText + "\n}"
+          case _            => xText + "\nclass A"
         }
         val dummyFile = PsiFileFactory
           .getInstance(elem.getProject)
@@ -898,16 +891,12 @@ object ScalaDocumentationProvider {
             javadoc.substring(i + 6, javadoc.length - 14)
           case _ => javadoc.substring(110, javadoc.length - 14)
         }) + s2
-      case _ =>
-        elem match {
-          case fun: ScFunction =>
-            fun.superMethod match {
-              case Some(fun: PsiMethod) =>
-                fun.getNavigationElement match {
+      case _ => elem match {
+          case fun: ScFunction => fun.superMethod match {
+              case Some(fun: PsiMethod) => fun.getNavigationElement match {
                   case fun: PsiMethod =>
                     parseDocComment(fun, withDescription = true)
-                  case _ =>
-                    parseDocComment(fun, withDescription = true)
+                  case _ => parseDocComment(fun, withDescription = true)
                 }
               case _ => ""
             }
@@ -916,17 +905,14 @@ object ScalaDocumentationProvider {
             try {
               superSignature =
                 SuperMethodsSearch.search(method, null, true, false).findFirst
-            } catch {
-              case e: IndexNotReadyException =>
-            }
+            } catch { case e: IndexNotReadyException => }
             if (superSignature == null) return ""
 
             val meth = superSignature.getMethod
             meth.getNavigationElement match {
               case fun: PsiMethod =>
                 parseDocComment(fun, withDescription = true)
-              case _ =>
-                parseDocComment(meth, withDescription = true)
+              case _ => parseDocComment(meth, withDescription = true)
             }
           case _ => ""
         }
@@ -972,8 +958,7 @@ object ScalaDocumentationProvider {
         result: StringBuilder = commentBody) {
       if (element.getFirstChild == null) {
         element.getNode.getElementType match {
-          case ScalaDocTokenType.DOC_TAG_NAME =>
-            element.getText match {
+          case ScalaDocTokenType.DOC_TAG_NAME => element.getText match {
               case MyScaladocParsing.TYPE_PARAM_TAG => result.append("@param ")
               case MyScaladocParsing.NOTE_TAG | MyScaladocParsing.TODO_TAG |
                   MyScaladocParsing.EXAMPLE_TAG =>
@@ -1074,9 +1059,7 @@ object ScalaDocumentationProvider {
                 .map(a => result append a)
                 .getOrElse(
                   result append s"[Cannot find macro: ${element.getText}]")
-            } catch {
-              case ee: Exception =>
-            }
+            } catch { case ee: Exception => }
           case _ => result.append(element.getText)
         }
       } else {
@@ -1174,8 +1157,7 @@ object ScalaDocumentationProvider {
     buffer.append(clazz.name)
     appendTypeParams(clazz, buffer)
     clazz match {
-      case clazz: ScClass =>
-        clazz.constructor match {
+      case clazz: ScClass => clazz.constructor match {
           case Some(x: ScPrimaryConstructor) =>
             buffer.append(StructureViewUtil.getParametersAsString(
               x.parameterList,

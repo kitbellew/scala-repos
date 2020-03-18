@@ -50,8 +50,7 @@ trait OwnerAuthenticator {
             case Some(x) if (getGroupMembers(repository.owner).exists {
                   member =>
                     member.userName == x.userName && member.isManager == true
-                }) =>
-              action(repository)
+                }) => action(repository)
             case _ => Unauthorized()
           }
         } getOrElse NotFound()
@@ -118,9 +117,8 @@ trait CollaboratorsAuthenticator {
             case Some(x) if (paths(0) == x.userName) => action(repository)
             case Some(x)
                 if (getCollaborators(paths(0), paths(1)).contains(
-                  x.userName)) =>
-              action(repository)
-            case _ => Unauthorized()
+                  x.userName)) => action(repository)
+            case _             => Unauthorized()
           }
         } getOrElse NotFound()
       }
@@ -150,9 +148,8 @@ trait ReferrerAuthenticator {
               case Some(x) if (paths(0) == x.userName) => action(repository)
               case Some(x)
                   if (getCollaborators(paths(0), paths(1)).contains(
-                    x.userName)) =>
-                action(repository)
-              case _ => Unauthorized()
+                    x.userName)) => action(repository)
+              case _             => Unauthorized()
             }
           }
         } getOrElse NotFound()
@@ -183,9 +180,8 @@ trait ReadableUsersAuthenticator {
             case Some(x) if (paths(0) == x.userName) => action(repository)
             case Some(x)
                 if (getCollaborators(paths(0), paths(1)).contains(
-                  x.userName)) =>
-              action(repository)
-            case _ => Unauthorized()
+                  x.userName)) => action(repository)
+            case _             => Unauthorized()
           }
         } getOrElse NotFound()
       }
@@ -208,8 +204,7 @@ trait GroupManagerAuthenticator {
         context.loginAccount match {
           case Some(x) if (getGroupMembers(paths(0)).exists { member =>
                 member.userName == x.userName && member.isManager
-              }) =>
-            action
+              }) => action
           case _ => Unauthorized()
         }
       }

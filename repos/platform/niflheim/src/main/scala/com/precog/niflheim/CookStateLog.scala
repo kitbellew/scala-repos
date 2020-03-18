@@ -90,8 +90,7 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService)
         case LogRecordType.END_OF_LOG =>
           logger.debug("TXLog Replay complete in " + baseDir.getCanonicalPath)
 
-        case LogRecordType.USER =>
-          TXLogEntry(r) match {
+        case LogRecordType.USER => TXLogEntry(r) match {
             case StartCook(blockId) =>
               pendingCookIds0 += (blockId -> r.key)
               currentBlockId0 = currentBlockId0 max blockId
@@ -101,8 +100,7 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService)
               currentBlockId0 = currentBlockId0 max blockId
           }
 
-        case other =>
-          logger.warn("Unknown LogRecord type: " + other)
+        case other => logger.warn("Unknown LogRecord type: " + other)
       }
     }
   })

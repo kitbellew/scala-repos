@@ -371,8 +371,7 @@ class ReplicaManager(
             topic,
             partitionId,
             config.brokerId))
-      case Some(partition) =>
-        partition.leaderReplicaIfLocal match {
+      case Some(partition) => partition.leaderReplicaIfLocal match {
           case Some(leaderReplica) => leaderReplica
           case None =>
             throw new NotLeaderForPartitionException(
@@ -708,8 +707,7 @@ class ReplicaManager(
              */
             val initialLogEndOffset = localReplica.logEndOffset
             val logReadInfo = localReplica.log match {
-              case Some(log) =>
-                log.read(offset, fetchSize, maxOffsetOpt)
+              case Some(log) => log.read(offset, fetchSize, maxOffsetOpt)
               case None =>
                 error(
                   "Leader for partition [%s,%d] does not have a local log"
@@ -923,8 +921,7 @@ class ReplicaManager(
         }
 
         val partitionsTobeLeader = partitionState.filter {
-          case (partition, stateInfo) =>
-            stateInfo.leader == config.brokerId
+          case (partition, stateInfo) => stateInfo.leader == config.brokerId
         }
         val partitionsToBeFollower =
           (partitionState -- partitionsTobeLeader.keys)

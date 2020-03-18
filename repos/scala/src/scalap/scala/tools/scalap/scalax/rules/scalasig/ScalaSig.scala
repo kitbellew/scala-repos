@@ -31,8 +31,8 @@ object ScalaSigParser {
     def getBytes(bytesElem: AnnotationElement): Array[Byte] =
       bytesElem.elementValue match {
         case ConstValueIndex(index) => bytesForIndex(index)
-        case ArrayValue(signatureParts) =>
-          mergedLongSignatureBytes(signatureParts)
+        case ArrayValue(signatureParts) => mergedLongSignatureBytes(
+            signatureParts)
       }
 
     def mergedLongSignatureBytes(

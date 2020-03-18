@@ -48,12 +48,10 @@ class AsyncRenderComet extends MessageCometActor {
   // FIXME client when nothing is left to compute
   override def lowPriority: PartialFunction[Any, Unit] = {
     // farm the request off to another thread
-    case Compute(js) =>
-      Schedule.schedule(() => this ! Render(js()), 0.seconds)
+    case Compute(js) => Schedule.schedule(() => this ! Render(js()), 0.seconds)
 
     // render it
-    case Render(js) =>
-      partialUpdate(js)
+    case Render(js) => partialUpdate(js)
   }
 }
 

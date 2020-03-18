@@ -455,10 +455,8 @@ trait PersistentFSMBase[S, D, E]
         self,
         currentState.stateName,
         currentState.timeout)
-    case UnsubscribeTransitionCallBack(actorRef) ⇒
-      listeners.remove(actorRef)
-    case Deafen(actorRef) ⇒
-      listeners.remove(actorRef)
+    case UnsubscribeTransitionCallBack(actorRef) ⇒ listeners.remove(actorRef)
+    case Deafen(actorRef) ⇒ listeners.remove(actorRef)
     case value ⇒
       if (timeoutFuture.isDefined) {
         timeoutFuture.get.cancel()

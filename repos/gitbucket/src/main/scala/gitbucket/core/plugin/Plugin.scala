@@ -104,20 +104,16 @@ trait Plugin {
       context: ServletContext,
       settings: SystemSettings): Unit = {
     (images ++ images(registry, context, settings)).foreach {
-      case (id, in) =>
-        registry.addImage(id, in)
+      case (id, in) => registry.addImage(id, in)
     }
     (controllers ++ controllers(registry, context, settings)).foreach {
-      case (path, controller) =>
-        registry.addController(path, controller)
+      case (path, controller) => registry.addController(path, controller)
     }
     (javaScripts ++ javaScripts(registry, context, settings)).foreach {
-      case (path, script) =>
-        registry.addJavaScript(path, script)
+      case (path, script) => registry.addJavaScript(path, script)
     }
     (renderers ++ renderers(registry, context, settings)).foreach {
-      case (extension, renderer) =>
-        registry.addRenderer(extension, renderer)
+      case (extension, renderer) => registry.addRenderer(extension, renderer)
     }
     (repositoryRoutings ++ repositoryRoutings(registry, context, settings))
       .foreach { routing => registry.addRepositoryRouting(routing) }

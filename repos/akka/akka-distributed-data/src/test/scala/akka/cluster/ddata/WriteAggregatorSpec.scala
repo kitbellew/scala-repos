@@ -53,8 +53,7 @@ object WriteAggregatorSpec {
     var replicator: Option[ActorRef] = None
 
     def receive = {
-      case WriteAck ⇒
-        replicator.foreach(_ ! WriteAck)
+      case WriteAck ⇒ replicator.foreach(_ ! WriteAck)
       case msg ⇒
         replicator = Some(sender())
         replica ! msg

@@ -121,8 +121,7 @@ private[scalajs] object UseAsMacros {
           }
 
           val errMsg = jsMemberSelection match {
-            case JSNamedMember(name) =>
-              noSuchMember(name)
+            case JSNamedMember(name) => noSuchMember(name)
 
             case JSMemberCall if !isRawJSType =>
               s"$trgTpe defines an apply method. This cannot be implemented " +
@@ -233,8 +232,7 @@ private[scalajs] object UseAsMacros {
               sym.name.decodedName.toString.endsWith("_=") =>
           JSSetter(param.info)
 
-        case NullaryMethodType(returnType) =>
-          JSGetter(returnType)
+        case NullaryMethodType(returnType) => JSGetter(returnType)
 
         case info: MethodType =>
           @tailrec
@@ -245,15 +243,13 @@ private[scalajs] object UseAsMacros {
                   JSMethodParam(p.info, p.asTerm.isParamWithDefault)
                 }
                 flatParams(returnTpe, ps reverse_::: acc)
-              case tpe =>
-                JSMethod(acc.reverse, tpe)
+              case tpe => JSMethod(acc.reverse, tpe)
             }
           }
 
           flatParams(info, Nil)
 
-        case tpe =>
-          UnsupportedMember(sym, tpe)
+        case tpe => UnsupportedMember(sym, tpe)
       }
     }
 

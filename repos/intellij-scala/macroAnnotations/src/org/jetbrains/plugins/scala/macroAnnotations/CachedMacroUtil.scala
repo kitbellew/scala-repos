@@ -119,10 +119,8 @@ object CachedMacroUtil {
     tree match {
       case q"modificationCount = $v" =>
         modCountParamToModTracker(x)(v, psiElement)
-      case q"ModCount.$v" =>
-        modCountParamToModTracker(x)(q"$v", psiElement)
-      case q"$v" =>
-        ModCount.values.find(_.toString == v.toString) match {
+      case q"ModCount.$v" => modCountParamToModTracker(x)(q"$v", psiElement)
+      case q"$v" => ModCount.values.find(_.toString == v.toString) match {
           case Some(ModCount.getBlockModificationCount) =>
             q"$cachesUtilFQN.enclosingModificationOwner($psiElement)"
           case Some(ModCount.getOutOfCodeBlockModificationCount) =>

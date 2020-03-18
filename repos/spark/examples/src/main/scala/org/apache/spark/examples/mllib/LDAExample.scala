@@ -157,8 +157,8 @@ object LDAExample {
       case "em" => new EMLDAOptimizer
       // add (1.0 / actualCorpusSize) to MiniBatchFraction be more robust on tiny datasets.
       case "online" =>
-        new OnlineLDAOptimizer()
-          .setMiniBatchFraction(0.05 + 1.0 / actualCorpusSize)
+        new OnlineLDAOptimizer().setMiniBatchFraction(
+          0.05 + 1.0 / actualCorpusSize)
       case _ =>
         throw new IllegalArgumentException(
           s"Only em, online are supported but got ${params.algorithm}.")
@@ -201,10 +201,7 @@ object LDAExample {
     topics.zipWithIndex.foreach {
       case (topic, i) =>
         println(s"TOPIC $i")
-        topic.foreach {
-          case (term, weight) =>
-            println(s"$term\t$weight")
-        }
+        topic.foreach { case (term, weight) => println(s"$term\t$weight") }
         println()
     }
     sc.stop()

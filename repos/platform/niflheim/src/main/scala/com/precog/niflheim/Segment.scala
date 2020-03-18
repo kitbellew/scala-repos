@@ -62,8 +62,7 @@ sealed trait ValueSegment[@spec(Boolean, Long, Double) A] extends Segment {
         BooleanSegment(blockid, cpath, defined, values, values.length)
           .asInstanceOf[ValueSegment[A]]
 
-      case _ =>
-        this
+      case _ => this
     }
 }
 
@@ -82,8 +81,7 @@ case class ArraySegment[@spec(Boolean, Long, Double) A](
         ctype == ct2 && defined == d2 && arrayEq[A](
           values,
           values2.asInstanceOf[Array[A]])
-      case _ =>
-        false
+      case _ => false
     }
 
   def length = values.length
@@ -117,8 +115,7 @@ case class BooleanSegment(
     that match {
       case BooleanSegment(`blockid`, `cpath`, d2, values2, `length`) =>
         defined == d2 && values == values2
-      case _ =>
-        false
+      case _ => false
     }
 
   def extend(amount: Int) =
@@ -144,8 +141,7 @@ case class NullSegment(
     that match {
       case NullSegment(`blockid`, `cpath`, `ctype`, d2, `length`) =>
         defined == d2
-      case _ =>
-        false
+      case _ => false
     }
 
   def extend(amount: Int) =

@@ -147,8 +147,7 @@ class JDBCQueryExecutor(
                     x => x)
             }
 
-          case _ =>
-            Success(JNum(0))
+          case _ => Success(JNum(0))
         }
       }.onFailure { case t => logger.error("Failure during size", t) }
 
@@ -198,8 +197,7 @@ class JDBCQueryExecutor(
                     x => x)
             }
 
-          case dbName :: collectionName :: Nil =>
-            Success(JArray(Nil))
+          case dbName :: collectionName :: Nil => Success(JArray(Nil))
 
           case _ =>
             Failure(

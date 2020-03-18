@@ -414,8 +414,7 @@ trait ClassHelpers {
       case instance => {
         controllerMethods(instance).toList match {
           case Nil => Empty
-          case x :: xs =>
-            Full(() => {
+          case x :: xs => Full(() => {
               try { Full(x.invoke(instance)) }
               catch { case e: InvocationTargetException => throw e.getCause }
             })

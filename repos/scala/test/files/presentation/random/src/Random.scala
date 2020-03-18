@@ -41,10 +41,7 @@ object randomclient {
       out.close()
       in.close()
       socket.close()
-    } catch {
-      case e: IOException =>
-        e.printStackTrace()
-    }
+    } catch { case e: IOException => e.printStackTrace() }
   }
 
 }
@@ -92,8 +89,7 @@ case class ServerThread(socket: Socket) extends Thread("ServerThread") {
     } catch {
       case e: SocketException =>
         () // avoid stack trace when stopping a client with Ctrl-C
-      case e: IOException =>
-        e.printStackTrace();
+      case e: IOException => e.printStackTrace();
     }
   }
 

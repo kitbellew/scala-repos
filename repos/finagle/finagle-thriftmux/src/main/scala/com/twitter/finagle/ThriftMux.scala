@@ -98,9 +98,7 @@ object ThriftMux
       val iprot = protocolFactory.getProtocol(inputTransport)
       val msg = iprot.readMessageBegin()
       Trace.recordRpc(msg.name)
-    } catch {
-      case NonFatal(_) =>
-    }
+    } catch { case NonFatal(_) => }
 
   private object ClientRpcTracing extends Mux.ClientProtoTracing {
     private[this] val rpcTracer = new SimpleFilter[mux.Request, mux.Response] {
@@ -383,8 +381,7 @@ object ThriftMux
           request: mux.Request,
           service: Service[mux.Request, mux.Response]): Future[mux.Response] =
         service(request).rescue {
-          case e @ RetryPolicy.RetryableWriteException(_) =>
-            Future.exception(e)
+          case e @ RetryPolicy.RetryableWriteException(_) => Future.exception(e)
           case e if !e.isInstanceOf[TException] =>
             val msg = UncaughtAppExceptionFilter.writeExceptionMessage(
               request.body,

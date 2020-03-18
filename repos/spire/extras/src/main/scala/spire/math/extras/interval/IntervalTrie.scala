@@ -289,8 +289,7 @@ object IntervalTrie {
           val bm = op(b0, a0, a.left)
           val b1 = op(bm, am, a.right)
           b1
-        case _ =>
-          Unbound()
+        case _ => Unbound()
       }
     val last = op(Unbound(), a0, a)
     if (a0 ^ ((a ne null) && a.sign)) f(Interval.fromBounds(last, Unbound()))

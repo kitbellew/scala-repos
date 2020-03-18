@@ -126,8 +126,7 @@ class GoToImplicitConversionAction
           def run() {
             val entity = list.getSelectedValue.asInstanceOf[Parameters]
             entity.getNewExpression match {
-              case f: ScFunction =>
-                f.getSyntheticNavigationElement match {
+              case f: ScFunction => f.getSyntheticNavigationElement match {
                   case Some(n: NavigatablePsiElement) => n.navigate(true)
                   case _                              => f.navigate(true)
                 }
@@ -162,18 +161,16 @@ class GoToImplicitConversionAction
         selectionStart,
         selectionEnd)
       opt match {
-        case Some((expr, _)) =>
-          if (forExpr(expr)) return
-        case _ =>
+        case Some((expr, _)) => if (forExpr(expr)) return
+        case _               =>
       }
     } else {
       val offset = editor.getCaretModel.getOffset
       val element: PsiElement = file.findElementAt(offset) match {
         case w: PsiWhiteSpace
             if w.getTextRange.getStartOffset == offset &&
-              w.getText.contains("\n") =>
-          file.findElementAt(offset - 1)
-        case p => p
+              w.getText.contains("\n") => file.findElementAt(offset - 1)
+        case p                         => p
       }
       def getExpressions(guard: Boolean): Array[ScExpression] = {
         val res = new ArrayBuffer[ScExpression]
@@ -203,9 +200,8 @@ class GoToImplicitConversionAction
                       expectedOption = Some(
                         expr.getAdditionalExpression.get._2))
                     ._2
-                    .isDefined) =>
-              res += expr
-            case _ =>
+                    .isDefined) => res += expr
+            case _              =>
           }
           parent = parent.getParent
         }

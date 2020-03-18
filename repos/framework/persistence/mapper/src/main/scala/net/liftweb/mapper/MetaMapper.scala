@@ -967,8 +967,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
           if (value ne null) value.toString else value.asInstanceOf[String])
 
       // Sybase SQL Anywhere and DB2 choke on using setObject for boolean data
-      case Types.BOOLEAN =>
-        value match {
+      case Types.BOOLEAN => value match {
           case intData: java.lang.Integer =>
             st.setBoolean(index, intData.intValue != 0)
           case b: java.lang.Boolean => st.setBoolean(index, b.booleanValue)

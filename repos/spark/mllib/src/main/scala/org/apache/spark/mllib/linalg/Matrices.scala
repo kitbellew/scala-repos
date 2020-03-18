@@ -236,8 +236,7 @@ private[spark] class MatrixUDT extends UserDefinedType[Matrix] {
               rowIndices,
               values,
               isTransposed)
-          case 1 =>
-            new DenseMatrix(numRows, numCols, values, isTransposed)
+          case 1 => new DenseMatrix(numRows, numCols, values, isTransposed)
         }
     }
   }

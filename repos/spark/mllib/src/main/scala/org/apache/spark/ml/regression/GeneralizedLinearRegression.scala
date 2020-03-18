@@ -221,10 +221,7 @@ class GeneralizedLinearRegression @Since("2.0.0") (
       .select(col($(featuresCol)))
       .limit(1)
       .rdd
-      .map {
-        case Row(features: Vector) =>
-          features.size
-      }
+      .map { case Row(features: Vector) => features.size }
       .first()
     if (numFeatures > WeightedLeastSquares.MAX_NUM_FEATURES) {
       val msg =
@@ -981,8 +978,7 @@ class GeneralizedLinearRegressionSummary private[regression] (
       .select(col(model.getLabelCol), w)
       .rdd
       .map {
-        case Row(y: Double, weight: Double) =>
-          family.deviance(y, wtdmu, weight)
+        case Row(y: Double, weight: Double) => family.deviance(y, wtdmu, weight)
       }
       .sum()
   }

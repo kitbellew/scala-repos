@@ -110,8 +110,7 @@ trait ScBlock
       }
     }
     val inner = lastExpr match {
-      case None =>
-        ScalaPsiUtil.fileContext(this) match {
+      case None => ScalaPsiUtil.fileContext(this) match {
           case scalaFile: ScalaFile if scalaFile.isCompiled => Nothing
           case _                                            => Unit
         }
@@ -217,8 +216,8 @@ trait ScBlock
                   case (s, sign) =>
                     (s, sign.updateTypes(existize(_, visitedWithT)))
                 })
-            case JavaArrayType(arg) =>
-              JavaArrayType(existize(arg, visitedWithT))
+            case JavaArrayType(arg) => JavaArrayType(
+                existize(arg, visitedWithT))
             case ScParameterizedType(des, typeArgs) =>
               ScParameterizedType(
                 existize(des, visitedWithT),

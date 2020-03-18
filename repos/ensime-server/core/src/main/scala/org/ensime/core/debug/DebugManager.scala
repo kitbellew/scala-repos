@@ -167,12 +167,9 @@ class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
         vm.resume()
       }
       broadcaster ! DebugVMStartEvent
-    case e: VMDisconnectedException =>
-      disconnectDebugVM()
-    case e: VMDeathEvent =>
-      disconnectDebugVM()
-    case e: VMDisconnectEvent =>
-      disconnectDebugVM()
+    case e: VMDisconnectedException => disconnectDebugVM()
+    case e: VMDeathEvent            => disconnectDebugVM()
+    case e: VMDisconnectEvent       => disconnectDebugVM()
     case e: StepEvent =>
       (for (pos <- sourceMap.locToPos(e.location())) yield {
         broadcaster ! DebugStepEvent(
@@ -214,8 +211,7 @@ class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
     case e: ThreadStartEvent =>
       broadcaster ! DebugThreadStartEvent(DebugThreadId(e.thread().uniqueID()))
     case e: AccessWatchpointEvent =>
-    case e: ClassPrepareEvent =>
-      withVM { vm =>
+    case e: ClassPrepareEvent => withVM { vm =>
         log.info(s"ClassPrepareEvent: ${e.referenceType().name()}")
       }
     case e: ClassUnloadEvent =>
@@ -270,8 +266,7 @@ class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
       sender ! handleDebugStartReq(commandLine)
     case DebugAttachReq(hostname, port) ⇒
       sender ! handleDebugAttachReq(hostname, port)
-    case DebugActiveVmReq =>
-      sender ! handleRPCWithVM() { vm => TrueResponse }
+    case DebugActiveVmReq => sender ! handleRPCWithVM() { vm => TrueResponse }
     case DebugStopReq =>
       sender ! handleRPCWithVM() { vm =>
         if (vm.mode.shouldExit) { vm.exit(0) }
@@ -351,10 +346,8 @@ class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
               case Some(thread) =>
                 val status = vm.setStackVar(thread, frame, offset, newValue)
                 status match {
-                  case true =>
-                    TrueResponse
-                  case false =>
-                    FalseResponse
+                  case true  => TrueResponse
+                  case false => FalseResponse
                 }
               case _ =>
                 log.error(s"Unknown thread $threadId for debug-set-value")

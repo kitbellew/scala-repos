@@ -14,8 +14,5 @@ object Test extends App {
   try {
     val fm: FieldMirror = im.reflectField(f)
     println(fm.get)
-  } catch {
-    case ex: Throwable =>
-      println(s"${ex.getClass}: ${ex.getMessage}")
-  }
+  } catch { case ex: Throwable => println(s"${ex.getClass}: ${ex.getMessage}") }
 }

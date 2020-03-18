@@ -99,8 +99,7 @@ class ArrayBuffer[A](override protected val initialSize: Int)
         v.copyToArray(array.asInstanceOf[scala.Array[Any]], size0, n)
         size0 += n
         this
-      case _ =>
-        super.++=(xs)
+      case _ => super.++=(xs)
     }
 
   /** Prepends a single element to this buffer and returns

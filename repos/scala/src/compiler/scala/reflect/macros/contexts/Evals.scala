@@ -16,8 +16,7 @@ trait Evals {
 
   def eval[T](expr: Expr[T]): T = {
     expr.tree match {
-      case global.Literal(global.Constant(value)) =>
-        value.asInstanceOf[T]
+      case global.Literal(global.Constant(value)) => value.asInstanceOf[T]
       case _ =>
         val imported = evalImporter.importTree(expr.tree)
         evalToolBox.eval(imported).asInstanceOf[T]

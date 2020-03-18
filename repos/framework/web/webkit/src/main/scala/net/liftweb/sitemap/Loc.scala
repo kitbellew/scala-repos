@@ -89,16 +89,12 @@ trait Loc[T] {
   def paramValue: Box[T] = calcValue.flatMap(f => f()) or staticValue
 
   private lazy val staticValue: Box[T] = {
-    allParams.collectFirst {
-      case Loc.Value(v) =>
-        v.asInstanceOf[T]
-    }
+    allParams.collectFirst { case Loc.Value(v) => v.asInstanceOf[T] }
   }
 
   private lazy val calcValue: Box[() => Box[T]] = {
     params.collectFirst {
-      case Loc.CalcValue(f: Function0[_]) =>
-        f.asInstanceOf[() => Box[T]]
+      case Loc.CalcValue(f: Function0[_]) => f.asInstanceOf[() => Box[T]]
     }
   }
 
@@ -139,8 +135,7 @@ trait Loc[T] {
   private def parentParams: List[Loc.AnyLocParam] =
     _menu match {
       case null => Nil
-      case menu =>
-        menu._parent match {
+      case menu => menu._parent match {
           case Full(parentMenu: Menu) =>
             if (!params.collect {
                   case i: Loc.UseParentParams => true
@@ -303,14 +298,12 @@ trait Loc[T] {
         case Loc.UnlessValue(test, msg) :: xs =>
           if (test(currentValue)) Right(Full(msg)) else testParams(xs)
 
-        case Loc.TestAccess(func) :: xs =>
-          func() match {
+        case Loc.TestAccess(func) :: xs => func() match {
             case Full(resp) => Right(Full(() => resp))
             case _          => testParams(xs)
           }
 
-        case Loc.TestValueAccess(func) :: xs =>
-          func(currentValue) match {
+        case Loc.TestValueAccess(func) :: xs => func(currentValue) match {
             case Full(resp) => Right(Full(() => resp))
             case _          => testParams(xs)
           }
@@ -329,8 +322,7 @@ trait Loc[T] {
       what match {
         case Nil => Empty
 
-        case Loc.EarlyResponse(func) :: xs =>
-          func() match {
+        case Loc.EarlyResponse(func) :: xs => func() match {
             case Full(r) => Full(r)
             case _       => early(xs)
           }

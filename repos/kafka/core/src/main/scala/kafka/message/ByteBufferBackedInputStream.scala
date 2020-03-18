@@ -22,8 +22,7 @@ import java.nio.ByteBuffer
 class ByteBufferBackedInputStream(buffer: ByteBuffer) extends InputStream {
   override def read(): Int = {
     buffer.hasRemaining match {
-      case true =>
-        (buffer.get() & 0xFF)
+      case true  => (buffer.get() & 0xFF)
       case false => -1
     }
   }

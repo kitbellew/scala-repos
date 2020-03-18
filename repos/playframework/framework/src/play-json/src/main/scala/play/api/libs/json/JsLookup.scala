@@ -39,8 +39,8 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
     result match {
       case JsDefined(JsArray(values)) if values.nonEmpty =>
         JsDefined(values.last)
-      case JsDefined(arr: JsArray) =>
-        JsUndefined("Cannot get last element of " + arr)
+      case JsDefined(arr: JsArray) => JsUndefined(
+          "Cannot get last element of " + arr)
       case JsDefined(o) => JsUndefined(o + " is not an array")
       case undef        => undef
     }
@@ -57,9 +57,8 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
           .lift(index)
           .map(JsDefined.apply)
           .getOrElse(JsUndefined("Array index out of bounds in " + arr))
-      case JsDefined(o) =>
-        JsUndefined(o + " is not an array")
-      case undef => undef
+      case JsDefined(o) => JsUndefined(o + " is not an array")
+      case undef        => undef
     }
 
   /**
@@ -84,9 +83,8 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
           .map(JsDefined.apply)
           .getOrElse(JsUndefined(
             "'" + fieldName + "' is undefined on object: " + obj))
-      case JsDefined(o) =>
-        JsUndefined(o + " is not an object")
-      case undef => undef
+      case JsDefined(o) => JsUndefined(o + " is not an object")
+      case undef        => undef
     }
 
   /**
@@ -99,13 +97,12 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
       case JsDefined(obj: JsObject) =>
         obj.value.foldLeft(Seq[JsValue]())((o, pair) =>
           pair match {
-            case (key, value) if key == fieldName =>
-              o ++ (value +: (value \\ fieldName))
-            case (_, value) => o ++ (value \\ fieldName)
+            case (key, value)
+                if key == fieldName => o ++ (value +: (value \\ fieldName))
+            case (_, value)         => o ++ (value \\ fieldName)
           })
-      case JsDefined(arr: JsArray) =>
-        arr.value.flatMap(_ \\ fieldName)
-      case _ => Seq.empty
+      case JsDefined(arr: JsArray) => arr.value.flatMap(_ \\ fieldName)
+      case _                       => Seq.empty
     }
 }
 

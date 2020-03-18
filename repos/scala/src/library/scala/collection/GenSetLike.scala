@@ -119,8 +119,7 @@ trait GenSetLike[A, +Repr]
             (this.size == that.size) &&
             (try this subsetOf that.asInstanceOf[GenSet[A]]
             catch { case ex: ClassCastException => false })
-      case _ =>
-        false
+      case _ => false
     }
 
   // Careful! Don't write a Set's hashCode like:

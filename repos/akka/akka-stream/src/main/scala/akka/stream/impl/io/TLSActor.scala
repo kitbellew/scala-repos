@@ -422,8 +422,8 @@ private[akka] class TLSActor(
         flushToTransport()
         if (engine.isInboundDone) nextPhase(completedPhase)
         else nextPhase(awaitingClose)
-      case s ⇒
-        fail(new IllegalStateException(s"unexpected status $s in doWrap()"))
+      case s ⇒ fail(
+          new IllegalStateException(s"unexpected status $s in doWrap()"))
     }
   }
 
@@ -437,8 +437,7 @@ private[akka] class TLSActor(
         s"unwrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${transportInBuffer.remaining} out=${userOutBuffer.position}")
     runDelegatedTasks()
     result.getStatus match {
-      case OK ⇒
-        result.getHandshakeStatus match {
+      case OK ⇒ result.getHandshakeStatus match {
           case NEED_WRAP ⇒ flushToUser()
           case FINISHED ⇒
             flushToUser()
@@ -451,13 +450,12 @@ private[akka] class TLSActor(
         flushToUser()
         if (engine.isOutboundDone) nextPhase(completedPhase)
         else nextPhase(flushingOutbound)
-      case BUFFER_UNDERFLOW ⇒
-        flushToUser()
+      case BUFFER_UNDERFLOW ⇒ flushToUser()
       case BUFFER_OVERFLOW ⇒
         flushToUser()
         transportInChoppingBlock.putBack(transportInBuffer)
-      case s ⇒
-        fail(new IllegalStateException(s"unexpected status $s in doUnwrap()"))
+      case s ⇒ fail(
+          new IllegalStateException(s"unexpected status $s in doUnwrap()"))
     }
   }
 

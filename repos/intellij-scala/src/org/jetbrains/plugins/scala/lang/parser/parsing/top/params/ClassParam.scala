@@ -56,8 +56,7 @@ object ClassParam {
         if (!ParamType.parse(builder)) {
           builder.error(ScalaBundle.message("parameter.type.expected"))
         }
-      case _ =>
-        builder.error(ScalaBundle.message("colon.expected"))
+      case _ => builder.error(ScalaBundle.message("colon.expected"))
     }
 
     //default param

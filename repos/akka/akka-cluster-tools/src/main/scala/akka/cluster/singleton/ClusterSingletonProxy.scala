@@ -251,8 +251,7 @@ final class ClusterSingletonProxy(
     case MemberUp(m) ⇒ add(m)
     case mEvent: MemberEvent
         if mEvent.isInstanceOf[MemberExited] || mEvent
-          .isInstanceOf[MemberRemoved] ⇒
-      remove(mEvent.member)
+          .isInstanceOf[MemberRemoved] ⇒ remove(mEvent.member)
     case _: MemberEvent ⇒ // do nothing
 
     // singleton identification logic
@@ -278,8 +277,7 @@ final class ClusterSingletonProxy(
       }
 
     // forwarding/stashing logic
-    case msg: Any ⇒
-      singleton match {
+    case msg: Any ⇒ singleton match {
         case Some(s) ⇒
           if (log.isDebugEnabled)
             log.debug(
@@ -287,8 +285,7 @@ final class ClusterSingletonProxy(
               Logging.simpleName(msg.getClass.getName),
               s.path)
           s forward msg
-        case None ⇒
-          buffer(msg)
+        case None ⇒ buffer(msg)
       }
   }
 

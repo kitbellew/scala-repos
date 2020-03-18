@@ -130,8 +130,7 @@ trait ScTypeDefinition
         s"""${accessModifier}object ${clazz.name}$extendsText{
            |  ${texts.mkString("\n  ")}
            |}""".stripMargin
-      case _ =>
-        s"""${accessModifier}object $name {
+      case _ => s"""${accessModifier}object $name {
            |  //Generated synthetic object
            |}""".stripMargin
     }

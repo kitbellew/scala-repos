@@ -109,8 +109,7 @@ private[http] class FrameOutHandler(
       extends CompletionHandlingState {
     def onPush(elem: AnyRef, ctx: Context[FrameStart]): SyncDirective =
       elem match {
-        case Tick ⇒
-          if (timeout.isPast) ctx.finish() else ctx.pull()
+        case Tick ⇒ if (timeout.isPast) ctx.finish() else ctx.pull()
         case PeerClosed(code, reason) ⇒
           if (serverSide) ctx.finish()
           else {
@@ -131,8 +130,7 @@ private[http] class FrameOutHandler(
       extends CompletionHandlingState {
     def onPush(elem: AnyRef, ctx: Context[FrameStart]): SyncDirective =
       elem match {
-        case Tick ⇒
-          if (timeout.isPast) ctx.finish() else ctx.pull()
+        case Tick ⇒ if (timeout.isPast) ctx.finish() else ctx.pull()
         case _ ⇒ ctx.pull() // ignore
       }
 

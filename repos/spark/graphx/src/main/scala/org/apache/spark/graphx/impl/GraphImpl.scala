@@ -230,10 +230,8 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
       tripletFields.useSrc,
       tripletFields.useDst)
     val view = activeSetOpt match {
-      case Some((activeSet, _)) =>
-        replicatedVertexView.withActiveSet(activeSet)
-      case None =>
-        replicatedVertexView
+      case Some((activeSet, _)) => replicatedVertexView.withActiveSet(activeSet)
+      case None                 => replicatedVertexView
     }
     val activeDirectionOpt = activeSetOpt.map(_._2)
 

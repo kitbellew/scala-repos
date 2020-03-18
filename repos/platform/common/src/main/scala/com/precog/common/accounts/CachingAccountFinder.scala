@@ -69,8 +69,7 @@ class CachingAccountFinder[M[+_]: Monad](
           _ map { _ tap (add(apiKey, _)) unsafePerformIO }
         }
 
-      case idOpt =>
-        idOpt.point[M]
+      case idOpt => idOpt.point[M]
     }
 
   def findAccountDetailsById(accountId: AccountId) =
@@ -80,7 +79,6 @@ class CachingAccountFinder[M[+_]: Monad](
           _ map { _ tap add unsafePerformIO }
         }
 
-      case detailsOpt =>
-        detailsOpt.point[M]
+      case detailsOpt => detailsOpt.point[M]
     }
 }

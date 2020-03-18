@@ -69,8 +69,7 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
         val it = iterator
         while (it.hasNext && t <= rhs) { val (p, e) = it.next(); t *= (p ** e) }
         t compare rhs
-      case Zero =>
-        rhs.signum
+      case Zero => rhs.signum
       case Negative =>
         var t = -SafeLong.one
         val it = iterator
@@ -81,16 +80,14 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
   def gcd(rhs: Factors): Factors =
     Factors(
       lhs.factors.flatMap {
-        case (p, le) =>
-          rhs.factors.get(p).map(re => (p, le min re))
+        case (p, le) => rhs.factors.get(p).map(re => (p, le min re))
       },
       Positive)
 
   def lcm(rhs: Factors): Factors =
     Factors(
       lhs.factors.foldLeft(rhs.factors) {
-        case (fs, (p, e)) =>
-          fs.updated(p, fs.getOrElse(p, 0) max e)
+        case (fs, (p, e)) => fs.updated(p, fs.getOrElse(p, 0) max e)
       },
       Positive)
 
@@ -113,8 +110,7 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
       .filter(_._2 != 0)
       .partition(_._2 > 0)
     val cc = lhs.factors.flatMap {
-      case (p, le) =>
-        rhs.factors.get(p).map(re => (p, le min re))
+      case (p, le) => rhs.factors.get(p).map(re => (p, le min re))
     }
     (sign, nn, dd.map { case (p, e) => (p, -e) }, cc)
   }
@@ -126,10 +122,8 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
 
   def /(rhs: SafeLong): Factors =
     factors.get(rhs) match {
-      case Some(1) =>
-        Factors(factors - rhs, sign)
-      case Some(n) =>
-        Factors(factors.updated(rhs, n - 1), sign)
+      case Some(1) => Factors(factors - rhs, sign)
+      case Some(n) => Factors(factors.updated(rhs, n - 1), sign)
       case None =>
         val n = lhs.value / rhs
         if (n < rhs) Factors(n) else lhs / Factors(rhs)
@@ -154,10 +148,8 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
 
   def /%(rhs: SafeLong): (Factors, Factors) =
     factors.get(rhs) match {
-      case Some(1) =>
-        (Factors(factors - rhs, sign), Factors.zero)
-      case Some(n) =>
-        (Factors(factors.updated(rhs, n - 1), sign), Factors.zero)
+      case Some(1) => (Factors(factors - rhs, sign), Factors.zero)
+      case Some(n) => (Factors(factors.updated(rhs, n - 1), sign), Factors.zero)
       case None =>
         val (q, m) = lhs.value /% rhs
         (Factors(q), Factors(m))

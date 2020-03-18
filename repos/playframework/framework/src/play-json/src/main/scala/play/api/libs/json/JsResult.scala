@@ -140,9 +140,8 @@ sealed trait JsResult[+A] {
       }
     def flatMap[B](f: A => JsResult[B]): JsResult[B] =
       self match {
-        case JsSuccess(a, path) =>
-          if (p(a)) f(a).repath(path) else JsError()
-        case e: JsError => e
+        case JsSuccess(a, path) => if (p(a)) f(a).repath(path) else JsError()
+        case e: JsError         => e
       }
     def foreach(f: A => Unit): Unit =
       self match {

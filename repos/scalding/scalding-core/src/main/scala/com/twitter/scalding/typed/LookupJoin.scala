@@ -141,8 +141,7 @@ object LookupJoin extends Serializable {
       (K, (Option[(T, JoinedV)], Option[(T, V, Option[JoinedV])]))] = left
       .map { case (t, (k, v)) => (k, (t, Left(v): Either[V, JoinedV])) }
       .++(right.map {
-        case (t, (k, joinedV)) =>
-          (k, (t, Right(joinedV): Either[V, JoinedV]))
+        case (t, (k, joinedV)) => (k, (t, Right(joinedV): Either[V, JoinedV]))
       })
       .group
       .withReducers(reducers.getOrElse(-1)) // -1 means default in scalding

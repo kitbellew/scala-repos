@@ -44,14 +44,12 @@ trait Helpers {
         case TypeRef(
               SingleType(SingleType(_, ContextParam), MacroContextUniverse),
               WeakTypeTagClass,
-              targ :: Nil) =>
-          transform(param, targ.typeSymbol)
-        case _ => param
+              targ :: Nil) => transform(param, targ.typeSymbol)
+        case _             => param
       }
     ContextParam match {
       case NoSymbol => paramss
-      case _ =>
-        paramss.last map transformTag filter (_.exists) match {
+      case _ => paramss.last map transformTag filter (_.exists) match {
           case Nil         => paramss.init
           case transformed => paramss.init :+ transformed
         }

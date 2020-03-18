@@ -29,9 +29,8 @@ object CaseClause {
     }
     if (!Pattern.parse(builder)) builder error ErrMsg("pattern.expected")
     builder.getTokenType match {
-      case ScalaTokenTypes.kIF =>
-        Guard parse builder
-      case _ =>
+      case ScalaTokenTypes.kIF => Guard parse builder
+      case _                   =>
     }
     builder.getTokenType match {
       case ScalaTokenTypes.tFUNTYPE =>

@@ -304,8 +304,7 @@ object Var {
       private val closable = Closable.make { deadline =>
         synchronized {
           state match {
-            case Idle =>
-              Future.Done
+            case Idle => Future.Done
             case Observing(1, _, c) =>
               state = Idle
               // We close the external process asynchronously from the

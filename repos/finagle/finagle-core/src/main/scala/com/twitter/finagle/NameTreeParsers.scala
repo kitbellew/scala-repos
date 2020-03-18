@@ -165,8 +165,7 @@ private class NameTreeParsers private (str: String) {
         eat(')')
         tree
 
-      case '/' =>
-        NameTree.Leaf(parsePath())
+      case '/' => NameTree.Leaf(parsePath())
 
       case '!' =>
         next()
@@ -180,8 +179,7 @@ private class NameTreeParsers private (str: String) {
         next()
         NameTree.Empty
 
-      case c =>
-        illegal("simple", c)
+      case c => illegal("simple", c)
     }
   }
 

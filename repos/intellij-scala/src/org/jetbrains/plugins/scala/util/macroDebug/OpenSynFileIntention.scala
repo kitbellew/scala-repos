@@ -24,8 +24,7 @@ class OpenSynFileIntention extends PsiElementBaseIntentionAction {
       case scalaFile: ScalaFile
           if (ScalaMacroDebuggingUtil.isEnabled) && (
             ScalaMacroDebuggingUtil isLoaded scalaFile
-          ) =>
-        true
+          )  => true
       case _ => false
     }
 

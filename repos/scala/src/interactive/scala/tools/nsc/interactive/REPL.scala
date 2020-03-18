@@ -122,8 +122,7 @@ object REPL {
           typedResult.get
         case List("typeat", file, off1, off2) =>
           doTypeAt(makePos(file, off1, off2))
-        case List("typeat", file, off1) =>
-          doTypeAt(makePos(file, off1, off1))
+        case List("typeat", file, off1) => doTypeAt(makePos(file, off1, off1))
         case List("complete", file, off1, off2) =>
           doComplete(makePos(file, off1, off2))
         case List("complete", file, off1) =>
@@ -131,10 +130,8 @@ object REPL {
         case List("quit") =>
           comp.askShutdown()
           sys.exit(1)
-        case List("structure", file) =>
-          doStructure(file)
-        case _ =>
-          print("""Available commands:
+        case List("structure", file) => doStructure(file)
+        case _                       => print("""Available commands:
                   | reload <file_1> ... <file_n>
                   | reloadAndAskType <file> <sleep-ms>
                   | typed <file>

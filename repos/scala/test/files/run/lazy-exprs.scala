@@ -29,11 +29,9 @@ object TestExpressions {
     print("lazy val in case: ")
     val t: Option[String] = Some("lazy Z1")
     t match {
-      case Some(Z1) =>
-        println("ok")
+      case Some(Z1) => println("ok")
 
-      case None =>
-        println("failed")
+      case None => println("failed")
     }
   }
 
@@ -49,11 +47,9 @@ object TestExpressions {
     print("lazy val in pattern: ")
     val t: Option[String] = Some("LazyField")
     t match {
-      case Some(LazyField) =>
-        println("ok")
+      case Some(LazyField) => println("ok")
 
-      case None =>
-        println("failed")
+      case None => println("failed")
     }
   }
 

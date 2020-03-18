@@ -190,16 +190,14 @@ private[http] final object HtmlNormalizer {
       LiftRules.attributeForRemovedEventAttributes match {
         case Some(attribute) if eventAttributes.nonEmpty =>
           val removedAttributes = eventAttributes.map {
-            case EventAttribute(event, _) =>
-              s"on$event"
+            case EventAttribute(event, _) => s"on$event"
           }
           new UnprefixedAttribute(
             attribute,
             removedAttributes.mkString(" "),
             normalizedAttributes)
 
-        case _ =>
-          normalizedAttributes
+        case _ => normalizedAttributes
       }
 
     id.map { foundId =>
@@ -231,18 +229,13 @@ private[http] final object HtmlNormalizer {
     node match {
       case element: Elem =>
         val (attributeToFix, shouldRewriteUrl) = element.label match {
-          case "form" =>
-            ("action", true)
+          case "form" => ("action", true)
 
-          case "a" =>
-            ("href", true)
-          case "link" =>
-            ("href", false)
+          case "a"    => ("href", true)
+          case "link" => ("href", false)
 
-          case "script" =>
-            ("src", false)
-          case _ =>
-            ("src", true)
+          case "script" => ("src", false)
+          case _        => ("src", true)
         }
 
         Some(normalizeElementAndAttributes(
@@ -251,11 +244,9 @@ private[http] final object HtmlNormalizer {
           contextPath,
           shouldRewriteUrl))
 
-      case _: Comment if stripComments =>
-        None
+      case _: Comment if stripComments => None
 
-      case otherNode =>
-        Some(NodeAndEventJs(otherNode, Noop))
+      case otherNode => Some(NodeAndEventJs(otherNode, Noop))
     }
   }
 
@@ -291,8 +282,7 @@ private[http] final object HtmlNormalizer {
                 normalizedElement.copy(child = normalizedChildren),
                 childJs)
 
-          case node =>
-            soFar.append(node)
+          case node => soFar.append(node)
         } getOrElse { soFar }
     }
   }

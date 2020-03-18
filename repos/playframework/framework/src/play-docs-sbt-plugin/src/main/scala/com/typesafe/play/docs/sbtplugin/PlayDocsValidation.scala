@@ -182,7 +182,10 @@ object PlayDocsValidation {
                 full,
                 markdownFile,
                 node.getStartIndex + offset)
-            case fragment if fragment.startsWith("#") => // ignore fragments, no validation of them for now
+            case fragment
+                if fragment.startsWith(
+                  "#"
+                ) => // ignore fragments, no validation of them for now
             case relative =>
               relativeLinks += LinkRef(
                 relative,
@@ -323,8 +326,7 @@ object PlayDocsValidation {
           .toList
         jar.close()
         CodeSamplesReport(parsedFiles)
-      case None =>
-        CodeSamplesReport(Seq.empty)
+      case None => CodeSamplesReport(Seq.empty)
     }
   }
 

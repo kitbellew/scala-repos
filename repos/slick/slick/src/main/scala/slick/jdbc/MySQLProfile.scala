@@ -141,8 +141,7 @@ trait MySQLProfile extends JdbcProfile {
           _.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
           case Some(l) =>
             if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})"
-          case None =>
-            defaultStringType match {
+          case None => defaultStringType match {
               case Some(s) => s
               case None =>
                 if (sym

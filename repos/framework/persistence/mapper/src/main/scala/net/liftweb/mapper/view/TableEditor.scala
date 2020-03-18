@@ -88,10 +88,8 @@ trait ItemsList[T <: Mapper[T]] {
     import scala.util.Sorting._
     val unsorted: List[T] = current.filterNot(removed.contains) ++ added
     sortField match {
-      case None =>
-        unsorted
-      case Some(field) =>
-        unsorted.sortWith { (a, b) =>
+      case None => unsorted
+      case Some(field) => unsorted.sortWith { (a, b) =>
           ((
             field.actualField(a).get: Any,
             field.actualField(b).get: Any) match {
@@ -107,10 +105,7 @@ trait ItemsList[T <: Mapper[T]] {
             case (null, _)    => sortNullFirst
             case (_, null)    => !sortNullFirst
             case (aval, bval) => aval.toString < bval.toString
-          }) match {
-            case cmp =>
-              if (ascending) cmp else !cmp
-          }
+          }) match { case cmp => if (ascending) cmp else !cmp }
         }
     }
   }
@@ -163,16 +158,14 @@ trait ItemsList[T <: Mapper[T]] {
 
   def sortBy(field: MappedField[_, T]) =
     (sortField, ascending) match {
-      case (Some(f), true) if f eq field =>
-        ascending = false
+      case (Some(f), true) if f eq field => ascending = false
       case _ | null =>
         sortField = Some(field)
         ascending = true
     }
   def sortFn(field: MappedField[_, T]) =
     (sortField, ascending) match {
-      case (Some(f), true) if f eq field =>
-        () => ascending = false
+      case (Some(f), true) if f eq field => () => ascending = false
       case _ | null =>
         () => {
           sortField = Some(field)
@@ -257,8 +250,7 @@ trait ItemsListEditor[T <: Mapper[T]] {
   def onSubmit: Unit =
     try { items.save }
     catch {
-      case e: java.sql.SQLException =>
-        S.error("Not all items could be saved!")
+      case e: java.sql.SQLException => S.error("Not all items could be saved!")
     }
   def sortFn(f: MappedField[_, T]): () => Unit = items.sortFn(f)
 
@@ -314,8 +306,7 @@ trait ItemsListEditor[T <: Mapper[T]] {
                 if (!item.saved_?) Text(?("New"))
                 else if (item.dirty_?) Text(?("Unsaved"))
                 else NodeSeq.Empty
-              case errors =>
-                <ul>{errors.flatMap(e => <li>{e.msg}</li>)}</ul>
+              case errors => <ul>{errors.flatMap(e => <li>{e.msg}</li>)}</ul>
             }
           }
     }

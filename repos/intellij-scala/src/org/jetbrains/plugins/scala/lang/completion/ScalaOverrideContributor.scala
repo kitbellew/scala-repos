@@ -71,8 +71,7 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
       val (resultText, tailText) = member match {
         case mm: ScMethodMember =>
           (mm.text + " = {...}", mm.scType.presentableText)
-        case mVal: ScValueMember =>
-          (mVal.getText, mVal.scType.presentableText)
+        case mVal: ScValueMember => (mVal.getText, mVal.scType.presentableText)
         case mVar: ScVariableMember =>
           (mVar.getText, mVar.scType.presentableText)
         case ta: ScAliasMember =>

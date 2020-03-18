@@ -59,12 +59,10 @@ abstract class CreateEntityQuickFix(
     ref match {
       case Both(
             Parent(_: ScAssignStmt),
-            Parent(Parent(_: ScArgumentExprList))) =>
-        false
+            Parent(Parent(_: ScArgumentExprList))) => false
       case exp @ Parent(infix: ScInfixExpr) if infix.operation == exp =>
         checkBlock(infix.getBaseExpr)
-      case it =>
-        it.qualifier match {
+      case it => it.qualifier match {
           case Some(sup: ScSuperReference) =>
             unambiguousSuper(sup).exists(!_.isInCompiledFile)
           case Some(qual) => checkBlock(qual)
@@ -187,21 +185,18 @@ object CreateEntityQuickFix {
               Failure(new IllegalStateException(
                 "Cannot find template definition for `this` reference"))
         }
-      case sup: ScSuperReference =>
-        unambiguousSuper(sup) match {
+      case sup: ScSuperReference => unambiguousSuper(sup) match {
           case Some(ScTemplateDefinition.ExtendsBlock(block)) => Success(block)
           case None =>
             Failure(new IllegalStateException(
               "Cannot find template definition for not-static super reference"))
         }
-      case Both(th: ScThisReference, ParentExtendsBlock(block)) =>
-        Success(block)
+      case Both(th: ScThisReference, ParentExtendsBlock(block)) => Success(
+          block)
       case Both(
             ReferenceTarget((_: ScSelfTypeElement)),
-            ParentExtendsBlock(block)) =>
-        Success(block)
-      case _ =>
-        Failure(
+            ParentExtendsBlock(block)) => Success(block)
+      case _ => Failure(
           new IllegalStateException("Cannot find a place to create definition"))
     }
   }
@@ -254,8 +249,7 @@ object CreateEntityQuickFix {
 
   private def genericParametersFor(ref: ScReferenceExpression): Option[String] =
     ref.parent.collect {
-      case genCall: ScGenericCall =>
-        genCall.arguments match {
+      case genCall: ScGenericCall => genCall.arguments match {
           case args if args.size == 1 => "[T]"
           case args                   => args.indices.map(i => s"T$i").mkString("[", ", ", "]")
         }
@@ -280,12 +274,10 @@ object CreateEntityQuickFix {
       supRef: ScSuperReference): Option[ScTypeDefinition] = {
     supRef.staticSuper match {
       case Some(ScType.ExtractClass(clazz: ScTypeDefinition)) => Some(clazz)
-      case None =>
-        supRef.parents.toSeq.collect {
+      case None => supRef.parents.toSeq.collect {
           case td: ScTemplateDefinition => td
         } match {
-          case Seq(td) =>
-            td.supers match {
+          case Seq(td) => td.supers match {
               case Seq(t: ScTypeDefinition) => Some(t)
               case _                        => None
             }

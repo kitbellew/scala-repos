@@ -30,8 +30,7 @@ class ForceOuterBinds extends Phase {
 
   def wrap(n: Node): Node =
     n match {
-      case b @ Bind(_, _, Pure(_, _)) =>
-        b.mapChildren { ch =>
+      case b @ Bind(_, _, Pure(_, _)) => b.mapChildren { ch =>
           if ((ch eq b.from) || ch.isInstanceOf[Pure]) nowrap(ch)
           else maybewrap(ch)
         }
@@ -41,14 +40,12 @@ class ForceOuterBinds extends Phase {
   def nowrap(n: Node): Node =
     n match {
       case u: Union => u.mapChildren(wrap)
-      case f: FilteredQuery =>
-        f.mapChildren { ch =>
+      case f: FilteredQuery => f.mapChildren { ch =>
           if ((ch eq f.from) && !(ch.isInstanceOf[Join] || ch
                 .isInstanceOf[Distinct] || ch.isInstanceOf[Pure])) nowrap(ch)
           else maybewrap(ch)
         }
-      case b: Bind =>
-        b.mapChildren { ch =>
+      case b: Bind => b.mapChildren { ch =>
           if ((ch eq b.from) || ch.isInstanceOf[Pure]) nowrap(ch)
           else maybewrap(ch)
         }

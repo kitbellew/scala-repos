@@ -291,14 +291,11 @@ trait ModelFactoryImplicitSupport {
             silentContext,
             false)
           available = Some(search.tree != EmptyTree)
-        } catch {
-          case _: TypeError =>
-        }
+        } catch { case _: TypeError => }
       }
 
       available match {
-        case Some(true) =>
-          Nil
+        case Some(true)                                   => Nil
         case Some(false) if !settings.docImplicitsShowAll =>
           // if -implicits-show-all is not set, we get rid of impossible conversions (such as Numeric[String])
           throw new ImplicitNotFound(implType)
@@ -311,8 +308,7 @@ trait ModelFactoryImplicitSupport {
             case TypeRef(pre, sym, List(TypeRef(NoPrefix, targ, Nil)))
                 if (typeParamNames contains targ.name) =>
               hardcoded.knownTypeClasses.get(qualifiedName) match {
-                case Some(explanation) =>
-                  List(new KnownTypeClassConstraint {
+                case Some(explanation) => List(new KnownTypeClassConstraint {
                     val typeParamName = targ.nameString
                     lazy val typeExplanation = explanation
                     lazy val typeClassEntity = makeTemplate(sym)
@@ -320,8 +316,7 @@ trait ModelFactoryImplicitSupport {
                       implType,
                       inTpl)
                   })
-                case None =>
-                  List(new TypeClassConstraint {
+                case None => List(new TypeClassConstraint {
                     val typeParamName = targ.nameString
                     lazy val typeClassEntity = makeTemplate(sym)
                     lazy val implicitType: TypeEntity = makeType(
@@ -329,8 +324,7 @@ trait ModelFactoryImplicitSupport {
                       inTpl)
                   })
               }
-            case _ =>
-              List(new ImplicitInScopeConstraint {
+            case _ => List(new ImplicitInScopeConstraint {
                 lazy val implicitType: TypeEntity = makeType(implType, inTpl)
               })
           }
@@ -361,26 +355,22 @@ trait ModelFactoryImplicitSupport {
             (
               loBounds filter (_ != NothingTpe),
               upBounds filter (_ != AnyTpe)) match {
-              case (Nil, Nil) =>
-                Nil
+              case (Nil, Nil) => Nil
               case (List(lo), List(up)) if (lo == up) =>
                 List(new EqualTypeParamConstraint {
                   val typeParamName = tparam.nameString
                   lazy val rhs = makeType(lo, inTpl)
                 })
-              case (List(lo), List(up)) =>
-                List(new BoundedTypeParamConstraint {
+              case (List(lo), List(up)) => List(new BoundedTypeParamConstraint {
                   val typeParamName = tparam.nameString
                   lazy val lowerBound = makeType(lo, inTpl)
                   lazy val upperBound = makeType(up, inTpl)
                 })
-              case (List(lo), Nil) =>
-                List(new LowerBoundedTypeParamConstraint {
+              case (List(lo), Nil) => List(new LowerBoundedTypeParamConstraint {
                   val typeParamName = tparam.nameString
                   lazy val lowerBound = makeType(lo, inTpl)
                 })
-              case (Nil, List(up)) =>
-                List(new UpperBoundedTypeParamConstraint {
+              case (Nil, List(up)) => List(new UpperBoundedTypeParamConstraint {
                   val typeParamName = tparam.nameString
                   lazy val upperBound = makeType(up, inTpl)
                 })
@@ -620,10 +610,8 @@ trait ModelFactoryImplicitSupport {
   object wildcardToNothing extends TypeMap {
     def apply(tp: Type): Type =
       mapOver(tp) match {
-        case WildcardType =>
-          NothingTpe
-        case other =>
-          other
+        case WildcardType => NothingTpe
+        case other        => other
       }
   }
 

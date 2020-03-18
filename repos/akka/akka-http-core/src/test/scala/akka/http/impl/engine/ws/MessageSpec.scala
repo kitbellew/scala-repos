@@ -917,8 +917,7 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
 
         // Kids, always drain your entities
         messageIn.requestNext() match {
-          case b: TextMessage ⇒
-            b.textStream.runWith(Sink.ignore)
+          case b: TextMessage ⇒ b.textStream.runWith(Sink.ignore)
           case _ ⇒
         }
 

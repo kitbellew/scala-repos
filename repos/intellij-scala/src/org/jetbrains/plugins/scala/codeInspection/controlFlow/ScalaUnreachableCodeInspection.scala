@@ -91,9 +91,8 @@ class ScalaUnreachableCodeInspection
 
       val fix = fragment match {
         case Seq(e childOf (doStmt: ScDoStmt))
-            if doStmt.condition.contains(e) =>
-          new UnwrapDoStmtFix(doStmt)
-        case _ => new RemoveFragmentQuickFix(fragment)
+            if doStmt.condition.contains(e) => new UnwrapDoStmtFix(doStmt)
+        case _                              => new RemoveFragmentQuickFix(fragment)
       }
       new ProblemDescriptorImpl(
         fragment.head,

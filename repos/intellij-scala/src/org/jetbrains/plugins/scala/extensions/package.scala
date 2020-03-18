@@ -266,8 +266,7 @@ package object extensions {
         }
 
         ScalaPsiUtil.nameContext(typedDef) match {
-          case m: ScMember =>
-            m.containingClass match {
+          case m: ScMember => m.containingClass match {
               case t: ScTrait =>
                 val linearization = MixinNodes
                   .linearization(clazz)
@@ -323,8 +322,7 @@ package object extensions {
 
     def namedElements: Seq[PsiNamedElement] = {
       clazz match {
-        case td: ScTemplateDefinition =>
-          td.members.flatMap {
+        case td: ScTemplateDefinition => td.members.flatMap {
             case holder: ScDeclaredElementsHolder => holder.declaredElements
             case named: ScNamedElement            => Seq(named)
             case _                                => Seq.empty
@@ -530,8 +528,7 @@ package object extensions {
   private def preservingControlFlow(body: => Unit) {
     try { body }
     catch {
-      case e: InvocationTargetException =>
-        e.getTargetException match {
+      case e: InvocationTargetException => e.getTargetException match {
           case control: NonLocalReturnControl[_] => throw control
           case _                                 => throw e
         }
@@ -589,8 +586,7 @@ package object extensions {
       param match {
         case f: FakePsiParameter => f.parameter.index
         case p: ScParameter      => p.index
-        case _ =>
-          param.getParent match {
+        case _ => param.getParent match {
             case pList: PsiParameterList => pList.getParameterIndex(param)
             case _                       => -1
           }

@@ -1485,8 +1485,7 @@ object GroupSolverSpecs
               Some(`target`),
               `data`,
               UnfixedSolution("'price", _, `d1` :: Nil),
-              `d1` :: Nil) =>
-          ok
+              `d1` :: Nil) => ok
       }
 
       val spec2 = solve.buckets(Set(d2))
@@ -1495,8 +1494,7 @@ object GroupSolverSpecs
               Some(`target`),
               `data2`,
               UnfixedSolution("'price", _, `d2` :: Nil),
-              `d2` :: Nil) =>
-          ok
+              `d2` :: Nil) => ok
       }
     }
   }

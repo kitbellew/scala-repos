@@ -24,20 +24,15 @@ object EmitManPage {
     }
     def emitText(text: AbstractText) {
       text match {
-        case seq: SeqText =>
-          seq.components foreach emitText
+        case seq: SeqText => seq.components foreach emitText
 
-        case seq: SeqPara =>
-          seq.components foreach emitPara
+        case seq: SeqPara => seq.components foreach emitPara
 
-        case Text(text) =>
-          out print escape(text)
+        case Text(text) => out print escape(text)
 
-        case BSlash =>
-          out print "\\e"
+        case BSlash => out print "\\e"
 
-        case NDash | MDash =>
-          out print "\\-"
+        case NDash | MDash => out print "\\-"
 
         case Bold(text) =>
           out print "\\fB"
@@ -74,11 +69,9 @@ object EmitManPage {
             if (n > 1) { out.println; n -= 1 }
           }
 
-        case Link(label, url) =>
-          emitText(label)
+        case Link(label, url) => emitText(label)
 
-        case _ =>
-          sys.error("unknown text node: " + text)
+        case _ => sys.error("unknown text node: " + text)
       }
     }
 
@@ -121,11 +114,9 @@ object EmitManPage {
           out print "\\fR"
           emitText(text)
 
-        case EmbeddedSection(sect) =>
-          emitSection(sect, depth + 1)
+        case EmbeddedSection(sect) => emitSection(sect, depth + 1)
 
-        case _ =>
-          sys.error("unknown paragraph node: " + para)
+        case _ => sys.error("unknown paragraph node: " + para)
       }
     }
 

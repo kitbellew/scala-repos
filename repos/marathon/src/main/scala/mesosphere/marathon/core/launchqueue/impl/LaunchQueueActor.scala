@@ -92,8 +92,7 @@ private[impl] class LaunchQueueActor(
     * we will replay these messages to ourselves with the correct sender.
     */
   private[this] def receiveHandlePurging: Receive = {
-    case Purge(appId) =>
-      launchers.get(appId) match {
+    case Purge(appId) => launchers.get(appId) match {
         case Some(actorRef) =>
           val deferredMessages: Vector[DeferredMessage] =
             suspendedLaunchersMessages(actorRef) :+ DeferredMessage(
@@ -107,8 +106,7 @@ private[impl] class LaunchQueueActor(
 
     case ConfirmPurge => sender() ! (())
 
-    case Terminated(actorRef) =>
-      launcherRefs.get(actorRef) match {
+    case Terminated(actorRef) => launcherRefs.get(actorRef) match {
         case Some(pathId) =>
           launcherRefs -= actorRef
           launchers -= pathId
@@ -127,9 +125,8 @@ private[impl] class LaunchQueueActor(
               suspendedLaunchersMessages -= actorRef
           }
         case None =>
-          log.warning(
-            "Don't know anything about terminated actor: {}",
-            actorRef)
+          log
+            .warning("Don't know anything about terminated actor: {}", actorRef)
       }
   }
 
@@ -191,8 +188,7 @@ private[impl] class LaunchQueueActor(
         case None => sender() ! None
       }
 
-    case Add(app, count) =>
-      launchers.get(app.id) match {
+    case Add(app, count) => launchers.get(app.id) match {
         case None =>
           import context.dispatcher
           val actorRef = createAppTaskLauncher(app, count)

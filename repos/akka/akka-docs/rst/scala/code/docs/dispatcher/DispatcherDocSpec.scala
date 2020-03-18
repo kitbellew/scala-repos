@@ -228,9 +228,7 @@ object DispatcherDocSpec {
   //#control-aware-mailbox-messages
 
   class MyActor extends Actor {
-    def receive = {
-      case x =>
-    }
+    def receive = { case x => }
   }
 
   //#required-mailbox-class
@@ -247,9 +245,7 @@ object DispatcherDocSpec {
       extends Actor
       with RequiresMessageQueue[MyUnboundedMessageQueueSemantics] {
     //#require-mailbox-on-actor
-    def receive = {
-      case _ =>
-    }
+    def receive = { case _ => }
     //#require-mailbox-on-actor
     // ...
   }

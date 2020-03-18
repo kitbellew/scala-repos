@@ -73,8 +73,7 @@ object CSVWriter {
     import scala.collection.JavaConverters._
     mat match {
       case Seq(x @ _*) => writer.writeAll(x.map(_.toArray).asJava)
-      case _ =>
-        for (l <- mat) { writer.writeNext(l.toArray) }
+      case _           => for (l <- mat) { writer.writeNext(l.toArray) }
     }
     writer.flush()
   }

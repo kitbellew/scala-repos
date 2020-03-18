@@ -157,8 +157,7 @@ trait NamesDefaults {
                 if (!args.forall(a =>
                   context.undetparams contains a.typeSymbol)) =>
               args.map(TypeTree(_))
-            case _ =>
-              Nil
+            case _ => Nil
           }
           (baseFun, Nil, targsInSource)
 
@@ -276,8 +275,7 @@ trait NamesDefaults {
 
         // other method calls
 
-        case Ident(_) =>
-          blockWithoutQualifier(None)
+        case Ident(_) => blockWithoutQualifier(None)
 
         case Select(qual, name) =>
           if (treeInfo.isExprSafeToInline(qual))
@@ -596,8 +594,7 @@ trait NamesDefaults {
             WarnAfterNonSilentRecursiveInference(param, arg)(context)
           res
         } match {
-          case SilentResultValue(t) =>
-            !t.isErroneous // #4041
+          case SilentResultValue(t)                                   => !t.isErroneous // #4041
           case SilentTypeError(e: NormalTypeErrorFromCyclicReference) =>
             // If we end up here, the CyclicReference was reported in a silent context. This can
             // happen for local definitions, when the completer for a definition is created during
@@ -668,8 +665,7 @@ trait NamesDefaults {
             // prevent isNamed from being true when calling doTypedApply recursively,
             // treat the arg as an assignment of type Unit
             Assign(arg.lhs, rhs) setPos arg.pos
-          case -1 =>
-            UnknownParameterNameNamesDefaultError(arg, name)
+          case -1 => UnknownParameterNameNamesDefaultError(arg, name)
           case paramPos if argPos contains paramPos =>
             val existingArgIndex = argPos.indexWhere(_ == paramPos)
             val otherName = Some(args(paramPos)) collect {

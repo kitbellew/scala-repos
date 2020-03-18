@@ -70,9 +70,8 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
       case (found, _)
           if context == found.extendsBlock || found.extendsBlock.templateBody
             .contains(context) ||
-            found.extendsBlock.earlyDefinitions.contains(context) =>
-        found
-      case (found, _) => null // See SCL-3178
+            found.extendsBlock.earlyDefinitions.contains(context) => found
+      case (found, _)                                             => null // See SCL-3178
     }
   }
 
@@ -112,9 +111,8 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
       case _                                => null
     }
     stub match {
-      case memberOrLocal: ScMemberOrLocal =>
-        return memberOrLocal.isLocal
-      case _ =>
+      case memberOrLocal: ScMemberOrLocal => return memberOrLocal.isLocal
+      case _                              =>
     }
     containingClass == null
   }
@@ -145,12 +143,9 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
 
   private def getSourceMirrorMember: ScMember =
     getParent match {
-      case tdb: ScTemplateBody =>
-        tdb.getParent match {
-          case eb: ScExtendsBlock =>
-            eb.getParent match {
-              case td: ScTypeDefinition =>
-                td.getNavigationElement match {
+      case tdb: ScTemplateBody => tdb.getParent match {
+          case eb: ScExtendsBlock => eb.getParent match {
+              case td: ScTypeDefinition => td.getNavigationElement match {
                   case c: ScTypeDefinition =>
                     val membersIterator = c.members.iterator
                     val buf: ArrayBuffer[ScMember] = new ArrayBuffer[ScMember]
@@ -176,8 +171,7 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
       case c: ScTypeDefinition
           if this.isInstanceOf[ScPrimaryConstructor] => //primary constructor
         c.getNavigationElement match {
-          case td: ScClass =>
-            td.constructor match {
+          case td: ScClass => td.constructor match {
               case Some(constr) => constr
               case _            => this
             }
@@ -227,8 +221,7 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
           .orElse(Option(super.getUseScope))
       case fun: ScFunction if fun.isSynthetic =>
         fun.getSyntheticNavigationElement.map(_.getUseScope)
-      case _ =>
-        fromQualifiedPrivate().orElse(fromContainingBlockOrMember())
+      case _ => fromQualifiedPrivate().orElse(fromContainingBlockOrMember())
     }
     ScalaPsiUtil.intersectScopes(super.getUseScope, fromModifierOrContext)
   }

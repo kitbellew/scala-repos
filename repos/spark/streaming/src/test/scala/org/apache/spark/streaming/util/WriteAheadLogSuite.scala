@@ -758,9 +758,8 @@ object WriteAheadLogSuite {
         reader.read(bytes)
         buffer += Utils.deserialize[T](bytes)
       }
-    } catch {
-      case ex: EOFException =>
-    } finally { reader.close() }
+    } catch { case ex: EOFException => }
+    finally { reader.close() }
     buffer
   }
 

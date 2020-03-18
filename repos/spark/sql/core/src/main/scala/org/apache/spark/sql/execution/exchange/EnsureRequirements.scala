@@ -71,8 +71,7 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
         // Right now, ExchangeCoordinator only support HashPartitionings.
         children.forall {
           case e @ ShuffleExchange(hash: HashPartitioning, _, _) => true
-          case child =>
-            child.outputPartitioning match {
+          case child => child.outputPartitioning match {
               case hash: HashPartitioning => true
               case collection: PartitioningCollection =>
                 collection.partitionings.forall(
@@ -164,8 +163,7 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
     // Ensure that the operator's children satisfy their output distribution requirements:
     children = children.zip(requiredChildDistributions).map {
       case (child, distribution)
-          if child.outputPartitioning.satisfies(distribution) =>
-        child
+          if child.outputPartitioning.satisfies(distribution) => child
       case (child, BroadcastDistribution(mode)) =>
         BroadcastExchange(mode, child)
       case (child, distribution) =>

@@ -105,8 +105,7 @@ class Producer[K, V](
   private def asyncSend(messages: Seq[KeyedMessage[K, V]]) {
     for (message <- messages) {
       val added = config.queueEnqueueTimeoutMs match {
-        case 0 =>
-          queue.offer(message)
+        case 0 => queue.offer(message)
         case _ =>
           try {
             config.queueEnqueueTimeoutMs < 0 match {
@@ -119,10 +118,7 @@ class Producer[K, V](
                   config.queueEnqueueTimeoutMs,
                   TimeUnit.MILLISECONDS)
             }
-          } catch {
-            case e: InterruptedException =>
-              false
-          }
+          } catch { case e: InterruptedException => false }
       }
       if (!added) {
         producerTopicStats

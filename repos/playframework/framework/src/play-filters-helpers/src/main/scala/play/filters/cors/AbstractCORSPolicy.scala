@@ -59,12 +59,9 @@ private[cors] trait AbstractCORSPolicy {
       case (_, HttpVerbs.OPTIONS) =>
         // Check for preflight request
         request.headers.get(HeaderNames.ACCESS_CONTROL_REQUEST_METHOD) match {
-          case None =>
-            handleCORSRequest(next, request)
-          case Some("") =>
-            handleInvalidCORSRequest(request)
-          case _ =>
-            handlePreFlightCORSRequest(request)
+          case None     => handleCORSRequest(next, request)
+          case Some("") => handleInvalidCORSRequest(request)
+          case _        => handlePreFlightCORSRequest(request)
         }
       case (_, method) if SupportedHttpMethods.contains(method) =>
         handleCORSRequest(next, request)

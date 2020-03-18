@@ -367,8 +367,7 @@ object WorksheetSourceProcessor {
             )
           }
         )
-      case tpeDef: ScTypeDefinition =>
-        withPrecomputeLines(
+      case tpeDef: ScTypeDefinition => withPrecomputeLines(
           tpeDef, {
             val keyword = tpeDef match {
               case _: ScClass => "class"
@@ -379,8 +378,7 @@ object WorksheetSourceProcessor {
             objectRes append withPrint(s"defined $keyword ${tpeDef.name}")
           }
         )
-      case valDef: ScPatternDefinition =>
-        withPrecomputeLines(
+      case valDef: ScPatternDefinition => withPrecomputeLines(
           valDef, {
             valDef.bindings foreach {
               case p =>
@@ -450,8 +448,7 @@ object WorksheetSourceProcessor {
         appendPsiLineInfo(assign, lineNums)
 
         assignCount += 1
-      case imp: ScImportStmt =>
-        if (!processLocalImport(imp)) processImport(imp)
+      case imp: ScImportStmt => if (!processLocalImport(imp)) processImport(imp)
       case comm: PsiComment =>
         appendPsiComment(comm)
         appendCommentToClass(comm)
@@ -492,8 +489,8 @@ object WorksheetSourceProcessor {
     @tailrec
     def isObjectOk(psi: PsiElement): Boolean =
       psi match {
-        case _: ScImportStmt | _: PsiWhiteSpace | _: PsiComment =>
-          isObjectOk(psi.getNextSibling)
+        case _: ScImportStmt | _: PsiWhiteSpace | _: PsiComment => isObjectOk(
+            psi.getNextSibling)
         case obj: ScObject =>
           obj.extendsBlock.templateParents.isEmpty && isObjectOk(
             obj.getNextSibling

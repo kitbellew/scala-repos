@@ -104,8 +104,7 @@ private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
         propertiesFile = value
         parse(tail)
 
-      case ("--help") :: tail =>
-        printUsageAndExit(0)
+      case ("--help") :: tail => printUsageAndExit(0)
 
       case value :: tail =>
         if (masters != null) { // Two positional arguments were given
@@ -119,8 +118,7 @@ private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
           printUsageAndExit(1)
         }
 
-      case _ =>
-        printUsageAndExit(1)
+      case _ => printUsageAndExit(1)
     }
 
   /**

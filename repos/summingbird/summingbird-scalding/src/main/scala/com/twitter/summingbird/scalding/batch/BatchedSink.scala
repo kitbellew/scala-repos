@@ -62,12 +62,9 @@ trait BatchedSink[T] extends Sink[T] {
       // We need to write each of these.
       iter.foreach { batch =>
         val range = batcher.toInterval(batch)
-        writeStream(
-          batch,
-          inPipe.filter {
-            case (time, _) =>
-              range(time)
-          })(flowMode._1, flowMode._2)
+        writeStream(batch, inPipe.filter { case (time, _) => range(time) })(
+          flowMode._1,
+          flowMode._2)
       }
       inPipe
     }

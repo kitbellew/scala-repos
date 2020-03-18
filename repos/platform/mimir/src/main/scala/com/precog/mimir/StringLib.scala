@@ -504,9 +504,7 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 result(row) = Pattern.compile(pattern).split(left(row), -1)
 
                 defined.flip(row)
-              } catch {
-                case _: PatternSyntaxException =>
-              }
+              } catch { case _: PatternSyntaxException => }
             }
           }
 

@@ -42,10 +42,8 @@ class ScalaMatchUnwrapper extends ScalaUnwrapper {
     e match {
       case (cl: ScCaseClause) childOf (
             (_: ScCaseClauses) childOf (matchStmt: ScMatchStmt)
-          ) if cl.expr.nonEmpty =>
-        ifInClause(cl, matchStmt)
-      case _ =>
-        ifNot
+          ) if cl.expr.nonEmpty => ifInClause(cl, matchStmt)
+      case _                    => ifNot
     }
   }
 

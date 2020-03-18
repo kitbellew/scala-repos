@@ -425,8 +425,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             <td>Duration</td> +: getFormattedTimeQuantiles(serviceTimes)
 
           val gcTimes = validTasks.map {
-            case TaskUIData(_, metrics, _) =>
-              metrics.get.jvmGCTime.toDouble
+            case TaskUIData(_, metrics, _) => metrics.get.jvmGCTime.toDouble
           }
           val gcQuantiles =
             <td>
@@ -862,8 +861,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
 
     val groupArrayStr = executorsSet
       .map {
-        case (executorId, host) =>
-          s"""
+        case (executorId, host) => s"""
             {
               'id': '$executorId',
               'content': '$executorId / $host',

@@ -116,8 +116,7 @@ object Scalding {
     ).commutativity
 
     commutativity match {
-      case Commutative =>
-        logger.info("Store: {} is commutative", names)
+      case Commutative => logger.info("Store: {} is commutative", names)
       case NonCommutative =>
         logger.info(
           "Store: {} is non-commutative (less efficient than commutative)",
@@ -395,10 +394,8 @@ object Scalding {
 
             (srcPf, built)
           }
-          case IdentityKeyedProducer(producer) =>
-            recurse(producer)
-          case NamedProducer(producer, newId) =>
-            recurse(producer)
+          case IdentityKeyedProducer(producer)             => recurse(producer)
+          case NamedProducer(producer, newId)              => recurse(producer)
           case summer @ Summer(producer, store, semigroup) =>
             /*
              * The store may already have materialized values, so we don't need the whole
@@ -485,8 +482,7 @@ object Scalding {
                 case Some(o) =>
                   val (merges, m2) = recurse(o, built = m1)
                   (Some(bs.readDeltaLog(merges)), m2)
-                case None =>
-                  (None, m1)
+                case None => (None, m1)
               }
               val reducers =
                 getOrElse(options, names, ljp, Reducers.default).count
@@ -546,8 +542,7 @@ object Scalding {
               fmp.map { flowP =>
                 flowP.map { typedPipe =>
                   typedPipe.flatMap {
-                    case (time, item) =>
-                      op(item).map((time, _))
+                    case (time, item) => op(item).map((time, _))
                   }
                 }
               },
@@ -559,8 +554,7 @@ object Scalding {
               fmp.map { flowP =>
                 flowP.map { typedPipe =>
                   typedPipe.flatMap {
-                    case (time, (k, v)) =>
-                      op(v).map { u => (time, (k, u)) }
+                    case (time, (k, v)) => op(v).map { u => (time, (k, u)) }
                   }
                 }
               },
@@ -599,8 +593,9 @@ object Scalding {
               maybeMerged.map { flowP =>
                 flowP.map { typedPipe =>
                   typedPipe.flatMap {
-                    case (time, (k, v)) =>
-                      op(k).map { newK => (time, (newK, v)) }
+                    case (time, (k, v)) => op(k).map { newK =>
+                        (time, (newK, v))
+                      }
                   }
                 }
               },
@@ -617,8 +612,7 @@ object Scalding {
               fmpSharded.map { flowP =>
                 flowP.map { typedPipe =>
                   typedPipe.flatMap {
-                    case (time, item) =>
-                      op(item).map((time, _))
+                    case (time, item) => op(item).map((time, _))
                   }
                 }
               },
@@ -686,8 +680,7 @@ object Scalding {
     val ts = dr.as[Interval[Timestamp]]
     val pf = planProducer(opts, prod)
     toPipe(ts, fd, mode, pf).right.map {
-      case (ts, pipe) =>
-        (ts.as[Option[DateRange]].get, pipe)
+      case (ts, pipe) => (ts.as[Option[DateRange]].get, pipe)
     }
   }
 
@@ -799,8 +792,7 @@ class Scalding(
     } else {
       val kryoReg = new IterableRegistrar(passedRegistrars)
       val initKryo = conf.getKryo match {
-        case None =>
-          new serialization.KryoHadoop(ScalaMapConfig(conf.toMap))
+        case None       => new serialization.KryoHadoop(ScalaMapConfig(conf.toMap))
         case Some(kryo) => kryo
       }
 
@@ -868,18 +860,15 @@ class Scalding(
       mutate: Flow[_] => Unit): WaitingState[Interval[Timestamp]] = {
 
     val config = mode match {
-      case Hdfs(_, conf) =>
-        buildConfig(conf)
-      case HadoopTest(conf, _) =>
-        buildConfig(conf)
+      case Hdfs(_, conf)       => buildConfig(conf)
+      case HadoopTest(conf, _) => buildConfig(conf)
 
       case _ => Config.empty
     }
 
     val prepareState = state.begin
     toFlow(config, prepareState.requested, mode, pf) match {
-      case Left(errs) =>
-        prepareState.fail(FlowPlanException(errs))
+      case Left(errs) => prepareState.fail(FlowPlanException(errs))
       case Right((ts, flowOpt)) =>
         flowOpt.foreach(flow => mutate(flow))
         prepareState.willAccept(ts) match {

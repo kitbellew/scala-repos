@@ -26,8 +26,9 @@ trait Tuples {
     new JSON[(A, B)] {
       def read(json: JValue) =
         json match {
-          case JArray(a :: b :: _) =>
-            (fromJSON[A](a) |@| fromJSON[B](b)) { (a, b) => (a, b) }
+          case JArray(a :: b :: _) => (fromJSON[A](a) |@| fromJSON[B](b)) {
+              (a, b) => (a, b)
+            }
           case x =>
             failure(UnexpectedJSONError(x, classOf[JArray])).toValidationNel
         }

@@ -106,8 +106,7 @@ object ActorContextSpec {
           case _ ⇒
         }
         Same
-      case Msg(ctx, message) ⇒
-        message match {
+      case Msg(ctx, message) ⇒ message match {
           case Ping(replyTo) ⇒
             replyTo ! Pong1
             Same
@@ -117,8 +116,7 @@ object ActorContextSpec {
           case Renew(replyTo) ⇒
             replyTo ! Renewed
             subject(monitor)
-          case Throw(ex) ⇒
-            throw ex
+          case Throw(ex) ⇒ throw ex
           case MkChild(name, mon, replyTo) ⇒
             val child = name match {
               case None ⇒ ctx.spawnAnonymous(Props(subject(mon)))
@@ -161,8 +159,7 @@ object ActorContextSpec {
               case Msg(_, Ping(replyTo)) ⇒
                 replyTo ! Pong2
                 Same
-              case Msg(_, Throw(ex)) ⇒
-                throw ex
+              case Msg(_, Throw(ex)) ⇒ throw ex
               case _ ⇒ Same
             }
           case BecomeCareless(replyTo) ⇒
@@ -247,10 +244,7 @@ class ActorContextSpec
 
         if (!inert) s
         else
-          s.keep {
-              case (subj, child) ⇒
-                child ! BecomeInert(self)
-            }
+          s.keep { case (subj, child) ⇒ child ! BecomeInert(self) }
             .expectMessageKeep(500.millis) { (msg, _) ⇒
               msg should ===(BecameInert)
             }
@@ -520,10 +514,7 @@ class ActorContextSpec
         val self = ctx.self
         startWith
           .mkChild(None, ctx.spawnAdapter(ChildEvent), self)
-          .keep {
-            case (subj, child) ⇒
-              subj ! Watch(child, self)
-          }
+          .keep { case (subj, child) ⇒ subj ! Watch(child, self) }
           .expectMessageKeep(500.millis) {
             case (msg, (subj, child)) ⇒
               msg should ===(Watched)
@@ -546,10 +537,7 @@ class ActorContextSpec
         val self = ctx.self
         startWith
           .mkChild(None, ctx.spawnAdapter(ChildEvent), self)
-          .keep {
-            case (subj, child) ⇒
-              subj ! Watch(child, self)
-          }
+          .keep { case (subj, child) ⇒ subj ! Watch(child, self) }
           .expectMessageKeep(500.millis) {
             case (msg, (subj, child)) ⇒
               msg should ===(Watched)
@@ -566,8 +554,7 @@ class ActorContextSpec
               Failed.Stop
           }
           .expectMessage(500.millis) {
-            case (msg, (subj, child)) ⇒
-              msg should ===(GotSignal(PostStop))
+            case (msg, (subj, child)) ⇒ msg should ===(GotSignal(PostStop))
           }
       })
 
@@ -579,8 +566,7 @@ class ActorContextSpec
             case (msg: Info, subj) ⇒
               msg.self should ===(subj)
               msg.system should ===(system)
-            case (other, _) ⇒
-              fail(s"$other was not an Info(...)")
+            case (other, _) ⇒ fail(s"$other was not an Info(...)")
           }
       })
 

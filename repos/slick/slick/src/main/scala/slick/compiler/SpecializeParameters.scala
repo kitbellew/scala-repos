@@ -26,8 +26,7 @@ class SpecializeParameters extends Phase {
             _,
             _,
             Some(_: QueryParameter),
-            _) =>
-        c
+            _) => c
     }
     logger.debug("Affected fetch clauses in: " + cs.mkString(", "))
     cs.foldLeft(n) {
@@ -49,14 +48,14 @@ class SpecializeParameters extends Phase {
           ScalaBaseType.longType)
         val guarded = n.replace(
           {
-            case c2: Comprehension if c2 == c =>
-              c2.copy(fetch = Some(LiteralNode(0L)))
+            case c2: Comprehension
+                if c2 == c => c2.copy(fetch = Some(LiteralNode(0L)))
           },
           keepType = true)
         val fallback = n.replace(
           {
-            case c2: Comprehension if c2 == c =>
-              c2.copy(fetch = Some(compiledFetchParam))
+            case c2: Comprehension
+                if c2 == c => c2.copy(fetch = Some(compiledFetchParam))
           },
           keepType = true)
         ParameterSwitch(

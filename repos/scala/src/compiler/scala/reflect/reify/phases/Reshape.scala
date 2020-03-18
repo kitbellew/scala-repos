@@ -32,14 +32,10 @@ trait Reshape {
       currentSymbol = tree.symbol
 
       val preTyper = tree match {
-        case tree if tree.isErroneous =>
-          tree
-        case tt @ TypeTree() =>
-          toPreTyperTypeTree(tt)
-        case ctt @ CompoundTypeTree(_) =>
-          toPreTyperCompoundTypeTree(ctt)
-        case toa @ TypedOrAnnotated(_) =>
-          toPreTyperTypedOrAnnotated(toa)
+        case tree if tree.isErroneous  => tree
+        case tt @ TypeTree()           => toPreTyperTypeTree(tt)
+        case ctt @ CompoundTypeTree(_) => toPreTyperCompoundTypeTree(ctt)
+        case toa @ TypedOrAnnotated(_) => toPreTyperTypedOrAnnotated(toa)
         case ta @ TypeApply(_, _) if isCrossStageTypeBearer(ta) =>
           if (reifyDebug) println("cross-stage type bearer, retaining: " + tree)
           ta
@@ -80,8 +76,7 @@ trait Reshape {
               args) =>
           if (reifyDebug) println("unapplying unapply: " + tree)
           Apply(fun, args).copyAttrs(unapply)
-        case _ =>
-          tree
+        case _ => tree
       }
 
       super.transform(preTyper)
@@ -210,8 +205,7 @@ trait Reshape {
               tree match {
                 case annotated1 @ Annotated(
                       ann,
-                      annotated2 @ Annotated(_, _)) =>
-                  loop(annotated2)
+                      annotated2 @ Annotated(_, _))   => loop(annotated2)
                 case annotated1 @ Annotated(ann, arg) => arg
                 case _                                => EmptyTree
               }
@@ -364,8 +358,7 @@ trait Reshape {
             if (reifyDebug) println("discarding accessor method: " + ddef)
             None
           } else { Some(ddef) }
-        case tree =>
-          Some(tree)
+        case tree => Some(tree)
       }
 
       stats1
@@ -385,8 +378,7 @@ trait Reshape {
               println(s"reconstructing original lazy value for $vdef")
             val ddefSym = vdef.symbol.lazyAccessor
             val vdef1 = lazyvaldefs.get(ddefSym) match {
-              case Some(ddef) =>
-                toPreTyperLazyVal(ddef)
+              case Some(ddef) => toPreTyperLazyVal(ddef)
               case None =>
                 if (reifyDebug)
                   println("couldn't find corresponding lazy val accessor")

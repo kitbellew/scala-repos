@@ -54,8 +54,7 @@ object GenerateOrdering
     */
   def create(schema: StructType): BaseOrdering = {
     create(schema.zipWithIndex.map {
-      case (field, ordinal) =>
-        SortOrder(
+      case (field, ordinal) => SortOrder(
           BoundReference(ordinal, field.dataType, nullable = true),
           Ascending)
     })
@@ -188,8 +187,7 @@ object LazilyGeneratedOrdering {
     */
   def forSchema(schema: StructType): LazilyGeneratedOrdering = {
     new LazilyGeneratedOrdering(schema.zipWithIndex.map {
-      case (field, ordinal) =>
-        SortOrder(
+      case (field, ordinal) => SortOrder(
           BoundReference(ordinal, field.dataType, nullable = true),
           Ascending)
     })

@@ -171,16 +171,13 @@ trait LogisticRegressionSpecs[M[+_]]
           val SArray(arr) = fields("coefficients")
 
           val SDecimal(theta1) = (arr(0): @unchecked) match {
-            case SArray(elems2) =>
-              (elems2(0): @unchecked) match {
-                case SObject(obj) =>
-                  returnestimate(obj)
+            case SArray(elems2) => (elems2(0): @unchecked) match {
+                case SObject(obj) => returnestimate(obj)
               }
           }
 
           val SDecimal(theta0) = (arr(1): @unchecked) match {
-            case SObject(obj) =>
-              returnestimate(obj)
+            case SObject(obj) => returnestimate(obj)
           }
 
           List(theta0.toDouble, theta1.toDouble)
@@ -238,29 +235,22 @@ trait LogisticRegressionSpecs[M[+_]]
           val SArray(arr) = fields("coefficients")
 
           val SDecimal(theta1) = (arr(0): @unchecked) match {
-            case SObject(map) =>
-              (map("bar"): @unchecked) match {
-                case SObject(obj) =>
-                  returnestimate(obj)
+            case SObject(map) => (map("bar"): @unchecked) match {
+                case SObject(obj) => returnestimate(obj)
               }
           }
           val SDecimal(theta2) = (arr(0): @unchecked) match {
-            case SObject(map) =>
-              (map("baz"): @unchecked) match {
-                case SObject(obj) =>
-                  returnestimate(obj)
+            case SObject(map) => (map("baz"): @unchecked) match {
+                case SObject(obj) => returnestimate(obj)
               }
           }
           val SDecimal(theta3) = (arr(0): @unchecked) match {
-            case SObject(map) =>
-              (map("foo"): @unchecked) match {
-                case SObject(obj) =>
-                  returnestimate(obj)
+            case SObject(map) => (map("foo"): @unchecked) match {
+                case SObject(obj) => returnestimate(obj)
               }
           }
           val SDecimal(theta0) = (arr(1): @unchecked) match {
-            case SObject(obj) =>
-              returnestimate(obj)
+            case SObject(obj) => returnestimate(obj)
           }
 
           List(
@@ -342,30 +332,23 @@ trait LogisticRegressionSpecs[M[+_]]
             val SArray(arr) = fields("coefficients")
 
             val SDecimal(theta1) = (arr(0): @unchecked) match {
-              case SObject(map) =>
-                (map("bar"): @unchecked) match {
-                  case SObject(map) =>
-                    (map("baz"): @unchecked) match {
-                      case SArray(elems) =>
-                        (elems(0): @unchecked) match {
-                          case SObject(obj) =>
-                            returnestimate(obj)
+              case SObject(map) => (map("bar"): @unchecked) match {
+                  case SObject(map) => (map("baz"): @unchecked) match {
+                      case SArray(elems) => (elems(0): @unchecked) match {
+                          case SObject(obj) => returnestimate(obj)
                         }
                     }
                 }
             }
 
             val SDecimal(theta2) = (arr(0): @unchecked) match {
-              case SObject(map) =>
-                (map("foo"): @unchecked) match {
-                  case SObject(obj) =>
-                    returnestimate(obj)
+              case SObject(map) => (map("foo"): @unchecked) match {
+                  case SObject(obj) => returnestimate(obj)
                 }
             }
 
             val SDecimal(theta0) = (arr(1): @unchecked) match {
-              case SObject(map) =>
-                returnestimate(map)
+              case SObject(map) => returnestimate(map)
             }
 
             List(theta0.toDouble, theta1.toDouble, theta2.toDouble)

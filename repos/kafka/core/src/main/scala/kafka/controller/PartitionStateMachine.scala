@@ -339,11 +339,9 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
             currentLeaderIsrAndEpoch.leaderAndIsr.leader) match {
             case true => // leader is alive
               partitionState.put(topicPartition, OnlinePartition)
-            case false =>
-              partitionState.put(topicPartition, OfflinePartition)
+            case false => partitionState.put(topicPartition, OfflinePartition)
           }
-        case None =>
-          partitionState.put(topicPartition, NewPartition)
+        case None => partitionState.put(topicPartition, NewPartition)
       }
     }
   }

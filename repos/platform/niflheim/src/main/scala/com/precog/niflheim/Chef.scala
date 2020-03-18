@@ -86,12 +86,9 @@ final case class Chef(blockFormat: CookedBlockFormat, format: SegmentFormat)
   }
 
   def receive = {
-    case Prepare(blockid, seqId, root, source) =>
-      cook(root, source) match {
-        case Success(file) =>
-          sender ! Cooked(blockid, seqId, root, file)
-        case Failure(_) =>
-          sender ! Spoilt(blockid, seqId)
+    case Prepare(blockid, seqId, root, source) => cook(root, source) match {
+        case Success(file) => sender ! Cooked(blockid, seqId, root, file)
+        case Failure(_)    => sender ! Spoilt(blockid, seqId)
       }
   }
 }

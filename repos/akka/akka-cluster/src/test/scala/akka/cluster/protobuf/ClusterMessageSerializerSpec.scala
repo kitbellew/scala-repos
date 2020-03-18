@@ -27,8 +27,7 @@ class ClusterMessageSerializerSpec
         env2.from should ===(env.from)
         env2.to should ===(env.to)
         env2.gossip should ===(env.gossip)
-      case _ ⇒
-        ref should ===(obj)
+      case _ ⇒ ref should ===(obj)
     }
 
   }

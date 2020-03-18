@@ -134,10 +134,8 @@ class FilePollingActivitySource private[exp] (
               InputStreamReader.DefaultMaxBufferSize,
               pool)
             Reader.readAll(reader) respond {
-              case Return(buf) =>
-                value() = Activity.Ok(buf)
-              case Throw(cause) =>
-                value() = Activity.Failed(cause)
+              case Return(buf)  => value() = Activity.Ok(buf)
+              case Throw(cause) => value() = Activity.Failed(cause)
             } ensure {
               // InputStreamReader ignores the deadline in close
               reader.close(Time.Undefined)
@@ -184,10 +182,8 @@ class ClassLoaderActivitySource private[exp] (
                 InputStreamReader.DefaultMaxBufferSize,
                 pool)
               Reader.readAll(reader) respond {
-                case Return(buf) =>
-                  p.setValue(Activity.Ok(buf))
-                case Throw(cause) =>
-                  p.setValue(Activity.Failed(cause))
+                case Return(buf)  => p.setValue(Activity.Ok(buf))
+                case Throw(cause) => p.setValue(Activity.Failed(cause))
               } ensure {
                 // InputStreamReader ignores the deadline in close
                 reader.close(Time.Undefined)

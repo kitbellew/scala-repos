@@ -34,8 +34,8 @@ private[http] object FrameHandler {
       def handleRegularFrameStart(start: FrameStart)(implicit
           ctx: Ctx): SyncDirective =
         (start.header.opcode, start.isFullMessage) match {
-          case (Opcode.Binary, true) ⇒
-            publishMessagePart(BinaryMessagePart(start.data, last = true))
+          case (Opcode.Binary, true) ⇒ publishMessagePart(
+              BinaryMessagePart(start.data, last = true))
           case (Opcode.Binary, false) ⇒
             becomeAndHandleWith(new CollectingBinaryMessage, start)
           case (Opcode.Text, _) ⇒
@@ -115,8 +115,7 @@ private[http] object FrameHandler {
         case h: FrameHeader if h.rsv1 || h.rsv2 || h.rsv3 ⇒
           Some(protocolError())
         case FrameHeader(op, _, length, fin, _, _, _)
-            if op.isControl && (length > 125 || !fin) ⇒
-          Some(protocolError())
+            if op.isControl && (length > 125 || !fin) ⇒ Some(protocolError())
         case _ ⇒ None
       }
 
@@ -126,8 +125,7 @@ private[http] object FrameHandler {
         nextState: State)(implicit ctx: Ctx): SyncDirective = {
       become(nextState)
       opcode match {
-        case Opcode.Ping ⇒
-          publishDirectResponse(
+        case Opcode.Ping ⇒ publishDirectResponse(
             FrameEvent.fullFrame(Opcode.Pong, None, data, fin = true))
         case Opcode.Pong ⇒
           // ignore unsolicited Pong frame

@@ -146,8 +146,7 @@ trait LoggingBus extends ActorEventBus {
             system.systemActorOf(
               Props(new Actor {
                 def receive = {
-                  case UnhandledMessage(msg, sender, rcp) ⇒
-                    publish(Debug(
+                  case UnhandledMessage(msg, sender, rcp) ⇒ publish(Debug(
                       rcp.path.toString,
                       rcp.getClass,
                       "unhandled message from " + sender + ": " + msg))

@@ -62,8 +62,7 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusAkkaTestKit {
 
     //#transition-elided
     onTransition {
-      case Active -> Idle =>
-        stateData match {
+      case Active -> Idle => stateData match {
           case Todo(ref, queue) => ref ! Batch(queue)
           case _                => // nothing to do
         }
@@ -148,16 +147,14 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusAkkaTestKit {
         case Event(bytes: ByteString, read) => stay using (read + bytes.length)
       } using {
         case s @ FSM.State(state, read, timeout, stopReason, replies)
-            if read > 1000 =>
-          goto(Processing)
+            if read > 1000 => goto(Processing)
       })
       //#transform-syntax
 
       //#alt-transform-syntax
       val processingTrigger: PartialFunction[State, State] = {
         case s @ FSM.State(state, read, timeout, stopReason, replies)
-            if read > 1000 =>
-          goto(Processing)
+            if read > 1000 => goto(Processing)
       }
 
       when(SomeState)(transform {

@@ -29,22 +29,17 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
     implicit val pos = pos_in
 
     wrapTransform(tree) {
-      case VarDef(ident, EmptyTree) =>
-        new Node(Token.VAR, transformName(ident))
+      case VarDef(ident, EmptyTree) => new Node(Token.VAR, transformName(ident))
       case VarDef(ident, rhs) =>
         val node = transformName(ident)
         node.addChildToFront(transformExpr(rhs))
         new Node(Token.VAR, node)
-      case Skip() =>
-        new Node(Token.EMPTY)
-      case Block(stats) =>
-        transformBlock(stats, pos)
+      case Skip()       => new Node(Token.EMPTY)
+      case Block(stats) => transformBlock(stats, pos)
       case Labeled(label, body) =>
         new Node(Token.LABEL, transformLabel(label), transformBlock(body))
-      case Return(EmptyTree) =>
-        new Node(Token.RETURN)
-      case Return(expr) =>
-        new Node(Token.RETURN, transformExpr(expr))
+      case Return(EmptyTree) => new Node(Token.RETURN)
+      case Return(expr)      => new Node(Token.RETURN, transformExpr(expr))
       case If(cond, thenp, Skip()) =>
         new Node(Token.IF, transformExpr(cond), transformBlock(thenp))
       case If(cond, thenp, elsep) =>
@@ -99,14 +94,10 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
           transformBlock(block),
           setNodePosition(blockNode, catchPos),
           transformBlock(finalizer))
-      case Throw(expr) =>
-        new Node(Token.THROW, transformExpr(expr))
-      case Break(None) =>
-        new Node(Token.BREAK)
-      case Break(Some(label)) =>
-        new Node(Token.BREAK, transformLabel(label))
-      case Continue(None) =>
-        new Node(Token.CONTINUE)
+      case Throw(expr)        => new Node(Token.THROW, transformExpr(expr))
+      case Break(None)        => new Node(Token.BREAK)
+      case Break(Some(label)) => new Node(Token.BREAK, transformLabel(label))
+      case Continue(None)     => new Node(Token.CONTINUE)
       case Continue(Some(label)) =>
         new Node(Token.CONTINUE, transformLabel(label))
 
@@ -131,8 +122,7 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
 
         switchNode
 
-      case Debugger() =>
-        new Node(Token.DEBUGGER)
+      case Debugger() => new Node(Token.DEBUGGER)
 
       case FunctionDef(name, args, body) =>
         val node = transformName(name)
@@ -187,10 +177,8 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
 
         node
 
-      case Delete(prop) =>
-        new Node(Token.DELPROP, transformExpr(prop))
-      case UnaryOp(op, lhs) =>
-        mkUnaryOp(op, transformExpr(lhs))
+      case Delete(prop)     => new Node(Token.DELPROP, transformExpr(prop))
+      case UnaryOp(op, lhs) => mkUnaryOp(op, transformExpr(lhs))
       case BinaryOp(op, lhs, rhs) =>
         mkBinaryOp(op, transformExpr(lhs), transformExpr(rhs))
       case ArrayConstr(items) =>
@@ -211,23 +199,16 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
 
       case Undefined() =>
         new Node(Token.VOID, setNodePosition(Node.newNumber(0.0), pos))
-      case Null() =>
-        new Node(Token.NULL)
+      case Null() => new Node(Token.NULL)
       case BooleanLiteral(value) =>
         if (value) new Node(Token.TRUE) else new Node(Token.FALSE)
-      case IntLiteral(value) =>
-        Node.newNumber(value)
-      case DoubleLiteral(value) =>
-        Node.newNumber(value)
-      case StringLiteral(value) =>
-        Node.newString(value)
-      case VarRef(ident) =>
-        transformName(ident)
-      case This() =>
-        new Node(Token.THIS)
+      case IntLiteral(value)    => Node.newNumber(value)
+      case DoubleLiteral(value) => Node.newNumber(value)
+      case StringLiteral(value) => Node.newString(value)
+      case VarRef(ident)        => transformName(ident)
+      case This()               => new Node(Token.THIS)
 
-      case Function(args, body) =>
-        genFunction("", args, body)
+      case Function(args, body) => genFunction("", args, body)
 
       case _ =>
         throw new TransformException(
@@ -273,10 +254,8 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
   def transformBlock(tree: Tree)(implicit parentPos: Position): Node = {
     val pos = if (tree.pos.isDefined) tree.pos else parentPos
     wrapTransform(tree) {
-      case Block(stats) =>
-        transformBlock(stats, pos)
-      case tree =>
-        transformBlock(List(tree), pos)
+      case Block(stats) => transformBlock(stats, pos)
+      case tree         => transformBlock(List(tree), pos)
     }(pos)
   }
 
@@ -297,8 +276,7 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
       ts match {
         case DocComment(text) :: tss if text.startsWith("@constructor") =>
           loop(tss, nextIsCtor = true)
-        case DocComment(text) :: tss =>
-          loop(tss)
+        case DocComment(text) :: tss => loop(tss)
         case t :: tss =>
           val node = transformStat(t)(blockPos)
           if (nextIsCtor) {
@@ -324,10 +302,8 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
       pos: Position): Node = {
     try { setNodePosition(body(tree), pos) }
     catch {
-      case e: TransformException =>
-        throw e // pass through
-      case e: RuntimeException =>
-        throw new TransformException(tree, e)
+      case e: TransformException => throw e // pass through
+      case e: RuntimeException   => throw new TransformException(tree, e)
     }
   }
 

@@ -364,8 +364,7 @@ trait ActorRefFactory {
         else ActorSelection(lookupRoot, elems)
       case ActorPathExtractor(address, elems) ⇒
         ActorSelection(provider.rootGuardianAt(address), elems)
-      case _ ⇒
-        ActorSelection(provider.deadLetters, "")
+      case _ ⇒ ActorSelection(provider.deadLetters, "")
     }
 
   /**
@@ -580,7 +579,10 @@ private[akka] class LocalActorRefProvider private[akka] (
               log.error(ex, s"guardian $child failed, shutting down!")
               causeOfTermination.tryFailure(ex)
               child.stop()
-            case Supervise(_, _) ⇒ // TODO register child in some map to keep track of it and enable shutdown after all dead
+            case Supervise(
+                  _,
+                  _
+                ) ⇒ // TODO register child in some map to keep track of it and enable shutdown after all dead
             case _: DeathWatchNotification ⇒ stop()
             case _ ⇒
               log.error(s"$this received unexpected system message [$message]")
@@ -830,8 +832,7 @@ private[akka] class LocalActorRefProvider private[akka] (
         val props2 =
           // mailbox and dispatcher defined in deploy should override props
           (if (lookupDeploy) deployer.lookup(path) else deploy) match {
-            case Some(d) ⇒
-              (d.dispatcher, d.mailbox) match {
+            case Some(d) ⇒ (d.dispatcher, d.mailbox) match {
                 case (Deploy.NoDispatcherGiven, Deploy.NoMailboxGiven) ⇒ props
                 case (dsp, Deploy.NoMailboxGiven) ⇒ props.withDispatcher(dsp)
                 case (Deploy.NoMailboxGiven, mbx) ⇒ props.withMailbox(mbx)

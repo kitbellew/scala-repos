@@ -410,10 +410,7 @@ class StreamingContextStoppingCollector(val ssc: StreamingContext)
       // `ssc.stop()` in the listener thread, which becomes a dead-lock.
       isFirstBatch = false
       try { ssc.stop() }
-      catch {
-        case se: SparkException =>
-          sparkExSeen = true
-      }
+      catch { case se: SparkException => sparkExSeen = true }
     }
   }
 }

@@ -135,12 +135,9 @@ object Flaggable {
     new Flaggable[InetSocketAddress] {
       def parse(v: String) =
         v.split(":") match {
-          case Array("", p) =>
-            new InetSocketAddress(p.toInt)
-          case Array(h, p) =>
-            new InetSocketAddress(h, p.toInt)
-          case _ =>
-            throw new IllegalArgumentException
+          case Array("", p) => new InetSocketAddress(p.toInt)
+          case Array(h, p)  => new InetSocketAddress(h, p.toInt)
+          case _            => throw new IllegalArgumentException
         }
 
       override def show(addr: InetSocketAddress) =
@@ -317,8 +314,7 @@ class Flag[T: Flaggable] private[app] (
   private[this] def localValue: Option[T] =
     localFlagValues() match {
       case None => None
-      case Some(flagValues) =>
-        flagValues.get(this) match {
+      case Some(flagValues) => flagValues.get(this) match {
           case None            => None
           case Some(flagValue) => Some(flagValue.asInstanceOf[T])
         }
@@ -626,8 +622,7 @@ class Flags(
                   usage))
 
             // Optional argument without a value
-            case Array(k) if flag(k).noArgumentOk =>
-              flag(k).parse()
+            case Array(k) if flag(k).noArgumentOk => flag(k).parse()
 
             // Mandatory argument without a value and with no more arguments.
             case Array(k) if i == args.size =>
@@ -699,8 +694,7 @@ class Flags(
     */
   def parseOrExit1(args: Array[String], undefOk: Boolean = true): Seq[String] =
     parseArgs(args, undefOk) match {
-      case Ok(remainder) =>
-        remainder
+      case Ok(remainder) => remainder
       case Help(usage) =>
         System.err.println(usage)
         System.exit(1)
@@ -957,8 +951,7 @@ private object GlobalFlag {
       Some(m.invoke(null).asInstanceOf[Flag[_]])
     } catch {
       case _: ClassNotFoundException | _: NoSuchMethodException |
-          _: IllegalArgumentException =>
-        None
+          _: IllegalArgumentException => None
     }
 
   private[this] val log = java.util.logging.Logger.getLogger("")

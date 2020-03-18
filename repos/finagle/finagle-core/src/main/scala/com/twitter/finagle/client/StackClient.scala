@@ -522,9 +522,8 @@ trait StdStackClient[Req, Rep, This <: StdStackClient[Req, Rep, This]]
         val Transporter.EndpointAddr(addr) = prms[Transporter.EndpointAddr]
         val factory = addr match {
           case com.twitter.finagle.exp.Address
-                .ServiceFactory(sf: ServiceFactory[Req, Rep], _) =>
-            sf
-          case Address.Failed(e) => new FailingFactory[Req, Rep](e)
+                .ServiceFactory(sf: ServiceFactory[Req, Rep], _) => sf
+          case Address.Failed(e)                                 => new FailingFactory[Req, Rep](e)
           case Address.Inet(ia, _) =>
             val endpointClient = copy1(params = prms)
             val transporter = endpointClient.newTransporter()

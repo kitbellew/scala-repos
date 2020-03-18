@@ -116,8 +116,8 @@ private[spark] class FairSchedulableBuilder(val rootPool: Pool, conf: SparkConf)
       if (xmlSchedulingMode != "") {
         try { schedulingMode = SchedulingMode.withName(xmlSchedulingMode) }
         catch {
-          case e: NoSuchElementException =>
-            logWarning("Error xml schedulingMode, using default schedulingMode")
+          case e: NoSuchElementException => logWarning(
+              "Error xml schedulingMode, using default schedulingMode")
         }
       }
 

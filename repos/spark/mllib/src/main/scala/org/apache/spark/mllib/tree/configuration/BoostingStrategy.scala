@@ -112,8 +112,7 @@ object BoostingStrategy {
       case Algo.Classification =>
         treeStrategy.numClasses = 2
         new BoostingStrategy(treeStrategy, LogLoss)
-      case Algo.Regression =>
-        new BoostingStrategy(treeStrategy, SquaredError)
+      case Algo.Regression => new BoostingStrategy(treeStrategy, SquaredError)
       case _ =>
         throw new IllegalArgumentException(
           s"$algo is not supported by boosting.")

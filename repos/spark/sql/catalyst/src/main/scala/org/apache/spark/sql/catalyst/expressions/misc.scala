@@ -102,13 +102,10 @@ case class Sha2(left: Expression, right: Expression)
           // SHA-224 is not supported on the system, return null
           case noa: NoSuchAlgorithmException => null
         }
-      case 256 | 0 =>
-        UTF8String.fromString(DigestUtils.sha256Hex(input))
-      case 384 =>
-        UTF8String.fromString(DigestUtils.sha384Hex(input))
-      case 512 =>
-        UTF8String.fromString(DigestUtils.sha512Hex(input))
-      case _ => null
+      case 256 | 0 => UTF8String.fromString(DigestUtils.sha256Hex(input))
+      case 384     => UTF8String.fromString(DigestUtils.sha384Hex(input))
+      case 512     => UTF8String.fromString(DigestUtils.sha512Hex(input))
+      case _       => null
     }
   }
 

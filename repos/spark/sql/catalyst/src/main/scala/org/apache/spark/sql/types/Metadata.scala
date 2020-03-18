@@ -87,15 +87,12 @@ sealed class Metadata private[types] (private[types] val map: Map[String, Any])
         if (map.keySet == that.map.keySet) {
           map.keys.forall { k =>
             (map(k), that.map(k)) match {
-              case (v0: Array[_], v1: Array[_]) =>
-                v0.view == v1.view
-              case (v0, v1) =>
-                v0 == v1
+              case (v0: Array[_], v1: Array[_]) => v0.view == v1.view
+              case (v0, v1)                     => v0 == v1
             }
           }
         } else { false }
-      case other =>
-        false
+      case other => false
     }
   }
 
@@ -120,16 +117,11 @@ object Metadata {
   private[sql] def fromJObject(jObj: JObject): Metadata = {
     val builder = new MetadataBuilder
     jObj.obj.foreach {
-      case (key, JInt(value)) =>
-        builder.putLong(key, value.toLong)
-      case (key, JDouble(value)) =>
-        builder.putDouble(key, value)
-      case (key, JBool(value)) =>
-        builder.putBoolean(key, value)
-      case (key, JString(value)) =>
-        builder.putString(key, value)
-      case (key, o: JObject) =>
-        builder.putMetadata(key, fromJObject(o))
+      case (key, JInt(value))    => builder.putLong(key, value.toLong)
+      case (key, JDouble(value)) => builder.putDouble(key, value)
+      case (key, JBool(value))   => builder.putBoolean(key, value)
+      case (key, JString(value)) => builder.putString(key, value)
+      case (key, o: JObject)     => builder.putMetadata(key, fromJObject(o))
       case (key, JArray(value)) =>
         if (value.isEmpty) {
           // If it is an empty array, we cannot infer its element type. We put an empty Array[Long].
@@ -161,8 +153,7 @@ object Metadata {
                 s"Do not support array of type ${other.getClass}.")
           }
         }
-      case (key, JNull) =>
-        builder.putNull(key)
+      case (key, JNull) => builder.putNull(key)
       case (key, other) =>
         throw new RuntimeException(s"Do not support type ${other.getClass}.")
     }
@@ -180,16 +171,11 @@ object Metadata {
       case arr: Array[_] =>
         val values = arr.toList.map(toJsonValue)
         JArray(values)
-      case x: Long =>
-        JInt(x)
-      case x: Double =>
-        JDouble(x)
-      case x: Boolean =>
-        JBool(x)
-      case x: String =>
-        JString(x)
-      case x: Metadata =>
-        toJsonValue(x.map)
+      case x: Long     => JInt(x)
+      case x: Double   => JDouble(x)
+      case x: Boolean  => JBool(x)
+      case x: String   => JString(x)
+      case x: Metadata => toJsonValue(x.map)
       case other =>
         throw new RuntimeException(s"Do not support type ${other.getClass}.")
     }
@@ -198,21 +184,15 @@ object Metadata {
   /** Computes the hash code for the types we support. */
   private def hash(obj: Any): Int = {
     obj match {
-      case map: Map[_, _] =>
-        map.mapValues(hash).##
-      case arr: Array[_] =>
+      case map: Map[_, _] => map.mapValues(hash).##
+      case arr: Array[_]  =>
         // Seq.empty[T] has the same hashCode regardless of T.
         arr.toSeq.map(hash).##
-      case x: Long =>
-        x.##
-      case x: Double =>
-        x.##
-      case x: Boolean =>
-        x.##
-      case x: String =>
-        x.##
-      case x: Metadata =>
-        hash(x.map)
+      case x: Long     => x.##
+      case x: Double   => x.##
+      case x: Boolean  => x.##
+      case x: String   => x.##
+      case x: Metadata => hash(x.map)
       case other =>
         throw new RuntimeException(s"Do not support type ${other.getClass}.")
     }

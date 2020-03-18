@@ -475,13 +475,11 @@ trait Actor {
       case l: AutoReceivedMessage => true
       case msg
           if behaviorStack.nonEmpty &&
-            behaviorStack.head.isDefinedAt(msg) =>
-        true
+            behaviorStack.head.isDefinedAt(msg) => true
       case msg
           if behaviorStack.isEmpty &&
-            processingBehavior.isDefinedAt(msg) =>
-        true
-      case _ => false
+            processingBehavior.isDefinedAt(msg) => true
+      case _                                    => false
     }
   }
 
@@ -514,12 +512,10 @@ trait Actor {
       case l: AutoReceivedMessage => autoReceiveMessage(l)
       case msg
           if behaviorStack.nonEmpty &&
-            behaviorStack.head.isDefinedAt(msg) =>
-        behaviorStack.head.apply(msg)
+            behaviorStack.head.isDefinedAt(msg) => behaviorStack.head.apply(msg)
       case msg
           if behaviorStack.isEmpty &&
-            processingBehavior.isDefinedAt(msg) =>
-        processingBehavior.apply(msg)
+            processingBehavior.isDefinedAt(msg) => processingBehavior.apply(msg)
       case unknown =>
         unhandled(
           unknown

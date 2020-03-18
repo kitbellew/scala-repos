@@ -382,8 +382,7 @@ class ParamsSuite extends SparkFunSuite {
 
     assert(filteredParamMap.size === 2)
     filteredParamMap.toSeq.foreach {
-      case ParamPair(p, _) =>
-        assert(p.parent === params1.uid)
+      case ParamPair(p, _) => assert(p.parent === params1.uid)
     }
 
     // At the previous implementation of ParamMap#filter,

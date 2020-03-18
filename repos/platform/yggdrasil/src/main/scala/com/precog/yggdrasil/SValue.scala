@@ -42,14 +42,12 @@ sealed trait SValue {
     if (selector == JPath.Identity) { Some(this) }
     else {
       this match {
-        case SObject(obj) =>
-          (selector.nodes: @unchecked) match {
+        case SObject(obj) => (selector.nodes: @unchecked) match {
             case JPathField(name) :: Nil => obj.get(name)
             case JPathField(name) :: xs  => obj.get(name).flatMap(_ \ JPath(xs))
           }
 
-        case SArray(arr) =>
-          (selector.nodes: @unchecked) match {
+        case SArray(arr) => (selector.nodes: @unchecked) match {
             case JPathIndex(i) :: Nil => arr.lift(i)
             case JPathIndex(i) :: xs  => arr.lift(i).flatMap(_ \ JPath(xs))
           }
@@ -61,8 +59,7 @@ sealed trait SValue {
 
   def set(selector: JPath, value: SValue): Option[SValue] =
     this match {
-      case SObject(obj) =>
-        (selector.nodes: @unchecked) match {
+      case SObject(obj) => (selector.nodes: @unchecked) match {
           case JPathField(name) :: Nil => Some(SObject(obj + (name -> value)))
           case JPathField(name) :: xs =>
             val child = xs.head match {
@@ -76,10 +73,9 @@ sealed trait SValue {
               .map(sv => (SObject(obj + (name -> sv))))
         }
 
-      case SArray(arr) =>
-        (selector.nodes: @unchecked) match {
-          case JPathIndex(i) :: Nil =>
-            Some(SArray(arr.padTo(i + 1, SNull).updated(i, value)))
+      case SArray(arr) => (selector.nodes: @unchecked) match {
+          case JPathIndex(i) :: Nil => Some(
+              SArray(arr.padTo(i + 1, SNull).updated(i, value)))
           case JPathIndex(i) :: xs =>
             val child = xs.head match {
               case JPathField(_) => SObject.Empty
@@ -139,8 +135,7 @@ sealed trait SValue {
   lazy val shash: Long = structure.hashCode
 
   lazy val toJValue: JValue = this match {
-    case SObject(obj) =>
-      JObject(
+    case SObject(obj) => JObject(
         obj.map({ case (k, v) => JField(k, v.toJValue) })(collection.breakOut))
     case SArray(arr) => JArray(arr.map(_.toJValue)(collection.breakOut): _*)
     case SString(s)  => JString(s)
@@ -282,8 +277,8 @@ object SValue extends SValueInstances {
       case CDate(d)    => sys.error("todo") // Should this be SString(d.toString)?
       case CPeriod(p) =>
         sys.error("todo") // Should this be SString(d.toString)?
-      case CArray(as, CArrayType(aType)) =>
-        SArray(as.map(a => fromCValue(aType(a)))(collection.breakOut))
+      case CArray(as, CArrayType(aType)) => SArray(
+          as.map(a => fromCValue(aType(a)))(collection.breakOut))
       case CNull        => SNull
       case CEmptyArray  => SArray(Vector())
       case CEmptyObject => SObject(Map())
@@ -298,8 +293,8 @@ object SValue extends SValueInstances {
       case JObject(fields) =>
         SObject(fields.map { case JField(name, v) => (name, fromJValue(v)) }(
           collection.breakOut))
-      case JArray(elements) =>
-        SArray((elements map fromJValue)(collection.breakOut))
+      case JArray(elements) => SArray(
+          (elements map fromJValue)(collection.breakOut))
       case JString(s) => SString(s)
       case JBool(s)   => SBoolean(s)
       case JNum(d)    => SDecimal(d)

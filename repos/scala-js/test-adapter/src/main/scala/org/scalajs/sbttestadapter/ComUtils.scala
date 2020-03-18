@@ -69,14 +69,12 @@ private[testadapter] object ComUtils {
 
     def onFail =
       status match {
-        case "fail" =>
-          throw throwable
+        case "fail" => throw throwable
         case "bad" =>
           throw new AssertionError(
             s"JS test interface rejected command.",
             throwable)
-        case _ =>
-          badResponse()
+        case _ => badResponse()
       }
 
     val result = {
@@ -89,8 +87,6 @@ private[testadapter] object ComUtils {
 
   val doneHandler: LoopHandler[Unit] = { case ("ok", "") => Some(()) }
 
-  val okHandler: Handler[Unit] = {
-    case ("ok", "") =>
-  }
+  val okHandler: Handler[Unit] = { case ("ok", "") => }
 
 }

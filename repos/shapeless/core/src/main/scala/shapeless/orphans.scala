@@ -83,8 +83,7 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
 
     val deriver = dTpe match {
       case SingleType(pre, sym) => mkAttributedRef(pre, sym)
-      case other =>
-        c.abort(c.enclosingPosition, "Deriver $dTpe not found")
+      case other                => c.abort(c.enclosingPosition, "Deriver $dTpe not found")
     }
 
     val inst = c.inferImplicitValue(appTpe, silent = true)

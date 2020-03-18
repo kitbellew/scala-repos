@@ -251,8 +251,7 @@ object PolySparse {
   final def apply[@sp(Double) C: Semiring: Eq: ClassTag](
       poly: Polynomial[C]): PolySparse[C] = {
     poly match {
-      case (poly: PolySparse[_]) =>
-        poly
+      case (poly: PolySparse[_]) => poly
 
       case (_: PolyDense[_]) =>
         dense2sparse(poly.asInstanceOf[PolyDense[C]]) // Yay...

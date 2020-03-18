@@ -74,8 +74,7 @@ trait Cluster[T] {
                   q.enqueue(u)
                   Cluster.Add(u)
 
-                case Cluster.Rem(t) =>
-                  mapped.get(t) match {
+                case Cluster.Rem(t) => mapped.get(t) match {
                     case Some(q) =>
                       val u = q.dequeue()
                       if (q.isEmpty) mapped.remove(t)

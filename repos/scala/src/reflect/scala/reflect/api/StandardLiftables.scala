@@ -866,8 +866,7 @@ trait StandardLiftables {
       Unliftable {
         case Apply(
               ScalaDot(stdnme.Symbol),
-              List(Literal(Constant(name: String)))) =>
-          scala.Symbol(name)
+              List(Literal(Constant(name: String)))) => scala.Symbol(name)
       }
 
     implicit def unliftName[T <: Name: ClassTag]: Unliftable[T] =
@@ -904,8 +903,7 @@ trait StandardLiftables {
       Unliftable {
         case SyntacticTuple(
               UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-                v4) :: Nil) =>
-          Tuple4(v1, v2, v3, v4)
+                v4) :: Nil) => Tuple4(v1, v2, v3, v4)
       }
     implicit def unliftTuple5[T1, T2, T3, T4, T5](implicit
         UnliftT1: Unliftable[T1],
@@ -916,8 +914,7 @@ trait StandardLiftables {
       Unliftable {
         case SyntacticTuple(
               UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-                v4) :: UnliftT5(v5) :: Nil) =>
-          Tuple5(v1, v2, v3, v4, v5)
+                v4) :: UnliftT5(v5) :: Nil) => Tuple5(v1, v2, v3, v4, v5)
       }
     implicit def unliftTuple6[T1, T2, T3, T4, T5, T6](implicit
         UnliftT1: Unliftable[T1],
@@ -961,8 +958,7 @@ trait StandardLiftables {
         case SyntacticTuple(
               UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
                 v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-                v8) :: Nil) =>
-          Tuple8(v1, v2, v3, v4, v5, v6, v7, v8)
+                v8) :: Nil) => Tuple8(v1, v2, v3, v4, v5, v6, v7, v8)
       }
     implicit def unliftTuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9](implicit
         UnliftT1: Unliftable[T1],

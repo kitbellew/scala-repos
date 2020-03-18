@@ -124,10 +124,8 @@ object Comet {
 
   private def toHtml[A](callbackName: String, message: A): Html = {
     val javascriptMessage = message match {
-      case str: String =>
-        "'" + StringEscapeUtils.escapeEcmaScript(str) + "'"
-      case json: JsValue =>
-        Json.stringify(json)
+      case str: String   => "'" + StringEscapeUtils.escapeEcmaScript(str) + "'"
+      case json: JsValue => Json.stringify(json)
       case other =>
         throw new IllegalStateException(
           "Illegal type found: only String or JsValue elements are valid")

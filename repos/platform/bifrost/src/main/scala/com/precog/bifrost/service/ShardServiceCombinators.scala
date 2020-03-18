@@ -128,19 +128,16 @@ object ShardServiceCombinators extends Logging {
           "Exceptiion thrown from JSON parsing of sortOn parameter",
           ex)
         err.message
-      case other =>
-        other.message
+      case other => other.message
     }
 
     request.parameters.get('sortOn).filter(_ != null) map { paths =>
       val parsed: Validation[Error, List[CPath]] =
         ((Thrown(_: Throwable)) <-: JParser.parseFromString(paths)) flatMap {
-          case JArray(elems) =>
-            Validation.success(elems collect {
+          case JArray(elems) => Validation.success(elems collect {
               case JString(path) => CPath(path)
             })
-          case JString(path) =>
-            Validation.success(CPath(path) :: Nil)
+          case JString(path) => Validation.success(CPath(path) :: Nil)
           case badJVal =>
             Validation.failure(Invalid(
               "The sortOn query parameter was expected to be JSON string or array, but found " + badJVal))

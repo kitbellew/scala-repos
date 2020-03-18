@@ -42,8 +42,7 @@ private class DynNameFactory[Req, Rep](
   private[this] var state: State = Pending(immutable.Queue.empty)
 
   private[this] val sub = name.run.changes respond {
-    case Activity.Ok(name) =>
-      synchronized {
+    case Activity.Ok(name) => synchronized {
         state match {
           case Pending(q) =>
             state = Named(name)
@@ -51,14 +50,12 @@ private class DynNameFactory[Req, Rep](
               latencyStat.add(elapsed().inMicroseconds)
               p.become(apply(conn))
             }
-          case Failed(_) | Named(_) =>
-            state = Named(name)
-          case Closed() =>
+          case Failed(_) | Named(_) => state = Named(name)
+          case Closed()             =>
         }
       }
 
-    case Activity.Failed(exc) =>
-      synchronized {
+    case Activity.Failed(exc) => synchronized {
         state match {
           case Pending(q) =>
             for ((_, p, elapsed) <- q) {
@@ -92,8 +89,7 @@ private class DynNameFactory[Req, Rep](
         // don't trace these, since they're not a namer failure
         Future.exception(new ServiceClosedException)
 
-      case Pending(_) =>
-        applySync(conn)
+      case Pending(_) => applySync(conn)
     }
   }
 
@@ -106,8 +102,7 @@ private class DynNameFactory[Req, Rep](
           val elapsed = Stopwatch.start()
           val el = (conn, p, elapsed)
           p setInterruptHandler {
-            case exc =>
-              synchronized {
+            case exc => synchronized {
                 state match {
                   case Pending(q) if q contains el =>
                     state = Pending(q filter (_ != el))
@@ -190,8 +185,8 @@ private[finagle] object NameTreeFactory {
         case NameTree.Leaf(key) => Leaf(key)
 
         // it's an invariant of Namer.bind that it returns no Alts
-        case NameTree.Alt(_*) =>
-          Failed(new IllegalArgumentException("NameTreeFactory"))
+        case NameTree.Alt(_*) => Failed(
+            new IllegalArgumentException("NameTreeFactory"))
 
         case NameTree.Union(weightedTrees @ _*) =>
           val (weights, trees) = weightedTrees.unzip {

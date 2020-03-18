@@ -58,8 +58,7 @@ class MergeIfToOrIntention extends PsiElementBaseIntentionAction {
         (element1, element2) match {
           case _ if element1 == element2 => 0
           case (block1: ScBlockExpr, block2: ScBlockExpr)
-              if block1.exprs.size != block2.exprs.size =>
-            1
+              if block1.exprs.size != block2.exprs.size => 1
           case (block1: ScBlockExpr, block2: ScBlockExpr) if block1 == block2 =>
             0
           case (expr1: ScExpression, expr2: ScExpression) if expr1 == expr2 => 0

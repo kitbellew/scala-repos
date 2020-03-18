@@ -24,8 +24,7 @@ trait SequentialActor extends Actor {
 
   private def busy: Receive = {
 
-    case Done =>
-      dequeue match {
+    case Done => dequeue match {
         case None      => context become idle
         case Some(msg) => processThenDone(msg)
       }

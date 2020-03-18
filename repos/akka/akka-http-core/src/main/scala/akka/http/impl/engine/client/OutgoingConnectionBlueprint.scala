@@ -278,8 +278,7 @@ private[http] object OutgoingConnectionBlueprint {
                 if (isAvailable(out)) pull(in)
                 setIdleHandlers()
 
-              case messagePart ⇒
-                entitySource.push(messagePart)
+              case messagePart ⇒ entitySource.push(messagePart)
             }
 
           override def onPull(): Unit = pull(in)

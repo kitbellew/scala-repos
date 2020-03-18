@@ -13,8 +13,7 @@ object StringUtil {
       case Some(sMatch) =>
         try { sMatch.group(1).toShort }
         catch { case e: NumberFormatException => 0 }
-      case None =>
-        0
+      case None => 0
     }
   }
 
@@ -27,8 +26,7 @@ object StringUtil {
       case Some(sMatch) =>
         try { sMatch.group(1).toInt }
         catch { case e: NumberFormatException => 0 }
-      case None =>
-        0
+      case None => 0
     }
   }
 
@@ -41,8 +39,7 @@ object StringUtil {
       case Some(sMatch) =>
         try { sMatch.group(1).toLong }
         catch { case e: NumberFormatException => 0L }
-      case None =>
-        0L
+      case None => 0L
     }
   }
 

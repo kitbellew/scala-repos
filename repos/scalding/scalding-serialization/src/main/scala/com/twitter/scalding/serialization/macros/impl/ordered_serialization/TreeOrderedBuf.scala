@@ -87,8 +87,8 @@ object TreeOrderedBuf {
             .asInstanceOf[FastLengthCalculation[c.type]]
             .t})
         """)
-        case m: MaybeLengthCalculation[_] =>
-          Some(m.asInstanceOf[MaybeLengthCalculation[c.type]].t)
+        case m: MaybeLengthCalculation[_] => Some(
+            m.asInstanceOf[MaybeLengthCalculation[c.type]].t)
       }
 
       fnBodyOpt
@@ -183,8 +183,8 @@ object TreeOrderedBuf {
       t.length(q"$element") match {
         case _: ConstantLengthCalculation[_] =>
           q"""${t.put(outerbaos, element)}"""
-        case f: FastLengthCalculation[_] =>
-          withLenCalc(f.asInstanceOf[FastLengthCalculation[c.type]].t)
+        case f: FastLengthCalculation[_] => withLenCalc(
+            f.asInstanceOf[FastLengthCalculation[c.type]].t)
         case m: MaybeLengthCalculation[_] =>
           val tmpLenRes = freshT("tmpLenRes")
           q"""

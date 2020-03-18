@@ -302,9 +302,8 @@ class ScForStatementImpl(node: ASTNode)
         gen <- enums.generators
       } {
         analogMap.get(gen.pattern) match {
-          case Some(oldElem) =>
-            oldElem.analog = gen.pattern.analog
-          case _ =>
+          case Some(oldElem) => oldElem.analog = gen.pattern.analog
+          case _             =>
         }
       }
     }
@@ -328,8 +327,7 @@ class ScForStatementImpl(node: ASTNode)
               }
             case _ => res
           }
-        case enum: ScEnumerator =>
-          expr match {
+        case enum: ScEnumerator => expr match {
             case f: ScForStatementImpl =>
               for {
                 enums <- f.enumerators

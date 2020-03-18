@@ -143,10 +143,8 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
               })
               .collect()
             assert(ans.toList === List(1, 2))
-          } catch {
-            case t: Throwable =>
-              throwable = Some(t)
-          } finally { sem.release() }
+          } catch { case t: Throwable => throwable = Some(t) }
+          finally { sem.release() }
         }
       }.start()
     }
@@ -170,10 +168,8 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
           try {
             sc.setLocalProperty("test", i.toString)
             assert(sc.getLocalProperty("test") === i.toString)
-          } catch {
-            case t: Throwable =>
-              throwable = Some(t)
-          } finally { sem.release() }
+          } catch { case t: Throwable => throwable = Some(t) }
+          finally { sem.release() }
         }
       }
     }
@@ -197,10 +193,8 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
             assert(sc.getLocalProperty("test") === "parent")
             sc.setLocalProperty("test", i.toString)
             assert(sc.getLocalProperty("test") === i.toString)
-          } catch {
-            case t: Throwable =>
-              throwable = Some(t)
-          } finally { sem.release() }
+          } catch { case t: Throwable => throwable = Some(t) }
+          finally { sem.release() }
         }
       }
     }
@@ -223,10 +217,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     val thread = new Thread {
       override def run(): Unit = {
         try { threadTestValue = sc.getLocalProperty("test") }
-        catch {
-          case t: Throwable =>
-            throwable = Some(t)
-        }
+        catch { case t: Throwable => throwable = Some(t) }
       }
     }
     sc.setLocalProperty("test", "this-should-not-be-inherited")

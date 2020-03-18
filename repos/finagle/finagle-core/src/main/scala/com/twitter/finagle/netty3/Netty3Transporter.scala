@@ -160,8 +160,8 @@ object Netty3Transporter {
     val Transport.Liveness(readerTimeout, writerTimeout, keepAlive) = params[
       Transport.Liveness]
     val snooper = params[Transport.Verbose] match {
-      case Transport.Verbose(true) =>
-        Some(ChannelSnooper(label)(logger.log(Level.INFO, _, _)))
+      case Transport.Verbose(true) => Some(
+          ChannelSnooper(label)(logger.log(Level.INFO, _, _)))
       case _ => None
     }
     val Transport.Options(noDelay, reuseAddr) = params[Transport.Options]
@@ -247,8 +247,7 @@ private[netty3] object FireChannelClosedLater extends ChannelFutureListener {
         nioChannel.getWorker
           .executeInIoThread(channelClosed, /* alwaysAsync */ true)
 
-      case channel =>
-        Channels.fireChannelClosedLater(channel)
+      case channel => Channels.fireChannelClosedLater(channel)
     }
   }
 }

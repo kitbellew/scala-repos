@@ -233,8 +233,7 @@ object CreateServer extends Logging {
       params = WorkflowParams())
 
     val algorithms = engineParams.algorithmParamsList.map {
-      case (n, p) =>
-        Doer(engine.algorithmClassMap(n), p)
+      case (n, p) => Doer(engine.algorithmClassMap(n), p)
     }
 
     val servingParamsWithName = engineParams.servingParams
@@ -306,8 +305,7 @@ class MasterActor(
               "Unable to undeploy.")
       }
     } catch {
-      case e: java.net.ConnectException =>
-        log.warning(s"Nothing at $serverUrl")
+      case e: java.net.ConnectException => log.warning(s"Nothing at $serverUrl")
       case _: Throwable =>
         log.error(
           "Another process might be occupying " +
@@ -531,8 +529,7 @@ class ServerActor[Q, P](
                 val supplementedQuery = serving.supplementBase(query)
                 // TODO: Parallelize the following.
                 val predictions = algorithms.zipWithIndex.map {
-                  case (a, ai) =>
-                    a.predictBase(models(ai), supplementedQuery)
+                  case (a, ai) => a.predictBase(models(ai), supplementedQuery)
                 }
                 // Notice that it is by design to call Serving.serve with the
                 // *original* query.
@@ -568,10 +565,8 @@ class ServerActor[Q, P](
 
                     // also save Query's prId as prId of this pio_pr predict events
                     val queryPrId = query match {
-                      case id: WithPrId =>
-                        Map("prId" -> id.prId)
-                      case _ =>
-                        Map()
+                      case id: WithPrId => Map("prId" -> id.prId)
+                      case _            => Map()
                     }
                     val data = Map(
                       // "appId" -> dataSourceParams.asInstanceOf[ParamsWithAppId].appId,

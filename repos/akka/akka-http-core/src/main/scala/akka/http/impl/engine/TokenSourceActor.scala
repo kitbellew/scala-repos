@@ -20,11 +20,9 @@ private[engine] class TokenSourceActor[T](token: T) extends ActorPublisher[T] {
       triggered += 1
       tryDispatch()
 
-    case ActorPublisherMessage.Request(_) ⇒
-      tryDispatch()
+    case ActorPublisherMessage.Request(_) ⇒ tryDispatch()
 
-    case ActorPublisherMessage.Cancel ⇒
-      context.stop(self)
+    case ActorPublisherMessage.Cancel ⇒ context.stop(self)
   }
 
   @tailrec

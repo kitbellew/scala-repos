@@ -72,9 +72,8 @@ class ScalaLineBreakpointType
       override def process(e: PsiElement): Boolean =
         e match {
           case ElementType(
-                ScalaTokenTypes.kPACKAGE | ScalaTokenTypes.kIMPORT) =>
-            false
-          case ws: PsiWhiteSpace => true
+                ScalaTokenTypes.kPACKAGE | ScalaTokenTypes.kIMPORT) => false
+          case ws: PsiWhiteSpace                                    => true
           case _
               if PsiTreeUtil.getParentOfType(e, classOf[PsiComment]) != null =>
             true

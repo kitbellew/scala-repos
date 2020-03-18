@@ -71,8 +71,7 @@ class ScalaStructureViewModel(
             (o1, o2) match {
               case (
                     test1: TestStructureViewElement,
-                    test2: TestStructureViewElement) =>
-                0
+                    test2: TestStructureViewElement)   => 0
               case (_, test: TestStructureViewElement) => -1
               case (test: TestStructureViewElement, _) => 1
               case _ =>
@@ -101,24 +100,21 @@ class ScalaStructureViewModel(
 
   override def isSuitable(element: PsiElement): Boolean =
     element match {
-      case t: ScTypeDefinition =>
-        t.getParent match {
+      case t: ScTypeDefinition => t.getParent match {
           case _: ScalaFile | _: ScPackaging => true
           case tb: ScTemplateBody
               if tb.getParent.isInstanceOf[ScExtendsBlock] =>
             isSuitable(tb.getParent.getParent)
           case _ => false
         }
-      case f: ScFunction =>
-        f.getParent match {
+      case f: ScFunction => f.getParent match {
           case b: ScBlockExpr => b.getParent.isInstanceOf[ScFunction]
           case tb: ScTemplateBody
               if tb.getParent.isInstanceOf[ScExtendsBlock] =>
             isSuitable(tb.getParent.getParent)
           case _ => false
         }
-      case m: ScMember =>
-        m.getParent match {
+      case m: ScMember => m.getParent match {
           case tb: ScTemplateBody
               if tb.getParent.isInstanceOf[ScExtendsBlock] =>
             isSuitable(tb.getParent.getParent)

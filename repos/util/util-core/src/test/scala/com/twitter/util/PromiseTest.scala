@@ -10,8 +10,7 @@ class PromiseTest extends FunSuite {
     val p = new HandledPromise[Unit]()
     val f = Promise.attached(p)
     f.setInterruptHandler {
-      case t: Throwable =>
-        if (f.detach()) f.update(Throw(t))
+      case t: Throwable => if (f.detach()) f.update(Throw(t))
     }
     f.raise(new Exception())
     assert(p.handled == None)

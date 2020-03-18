@@ -308,8 +308,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     */
   def genSetField(s: SetField): c.Tree = {
     s.setter match {
-      case x: IrMethod =>
-        x.parameterTypes[c.universe.type](c.universe) match {
+      case x: IrMethod => x.parameterTypes[c.universe.type](c.universe) match {
           case List(List(tpe)) =>
             val read = readField(s.name, tpe)
             if (x.isPublic) {

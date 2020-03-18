@@ -132,8 +132,7 @@ trait JoinOptimizerModule[M[+_]]
         case filter @ Filter(
               IdentitySort,
               body @ Join(_, _, _, _),
-              Join(Eq, Cross(_), eqA, eqB)) =>
-          rewrite(filter, body, eqA, eqB)
+              Join(Eq, Cross(_), eqA, eqB)) => rewrite(filter, body, eqA, eqB)
 
         case filter @ Filter(
               IdentitySort,

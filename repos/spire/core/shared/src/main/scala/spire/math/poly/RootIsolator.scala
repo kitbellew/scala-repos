@@ -133,8 +133,7 @@ object RootIsolator {
             }
           }
 
-        case Nil =>
-          acc
+        case Nil => acc
       }
 
     if (poly.isConstant) {

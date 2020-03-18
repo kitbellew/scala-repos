@@ -276,10 +276,7 @@ class HadoopRDD[K, V](
 
       override def getNext(): (K, V) = {
         try { finished = !reader.next(key, value) }
-        catch {
-          case eof: EOFException =>
-            finished = true
-        }
+        catch { case eof: EOFException => finished = true }
         if (!finished) { inputMetrics.incRecordsReadInternal(1) }
         if (inputMetrics.recordsRead % SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
           updateBytesRead()

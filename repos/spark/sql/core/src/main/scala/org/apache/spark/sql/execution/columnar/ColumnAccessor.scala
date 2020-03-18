@@ -157,8 +157,7 @@ private[columnar] object ColumnAccessor {
       case array: ArrayType        => new ArrayColumnAccessor(buf, array)
       case map: MapType            => new MapColumnAccessor(buf, map)
       case udt: UserDefinedType[_] => ColumnAccessor(udt.sqlType, buffer)
-      case other =>
-        throw new Exception(s"not support type: $other")
+      case other                   => throw new Exception(s"not support type: $other")
     }
   }
 }

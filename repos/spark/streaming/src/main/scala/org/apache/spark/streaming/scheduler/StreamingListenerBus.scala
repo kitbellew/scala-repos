@@ -44,9 +44,8 @@ private[streaming] class StreamingListenerBus(sparkListenerBus: LiveListenerBus)
 
   override def onOtherEvent(event: SparkListenerEvent): Unit = {
     event match {
-      case WrappedStreamingListenerEvent(e) =>
-        postToAll(e)
-      case _ =>
+      case WrappedStreamingListenerEvent(e) => postToAll(e)
+      case _                                =>
     }
   }
 

@@ -234,11 +234,10 @@ abstract class FileSource
           case Write => new FileTap(localScheme, localWritePath, sinkMode)
         }
       }
-      case hdfsMode @ Hdfs(_, _) =>
-        readOrWrite match {
+      case hdfsMode @ Hdfs(_, _) => readOrWrite match {
           case Read => createHdfsReadTap(hdfsMode)
-          case Write =>
-            CastHfsTap(createHfsTap(hdfsScheme, hdfsWritePath, sinkMode))
+          case Write => CastHfsTap(
+              createHfsTap(hdfsScheme, hdfsWritePath, sinkMode))
         }
       case _ => {
         val tryTtp = Try(TestTapFactory(this, hdfsScheme, sinkMode))

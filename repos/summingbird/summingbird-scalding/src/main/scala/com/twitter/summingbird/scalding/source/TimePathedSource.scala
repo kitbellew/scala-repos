@@ -52,8 +52,7 @@ object TimePathedSource extends java.io.Serializable {
       case None => None
       case Some(rt) if rt.contains(expanded) =>
         Some(init) // we can satisfy init
-      case Some(subset) =>
-        unex(subset) match {
+      case Some(subset) => unex(subset) match {
           case None => None
           case Some(newInit) if newInit.contains(init) =>
             sys.error(

@@ -31,8 +31,7 @@ class ScInfixExprImpl(node: ASTNode)
     else
       rOp match {
         case tuple: ScTuple => tuple.exprs
-        case t: ScParenthesisedExpr =>
-          t.expr match {
+        case t: ScParenthesisedExpr => t.expr match {
             case Some(expr) => Seq(expr)
             case None       => Seq(t)
           }

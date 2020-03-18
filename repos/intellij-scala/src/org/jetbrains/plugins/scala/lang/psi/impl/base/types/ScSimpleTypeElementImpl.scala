@@ -65,8 +65,7 @@ class ScSimpleTypeElementImpl(node: ASTNode)
   def findConstructor: Option[ScConstructor] = {
     getContext match {
       case constr: ScConstructor => Some(constr)
-      case param: ScParameterizedTypeElement =>
-        param.getContext match {
+      case param: ScParameterizedTypeElement => param.getContext match {
           case constr: ScConstructor => Some(constr)
           case _                     => None
         }
@@ -459,12 +458,12 @@ class ScSimpleTypeElementImpl(node: ASTNode)
         }
 
         ref.resolveNoConstructor match {
-          case Array(ScalaResolveResult(tp: PsiTypeParameter, _)) =>
-            lift(ScalaPsiManager.typeVariable(tp))
+          case Array(ScalaResolveResult(tp: PsiTypeParameter, _)) => lift(
+              ScalaPsiManager.typeVariable(tp))
           case Array(ScalaResolveResult(tvar: ScTypeVariableTypeElement, _)) =>
             lift(tvar.getType(TypingContext.empty).getOrAny)
-          case Array(ScalaResolveResult(synth: ScSyntheticClass, _)) =>
-            lift(synth.t)
+          case Array(ScalaResolveResult(synth: ScSyntheticClass, _)) => lift(
+              synth.t)
           case Array(
                 ScalaResolveResult(
                   to: ScTypeParametersOwner,
@@ -553,10 +552,8 @@ object ScSimpleTypeElementImpl {
     path match {
       case ref: ScStableCodeReferenceElement =>
         calculateReferenceType(ref, shapesOnly)
-      case thisRef: ScThisReference =>
-        thisRef.refTemplate match {
-          case Some(template) =>
-            Success(ScThisType(template), Some(path))
+      case thisRef: ScThisReference => thisRef.refTemplate match {
+          case Some(template) => Success(ScThisType(template), Some(path))
           case _ =>
             Failure("Cannot find template for this reference", Some(thisRef))
         }
@@ -608,12 +605,10 @@ object ScSimpleTypeElementImpl {
       case _ => return Failure("Cannot resolve reference", Some(ref))
     }
     ref.qualifier match {
-      case Some(qual) =>
-        qual.resolve() match {
+      case Some(qual) => qual.resolve() match {
           case pack: PsiPackage =>
-            val obj = PsiTreeUtil.getContextOfType(
-              resolvedElement,
-              classOf[ScObject])
+            val obj = PsiTreeUtil
+              .getContextOfType(resolvedElement, classOf[ScObject])
             if (obj != null && obj.isPackageObject) {
               Success(
                 ScProjectionType(
@@ -631,12 +626,10 @@ object ScSimpleTypeElementImpl {
                       resolvedElement,
                       superReference = false),
                     Some(ref))
-                case _ =>
-                  Success(ScType.designator(resolvedElement), Some(ref))
+                case _ => Success(ScType.designator(resolvedElement), Some(ref))
               }
             }
-          case _ =>
-            calculateReferenceType(qual, shapesOnly) match {
+          case _ => calculateReferenceType(qual, shapesOnly) match {
               case failure: Failure => failure
               case Success(tp, _) =>
                 Success(
@@ -644,10 +637,8 @@ object ScSimpleTypeElementImpl {
                   Some(ref))
             }
         }
-      case None =>
-        ref.pathQualifier match {
-          case Some(thisRef: ScThisReference) =>
-            thisRef.refTemplate match {
+      case None => ref.pathQualifier match {
+          case Some(thisRef: ScThisReference) => thisRef.refTemplate match {
               case Some(template) =>
                 Success(
                   ScProjectionType(
@@ -674,13 +665,10 @@ object ScSimpleTypeElementImpl {
                 resolvedElement,
                 resolvedElement.isInstanceOf[PsiClass]),
               Some(ref))
-          case _ =>
-            resolvedElement match {
+          case _ => resolvedElement match {
               case self: ScSelfTypeElement =>
-                val td = PsiTreeUtil.getContextOfType(
-                  self,
-                  true,
-                  classOf[ScTemplateDefinition])
+                val td = PsiTreeUtil
+                  .getContextOfType(self, true, classOf[ScTemplateDefinition])
                 Success(ScThisType(td), Some(ref))
               case _ =>
                 if (fromType.isEmpty)

@@ -752,35 +752,35 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     */
   protected[sql] def translateFilter(predicate: Expression): Option[Filter] = {
     predicate match {
-      case expressions.EqualTo(a: Attribute, Literal(v, t)) =>
-        Some(sources.EqualTo(a.name, convertToScala(v, t)))
-      case expressions.EqualTo(Literal(v, t), a: Attribute) =>
-        Some(sources.EqualTo(a.name, convertToScala(v, t)))
+      case expressions.EqualTo(a: Attribute, Literal(v, t)) => Some(
+          sources.EqualTo(a.name, convertToScala(v, t)))
+      case expressions.EqualTo(Literal(v, t), a: Attribute) => Some(
+          sources.EqualTo(a.name, convertToScala(v, t)))
 
-      case expressions.EqualNullSafe(a: Attribute, Literal(v, t)) =>
-        Some(sources.EqualNullSafe(a.name, convertToScala(v, t)))
-      case expressions.EqualNullSafe(Literal(v, t), a: Attribute) =>
-        Some(sources.EqualNullSafe(a.name, convertToScala(v, t)))
+      case expressions.EqualNullSafe(a: Attribute, Literal(v, t)) => Some(
+          sources.EqualNullSafe(a.name, convertToScala(v, t)))
+      case expressions.EqualNullSafe(Literal(v, t), a: Attribute) => Some(
+          sources.EqualNullSafe(a.name, convertToScala(v, t)))
 
-      case expressions.GreaterThan(a: Attribute, Literal(v, t)) =>
-        Some(sources.GreaterThan(a.name, convertToScala(v, t)))
-      case expressions.GreaterThan(Literal(v, t), a: Attribute) =>
-        Some(sources.LessThan(a.name, convertToScala(v, t)))
+      case expressions.GreaterThan(a: Attribute, Literal(v, t)) => Some(
+          sources.GreaterThan(a.name, convertToScala(v, t)))
+      case expressions.GreaterThan(Literal(v, t), a: Attribute) => Some(
+          sources.LessThan(a.name, convertToScala(v, t)))
 
-      case expressions.LessThan(a: Attribute, Literal(v, t)) =>
-        Some(sources.LessThan(a.name, convertToScala(v, t)))
-      case expressions.LessThan(Literal(v, t), a: Attribute) =>
-        Some(sources.GreaterThan(a.name, convertToScala(v, t)))
+      case expressions.LessThan(a: Attribute, Literal(v, t)) => Some(
+          sources.LessThan(a.name, convertToScala(v, t)))
+      case expressions.LessThan(Literal(v, t), a: Attribute) => Some(
+          sources.GreaterThan(a.name, convertToScala(v, t)))
 
-      case expressions.GreaterThanOrEqual(a: Attribute, Literal(v, t)) =>
-        Some(sources.GreaterThanOrEqual(a.name, convertToScala(v, t)))
-      case expressions.GreaterThanOrEqual(Literal(v, t), a: Attribute) =>
-        Some(sources.LessThanOrEqual(a.name, convertToScala(v, t)))
+      case expressions.GreaterThanOrEqual(a: Attribute, Literal(v, t)) => Some(
+          sources.GreaterThanOrEqual(a.name, convertToScala(v, t)))
+      case expressions.GreaterThanOrEqual(Literal(v, t), a: Attribute) => Some(
+          sources.LessThanOrEqual(a.name, convertToScala(v, t)))
 
-      case expressions.LessThanOrEqual(a: Attribute, Literal(v, t)) =>
-        Some(sources.LessThanOrEqual(a.name, convertToScala(v, t)))
-      case expressions.LessThanOrEqual(Literal(v, t), a: Attribute) =>
-        Some(sources.GreaterThanOrEqual(a.name, convertToScala(v, t)))
+      case expressions.LessThanOrEqual(a: Attribute, Literal(v, t)) => Some(
+          sources.LessThanOrEqual(a.name, convertToScala(v, t)))
+      case expressions.LessThanOrEqual(Literal(v, t), a: Attribute) => Some(
+          sources.GreaterThanOrEqual(a.name, convertToScala(v, t)))
 
       case expressions.InSet(a: Attribute, set) =>
         val toScala = CatalystTypeConverters.createToScalaConverter(a.dataType)
@@ -795,35 +795,32 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
         val toScala = CatalystTypeConverters.createToScalaConverter(a.dataType)
         Some(sources.In(a.name, hSet.toArray.map(toScala)))
 
-      case expressions.IsNull(a: Attribute) =>
-        Some(sources.IsNull(a.name))
-      case expressions.IsNotNull(a: Attribute) =>
-        Some(sources.IsNotNull(a.name))
+      case expressions.IsNull(a: Attribute) => Some(sources.IsNull(a.name))
+      case expressions.IsNotNull(a: Attribute) => Some(
+          sources.IsNotNull(a.name))
 
       case expressions.And(left, right) =>
         (translateFilter(left) ++ translateFilter(right))
           .reduceOption(sources.And)
 
-      case expressions.Or(left, right) =>
-        for {
+      case expressions.Or(left, right) => for {
           leftFilter <- translateFilter(left)
           rightFilter <- translateFilter(right)
         } yield sources.Or(leftFilter, rightFilter)
 
-      case expressions.Not(child) =>
-        translateFilter(child).map(sources.Not)
+      case expressions.Not(child) => translateFilter(child).map(sources.Not)
 
       case expressions
             .StartsWith(a: Attribute, Literal(v: UTF8String, StringType)) =>
         Some(sources.StringStartsWith(a.name, v.toString))
 
       case expressions
-            .EndsWith(a: Attribute, Literal(v: UTF8String, StringType)) =>
-        Some(sources.StringEndsWith(a.name, v.toString))
+            .EndsWith(a: Attribute, Literal(v: UTF8String, StringType)) => Some(
+          sources.StringEndsWith(a.name, v.toString))
 
       case expressions
-            .Contains(a: Attribute, Literal(v: UTF8String, StringType)) =>
-        Some(sources.StringContains(a.name, v.toString))
+            .Contains(a: Attribute, Literal(v: UTF8String, StringType)) => Some(
+          sources.StringContains(a.name, v.toString))
 
       case _ => None
     }
@@ -864,8 +861,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       relation.unhandledFilters(translatedMap.values.toArray).toSet
 
     val (unhandled, handled) = translated.partition {
-      case (predicate, filter) =>
-        unhandledFilters.contains(filter)
+      case (predicate, filter) => unhandledFilters.contains(filter)
     }
 
     // Catalyst predicate expressions that can be translated to data source filters, but cannot be

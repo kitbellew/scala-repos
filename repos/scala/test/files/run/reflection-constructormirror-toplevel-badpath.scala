@@ -17,10 +17,7 @@ class Foo {
       val cls = cm.reflect(this).reflectClass(sym)
       cls.reflectConstructor(constructor)(5, "test").asInstanceOf[R]
       println("this indicates a failure")
-    } catch {
-      case ex: Throwable =>
-        println(ex.getMessage)
-    }
+    } catch { case ex: Throwable => println(ex.getMessage) }
   }
 }
 

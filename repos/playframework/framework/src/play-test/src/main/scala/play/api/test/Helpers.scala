@@ -265,9 +265,8 @@ trait RouteInvokers extends EssentialActionCaller {
     val (taggedRh, handler) = app.requestHandler.handlerForRequest(rh)
     import app.materializer
     handler match {
-      case a: EssentialAction =>
-        Some(call(a, taggedRh, body))
-      case _ => None
+      case a: EssentialAction => Some(call(a, taggedRh, body))
+      case _                  => None
     }
   }
 

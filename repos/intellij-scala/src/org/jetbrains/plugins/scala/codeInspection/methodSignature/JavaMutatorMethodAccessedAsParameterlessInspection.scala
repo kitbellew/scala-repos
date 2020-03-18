@@ -26,8 +26,7 @@ class JavaMutatorMethodAccessedAsParameterlessInspection
         case _: ScalaPsiElement => // do nothing
         case (m: PsiMethod) if m.isMutator =>
           e.getParent match {
-            case gen: ScGenericCall =>
-              ScalaPsiUtil.findCall(gen) match {
+            case gen: ScGenericCall => ScalaPsiUtil.findCall(gen) match {
                 case None =>
                   holder.registerProblem(
                     e.nameId,

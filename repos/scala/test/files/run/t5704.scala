@@ -9,8 +9,7 @@ object Test extends App {
       val tree = reify { "test" == name }.tree
       val toolbox = cm.mkToolBox()
       toolbox.typecheck(tree) match {
-        case Apply(Select(lhs, op), rhs :: Nil) =>
-          println(rhs.tpe)
+        case Apply(Select(lhs, op), rhs :: Nil) => println(rhs.tpe)
       }
     }
   }

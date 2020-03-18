@@ -109,8 +109,8 @@ object LazyLoad extends DispatchSnippet {
     markup match {
       case Full(html)         => html
       case Failure(msg, _, _) => Comment(msg)
-      case Empty =>
-        Comment("FIX" + "ME: Asynchronous rendering failed for unknown reason.")
+      case Empty => Comment(
+          "FIX" + "ME: Asynchronous rendering failed for unknown reason.")
     }
   }
 }

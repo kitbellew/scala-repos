@@ -33,16 +33,12 @@ private[spark] trait SparkListenerBus
         listener.onStageSubmitted(stageSubmitted)
       case stageCompleted: SparkListenerStageCompleted =>
         listener.onStageCompleted(stageCompleted)
-      case jobStart: SparkListenerJobStart =>
-        listener.onJobStart(jobStart)
-      case jobEnd: SparkListenerJobEnd =>
-        listener.onJobEnd(jobEnd)
-      case taskStart: SparkListenerTaskStart =>
-        listener.onTaskStart(taskStart)
+      case jobStart: SparkListenerJobStart   => listener.onJobStart(jobStart)
+      case jobEnd: SparkListenerJobEnd       => listener.onJobEnd(jobEnd)
+      case taskStart: SparkListenerTaskStart => listener.onTaskStart(taskStart)
       case taskGettingResult: SparkListenerTaskGettingResult =>
         listener.onTaskGettingResult(taskGettingResult)
-      case taskEnd: SparkListenerTaskEnd =>
-        listener.onTaskEnd(taskEnd)
+      case taskEnd: SparkListenerTaskEnd => listener.onTaskEnd(taskEnd)
       case environmentUpdate: SparkListenerEnvironmentUpdate =>
         listener.onEnvironmentUpdate(environmentUpdate)
       case blockManagerAdded: SparkListenerBlockManagerAdded =>

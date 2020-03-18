@@ -225,8 +225,7 @@ class KMeans private (
     val norms = data.map(Vectors.norm(_, 2.0))
     norms.persist()
     val zippedData = data.zip(norms).map {
-      case (v, norm) =>
-        new VectorWithNorm(v, norm)
+      case (v, norm) => new VectorWithNorm(v, norm)
     }
     val model = runAlgorithm(zippedData)
     norms.unpersist()
@@ -428,8 +427,7 @@ class KMeans private (
       costs = data
         .zip(preCosts)
         .map {
-          case (point, cost) =>
-            Array.tabulate(runs) { r =>
+          case (point, cost) => Array.tabulate(runs) { r =>
               math.min(KMeans.pointCost(bcNewCenters.value(r), point), cost(r))
             }
         }
@@ -472,10 +470,7 @@ class KMeans private (
         }
         .collect()
       mergeNewCenters()
-      chosen.foreach {
-        case (p, rs) =>
-          rs.foreach(newCenters(_) += p.toDense)
-      }
+      chosen.foreach { case (p, rs) => rs.foreach(newCenters(_) += p.toDense) }
       step += 1
     }
 

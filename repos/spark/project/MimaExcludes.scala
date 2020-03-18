@@ -964,9 +964,8 @@ object MimaExcludes {
               case MissingTypesProblem(_, missing)
                   if missing
                     .map(_.fullName)
-                    .sameElements(Seq("org.apache.spark.Logging")) =>
-                false
-              case _ => true
+                    .sameElements(Seq("org.apache.spark.Logging")) => false
+              case _                                               => true
             }
         )
       case v if v.startsWith("1.6") =>

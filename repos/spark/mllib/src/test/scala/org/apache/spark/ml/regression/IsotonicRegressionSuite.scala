@@ -53,10 +53,7 @@ class IsotonicRegressionSuite
       .transform(dataset)
       .select("prediction")
       .rdd
-      .map {
-        case Row(pred) =>
-          pred
-      }
+      .map { case Row(pred) => pred }
       .collect()
 
     assert(predictions === Array(1, 2, 2, 2, 6, 16.5, 16.5, 17, 18))

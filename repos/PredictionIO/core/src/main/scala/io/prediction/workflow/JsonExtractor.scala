@@ -48,8 +48,8 @@ object JsonExtractor {
         }
       case JsonExtractorOption.Json4sNative =>
         Extraction.decompose(o)(json4sFormats)
-      case JsonExtractorOption.Gson =>
-        parse(gson(gsonTypeAdapterFactories).toJson(o))
+      case JsonExtractorOption.Gson => parse(
+          gson(gsonTypeAdapterFactories).toJson(o))
     }
   }
 

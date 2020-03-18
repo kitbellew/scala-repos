@@ -39,8 +39,7 @@ abstract class ScFunctionElementType[Func <: ScFunction](debugName: String)
       if (returnTypeText != "") { "" }
       else {
         psi match {
-          case fDef: ScFunctionDefinition =>
-            fDef.body match {
+          case fDef: ScFunctionDefinition => fDef.body match {
               case Some(x) => x.getText
               case None    => ""
             }

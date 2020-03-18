@@ -323,8 +323,7 @@ trait GenJSExports extends SubComponent {
             // Find default param
             val dParam = params.indexWhere { _.hasFlag(Flags.DEFAULTPARAM) }
             if (dParam == -1) Seq(params.size) else dParam to params.size
-          case ex: ExportedBody =>
-            List(ex.params.size)
+          case ex: ExportedBody => List(ex.params.size)
         }
 
       // Generate tuples (argc, method)
@@ -455,8 +454,7 @@ trait GenJSExports extends SubComponent {
           case ExportedSymbol(alt) =>
             typeTestForTpe(computeExportArgType(alt, paramIndex))
 
-          case ex: ExportedBody =>
-            typeTestForTpe(ex.params(paramIndex))
+          case ex: ExportedBody => typeTestForTpe(ex.params(paramIndex))
         }
 
         if (altsByTypeTest.size == 1) {
@@ -505,8 +503,7 @@ trait GenJSExports extends SubComponent {
                 case InstanceOfTypeTest(tpe) =>
                   Some(genIsInstanceOf(paramRef, tpe))
 
-                case NoTypeTest =>
-                  None
+                case NoTypeTest => None
               }
 
               optCond.fold[js.Tree] {
@@ -839,8 +836,7 @@ trait GenJSExports extends SubComponent {
           case (HijackedTypeTest(_, rank1), HijackedTypeTest(_, rank2)) =>
             rank1 <= rank2
 
-          case (InstanceOfTypeTest(t1), InstanceOfTypeTest(t2)) =>
-            t1 <:< t2
+          case (InstanceOfTypeTest(t1), InstanceOfTypeTest(t2)) => t1 <:< t2
 
           case (_: HijackedTypeTest, _: InstanceOfTypeTest) => true
           case (_: InstanceOfTypeTest, _: HijackedTypeTest) => false
@@ -874,8 +870,8 @@ trait GenJSExports extends SubComponent {
 
   private def typeTestForTpe(tpe: Type): RTTypeTest = {
     tpe match {
-      case tpe: ErasedValueType =>
-        InstanceOfTypeTest(tpe.valueClazz.typeConstructor)
+      case tpe: ErasedValueType => InstanceOfTypeTest(
+          tpe.valueClazz.typeConstructor)
 
       case _ =>
         import ir.{Definitions => Defs}
@@ -891,8 +887,7 @@ trait GenJSExports extends SubComponent {
           case CharKind => InstanceOfTypeTest(boxedClass(CharClass).tpe)
           case LongKind => InstanceOfTypeTest(boxedClass(LongClass).tpe)
 
-          case REFERENCE(cls) =>
-            cls match {
+          case REFERENCE(cls) => cls match {
               case BoxedUnitClass => HijackedTypeTest(Defs.BoxedUnitClass, 0)
               case StringClass    => HijackedTypeTest(Defs.StringClass, 7)
               case ObjectClass    => NoTypeTest

@@ -31,14 +31,12 @@ object StringUtils {
         .zip(v)
         .flatMap {
           case (prev, '\\') => ""
-          case ('\\', c) =>
-            c match {
+          case ('\\', c) => c match {
               case '_' => "_"
               case '%' => "%"
               case _   => Pattern.quote("\\" + c)
             }
-          case (prev, c) =>
-            c match {
+          case (prev, c) => c match {
               case '_' => "."
               case '%' => ".*"
               case _   => Pattern.quote(Character.toString(c))

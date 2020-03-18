@@ -41,8 +41,7 @@ class TupleTest {
   def should_unapply_JS_tuple_in_pattern_matching_position(): Unit = {
     val obj = js.Tuple2(42, "foobar")
     obj match {
-      case js.Tuple2(2, _) =>
-        fail("Not expected match")
+      case js.Tuple2(2, _) => fail("Not expected match")
       case js.Tuple2(t1, t2) =>
         val t1IsInt: Int = t1
         val t2IsString: String = t2

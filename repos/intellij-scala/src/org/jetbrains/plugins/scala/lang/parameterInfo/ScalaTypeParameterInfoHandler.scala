@@ -91,8 +91,7 @@ class ScalaTypeParameterInfoHandler
           case (method: PsiMethod, substitutor: ScSubstitutor) =>
             val params = method.getTypeParameters
             appendPsiTypeParams(params, buffer, index, substitutor)
-          case (clazz: PsiClass, substitutor: ScSubstitutor) =>
-            clazz match {
+          case (clazz: PsiClass, substitutor: ScSubstitutor) => clazz match {
               case td: ScTypeDefinition =>
                 val params: Seq[ScTypeParam] = td.typeParameters
                 appendScTypeParams(params, buffer, index, substitutor)
@@ -243,8 +242,7 @@ class ScalaTypeParameterInfoHandler
         case context: CreateParameterInfoContext =>
           val res: ArrayBuffer[Object] = new ArrayBuffer[Object]
           args.getParent match {
-            case gen: ScGenericCall =>
-              gen.referencedExpr match {
+            case gen: ScGenericCall => gen.referencedExpr match {
                 case resRef: ResolvableReferenceExpression =>
                   val bind = resRef.bind()
                   bind match {
@@ -257,12 +255,9 @@ class ScalaTypeParameterInfoHandler
                   }
                 case _ =>
               }
-            case elem: ScParameterizedTypeElement =>
-              elem.typeElement match {
-                case simp: ScSimpleTypeElement =>
-                  simp.reference match {
-                    case Some(ref) =>
-                      ref.bind() match {
+            case elem: ScParameterizedTypeElement => elem.typeElement match {
+                case simp: ScSimpleTypeElement => simp.reference match {
+                    case Some(ref) => ref.bind() match {
                         case Some(
                               r @ ScalaResolveResult(
                                 method: PsiMethod,

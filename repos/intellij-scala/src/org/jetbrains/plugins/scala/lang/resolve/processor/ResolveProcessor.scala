@@ -57,8 +57,7 @@ object ResolveProcessor {
               case Some(c: ScObject) => defaultForTypeAlias(t)
               case Some(td: ScTypeDefinition)
                   if td.typeParameters.length == 0 && ScalaPsiUtil
-                    .hasStablePath(td) =>
-                "Class:" + td.qualifiedName
+                    .hasStablePath(td) => "Class:" + td.qualifiedName
               case Some(c: PsiClass) if c.getTypeParameters.length == 0 =>
                 "Class:" + c.qualifiedName
               case _ => defaultForTypeAlias(t)
@@ -142,8 +141,7 @@ class ResolveProcessor(
     val memb: PsiMember = {
       named match {
         case memb: PsiMember => memb
-        case pl =>
-          ScalaPsiUtil.nameContext(named) match {
+        case pl => ScalaPsiUtil.nameContext(named) match {
             case memb: PsiMember => memb
             case _               => return true //something strange
           }
@@ -251,8 +249,7 @@ class ResolveProcessor(
     res.filter {
       case r @ ScalaResolveResult(
             _: ScTypeAlias | _: ScClass | _: ScTrait,
-            _) =>
-        res.foldLeft(true) {
+            _) => res.foldLeft(true) {
           case (false, _) => false
           case (
                 true,

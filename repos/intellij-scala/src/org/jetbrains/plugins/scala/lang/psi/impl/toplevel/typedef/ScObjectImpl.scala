@@ -218,8 +218,7 @@ class ScObjectImpl protected (
   def fakeCompanionClassOrCompanionClass: PsiClass = {
     fakeCompanionClass match {
       case Some(clazz) => clazz
-      case _ =>
-        ScalaPsiUtil.getCompanionModule(this).get
+      case _           => ScalaPsiUtil.getCompanionModule(this).get
     }
   }
 

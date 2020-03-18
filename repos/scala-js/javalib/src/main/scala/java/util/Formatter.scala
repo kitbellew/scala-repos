@@ -164,20 +164,17 @@ final class Formatter(private val dest: Appendable)
             }
 
             (conversion: @switch) match {
-              case 'b' | 'B' =>
-                pad {
+              case 'b' | 'B' => pad {
                   arg match {
                     case null       => "false"
                     case b: Boolean => String.valueOf(b)
                     case _          => "true"
                   }
                 }
-              case 'h' | 'H' =>
-                pad {
+              case 'h' | 'H' => pad {
                   if (arg eq null) "null" else Integer.toHexString(arg.hashCode)
                 }
-              case 's' | 'S' =>
-                arg match {
+              case 's' | 'S' => arg match {
                   case formattable: Formattable =>
                     val flags = {
                       (if (hasFlag("-")) FormattableFlags.LEFT_JUSTIFY else 0) |
@@ -196,10 +193,8 @@ final class Formatter(private val dest: Appendable)
                     else
                       throw new FormatFlagsConversionMismatchException("#", 's')
                 }
-              case 'c' | 'C' =>
-                pad(intArg.toChar.toString)
-              case 'd' =>
-                with_+(numberArg.toString())
+              case 'c' | 'C' => pad(intArg.toChar.toString)
+              case 'd'       => with_+(numberArg.toString())
               case 'o' =>
                 val str = (arg: Any) match {
                   case arg: scala.Int  => Integer.toOctalString(arg)
@@ -212,8 +207,7 @@ final class Formatter(private val dest: Appendable)
                   case arg: scala.Long => Long.toHexString(arg)
                 }
                 padCaptureSign(str, if (hasFlag("#")) "0x" else "")
-              case 'e' | 'E' =>
-                sciNotation(if (hasPrecision) precision else 6)
+              case 'e' | 'E' => sciNotation(if (hasPrecision) precision else 6)
               case 'g' | 'G' =>
                 val m = Math.abs(numberArg)
                 // precision handling according to JavaDoc

@@ -39,11 +39,9 @@ class VotingService extends Actor {
       replicator ! Update(OpenedKey, Flag(), WriteAll(5.seconds))(_.switchOn)
       becomeOpen()
 
-    case c @ Changed(OpenedKey) if c.get(OpenedKey).enabled ⇒
-      becomeOpen()
+    case c @ Changed(OpenedKey) if c.get(OpenedKey).enabled ⇒ becomeOpen()
 
-    case GetVotes ⇒
-      sender() ! Votes(Map.empty, open = false)
+    case GetVotes ⇒ sender() ! Votes(Map.empty, open = false)
   }
 
   def becomeOpen(): Unit = {

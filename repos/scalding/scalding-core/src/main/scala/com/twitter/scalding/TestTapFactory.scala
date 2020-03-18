@@ -101,8 +101,7 @@ class TestTapFactory(src: Source, sinkMode: SinkMode) extends Serializable {
           new NullScheme(sourceFields, sinkFields),
           buffer)
       }
-      case hdfsTest @ HadoopTest(conf, buffers) =>
-        readOrWrite match {
+      case hdfsTest @ HadoopTest(conf, buffers) => readOrWrite match {
           case Read => {
             val bufOpt = buffers(src)
             if (bufOpt.isDefined) {

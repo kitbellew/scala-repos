@@ -45,8 +45,7 @@ object SourcedException {
         Some(sourced.serviceName)
       case sourced: Failure =>
         sourced.getSource(Failure.Source.Service).map(_.toString)
-      case _ =>
-        None
+      case _ => None
     }
 }
 

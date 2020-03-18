@@ -203,23 +203,19 @@ final case class GuiceApplicationBuilder(
     // Recursively checks each key to see if it contains a deprecated value
     def hasDeprecatedValue(values: mutable.Map[String, AnyRef]): Boolean = {
       values.exists {
-        case (_, value: String) if deprecatedValues.contains(value) =>
-          true
+        case (_, value: String) if deprecatedValues.contains(value) => true
         case (_, value: java.util.Map[String, AnyRef]) =>
           hasDeprecatedValue(value.asScala)
-        case _ =>
-          false
+        case _ => false
       }
     }
 
     if (appConfiguration.underlying.hasPath("logger")) {
       appConfiguration.underlying.getAnyRef("logger") match {
-        case value: String =>
-          hasDeprecatedValue(mutable.Map("logger" -> value))
-        case value: java.util.Map[String, AnyRef] =>
-          hasDeprecatedValue(value.asScala)
-        case _ =>
-          false
+        case value: String => hasDeprecatedValue(mutable.Map("logger" -> value))
+        case value: java.util.Map[String, AnyRef] => hasDeprecatedValue(
+            value.asScala)
+        case _ => false
       }
     } else { false }
   }

@@ -46,8 +46,7 @@ final class Analyser(
 
   private def makeWork(game: Game, sender: Work.Sender): Fu[Work.Analysis] =
     GameRepo.initialFen(game) zip uciMemo.get(game) map {
-      case (initialFen, moves) =>
-        Work.Analysis(
+      case (initialFen, moves) => Work.Analysis(
           _id = Work.makeId,
           sender = sender,
           game = Work.Game(

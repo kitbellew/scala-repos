@@ -144,10 +144,7 @@ class FormatterTest extends WordSpec {
 
         def cycle2(n: Int) {
           try { cycle(n) }
-          catch {
-            case t: Throwable =>
-              throw new Exception("grrrr", t)
-          }
+          catch { case t: Throwable => throw new Exception("grrrr", t) }
         }
       }
 

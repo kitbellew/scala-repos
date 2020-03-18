@@ -125,8 +125,7 @@ object BlockId {
   /** Converts a BlockId "name" String back into a BlockId. */
   def apply(id: String): BlockId =
     id match {
-      case RDD(rddId, splitIndex) =>
-        RDDBlockId(rddId.toInt, splitIndex.toInt)
+      case RDD(rddId, splitIndex) => RDDBlockId(rddId.toInt, splitIndex.toInt)
       case SHUFFLE(shuffleId, mapId, reduceId) =>
         ShuffleBlockId(shuffleId.toInt, mapId.toInt, reduceId.toInt)
       case SHUFFLE_DATA(shuffleId, mapId, reduceId) =>
@@ -135,13 +134,10 @@ object BlockId {
         ShuffleIndexBlockId(shuffleId.toInt, mapId.toInt, reduceId.toInt)
       case BROADCAST(broadcastId, field) =>
         BroadcastBlockId(broadcastId.toLong, field.stripPrefix("_"))
-      case TASKRESULT(taskId) =>
-        TaskResultBlockId(taskId.toLong)
+      case TASKRESULT(taskId) => TaskResultBlockId(taskId.toLong)
       case STREAM(streamId, uniqueId) =>
         StreamBlockId(streamId.toInt, uniqueId.toLong)
-      case TEST(value) =>
-        TestBlockId(value)
-      case _ =>
-        throw new IllegalStateException("Unrecognized BlockId: " + id)
+      case TEST(value) => TestBlockId(value)
+      case _           => throw new IllegalStateException("Unrecognized BlockId: " + id)
     }
 }

@@ -64,8 +64,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     // collect SimilarUser as Map and convert ID to Int index
     val similarUsers: Map[Int, User] = data.users
       .map {
-        case (id, similarUser) =>
-          (similarUserStringIntMap(id), similarUser)
+        case (id, similarUser) => (similarUserStringIntMap(id), similarUser)
       }
       .collectAsMap()
       .toMap

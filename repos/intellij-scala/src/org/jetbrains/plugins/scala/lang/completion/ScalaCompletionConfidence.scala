@@ -22,8 +22,7 @@ class ScalaCompletionConfidence extends CompletionConfidence {
         case ScalaTokenTypes.tINTEGER | ScalaTokenTypes.tFLOAT =>
           return ThreeState.YES
         case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tMULTILINE_STRING
-            if psiFile.getText.charAt(offset - 1) == '$' =>
-          return ThreeState.NO
+            if psiFile.getText.charAt(offset - 1) == '$' => return ThreeState.NO
         case ScalaTokenTypes.tINTERPOLATED_STRING |
             ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING
             if psiFile.getText.charAt(offset - 1) == '.' =>

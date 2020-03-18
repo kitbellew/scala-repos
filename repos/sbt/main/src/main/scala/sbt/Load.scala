@@ -1078,15 +1078,14 @@ object Load {
         auto match {
           case BuildScalaFiles => rawProject.settings
           case User            => globalUserSettings.projectLoaded(loadedPlugins.loader)
-          case sf: SbtFiles =>
-            settings(sf.files.map(f => IO.resolve(rawProject.base, f)))
-          case sf: DefaultSbtFiles =>
-            settings(defaultSbtFiles.filter(sf.include))
+          case sf: SbtFiles => settings(
+              sf.files.map(f => IO.resolve(rawProject.base, f)))
+          case sf: DefaultSbtFiles => settings(
+              defaultSbtFiles.filter(sf.include))
           case p: Plugins     => pluginSettings(p)
           case p: AutoPlugins => autoPluginSettings(p)
-          case q: Sequence =>
-            (Seq.empty[Setting[_]] /: q.sequence) { (b, add) =>
-              b ++ expandSettings(add)
+          case q: Sequence => (Seq.empty[Setting[_]] /: q.sequence) {
+              (b, add) => b ++ expandSettings(add)
             }
         }
       expandSettings(transformedProject.auto)
@@ -1162,8 +1161,7 @@ object Load {
           sf.files.map(f => IO.resolve(projectBase, f)).filterNot(_.isHidden)
         case sf: DefaultSbtFiles =>
           defaultSbtFiles.filter(sf.include).filterNot(_.isHidden)
-        case q: Sequence =>
-          (Seq.empty[File] /: q.sequence) { (b, add) =>
+        case q: Sequence => (Seq.empty[File] /: q.sequence) { (b, add) =>
             b ++ associatedFiles(add)
           }
         case _ => Seq.empty

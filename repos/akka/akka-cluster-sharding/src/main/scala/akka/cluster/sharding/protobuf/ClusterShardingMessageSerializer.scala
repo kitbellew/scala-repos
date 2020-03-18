@@ -181,8 +181,7 @@ private[akka] class ClusterShardingMessageSerializer(
       case BeginHandOffAck(shardId) ⇒ shardIdMessageToProto(shardId).toByteArray
       case HandOff(shardId) ⇒ shardIdMessageToProto(shardId).toByteArray
       case ShardStopped(shardId) ⇒ shardIdMessageToProto(shardId).toByteArray
-      case GracefulShutdownReq(ref) ⇒
-        actorRefMessageToProto(ref).toByteArray
+      case GracefulShutdownReq(ref) ⇒ actorRefMessageToProto(ref).toByteArray
 
       case m: EntityState ⇒ entityStateToProto(m).toByteArray
       case m: EntityStarted ⇒ entityStartedToProto(m).toByteArray

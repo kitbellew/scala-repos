@@ -10,9 +10,6 @@ object Test extends App {
     }
 
     try { new C[Int] }
-    catch {
-      case ex: Throwable =>
-        println(ex)
-    }
+    catch { case ex: Throwable => println(ex) }
   }
 }

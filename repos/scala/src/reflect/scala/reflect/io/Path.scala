@@ -173,8 +173,7 @@ class Path private[io] (val jfile: JFile) {
               if (isAbsolute)
                 toDirectory // it should be a root. BTW, don't need to worry about relative pathed root
               else Directory(".") // a dir under pwd
-            case x =>
-              Directory(x)
+            case x => Directory(x)
           }
     }
   def parents: List[Directory] = {

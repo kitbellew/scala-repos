@@ -115,10 +115,7 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
           c == ' ' || c == '_' ||
           c == '#' || c == ',' ||
           c == '%' || additionalCharacters.contains(c)
-    ).+ ^^ {
-      case l =>
-        l.mkString("")
-    }
+    ).+ ^^ { case l => l.mkString("") }
   }
 
   // consider only root relative paths that start with /
@@ -158,17 +155,12 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
     (((contentParser ~ singleQuotedPath) |||
       (contentParser ~ doubleQuotedPath) |||
       (contentParser ~ quotelessPath)).* ^^ {
-      case l =>
-        l.flatMap(f => f._1 + f._2).mkString("")
-    }) ~ contentParser ^^ {
-      case a ~ b =>
-        a + b
-    }
+      case l                           => l.flatMap(f => f._1 + f._2).mkString("")
+    }) ~ contentParser ^^ { case a ~ b => a + b }
 
   def fixCss(cssString: String): Box[String] = {
     phrase(cssString) match {
-      case Success(updatedCss, remaining) if remaining.atEnd =>
-        Full(updatedCss)
+      case Success(updatedCss, remaining) if remaining.atEnd => Full(updatedCss)
 
       case Success(_, remaining) =>
         val remainingString = remaining.source

@@ -65,8 +65,7 @@ object ImplicitCollector {
 
   def exprType(expr: ScExpression, fromUnder: Boolean): Option[ScType] = {
     expr.getTypeWithoutImplicits(fromUnderscore = fromUnder).toOption.map {
-      case tp =>
-        ScType.extractDesignatorSingletonType(tp) match {
+      case tp => ScType.extractDesignatorSingletonType(tp) match {
           case Some(res) => res
           case _         => tp
         }
@@ -169,8 +168,9 @@ class ImplicitCollector(
                 lastParent,
                 place)) stop = true
         placeForTreeWalkUp match {
-          case (_: ScTemplateBody | _: ScExtendsBlock) => //template body and inherited members are at the same level
-          case _                                       => if (!processor.changedLevel) stop = true
+          case (_: ScTemplateBody |
+              _: ScExtendsBlock) => //template body and inherited members are at the same level
+          case _                 => if (!processor.changedLevel) stop = true
         }
         if (!stop) {
           if (!placeCalculated) {
@@ -215,8 +215,9 @@ class ImplicitCollector(
     }
 
     previousRecursionState match {
-      case Some(m) =>
-        ScalaRecursionManager.usingPreviousRecursionMap(m) { calc() }
+      case Some(m) => ScalaRecursionManager.usingPreviousRecursionMap(m) {
+          calc()
+        }
       case _ => calc()
     }
   }
@@ -861,8 +862,7 @@ class ImplicitCollector(
                 .find(_.name == name)
                 .map(w => (true, w.upperBound))
                 .getOrElse((false, tp))
-            case tp @ ScDesignatorType(element) =>
-              element match {
+            case tp @ ScDesignatorType(element) => element match {
                 case a: ScTypeAlias
                     if a.getContext.isInstanceOf[ScExistentialClause] =>
                   wilds

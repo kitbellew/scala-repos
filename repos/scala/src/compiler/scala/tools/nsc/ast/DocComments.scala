@@ -198,10 +198,8 @@ trait DocComments {
 
     def mergeSection(srcSec: Option[(Int, Int)], dstSec: Option[(Int, Int)]) =
       dstSec match {
-        case Some((start, end)) =>
-          if (end > tocopy) tocopy = end
-        case None =>
-          srcSec match {
+        case Some((start, end)) => if (end > tocopy) tocopy = end
+        case None => srcSec match {
             case Some((start1, end1)) => {
               out append dst.substring(copied, tocopy).trim
               out append "\n"
@@ -389,8 +387,7 @@ trait DocComments {
                   if (!isMovable(sc, sec)) out append sc.substring(start, end)
               }
             case "" => idx += 1
-            case vname =>
-              lookupVariable(vname, site) match {
+            case vname => lookupVariable(vname, site) match {
                 case Some(replacement) => replaceWith(replacement)
                 case None =>
                   val pos = docCommentPos(sym)
@@ -529,8 +526,7 @@ trait DocComments {
               case Some(clazz) => (clazz.thisType, partnames drop 2)
               case _           => (NoType, Nil)
             }
-          case _ =>
-            (getSite(partnames.head), partnames.tail)
+          case _ => (getSite(partnames.head), partnames.tail)
         }
         val result = (start /: rest)(select(_, _, NoType))
         if (result == NoType)
@@ -571,8 +567,7 @@ trait DocComments {
                   newTypeName(repl2))
                 (typeRef(NoPrefix, alias1, Nil), false)
               }
-            case None =>
-              (typeRef(NoPrefix, alias, Nil), false)
+            case None => (typeRef(NoPrefix, alias, Nil), false)
           }
 
       def subst(
@@ -592,11 +587,9 @@ trait DocComments {
                 case (TypeRef(pre1, sym1, _), canNormalize) =>
                   val tpe = typeRef(pre1, sym1, args)
                   if (canNormalize) tpe.normalize else tpe
-                case _ =>
-                  tp1
+                case _ => tp1
               }
-            case tp1 =>
-              tp1
+            case tp1 => tp1
           }
       }
 

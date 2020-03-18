@@ -62,8 +62,7 @@ object LegacyTypeStringParser extends RegexParsers {
     ("StructField(" ~> "[a-zA-Z0-9_]*".r) ~ ("," ~> dataType) ~ (
       "," ~> boolVal <~ ")"
     ) ^^ {
-      case name ~ tpe ~ nullable =>
-        StructField(name, tpe, nullable = nullable)
+      case name ~ tpe ~ nullable => StructField(name, tpe, nullable = nullable)
     }
 
   protected lazy val boolVal: Parser[Boolean] =

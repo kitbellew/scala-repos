@@ -47,8 +47,7 @@ object BuildDef extends Build {
     classpath.collectFirst {
       case entry @ MatchingModule(moduleOrganization, moduleName, revision)
           if moduleOrganization == organization &&
-            moduleName.startsWith(name) =>
-        (revision, entry.data)
+            moduleName.startsWith(name) => (revision, entry.data)
     }
   }
 

@@ -71,8 +71,7 @@ object TypeDefinitionMembers {
     def isPrivate(t: Signature): Boolean = {
       t.namedElement match {
         case param: ScClassParameter if !param.isEffectiveVal => true
-        case named: ScNamedElement =>
-          ScalaPsiUtil.nameContext(named) match {
+        case named: ScNamedElement => ScalaPsiUtil.nameContext(named) match {
             case s: ScModifierListOwner =>
               s.getModifierList.accessModifier match {
                 case Some(a: ScAccessModifier) => a.isUnqualifiedPrivateOrThis
@@ -80,9 +79,8 @@ object TypeDefinitionMembers {
               }
             case _ => false
           }
-        case n: PsiModifierListOwner =>
-          n.hasModifierProperty("private")
-        case _ => false
+        case n: PsiModifierListOwner => n.hasModifierProperty("private")
+        case _                       => false
       }
     }
 
@@ -90,8 +88,7 @@ object TypeDefinitionMembers {
       s match {
         case phys: PhysicalSignature =>
           TypeDefinitionMembers.this.isAbstract(phys)
-        case s: Signature =>
-          s.namedElement match {
+        case s: Signature => s.namedElement match {
             case _: ScFieldId => true
             case f: PsiField if f.hasModifierProperty(PsiModifier.ABSTRACT) =>
               true
@@ -255,12 +252,11 @@ object TypeDefinitionMembers {
 
       for (td <- template.syntheticTypeDefinitions) {
         td match {
-          case obj: ScObject =>
-            addSignature(new Signature(obj.name, Seq.empty, 0, subst, obj))
-          case td: ScTypeDefinition =>
-            td.fakeCompanionModule match {
-              case Some(obj) =>
-                addSignature(new Signature(obj.name, Seq.empty, 0, subst, obj))
+          case obj: ScObject => addSignature(
+              new Signature(obj.name, Seq.empty, 0, subst, obj))
+          case td: ScTypeDefinition => td.fakeCompanionModule match {
+              case Some(obj) => addSignature(
+                  new Signature(obj.name, Seq.empty, 0, subst, obj))
               case _ =>
             }
           case _ =>
@@ -312,8 +308,7 @@ object TypeDefinitionMembers {
 
     def isPrivate(t: PsiNamedElement): Boolean = {
       t match {
-        case n: ScModifierListOwner =>
-          n.getModifierList.accessModifier match {
+        case n: ScModifierListOwner => n.getModifierList.accessModifier match {
             case Some(a: ScAccessModifier) => a.isUnqualifiedPrivateOrThis
             case _                         => false
           }
@@ -382,8 +377,7 @@ object TypeDefinitionMembers {
     def isPrivate(t: Signature): Boolean = {
       t.namedElement match {
         case c: ScClassParameter if !c.isEffectiveVal => true
-        case named: ScNamedElement =>
-          ScalaPsiUtil.nameContext(named) match {
+        case named: ScNamedElement => ScalaPsiUtil.nameContext(named) match {
             case s: ScModifierListOwner =>
               s.getModifierList.accessModifier match {
                 case Some(a: ScAccessModifier) => a.isUnqualifiedPrivateOrThis
@@ -391,9 +385,8 @@ object TypeDefinitionMembers {
               }
             case _ => false
           }
-        case n: PsiModifierListOwner =>
-          n.hasModifierProperty("private")
-        case _ => false
+        case n: PsiModifierListOwner => n.hasModifierProperty("private")
+        case _                       => false
       }
     }
 
@@ -401,8 +394,7 @@ object TypeDefinitionMembers {
       s match {
         case phys: PhysicalSignature =>
           TypeDefinitionMembers.this.isAbstract(phys)
-        case s: Signature =>
-          s.namedElement match {
+        case s: Signature => s.namedElement match {
             case _: ScFieldId => true
             case f: PsiField if f.hasModifierProperty(PsiModifier.ABSTRACT) =>
               true
@@ -589,8 +581,8 @@ object TypeDefinitionMembers {
             c match {
               case c: ScClass if c.hasModifierProperty("implicit") =>
                 c.getSyntheticImplicitMethod match {
-                  case Some(impl) =>
-                    addSignature(new PhysicalSignature(impl, subst))
+                  case Some(impl) => addSignature(
+                      new PhysicalSignature(impl, subst))
                   case _ =>
                 }
               case _ =>
@@ -606,12 +598,11 @@ object TypeDefinitionMembers {
 
       for (td <- template.syntheticTypeDefinitions) {
         td match {
-          case obj: ScObject =>
-            addSignature(new Signature(obj.name, Seq.empty, 0, subst, obj))
-          case td: ScTypeDefinition =>
-            td.fakeCompanionModule match {
-              case Some(obj) =>
-                addSignature(new Signature(obj.name, Seq.empty, 0, subst, obj))
+          case obj: ScObject => addSignature(
+              new Signature(obj.name, Seq.empty, 0, subst, obj))
+          case td: ScTypeDefinition => td.fakeCompanionModule match {
+              case Some(obj) => addSignature(
+                  new Signature(obj.name, Seq.empty, 0, subst, obj))
               case _ =>
             }
           case _ =>
@@ -768,14 +759,12 @@ object TypeDefinitionMembers {
 
   def getSelfTypeSignatures(clazz: PsiClass): SMap = {
     clazz match {
-      case td: ScTypeDefinition =>
-        td.selfType match {
+      case td: ScTypeDefinition => td.selfType match {
           case Some(selfType) =>
             val clazzType =
               td.getTypeWithProjections(TypingContext.empty).getOrAny
             Bounds.glb(selfType, clazzType) match {
-              case c: ScCompoundType =>
-                getSignatures(c, Some(clazzType), clazz)
+              case c: ScCompoundType => getSignatures(c, Some(clazzType), clazz)
               case tp =>
                 val cl =
                   ScType.extractClassType(tp, Some(clazz.getProject)) match {
@@ -784,8 +773,7 @@ object TypeDefinitionMembers {
                   }
                 getSignatures(cl)
             }
-          case _ =>
-            getSignatures(clazz)
+          case _ => getSignatures(clazz)
         }
       case _ => getSignatures(clazz)
     }
@@ -793,14 +781,12 @@ object TypeDefinitionMembers {
 
   def getSelfTypeTypes(clazz: PsiClass): TMap = {
     clazz match {
-      case td: ScTypeDefinition =>
-        td.selfType match {
+      case td: ScTypeDefinition => td.selfType match {
           case Some(selfType) =>
             val clazzType =
               td.getTypeWithProjections(TypingContext.empty).getOrAny
             Bounds.glb(selfType, clazzType) match {
-              case c: ScCompoundType =>
-                getTypes(c, Some(clazzType), clazz)
+              case c: ScCompoundType => getTypes(c, Some(clazzType), clazz)
               case tp =>
                 val cl =
                   ScType.extractClassType(tp, Some(clazz.getProject)) match {
@@ -809,8 +795,7 @@ object TypeDefinitionMembers {
                   }
                 getTypes(cl)
             }
-          case _ =>
-            getTypes(clazz)
+          case _ => getTypes(clazz)
         }
       case _ => getTypes(clazz)
     }

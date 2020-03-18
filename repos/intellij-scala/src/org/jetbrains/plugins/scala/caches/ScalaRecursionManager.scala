@@ -55,8 +55,7 @@ object ScalaRecursionManager {
 
   private def removeLast[Dom <: PsiElement](element: Dom, key: String) {
     recursionMap.get().get((element, key)) match {
-      case Some(list) =>
-        list match {
+      case Some(list) => list match {
           case hd :: tl =>
             recursionMap.set(recursionMap.get().updated((element, key), tl))
           case _ => recursionMap.set(recursionMap.get() - ((element, key)))

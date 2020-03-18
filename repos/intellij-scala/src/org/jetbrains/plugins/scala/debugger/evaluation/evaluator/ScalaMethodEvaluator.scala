@@ -88,8 +88,7 @@ case class ScalaMethodEvaluator(
             qualifierType.classLoader)
         case obj: ClassType =>
           debugProcess.findClass(context, obj.name, context.getClassLoader)
-        case _ =>
-          null
+        case _ => null
       }
       val sign: String =
         if (signature != null && args.size == argumentEvaluators.size)
@@ -222,8 +221,7 @@ case class ScalaMethodEvaluator(
                   _refType = referenceType.asInstanceOf[ClassType].superclass
               }
             } else _refType = referenceType.asInstanceOf[ClassType].superclass
-          case _ =>
-            _refType = referenceType.asInstanceOf[ClassType].superclass
+          case _ => _refType = referenceType.asInstanceOf[ClassType].superclass
         }
       }
       val jdiMethod: Method = getOrUpdateMethod(_refType, findMethod).orNull
@@ -273,9 +271,8 @@ case class ScalaMethodEvaluator(
     val argTypeNames = jdiMethod.argumentTypeNames()
     args.zipWithIndex.map {
       case (DebuggerUtil.scalaRuntimeRefTo(value), idx)
-          if !DebuggerUtil.isScalaRuntimeRef(argTypeNames.get(idx)) =>
-        value
-      case (arg, _) => arg
+          if !DebuggerUtil.isScalaRuntimeRef(argTypeNames.get(idx)) => value
+      case (arg, _)                                                 => arg
     }
   }
 }

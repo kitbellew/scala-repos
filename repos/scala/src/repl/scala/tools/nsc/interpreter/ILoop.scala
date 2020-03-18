@@ -589,8 +589,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           try {
             val pr = new ProcessResult(s"$ed ${tmp.path}")
             pr.exitCode match {
-              case 0 =>
-                tmp.safeSlurp() match {
+              case 0 => tmp.safeSlurp() match {
                   case Some(edited) if edited.trim.isEmpty =>
                     echo("Edited text is empty.")
                   case Some(edited) =>
@@ -601,8 +600,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
                       history.historicize(edited)
                       Result(lineToRecord = Some(edited), keepRunning = true)
                     }
-                  case None =>
-                    echo("Can't read edited text. Did you delete it?")
+                  case None => echo(
+                      "Can't read edited text. Did you delete it?")
                 }
               case x => echo(s"Error exit from $ed ($x), ignoring")
             }
@@ -929,8 +928,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         }
       case invocation() if intp.mostRecentVar != "" =>
         interpretStartingWith(intp.mostRecentVar + code)
-      case _ =>
-        intp.interpret(code) match {
+      case _ => intp.interpret(code) match {
           case IR.Error   => None
           case IR.Success => Some(code)
           case IR.Incomplete if in.interactive && code.endsWith("\n\n") =>

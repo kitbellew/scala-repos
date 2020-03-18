@@ -102,8 +102,7 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
             ScalaBreakpointMethodFilter.from(
               f,
               stepTarget.getCallingExpressionLines)
-          case fun: ScMethodLike =>
-            Some(
+          case fun: ScMethodLike => Some(
               new ScalaMethodFilter(fun, stepTarget.getCallingExpressionLines))
           case _ => None
         }
@@ -231,8 +230,7 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
             presentation,
             noStopAtLines)
           return //stop at function expression
-        case ref: ScReferenceExpression =>
-          ref.resolve() match {
+        case ref: ScReferenceExpression => ref.resolve() match {
             case fun: ScFunctionDefinition
                 if fun.name == "apply" && ref.refName != "apply" =>
               val prefix = s"${ref.refName}."

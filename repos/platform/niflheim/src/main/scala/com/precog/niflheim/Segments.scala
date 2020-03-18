@@ -52,8 +52,7 @@ case class CTree(
     that match {
       case CTree(`path`, fields2, indices2, types2) =>
         fields == fields2 && indices == indices2 && types == types2
-      case _ =>
-        false
+      case _ => false
     }
 }
 
@@ -81,8 +80,7 @@ case class Segments(
     that match {
       case Segments(`id`, length2, t2, a2) =>
         length == length2 && t == t2 && a.toSet == a2.toSet
-      case _ =>
-        false
+      case _ => false
     }
 
   def addNullType(row: Int, tree: CTree, ct: CNullType) {
@@ -270,8 +268,7 @@ case class Segments(
         if (m.isEmpty) { addEmptyObject(row, tree) }
         else {
           m.foreach {
-            case (key, j) =>
-              initializeSegments(row, j, tree.getField(key))
+            case (key, j) => initializeSegments(row, j, tree.getField(key))
           }
         }
 

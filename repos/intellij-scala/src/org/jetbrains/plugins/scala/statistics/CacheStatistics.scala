@@ -117,8 +117,7 @@ object CacheStatistics {
   def apply(id: String, name: String) =
     Option(caches.get(id)) match {
       case Some(res) => res
-      case _ =>
-        synchronized {
+      case _ => synchronized {
           Option(caches.get(id)) match {
             case Some(res) => res
             case _ =>

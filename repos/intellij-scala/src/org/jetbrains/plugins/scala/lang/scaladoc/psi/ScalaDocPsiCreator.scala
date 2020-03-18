@@ -29,9 +29,8 @@ object ScalaDocPsiCreator {
         while (parentNode.getTreeParent != null && parentNode.getElementType != SCALA_DOC_COMMENT) {
           parentNode = parentNode.getTreeParent
           parentNode.getElementType match {
-            case a: ScaladocSyntaxElementType =>
-              element.setFlag(a.getFlagConst)
-            case _ =>
+            case a: ScaladocSyntaxElementType => element.setFlag(a.getFlagConst)
+            case _                            =>
           }
         }
 

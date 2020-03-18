@@ -152,8 +152,7 @@ private[tournament] final class TournamentApi(
     Sequencing(oldTour.id)(TournamentRepo.startedById) { tour =>
       PairingRepo count tour.id flatMap {
         case 0 => wipe(tour)
-        case _ =>
-          for {
+        case _ => for {
             _ <- TournamentRepo.setStatus(tour.id, Status.Finished)
             _ <- PlayerRepo unWithdraw tour.id
             _ <- PairingRepo removePlaying tour.id

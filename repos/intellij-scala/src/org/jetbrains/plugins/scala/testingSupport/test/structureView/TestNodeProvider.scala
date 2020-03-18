@@ -76,8 +76,7 @@ class TestNodeProvider extends FileStructureNodeProvider[TreeElement] {
                       expr,
                       clazz,
                       project)
-                  case _ =>
-                    None
+                  case _ => None
                 }).map(children.add)
               }
             case _ =>
@@ -97,8 +96,7 @@ class TestNodeProvider extends FileStructureNodeProvider[TreeElement] {
           }
 
         valElement.getValue match {
-          case valDef: ScPatternDefinition =>
-            valDef.getLastChild match {
+          case valDef: ScPatternDefinition => valDef.getLastChild match {
               case testCall: ScMethodCall =>
                 TestNodeProvider.extractUTest(testCall, testCall.getProject)
               case _ => tryTupledId(valElement.element)
@@ -265,9 +263,8 @@ object TestNodeProvider {
         case Some(resolveResult) =>
           resolveResult.getActualElement.getName == callerName && {
             val funElement = resolveResult.innerResolveResult match {
-              case Some(innerResult) =>
-                innerResult.getActualElement
-              case None => resolveResult.getElement
+              case Some(innerResult) => innerResult.getActualElement
+              case None              => resolveResult.getElement
             }
             funElement.getName == "apply" && funElement
               .isInstanceOf[ScFunctionDefinition] &&
@@ -340,8 +337,7 @@ object TestNodeProvider {
 
   private def checkSpecsPending(expr: ScInfixExpr): Boolean = {
     (expr.getLastChild match {
-      case refExpr: ScReferenceExpression =>
-        Some(refExpr)
+      case refExpr: ScReferenceExpression => Some(refExpr)
       case methodCall: ScMethodCall =>
         methodCall.getEffectiveInvokedExpr match {
           case ref: ScReferenceExpression => Some(ref)

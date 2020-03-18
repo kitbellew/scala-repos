@@ -250,18 +250,12 @@ trait StreamTest extends QueryTest with Timeouts {
 
     def verify(condition: => Boolean, message: String): Unit = {
       try { Assertions.assert(condition) }
-      catch {
-        case NonFatal(e) =>
-          failTest(message, e)
-      }
+      catch { case NonFatal(e) => failTest(message, e) }
     }
 
     def eventually[T](message: String)(func: => T): T = {
       try { Eventually.eventually(Timeout(streamingTimeout)) { func } }
-      catch {
-        case NonFatal(e) =>
-          failTest(message, e)
-      }
+      catch { case NonFatal(e) => failTest(message, e) }
     }
 
     def failTest(message: String, cause: Throwable = null) = {
@@ -326,8 +320,7 @@ trait StreamTest extends QueryTest with Timeouts {
               case _: org.scalatest.exceptions.TestFailedDueToTimeoutException =>
                 failTest(
                   "Timed out while stopping and waiting for microbatchthread to terminate.")
-              case t: Throwable =>
-                failTest("Error while stopping stream", t)
+              case t: Throwable => failTest("Error while stopping stream", t)
             } finally {
               lastStream = currentStream
               currentStream = null
@@ -389,16 +382,14 @@ trait StreamTest extends QueryTest with Timeouts {
             val streamToAssert = Option(currentStream).getOrElse(lastStream)
             verify({ a.run(); true }, s"Assert failed: ${a.message}")
 
-          case a: AddData =>
-            awaiting.put(a.source, a.addData())
+          case a: AddData => awaiting.put(a.source, a.addData())
 
           case CheckAnswerRows(expectedAnswer) =>
             verify(currentStream != null, "stream not running")
 
             // Block until all data added has been processed
             awaiting.foreach {
-              case (source, offset) =>
-                failAfter(streamingTimeout) {
+              case (source, offset) => failAfter(streamingTimeout) {
                   currentStream.awaitOffset(source, offset)
                 }
             }
@@ -466,8 +457,7 @@ trait StreamTest extends QueryTest with Timeouts {
         }
       } else {
         rand match {
-          case r if r < 0.1 =>
-            addCheck()
+          case r if r < 0.1 => addCheck()
 
           case r if r < 0.7 => // AddData
             addRandomData()
@@ -511,8 +501,7 @@ trait StreamTest extends QueryTest with Timeouts {
             failAfter(testTimeout) { awaitTermFunc() }
           }
 
-        case ExpectBlocked =>
-          withClue("Was not blocked when expected.") {
+        case ExpectBlocked => withClue("Was not blocked when expected.") {
             intercept[TestFailedDueToTimeoutException] {
               failAfter(testTimeout) { awaitTermFunc() }
             }

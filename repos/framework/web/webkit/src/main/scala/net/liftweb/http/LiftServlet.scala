@@ -196,8 +196,7 @@ class LiftServlet extends Loggable {
 
     val role = NamedPF.applyBox(req, LiftRules.httpAuthProtectedResource.toList)
     role.map(_ match {
-      case Full(r) =>
-        LiftRules.authentication.verified_?(req) match {
+      case Full(r) => LiftRules.authentication.verified_?(req) match {
           case true => checkRoles(r, userRoles.get)
           case _    => false
         }
@@ -261,8 +260,7 @@ class LiftServlet extends Loggable {
         req,
         LiftRules.httpAuthProtectedResource.toList)
       role.map(_ match {
-        case Full(r) =>
-          LiftRules.authentication.verified_?(req) match {
+        case Full(r) => LiftRules.authentication.verified_?(req) match {
             case true => checkRoles(r, userRoles.get)
             case _    => false
           }
@@ -355,8 +353,7 @@ class LiftServlet extends Loggable {
             tmpStatelessHolder = NamedPF
               .applyBox(req, LiftRules.statelessDispatch.toList)
               .map(_.apply() match {
-                case Full(a) =>
-                  Full(
+                case Full(a) => Full(
                     LiftRules.convertResponse((a, Nil, S.responseCookies, req)))
                 case r => r
               })
@@ -447,8 +444,7 @@ class LiftServlet extends Loggable {
     tryo { LiftRules.onEndServicing.toList.foreach(_(req, resp)) }
 
     resp match {
-      case Full(EmptyResponse) =>
-        true
+      case Full(EmptyResponse) => true
 
       case Full(cresp) =>
         sendResponse(cresp, response, req)
@@ -943,10 +939,10 @@ class LiftServlet extends Loggable {
     // If we need to, ensure we capture JS from this request's render version.
     // The comet actor will already have handled the comet's version.
     S.request.flatMap(req => extractRenderVersion(req.path.partPath)) match {
-      case Full(additionalVersion) =>
-        RenderVersion.doWith(additionalVersion) { jsCommands.toResponse }
-      case _ =>
-        jsCommands.toResponse
+      case Full(additionalVersion) => RenderVersion.doWith(additionalVersion) {
+          jsCommands.toResponse
+        }
+      case _ => jsCommands.toResponse
     }
   }
 
@@ -1129,8 +1125,7 @@ private class SessionIdCalc(req: Req) {
   private val LiftPath = LiftRules.liftContextRelativePath
   lazy val id: Box[String] = req.request.sessionId match {
     case Full(id) => Full(id)
-    case _ =>
-      req.path.wholePath match {
+    case _ => req.path.wholePath match {
         case LiftPath :: "comet" :: _ :: id :: _ :: _ => Full(id)
         case _                                        => Empty
       }

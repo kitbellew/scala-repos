@@ -94,8 +94,7 @@ class BinaryClassificationMetricsSuite
     val numPositives = 4
     val numNegatives = 3
     val precisions = numTruePositives.zip(numFalsePositives).map {
-      case (t, f) =>
-        t.toDouble / (t + f)
+      case (t, f) => t.toDouble / (t + f)
     }
     val recalls = numTruePositives.map(t => t.toDouble / numPositives)
     val fpr = numFalsePositives.map(f => f.toDouble / numNegatives)

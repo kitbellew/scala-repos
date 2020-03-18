@@ -31,8 +31,7 @@ class ConvertToTypedPatternIntention extends PsiElementBaseIntentionAction {
       case e @ Parent(
             Both(
               ref: ScStableCodeReferenceElement,
-              Parent(_: ScConstructorPattern))) =>
-        true
+              Parent(_: ScConstructorPattern))) => true
 
       case _ => false
     }

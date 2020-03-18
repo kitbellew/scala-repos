@@ -57,10 +57,8 @@ trait ParametersAnnotator {
         }
         if (parameter.isCallByNameParameter)
           annotateCallByNameParameter(parameter, holder: AnnotationHolder)
-      case fun: ScFunctionExpr =>
-        parameter.typeElement match {
-          case None =>
-            parameter.expectedParamType match {
+      case fun: ScFunctionExpr => parameter.typeElement match {
+          case None => parameter.expectedParamType match {
               case None =>
                 holder.createErrorAnnotation(
                   parameter,

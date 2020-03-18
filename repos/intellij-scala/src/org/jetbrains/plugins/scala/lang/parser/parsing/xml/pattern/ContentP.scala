@@ -29,9 +29,8 @@ object ContentP {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val contentMarker = builder.mark()
     builder.getTokenType match {
-      case ScalaXmlTokenTypes.XML_DATA_CHARACTERS =>
-        builder.advanceLexer()
-      case _ =>
+      case ScalaXmlTokenTypes.XML_DATA_CHARACTERS => builder.advanceLexer()
+      case _                                      =>
     }
     @tailrec
     def subparse() {
@@ -43,10 +42,8 @@ object ContentP {
           !ScalaPatterns.parse(builder) &&
           !XmlPattern.parse(builder)) isReturn = true
       builder.getTokenType match {
-        case ScalaXmlTokenTypes.XML_DATA_CHARACTERS =>
-          builder.advanceLexer()
-        case _ =>
-          if (isReturn) return
+        case ScalaXmlTokenTypes.XML_DATA_CHARACTERS => builder.advanceLexer()
+        case _                                      => if (isReturn) return
       }
       subparse()
     }

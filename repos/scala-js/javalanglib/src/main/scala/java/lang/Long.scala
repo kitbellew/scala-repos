@@ -182,8 +182,7 @@ object Long {
     var neg = false
 
     s.charAt(0) match {
-      case '+' =>
-        start = 1
+      case '+' => start = 1
       case '-' =>
         start = 1
         neg = true

@@ -57,8 +57,7 @@ class HoistClientOps extends Phase {
   /** Pull Bind nodes up to the top level through Filter and CollectionCast. */
   def shuffle(n: Node): Node =
     n match {
-      case n @ Bind(s1, from1, sel1) =>
-        shuffle(from1) match {
+      case n @ Bind(s1, from1, sel1) => shuffle(from1) match {
           // Merge nested Binds
           case bind2 @ Bind(s2, from2, sel2 @ Pure(StructNode(elems2), ts2))
               if !from2.isInstanceOf[GroupBy] =>
@@ -102,9 +101,8 @@ class HoistClientOps extends Phase {
                   .copy(select = Pure(
                     StructNode(ConstArray.from(newDefsM.map(_.swap)))))
                   .infer()
-                logger.debug(
-                  "Translated left join side:",
-                  Ellipsis(bl2, List(0)))
+                logger
+                  .debug("Translated left join side:", Ellipsis(bl2, List(0)))
                 val repl = hoisted.iterator.map {
                   case (s, _, (n2, wrap)) => (s, (wrap, newDefsM(n2)))
                 }.toMap
@@ -130,9 +128,8 @@ class HoistClientOps extends Phase {
                   .copy(select = Pure(
                     StructNode(ConstArray.from(newDefsM.map(_.swap)))))
                   .infer()
-                logger.debug(
-                  "Translated right join side:",
-                  Ellipsis(br2, List(0)))
+                logger
+                  .debug("Translated right join side:", Ellipsis(br2, List(0)))
                 val repl = hoisted.iterator.map {
                   case (s, _, (n2, wrap)) => (s, (wrap, newDefsM(n2)))
                 }.toMap
@@ -150,10 +147,9 @@ class HoistClientOps extends Phase {
                     val (wrap, f2) = rrepl(f)
                     wrap(Select(Ref(s), f2))
                   case Ref(s)
-                      if (
-                        s == sl1 && (bl2 ne bl)
-                      ) || (s == sr1 && (br2 ne br)) =>
-                    Ref(s)
+                      if (s == sl1 && (bl2 ne bl)) || (
+                        s == sr1 && (br2 ne br)
+                      ) => Ref(s)
                 }
               )
               val sel2 = sel1.replace {
@@ -195,8 +191,7 @@ class HoistClientOps extends Phase {
             if (from2 eq from1) n else n.copy(child = from2) :@ n.nodeType
         }
 
-      case n @ Filter(s1, from1, pred1) =>
-        shuffle(from1) match {
+      case n @ Filter(s1, from1, pred1) => shuffle(from1) match {
           case from2 @ Bind(bs1, bfrom1, sel1 @ Pure(StructNode(elems1), ts1))
               if !bfrom1.isInstanceOf[GroupBy] =>
             logger.debug(

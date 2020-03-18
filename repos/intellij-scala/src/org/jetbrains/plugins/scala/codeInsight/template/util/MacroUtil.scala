@@ -63,9 +63,8 @@ object MacroUtil {
       case javaArrType: JavaArrayType => Some(javaArrType.arg)
       case paramType: ScParameterizedType
           if paramType.canonicalText.startsWith("_root_.scala.Array") &&
-            paramType.typeArgs.length == 1 =>
-        Some(paramType.typeArgs.head)
-      case _ => None
+            paramType.typeArgs.length == 1 => Some(paramType.typeArgs.head)
+      case _                               => None
     }
 
   def getTypeLookupItem(

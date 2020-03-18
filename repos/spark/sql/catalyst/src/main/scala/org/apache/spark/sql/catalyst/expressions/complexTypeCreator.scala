@@ -83,8 +83,7 @@ case class CreateStruct(children: Seq[Expression]) extends Expression {
 
   override lazy val dataType: StructType = {
     val fields = children.zipWithIndex.map {
-      case (child, idx) =>
-        child match {
+      case (child, idx) => child match {
           case ne: NamedExpression =>
             StructField(ne.name, ne.dataType, ne.nullable, ne.metadata)
           case _ =>
@@ -227,8 +226,7 @@ case class CreateStructUnsafe(children: Seq[Expression]) extends Expression {
 
   override lazy val dataType: StructType = {
     val fields = children.zipWithIndex.map {
-      case (child, idx) =>
-        child match {
+      case (child, idx) => child match {
           case ne: NamedExpression =>
             StructField(ne.name, ne.dataType, ne.nullable, ne.metadata)
           case _ =>

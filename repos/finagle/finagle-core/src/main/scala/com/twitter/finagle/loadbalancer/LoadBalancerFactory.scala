@@ -202,8 +202,7 @@ object LoadBalancerFactory {
         loadBalancerFactory.newBalancer(endpoints, balancerStats, balancerExc)
 
       val destActivity: Activity[Set[Address]] = Activity(dest.map {
-        case Addr.Bound(set, _) =>
-          Activity.Ok(set)
+        case Addr.Bound(set, _) => Activity.Ok(set)
         case Addr.Neg =>
           log.info(
             s"$label: name resolution is negative (local dtab: ${Dtab.local})")

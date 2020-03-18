@@ -213,8 +213,7 @@ object union {
         def apply(c: FieldType[HK, HV] :+: TH :+: TT) =
           c match {
             case Inl(h) => Map(keyLub.left(wk.value) -> valueLub.left(h: HV))
-            case Inr(t) =>
-              tailToMap(t).map {
+            case Inr(t) => tailToMap(t).map {
                 case (k, v) => keyLub.right(k) -> valueLub.right(v)
               }
           }

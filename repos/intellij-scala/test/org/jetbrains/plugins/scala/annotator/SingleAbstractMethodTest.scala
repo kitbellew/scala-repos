@@ -605,9 +605,7 @@ class SingleAbstractMethodTest
   }
 
   def checkCodeHasNoErrors(scalaCode: String, javaCode: Option[String] = None) {
-    assertMatches(messages(scalaCode, javaCode)) {
-      case Nil =>
-    }
+    assertMatches(messages(scalaCode, javaCode)) { case Nil => }
   }
 
   def messages(

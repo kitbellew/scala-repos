@@ -175,8 +175,7 @@ trait Metalevels {
           if (reifyDebug)
             println("verdict: inlined as %s".format(showRaw(inlined)))
           inlined
-        case _ =>
-          super.transform(tree)
+        case _ => super.transform(tree)
       }
   }
 }

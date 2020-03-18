@@ -18,8 +18,7 @@ private[report] final class DataForm(val captcher: akka.actor.ActorSelection)
       "gameId" -> text,
       "move" -> text
     )({
-      case (username, reason, text, gameId, move) =>
-        ReportSetup(
+      case (username, reason, text, gameId, move) => ReportSetup(
           user = fetchUser(username) err "Unknown username " + username,
           reason = reason,
           text = text,

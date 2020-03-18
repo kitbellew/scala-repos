@@ -123,11 +123,9 @@ class MacroExpandAction extends AnAction {
       return
     }
     resolved.psiElement.get.getElement match {
-      case (annot: ScAnnotation) =>
-        expandAnnotation(annot, resolved.expansion)
-      case (mc: ScMethodCall) =>
-        expandMacroCall(mc, resolved.expansion)
-      case (other) => () // unreachable
+      case (annot: ScAnnotation) => expandAnnotation(annot, resolved.expansion)
+      case (mc: ScMethodCall)    => expandMacroCall(mc, resolved.expansion)
+      case (other)               => () // unreachable
     }
   }
 

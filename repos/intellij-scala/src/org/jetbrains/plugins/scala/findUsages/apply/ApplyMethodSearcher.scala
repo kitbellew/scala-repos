@@ -17,8 +17,7 @@ class ApplyMethodSearcher extends ApplyUnapplyMethodSearcherBase {
       ref: PsiReference): Option[ResolvableReferenceElement] =
     (ref, ref.getElement.getContext) match {
       case (sref: ResolvableReferenceExpression, x: ScMethodCall)
-          if x.getInvokedExpr == ref.getElement =>
-        Some(sref)
+          if x.getInvokedExpr == ref.getElement => Some(sref)
       // TODO Check every ScMethodCall? Sounds expensive!
       case _ => None
     }

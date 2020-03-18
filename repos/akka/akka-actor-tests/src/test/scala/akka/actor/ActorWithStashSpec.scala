@@ -41,8 +41,7 @@ object ActorWithStashSpec {
           stash()
           stash()
         } catch {
-          case e: IllegalStateException ⇒
-            state.expectedException.open()
+          case e: IllegalStateException ⇒ state.expectedException.open()
         }
       case msg ⇒ // do nothing
     }
@@ -156,16 +155,13 @@ class ActorWithStashSpec
 
       val slaveProps = Props(new Actor with Stash {
         def receive = {
-          case "crash" ⇒
-            throw new Exception("Crashing...")
+          case "crash" ⇒ throw new Exception("Crashing...")
 
           // when restartLatch is not yet open, stash all messages != "crash"
-          case msg if !restartLatch.isOpen ⇒
-            stash()
+          case msg if !restartLatch.isOpen ⇒ stash()
 
           // when restartLatch is open, must receive "hello"
-          case "hello" ⇒
-            hasMsgLatch.open()
+          case "hello" ⇒ hasMsgLatch.open()
         }
 
         override def preRestart(reason: Throwable, message: Option[Any]) = {

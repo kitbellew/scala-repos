@@ -71,9 +71,7 @@ class DemoActorWrapper extends Actor {
     context.actorOf(DemoActor.props(42), "demo")
     // ...
     //#props-factory
-    def receive = {
-      case msg =>
-    }
+    def receive = { case msg => }
     //#props-factory
   }
   //#props-factory
@@ -140,11 +138,9 @@ class StoppingActorsWrapper {
     val child: ActorRef = ???
 
     def receive = {
-      case "interrupt-child" =>
-        context stop child
+      case "interrupt-child" => context stop child
 
-      case "done" =>
-        context stop self
+      case "done" => context stop self
     }
 
   }
@@ -169,9 +165,8 @@ class Manager extends Actor {
   }
 
   def shuttingDown: Receive = {
-    case "job" => sender() ! "service unavailable, shutting down"
-    case Terminated(`worker`) =>
-      context stop self
+    case "job"                => sender() ! "service unavailable, shutting down"
+    case Terminated(`worker`) => context stop self
   }
 }
 //#gracefulStop-actor
@@ -220,8 +215,7 @@ trait ProducerBehavior {
   this: Actor =>
 
   val producerBehavior: Receive = {
-    case GiveMeThings =>
-      sender() ! Give("thing")
+    case GiveMeThings => sender() ! Give("thing")
   }
 }
 
@@ -229,11 +223,9 @@ trait ConsumerBehavior {
   this: Actor with ActorLogging =>
 
   val consumerBehavior: Receive = {
-    case ref: ActorRef =>
-      ref ! GiveMeThings
+    case ref: ActorRef => ref ! GiveMeThings
 
-    case Give(thing) =>
-      log.info("Got a thing! It's {}", thing)
+    case Give(thing) => log.info("Got a thing! It's {}", thing)
   }
 }
 
@@ -489,8 +481,7 @@ class ActorDocSpec extends AkkaSpec("""
         var lastSender = system.deadLetters
 
         def receive = {
-          case "kill" =>
-            context.stop(child); lastSender = sender()
+          case "kill"              => context.stop(child); lastSender = sender()
           case Terminated(`child`) => lastSender ! "finished"
         }
       }

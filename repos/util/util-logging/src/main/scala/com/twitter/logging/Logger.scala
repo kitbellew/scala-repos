@@ -366,8 +366,7 @@ object Logger extends Iterable[Logger] {
     */
   def get(name: String): Logger = {
     loggersCache.get(name) match {
-      case logger: Logger =>
-        logger
+      case logger: Logger => logger
       case null =>
         val logger = new Logger(name, javalog.Logger.getLogger(name))
         val oldLogger = loggersCache.putIfAbsent(name, logger)

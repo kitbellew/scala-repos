@@ -137,10 +137,7 @@ trait Mailer extends SimpleInjector {
     customProperties.foreach { case (name, value) => p.put(name, value) }
     // allow the properties file to set/override system properties
 
-    Props.props.foreach {
-      case (name, value) =>
-        p.setProperty(name, value)
-    }
+    Props.props.foreach { case (name, value) => p.setProperty(name, value) }
     p
   }
 
@@ -288,8 +285,7 @@ trait Mailer extends SimpleInjector {
       case x: MailBodyType => Some[MailBodyType](x); case _ => None
     }
     bodyTypes match {
-      case PlainMailBodyType(txt) :: Nil =>
-        message.setText(txt)
+      case PlainMailBodyType(txt) :: Nil => message.setText(txt)
 
       case _ =>
         val multiPart = new MimeMultipart("alternative")
@@ -314,8 +310,7 @@ trait Mailer extends SimpleInjector {
   protected def firstNode(in: NodeSeq): Node =
     in match {
       case n: Node => n
-      case ns =>
-        ns.toList.collect { case e: Elem => e } match {
+      case ns => ns.toList.collect { case e: Elem => e } match {
           case Nil     => if (ns.length == 0) Text("") else ns(0)
           case x :: xs => x
         }
@@ -329,11 +324,9 @@ trait Mailer extends SimpleInjector {
     val bp = new MimeBodyPart
 
     tab match {
-      case PlainMailBodyType(txt) =>
-        bp.setText(txt, "UTF-8")
+      case PlainMailBodyType(txt) => bp.setText(txt, "UTF-8")
 
-      case PlainPlusBodyType(txt, charset) =>
-        bp.setText(txt, charset)
+      case PlainPlusBodyType(txt, charset) => bp.setText(txt, charset)
 
       case XHTMLMailBodyType(html) =>
         bp.setContent(encodeHtmlBodyPart(html), "text/html; charset=" + charSet)

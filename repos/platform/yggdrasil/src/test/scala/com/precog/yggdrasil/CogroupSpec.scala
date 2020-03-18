@@ -80,8 +80,7 @@ trait CogroupSpec[M[+_]]
       r: Stream[A],
       acc: CogroupResult[A])(implicit ord: Order[A]): CogroupResult[A] = {
     (l, r) match {
-      case (lh #:: lt, rh #:: rt) =>
-        ord.order(lh, rh) match {
+      case (lh #:: lt, rh #:: rt) => ord.order(lh, rh) match {
           case EQ => {
             val (leftSpan, leftRemain) = l.partition(ord.order(_, lh) == EQ)
             val (rightSpan, rightRemain) = r.partition(ord.order(_, rh) == EQ)

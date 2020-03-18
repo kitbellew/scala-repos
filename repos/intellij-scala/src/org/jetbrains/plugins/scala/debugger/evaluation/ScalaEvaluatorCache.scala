@@ -63,8 +63,7 @@ class ScalaEvaluatorCache(project: Project)
       None
     } else {
       cachedEvaluators.get((file, offset)) match {
-        case Some(map) =>
-          map.collectFirst {
+        case Some(map) => map.collectFirst {
             case (elem, eval)
                 if PsiEquivalenceUtil.areElementsEquivalent(element, elem) =>
               eval

@@ -58,8 +58,7 @@ object MakePomTest extends Build {
         val writtenRepositories = repositories.map(read).distinct
         val mavenStyleRepositories = ivyRepositories.collect {
           case x: MavenRepository
-              if (x.name != "public") && (x.name != "jcenter") =>
-            normalize(x)
+              if (x.name != "public") && (x.name != "jcenter") => normalize(x)
         } distinct;
 
         lazy val explain =

@@ -820,8 +820,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       }
 
       prediction must haveAllElementsLike {
-        case (ids, _) =>
-          ids must haveSize(1)
+        case (ids, _) => ids must haveSize(1)
       }
 
       val predResults = prediction collect { case (_, values) => values }

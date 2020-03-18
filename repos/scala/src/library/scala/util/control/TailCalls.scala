@@ -65,8 +65,7 @@ object TailCalls {
       this match {
         case Done(a) => Right(a)
         case Call(k) => Left(k)
-        case Cont(a, f) =>
-          a match {
+        case Cont(a, f) => a match {
             case Done(v)    => f(v).resume
             case Call(k)    => Left(() => k().flatMap(f))
             case Cont(b, g) => b.flatMap(x => g(x) flatMap f).resume
@@ -80,8 +79,7 @@ object TailCalls {
       this match {
         case Done(a) => a
         case Call(t) => t().result
-        case Cont(a, f) =>
-          a match {
+        case Cont(a, f) => a match {
             case Done(v)    => f(v).result
             case Call(t)    => t().flatMap(f).result
             case Cont(b, g) => b.flatMap(x => g(x) flatMap f).result

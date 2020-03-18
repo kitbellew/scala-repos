@@ -110,8 +110,7 @@ object StorageProvider {
           s"http://${config.hostname.get.get}:${http.httpPort.get.get}/v2/artifacts",
           new File(base))
 
-      case _ =>
-        new NoStorageProvider()
+      case _ => new NoStorageProvider()
     }
 
   def isValidUrl(url: String): Boolean =

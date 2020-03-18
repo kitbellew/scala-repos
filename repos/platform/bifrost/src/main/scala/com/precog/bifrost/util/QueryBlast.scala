@@ -194,13 +194,11 @@ verboseErrors - whether to print verbose error messages (default: false)
               Await.ready(f, 120 seconds)
               f.value match {
                 case Some(Right(HttpResponse(status, _, _, _)))
-                    if status.code == OK =>
-                  ()
+                    if status.code == OK => ()
                 case Some(Right(HttpResponse(status, _, _, _))) =>
                   throw new RuntimeException(
                     "Server returned error code with request")
-                case Some(Left(ex)) =>
-                  throw ex
+                case Some(Left(ex)) => throw ex
                 case _ =>
                   throw new RuntimeException("Error processing insert request")
               }

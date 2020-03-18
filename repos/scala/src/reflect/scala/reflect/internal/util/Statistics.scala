@@ -246,8 +246,7 @@ object Statistics {
         .map {
           case (cls: Class[_], elem) =>
             s"${cls.toString.substring(cls.toString.lastIndexOf("$") + 1)}: $elem"
-          case (key, elem) =>
-            s"$key: $elem"
+          case (key, elem) => s"$key: $elem"
         }
         .mkString(", ")
   }
@@ -277,8 +276,7 @@ object Statistics {
       elems = rest match {
         case (outerTimer, outerNested) :: elems1 =>
           (outerTimer, outerNested + duration) :: elems1
-        case Nil =>
-          Nil
+        case Nil => Nil
       }
     }
   }

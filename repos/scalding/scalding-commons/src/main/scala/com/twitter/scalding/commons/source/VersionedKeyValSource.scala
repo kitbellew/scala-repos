@@ -120,12 +120,9 @@ class VersionedKeyValSource[K, V](
     val tap = new VersionedTap(path, hdfsScheme, mode)
       .setVersionsToKeep(versionsToKeep)
     (sourceVersion, sinkVersion) match {
-      case (Some(v), _) if mode == TapMode.SOURCE =>
-        tap.setVersion(v)
-      case (_, Some(v)) if mode == TapMode.SINK =>
-        tap.setVersion(v)
-      case _ =>
-        tap
+      case (Some(v), _) if mode == TapMode.SOURCE => tap.setVersion(v)
+      case (_, Some(v)) if mode == TapMode.SINK   => tap.setVersion(v)
+      case _                                      => tap
     }
   }
 
@@ -168,10 +165,8 @@ class VersionedKeyValSource[K, V](
 
   def sinkExists(mode: Mode): Boolean =
     sinkVersion match {
-      case Some(version) =>
-        mode match {
-          case Test(buffers) =>
-            buffers(this) map { !_.isEmpty } getOrElse false
+      case Some(version) => mode match {
+          case Test(buffers) => buffers(this) map { !_.isEmpty } getOrElse false
 
           case HadoopTest(conf, buffers) =>
             buffers(this) map { !_.isEmpty } getOrElse false
@@ -189,13 +184,11 @@ class VersionedKeyValSource[K, V](
       mode: Mode): Tap[_, _, _] = {
     import com.twitter.scalding.CastHfsTap
     mode match {
-      case Hdfs(_strict, _config) =>
-        readOrWrite match {
+      case Hdfs(_strict, _config) => readOrWrite match {
           case Read  => CastHfsTap(source)
           case Write => CastHfsTap(sink)
         }
-      case _ =>
-        TestTapFactory(this, hdfsScheme).createTap(readOrWrite)
+      case _ => TestTapFactory(this, hdfsScheme).createTap(readOrWrite)
     }
   }
 

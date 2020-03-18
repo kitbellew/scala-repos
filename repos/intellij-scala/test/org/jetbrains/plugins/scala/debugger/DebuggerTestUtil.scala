@@ -88,9 +88,8 @@ object DebuggerTestUtil {
       sys.props.get("java.version") match {
         case Some(v) if v.startsWith(s"1.$versionMajor") =>
           sys.props.get("java.home") match {
-            case Some(path) if isJDK(new File(path).getParentFile) =>
-              Some(path)
-            case _ => None
+            case Some(path) if isJDK(new File(path).getParentFile) => Some(path)
+            case _                                                 => None
           }
         case _ => None
       }

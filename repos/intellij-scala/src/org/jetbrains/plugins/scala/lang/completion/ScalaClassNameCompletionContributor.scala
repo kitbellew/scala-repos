@@ -165,10 +165,8 @@ object ScalaClassNameCompletionContributor {
     val reverseRenamesMap = new mutable.HashMap[String, PsiNamedElement]()
 
     refElement match {
-      case ref: PsiReference =>
-        ref.getVariants.foreach {
-          case s: ScalaLookupItem =>
-            s.isRenamed match {
+      case ref: PsiReference => ref.getVariants.foreach {
+          case s: ScalaLookupItem => s.isRenamed match {
               case Some(name) =>
                 renamesMap += ((s.element.name, (name, s.element)))
                 reverseRenamesMap += ((name, s.element))
@@ -210,8 +208,7 @@ object ScalaClassNameCompletionContributor {
       if (lookingForAnnotations && !typeToImport.isAnnotationType) return
       typeToImport.element match {
         case _: ScClass | _: ScTrait | _: ScTypeAlias
-            if !isInImport && !onlyClasses =>
-          return
+            if !isInImport && !onlyClasses             => return
         case _: ScObject if !isInImport && onlyClasses => return
         case _                                         =>
       }

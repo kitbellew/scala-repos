@@ -228,59 +228,49 @@ abstract class NodePrinters {
         case TypeApply(fun, args)       => typeApplyCommon(tree, fun, args)
         case AppliedTypeTree(tpt, args) => typeApplyCommon(tree, tpt, args)
 
-        case Throw(Ident(name)) =>
-          printSingle(tree, name)
+        case Throw(Ident(name)) => printSingle(tree, name)
 
-        case b @ Bind(name, body) =>
-          printMultiline(tree) {
+        case b @ Bind(name, body) => printMultiline(tree) {
             println(showDefTreeName(b))
             traverse(body)
           }
 
-        case ld @ LabelDef(name, params, rhs) =>
-          printMultiline(tree) {
+        case ld @ LabelDef(name, params, rhs) => printMultiline(tree) {
             showNameAndPos(ld)
             traverseList("()", "params")(params)
             traverse(rhs)
           }
 
-        case Function(vparams, body) =>
-          printMultiline(tree) {
+        case Function(vparams, body) => printMultiline(tree) {
             traverseList("()", "parameter")(vparams)
             traverse(body)
           }
-        case Try(block, catches, finalizer) =>
-          printMultiline(tree) {
+        case Try(block, catches, finalizer) => printMultiline(tree) {
             traverse(block)
             traverseList("{}", "case")(catches)
             if (finalizer ne EmptyTree) traverse(finalizer)
           }
 
-        case Match(selector, cases) =>
-          printMultiline(tree) {
+        case Match(selector, cases) => printMultiline(tree) {
             traverse(selector)
             traverseList("", "case")(cases)
           }
-        case CaseDef(pat, guard, body) =>
-          printMultiline(tree) {
+        case CaseDef(pat, guard, body) => printMultiline(tree) {
             traverse(pat)
             if (guard ne EmptyTree) traverse(guard)
             traverse(body)
           }
-        case Block(stats, expr) =>
-          printMultiline(tree) {
+        case Block(stats, expr) => printMultiline(tree) {
             traverseList("{}", "statement")(stats)
             traverse(expr)
           }
-        case cd @ ClassDef(mods, name, tparams, impl) =>
-          printMultiline(tree) {
+        case cd @ ClassDef(mods, name, tparams, impl) => printMultiline(tree) {
             printModifiers(cd)
             println(showDefTreeName(cd))
             traverseList("[]", "type parameter")(tparams)
             traverse(impl)
           }
-        case md @ ModuleDef(mods, name, impl) =>
-          printMultiline(tree) {
+        case md @ ModuleDef(mods, name, impl) => printMultiline(tree) {
             printModifiers(md)
             println(showDefTreeName(md))
             traverse(impl)
@@ -303,21 +293,16 @@ abstract class NodePrinters {
             traverse(tpt)
             traverse(rhs)
           }
-        case EmptyTree =>
-          println(showName(nme.EMPTY))
-        case lit @ Literal(value) =>
-          println(showLiteral(lit))
-        case New(tpt) =>
-          printMultiline(tree)(traverse(tpt))
-        case Super(This(qual), mix) =>
-          println("Super(This(" + showName(qual) + "), " + showName(mix) + ")")
-        case Super(qual, mix) =>
-          printMultiline(tree) {
+        case EmptyTree            => println(showName(nme.EMPTY))
+        case lit @ Literal(value) => println(showLiteral(lit))
+        case New(tpt)             => printMultiline(tree)(traverse(tpt))
+        case Super(This(qual), mix) => println(
+            "Super(This(" + showName(qual) + "), " + showName(mix) + ")")
+        case Super(qual, mix) => printMultiline(tree) {
             traverse(qual)
             showName(mix)
           }
-        case Template(parents, self, body) =>
-          printMultiline(tree) {
+        case Template(parents, self, body) => printMultiline(tree) {
             val ps0 = parents map { p =>
               if (p.tpe eq null) p match {
                 case x: RefTree => showRefTree(x)
@@ -329,25 +314,20 @@ abstract class NodePrinters {
             traverse(self)
             traverseList("{}", "statement")(body)
           }
-        case This(qual) =>
-          printSingle(tree, qual)
-        case tt @ TypeTree() =>
-          println(showTypeTree(tt))
+        case This(qual)      => printSingle(tree, qual)
+        case tt @ TypeTree() => println(showTypeTree(tt))
 
-        case Typed(expr, tpt) =>
-          printMultiline(tree) {
+        case Typed(expr, tpt) => printMultiline(tree) {
             traverse(expr)
             traverse(tpt)
           }
-        case vd @ ValDef(mods, name, tpt, rhs) =>
-          printMultiline(tree) {
+        case vd @ ValDef(mods, name, tpt, rhs) => printMultiline(tree) {
             printModifiers(vd)
             println(showDefTreeName(vd))
             traverse(tpt)
             traverse(rhs)
           }
-        case td @ TypeDef(mods, name, tparams, rhs) =>
-          printMultiline(tree) {
+        case td @ TypeDef(mods, name, tparams, rhs) => printMultiline(tree) {
             printModifiers(td)
             println(showDefTreeName(td))
             traverseList("[]", "type parameter")(tparams)
@@ -357,8 +337,7 @@ abstract class NodePrinters {
         case PackageDef(pid, stats) =>
           printMultiline("PackageDef", "")(pid :: stats foreach traverse)
 
-        case _ =>
-          tree match {
+        case _ => tree match {
             case t: RefTree               => println(showRefTree(t))
             case t if t.productArity == 0 => println(treePrefix(t))
             case t =>

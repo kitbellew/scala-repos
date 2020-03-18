@@ -113,8 +113,7 @@ trait APIKeyManager[M[+_]] extends Logging {
         if (keyRecord.issuerKey == apiKey) M.point(List(keyRecord))
         else findAPIKeyAncestry(keyRecord.issuerKey) map { keyRecord :: _ }
 
-      case None =>
-        M.point(List.empty[APIKeyRecord])
+      case None => M.point(List.empty[APIKeyRecord])
     }
   }
 

@@ -56,8 +56,7 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
 
   private def extractSubprojectPath(element: PsiElement): Option[String] = {
     Option(element.getParent).safeMap(_.getParent) match {
-      case Some(ScPatternDefinition.expr(e)) =>
-        e match {
+      case Some(ScPatternDefinition.expr(e)) => e match {
           case expr: ScReferenceExpression if expr.getText == "project" =>
             Some(element.getText)
           case call: ScMethodCall =>
@@ -84,8 +83,7 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
           case ScMethodCall(expr, _) if expr.getText.startsWith("project") =>
             result = Some(element.getText)
             super.visitMethodCallExpression(call)
-          case _ =>
-            super.visitMethodCallExpression(call)
+          case _ => super.visitMethodCallExpression(call)
         }
     }
     call.accept(visitor)
@@ -106,15 +104,13 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
       case expr: ScReferenceExpression =>
         Option(expr.resolve()).flatMap(extractPathFromReference)
       case ScMethodCall(expr, ScLiteralImpl.string(path) :: _)
-          if expr.getText == "file" =>
-        Option(path)
-      case _ => None
+          if expr.getText == "file" => Option(path)
+      case _                        => None
     }
 
   private def extractPathFromFileCtor(ctor: ScConstructor): Option[String] = {
     ctor.args.map(_.exprs).flatMap {
-      case Seq(ScLiteralImpl.string(path)) =>
-        Some(path)
+      case Seq(ScLiteralImpl.string(path)) => Some(path)
       case Seq(ScLiteralImpl.string(parent), ScLiteralImpl.string(child)) =>
         Some(parent + File.separator + child)
       case Seq(parentElt, ScLiteralImpl.string(child)) =>
@@ -128,8 +124,7 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
     concatExpr.rOp match {
       case ScLiteralImpl.string(child) =>
         extractPathFromFileParam(concatExpr.lOp).map(_ + File.separator + child)
-      case partRef: ScReferenceExpression =>
-        for {
+      case partRef: ScReferenceExpression => for {
           parent <- extractPathFromFileParam(concatExpr.lOp)
           child <- extractPathFromFileParam(partRef)
         } yield parent + File.separator + child

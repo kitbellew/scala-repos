@@ -41,8 +41,7 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
       case Some((_, scrutineeType)) =>
         setText(getFamilyName + scrutineeType)
         true
-      case None =>
-        false
+      case None => false
     }
   }
 
@@ -157,8 +156,7 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
             val parameters = primaryConstructor.effectiveFirstParameterSection
             val bindings = parameters.map(_.name).mkString("( ", ", ", ")")
             refText + bindings
-          case None =>
-            refText + "()"
+          case None => refText + "()"
         }
         (text, companionObj)
       case _ =>

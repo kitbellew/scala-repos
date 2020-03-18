@@ -263,8 +263,7 @@ class AccountServiceSpec extends TestAccountService with Tags {
       } yield ((res0, res1))).copoint must beLike {
         case (
               HttpResponse(HttpStatus(NoContent, _), _, _, _),
-              HttpResponse(HttpStatus(Unauthorized, _), _, _, _)) =>
-          ok
+              HttpResponse(HttpStatus(Unauthorized, _), _, _, _)) => ok
       }
     }
 
@@ -280,8 +279,7 @@ class AccountServiceSpec extends TestAccountService with Tags {
         case (
               HttpResponse(HttpStatus(OK, _), _, _, _),
               HttpResponse(HttpStatus(Unauthorized, _), _, _, _),
-              HttpResponse(HttpStatus(OK, _), _, _, _)) =>
-          ok
+              HttpResponse(HttpStatus(OK, _), _, _, _)) => ok
       }
     }
 
@@ -353,8 +351,7 @@ class AccountServiceSpec extends TestAccountService with Tags {
         id2 <- createAccountAndGetId("some-other-email@email.com", "password")
         resp <- getAccount(id2, user, pass)
       } yield resp).copoint must beLike {
-        case HttpResponse(HttpStatus(Unauthorized, _), _, Some(jv), _) =>
-          ok
+        case HttpResponse(HttpStatus(Unauthorized, _), _, Some(jv), _) => ok
       }
     }
 
@@ -386,8 +383,7 @@ class AccountServiceSpec extends TestAccountService with Tags {
         case (
               HttpResponse(HttpStatus(OK, _), _, _, _),
               HttpResponse(HttpStatus(OK, _), _, _, _),
-              HttpResponse(HttpStatus(OK, _), _, _, _)) =>
-          ok
+              HttpResponse(HttpStatus(OK, _), _, _, _)) => ok
       }
     }
 

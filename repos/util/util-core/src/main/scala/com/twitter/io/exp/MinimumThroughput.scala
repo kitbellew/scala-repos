@@ -76,10 +76,8 @@ object MinimumThroughput {
           case Throw(MinThroughputTimeoutException) =>
             discard()
             Future.exception(newBelowThroughputException)
-          case Throw(_) =>
-            read // pass through other failures untouched
-          case Return(None) =>
-            read // hit EOF, so we're fine
+          case Throw(_)          => read // pass through other failures untouched
+          case Return(None)      => read // hit EOF, so we're fine
           case Return(Some(buf)) =>
             // read some bytes, see if we're still good in terms of bps
             bytes += buf.length
@@ -114,8 +112,7 @@ object MinimumThroughput {
             val ex = newBelowThroughputException
             fail(ex)
             Future.exception(ex)
-          case Throw(_) =>
-            write // pass through other failures untouched
+          case Throw(_)  => write // pass through other failures untouched
           case Return(_) =>
             // wrote some bytes, see if we're still good in terms of bps
             bytes += numBytes

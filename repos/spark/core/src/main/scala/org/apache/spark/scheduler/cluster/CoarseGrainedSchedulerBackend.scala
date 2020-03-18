@@ -140,8 +140,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
           }
         }
 
-      case ReviveOffers =>
-        makeOffers()
+      case ReviveOffers => makeOffers()
 
       case KillTask(taskId, executorId, interruptThread) =>
         executorDataMap.get(executorId) match {
@@ -220,8 +219,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
         removeExecutor(executorId, reason)
         context.reply(true)
 
-      case RetrieveSparkProps =>
-        context.reply(sparkProperties)
+      case RetrieveSparkProps => context.reply(sparkProperties)
     }
 
     // Make fake resource offers on all executors
@@ -322,8 +320,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
             System.currentTimeMillis(),
             executorId,
             reason.toString))
-        case None =>
-          logInfo(s"Asked to remove non-existent executor $executorId")
+        case None => logInfo(
+            s"Asked to remove non-existent executor $executorId")
       }
     }
 

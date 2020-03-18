@@ -46,10 +46,7 @@ class DataSource(val dsp: DataSourceParams)
     logger.info(s"Remove events from appId ${dsp.appId}")
     val eventsToRemove: Array[String] = eventsDb
       .find(appId = dsp.appId, untilTime = Some(dsp.cutoffTime))(sc)
-      .map {
-        case e =>
-          e.eventId.getOrElse("")
-      }
+      .map { case e => e.eventId.getOrElse("") }
       .collect
 
     var lastFuture: Future[Boolean] = Future[Boolean] { true }

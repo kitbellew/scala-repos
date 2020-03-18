@@ -484,10 +484,7 @@ private trait KleisliArrow[F[_]]
   override def split[A, B, C, D](
       f: Kleisli[F, A, B],
       g: Kleisli[F, C, D]): Kleisli[F, (A, C), (B, D)] =
-    Kleisli {
-      case (a, c) =>
-        F.bind(f run a)(b => F.map(g run c)(d => (b, d)))
-    }
+    Kleisli { case (a, c) => F.bind(f run a)(b => F.map(g run c)(d => (b, d))) }
 }
 
 private trait KleisliSemigroup[F[_], A, B] extends Semigroup[Kleisli[F, A, B]] {

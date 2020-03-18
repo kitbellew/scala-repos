@@ -311,9 +311,8 @@ private object FaultToleranceTest extends App with Logging {
               case RecoveryState.ALIVE =>
                 numAlive += 1
                 liveWorkerIPs = master.liveWorkerIPs
-              case RecoveryState.STANDBY =>
-                numStandby += 1
-              case _ => // ignore
+              case RecoveryState.STANDBY => numStandby += 1
+              case _                     => // ignore
             }
 
             numLiveApps += master.numLiveApps

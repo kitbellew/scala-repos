@@ -117,26 +117,17 @@ object Conformance {
             undefinedSubst)
           if (!y._1) return (false, undefinedSubst) else undefinedSubst = y._2
         //this case filter out such cases like undefined type
-        case _ =>
-          argsPair match {
+        case _ => argsPair match {
             case (u: ScUndefinedType, rt) =>
-              undefinedSubst = undefinedSubst.addLower(
-                (u.tpt.name, u.tpt.getId),
-                rt,
-                variance = 0)
-              undefinedSubst = undefinedSubst.addUpper(
-                (u.tpt.name, u.tpt.getId),
-                rt,
-                variance = 0)
+              undefinedSubst = undefinedSubst
+                .addLower((u.tpt.name, u.tpt.getId), rt, variance = 0)
+              undefinedSubst = undefinedSubst
+                .addUpper((u.tpt.name, u.tpt.getId), rt, variance = 0)
             case (lt, u: ScUndefinedType) =>
-              undefinedSubst = undefinedSubst.addLower(
-                (u.tpt.name, u.tpt.getId),
-                lt,
-                variance = 0)
-              undefinedSubst = undefinedSubst.addUpper(
-                (u.tpt.name, u.tpt.getId),
-                lt,
-                variance = 0)
+              undefinedSubst = undefinedSubst
+                .addLower((u.tpt.name, u.tpt.getId), lt, variance = 0)
+              undefinedSubst = undefinedSubst
+                .addUpper((u.tpt.name, u.tpt.getId), lt, variance = 0)
             case (ScAbstractType(tpt, lower, upper), r) =>
               val (right, alternateRight) =
                 if (tpt.args.length > 0 && !r.isInstanceOf[ScParameterizedType])
@@ -281,8 +272,7 @@ object Conformance {
     trait ParameterizedSkolemizeVisitor extends ScalaTypeVisitor {
       override def visitParameterizedType(p: ScParameterizedType) {
         p.designator match {
-          case s: ScSkolemizedType =>
-            s.upper match {
+          case s: ScSkolemizedType => s.upper match {
               case ScParameterizedType(upper, _) =>
                 result = conformsInner(
                   l,
@@ -472,9 +462,8 @@ object Conformance {
                 AliasType(
                   _: ScTypeAliasDefinition,
                   Success(comp: ScCompoundType, _),
-                  _)) =>
-            conformsInner(comp, c, HashSet.empty, undefinedSubst)
-          case _ => (false, undefinedSubst)
+                  _)) => conformsInner(comp, c, HashSet.empty, undefinedSubst)
+          case _      => (false, undefinedSubst)
         }
       }
     }
@@ -499,8 +488,7 @@ object Conformance {
             val uBound = subst.subst(upper)
             val res = conformsInner(l, uBound, visited, undefinedSubst)
             if (stopProjectionAliasOnFailure || res._1) result = res
-          case _ =>
-            l match {
+          case _ => l match {
               case proj1: ScProjectionType
                   if ScEquivalenceUtil.smartEquivalence(
                     proj1.actualElement,
@@ -512,8 +500,7 @@ object Conformance {
                   projected2,
                   visited,
                   undefinedSubst)
-              case _ =>
-                proj2.actualElement match {
+              case _ => proj2.actualElement match {
                   case syntheticClass: ScSyntheticClass =>
                     result = conformsInner(
                       l,
@@ -1170,8 +1157,7 @@ object Conformance {
       if (result != null) return
 
       p.designator match {
-        case s: ScSkolemizedType =>
-          s.lower match {
+        case s: ScSkolemizedType => s.lower match {
             case ScParameterizedType(lower, _) =>
               result = conformsInner(
                 lower,
@@ -1719,8 +1705,7 @@ object Conformance {
       val tptsMap = new mutable.HashMap[String, ScTypeParameterType]()
       def updateType(t: ScType): ScType = {
         t.recursiveUpdate {
-          case t: ScTypeVariable =>
-            e.wildcards.find(_.name == t.name) match {
+          case t: ScTypeVariable => e.wildcards.find(_.name == t.name) match {
               case Some(wild) =>
                 val tpt = tptsMap.getOrElseUpdate(
                   wild.name,
@@ -2153,8 +2138,7 @@ object Conformance {
             i = i + 1
           }
           result = (true, undefinedSubst)
-        case _ =>
-          result = (false, undefinedSubst)
+        case _ => result = (false, undefinedSubst)
       }
     }
 
@@ -2235,8 +2219,7 @@ object Conformance {
                   new ScTypeParameterType(
                     tuple._2.name,
                     tuple._2.ptp match {
-                      case p: ScTypeParam =>
-                        p.typeParameters.toList.map {
+                      case p: ScTypeParam => p.typeParameters.toList.map {
                           new ScTypeParameterType(_, ScSubstitutor.empty)
                         }
                       case _ => Nil
@@ -2258,8 +2241,7 @@ object Conformance {
           }
           undefinedSubst = t._2
           result = (true, undefinedSubst)
-        case _ =>
-          result = (false, undefinedSubst)
+        case _ => result = (false, undefinedSubst)
       }
     }
   }
@@ -2418,9 +2400,8 @@ object Conformance {
         case Some((clazz: PsiClass, _)) if visited.contains(clazz) =>
         case Some((clazz: PsiClass, subst)) if condition(clazz) =>
           if (res == null) res = tp else if (tp.conforms(res)) res = tp
-        case Some((clazz: PsiClass, subst)) =>
-          later += ((clazz, subst))
-        case _ =>
+        case Some((clazz: PsiClass, subst)) => later += ((clazz, subst))
+        case _                              =>
       }
     }
     val laterIterator = later.iterator

@@ -31,8 +31,7 @@ private[round] final class Titivate(
 
   def receive = {
 
-    case Schedule =>
-      scheduler.scheduleOnce(30 seconds, self, Run)
+    case Schedule => scheduler.scheduleOnce(30 seconds, self, Run)
 
     case Run =>
       $enumerate.over[Game]($query(Query.checkable), 5000) { game =>
@@ -54,16 +53,13 @@ private[round] final class Titivate(
                 val minutes = (clock.estimateTotalTime / 60).toInt
                 GameRepo.setCheckAt(game, DateTime.now plusMinutes minutes)
               }
-            case Some(clock) =>
-              delayF {
+            case Some(clock) => delayF {
                 val hours = Game.unplayedHours
                 GameRepo.setCheckAt(game, DateTime.now plusHours hours)
               }
-            case None =>
-              delayF {
-                val days = game.daysPerTurn | game.hasAi.fold(
-                  Game.aiAbandonedDays,
-                  Game.abandonedDays)
+            case None => delayF {
+                val days = game.daysPerTurn | game.hasAi
+                  .fold(Game.aiAbandonedDays, Game.abandonedDays)
                 GameRepo.setCheckAt(game, DateTime.now plusDays days)
               }
           }

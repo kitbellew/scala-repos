@@ -245,8 +245,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
           elems.keys mustEqual Set("cluster", "model1")
 
           elems("model1") must beLike {
-            case SObject(obj) =>
-              obj.keys mustEqual (validClusters)
+            case SObject(obj) => obj.keys mustEqual (validClusters)
           }
 
           elems("cluster") must beLike {

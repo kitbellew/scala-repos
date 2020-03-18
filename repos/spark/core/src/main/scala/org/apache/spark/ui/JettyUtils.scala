@@ -208,8 +208,7 @@ private[spark] object JettyUtils extends Logging {
     val staticHandler = new DefaultServlet
     val holder = new ServletHolder(staticHandler)
     Option(Utils.getSparkClassLoader.getResource(resourceBase)) match {
-      case Some(res) =>
-        holder.setInitParameter("resourceBase", res.toString)
+      case Some(res) => holder.setInitParameter("resourceBase", res.toString)
       case None =>
         throw new Exception(
           "Could not find resource path for Web UI: " + resourceBase)

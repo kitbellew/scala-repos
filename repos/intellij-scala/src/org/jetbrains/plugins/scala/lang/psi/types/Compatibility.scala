@@ -385,8 +385,7 @@ object Compatibility {
                   matchedTypes)
             }
           }
-        case expr: Expression =>
-          problems :::= doNoNamed(expr).reverse
+        case expr: Expression => problems :::= doNoNamed(expr).reverse
       }
       k = k + 1
     }

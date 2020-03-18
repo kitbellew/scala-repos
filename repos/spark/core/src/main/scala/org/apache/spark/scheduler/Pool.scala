@@ -50,10 +50,8 @@ private[spark] class Pool(
 
   var taskSetSchedulingAlgorithm: SchedulingAlgorithm = {
     schedulingMode match {
-      case SchedulingMode.FAIR =>
-        new FairSchedulingAlgorithm()
-      case SchedulingMode.FIFO =>
-        new FIFOSchedulingAlgorithm()
+      case SchedulingMode.FAIR => new FairSchedulingAlgorithm()
+      case SchedulingMode.FIFO => new FIFOSchedulingAlgorithm()
     }
   }
 

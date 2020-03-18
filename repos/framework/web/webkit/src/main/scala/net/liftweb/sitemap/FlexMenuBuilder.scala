@@ -68,16 +68,14 @@ trait FlexMenuBuilder {
     */
   def toRender: Seq[MenuItem] = {
     val res = (S.attr("item"), S.attr("group")) match {
-      case (Full(item), _) =>
-        for {
+      case (Full(item), _) => for {
           sm <- LiftRules.siteMap.toList
           req <- S.request.toList
           loc <- sm.findLoc(item).toList
           item <- buildItemMenu(loc, req.location, expandAll)
         } yield item
 
-      case (_, Full(group)) =>
-        for {
+      case (_, Full(group)) => for {
           sm <- LiftRules.siteMap.toList
           loc <- sm.locForGroup(group)
           req <- S.request.toList
@@ -236,8 +234,7 @@ trait FlexMenuBuilder {
           i match {
             // Per Loc.PlaceHolder, placeholder implies HideIfNoKids
             case m @ MenuItem(text, uri, kids, _, _, _)
-                if m.placeholder_? && kids.isEmpty =>
-              emptyPlaceholder
+                if m.placeholder_? && kids.isEmpty => emptyPlaceholder
             case m @ MenuItem(text, uri, kids, _, _, _) if m.placeholder_? =>
               renderPlaceholder(m, buildLine _)
             case m @ MenuItem(text, uri, kids, true, _, _) if linkToSelf =>

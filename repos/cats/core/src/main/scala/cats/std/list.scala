@@ -83,16 +83,13 @@ private[std] sealed trait ListInstances1 extends ListInstances2 {
       def partialCompare(x: List[A], y: List[A]): Double = {
         def loop(xs: List[A], ys: List[A]): Double =
           xs match {
-            case a :: xs =>
-              ys match {
+            case a :: xs => ys match {
                 case b :: ys =>
                   val n = a partialCompare b
                   if (n != 0.0) n else loop(xs, ys)
-                case Nil =>
-                  1.0
+                case Nil => 1.0
               }
-            case Nil =>
-              if (ys.isEmpty) 0.0 else -1.0
+            case Nil => if (ys.isEmpty) 0.0 else -1.0
           }
         loop(x, y)
       }
@@ -105,15 +102,11 @@ private[std] sealed trait ListInstances2 {
       def eqv(x: List[A], y: List[A]): Boolean = {
         def loop(xs: List[A], ys: List[A]): Boolean =
           xs match {
-            case a :: xs =>
-              ys match {
-                case b :: ys =>
-                  if (a =!= b) false else loop(xs, ys)
-                case Nil =>
-                  false
+            case a :: xs => ys match {
+                case b :: ys => if (a =!= b) false else loop(xs, ys)
+                case Nil     => false
               }
-            case Nil =>
-              ys.isEmpty
+            case Nil => ys.isEmpty
           }
         loop(x, y)
       }

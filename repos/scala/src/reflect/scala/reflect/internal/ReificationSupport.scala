@@ -157,8 +157,7 @@ trait ReificationSupport {
               Nil,
               SyntacticApplied(SyntacticAppliedType(_, _), _) :: Nil,
               noSelfType,
-              Nil) =>
-          tree
+              Nil) => tree
         case _ =>
           throw new IllegalArgumentException(
             s"Tree ${showRaw(tree)} isn't a correct representation of annotation." +
@@ -245,9 +244,8 @@ trait ReificationSupport {
       def unapply(tree: Tree): Option[Name] =
         tree match {
           case Select(id @ Ident(nme.scala_), name)
-              if id.symbol == ScalaPackage =>
-            Some(name)
-          case _ => None
+              if id.symbol == ScalaPackage => Some(name)
+          case _                           => None
         }
     }
 
@@ -327,8 +325,8 @@ trait ReificationSupport {
 
       def unapply(tree: Tree): Option[(Tree, List[Tree])] =
         tree match {
-          case MaybeTypeTreeOriginal(AppliedTypeTree(tpe, targs)) =>
-            Some((tpe, targs))
+          case MaybeTypeTreeOriginal(AppliedTypeTree(tpe, targs)) => Some(
+              (tpe, targs))
           case _ if tree.isType => Some((tree, Nil))
           case _                => None
         }
@@ -344,10 +342,8 @@ trait ReificationSupport {
         tree match {
           case UnApply(treeInfo.Unapplied(Select(fun, nme.unapply)), pats) =>
             Some((fun, pats :: Nil))
-          case treeInfo.Applied(fun, targs, argss) =>
-            fun match {
-              case Select(_: New, nme.CONSTRUCTOR) =>
-                Some((tree, Nil))
+          case treeInfo.Applied(fun, targs, argss) => fun match {
+              case Select(_: New, nme.CONSTRUCTOR) => Some((tree, Nil))
               case _ =>
                 val callee =
                   if (fun.isTerm) SyntacticTypeApplied(fun, targs)
@@ -368,16 +364,16 @@ trait ReificationSupport {
                 _,
                 _,
                 _,
-                SyntacticBlock(lvdefs :+ _)) =>
-            Some((mods | Flag.TRAIT, Nil, lvdefs))
+                SyntacticBlock(lvdefs :+ _)) => Some(
+              (mods | Flag.TRAIT, Nil, lvdefs))
           case DefDef(
                 mods,
                 nme.CONSTRUCTOR,
                 Nil,
                 vparamss,
                 _,
-                SyntacticBlock(lvdefs :+ _ :+ _)) =>
-            Some((mods, vparamss, lvdefs))
+                SyntacticBlock(lvdefs :+ _ :+ _)) => Some(
+              (mods, vparamss, lvdefs))
           case _ => None
         }
     }
@@ -527,8 +523,7 @@ trait ReificationSupport {
               parents,
               selfType,
               body))
-          case _ =>
-            None
+          case _ => None
         }
     }
 
@@ -600,10 +595,9 @@ trait ReificationSupport {
           case ModuleDef(
                 mods,
                 name,
-                UnMkTemplate(parents, selfType, _, _, earlyDefs, body)) =>
-            Some((mods, name, earlyDefs, parents, selfType, body))
-          case _ =>
-            None
+                UnMkTemplate(parents, selfType, _, _, earlyDefs, body)) => Some(
+              (mods, name, earlyDefs, parents, selfType, body))
+          case _ => None
         }
     }
 
@@ -630,10 +624,8 @@ trait ReificationSupport {
                     earlyDefs,
                     parents,
                     selfType,
-                    body))) =>
-            Some((name, earlyDefs, parents, selfType, body))
-          case _ =>
-            None
+                    body))) => Some((name, earlyDefs, parents, selfType, body))
+          case _            => None
         }
     }
 
@@ -647,10 +639,9 @@ trait ReificationSupport {
               if symbols.contains(id.symbol) && name == id.symbol.name =>
             Some(id.symbol)
           case Select(scalapkg @ Ident(nme.scala_), name)
-              if scalapkg.symbol == ScalaPackage =>
-            result(name)
-          case Select(Select(Ident(nme.ROOTPKG), nme.scala_), name) =>
-            result(name)
+              if scalapkg.symbol == ScalaPackage => result(name)
+          case Select(Select(Ident(nme.ROOTPKG), nme.scala_), name) => result(
+              name)
           case _ => None
         }
     }
@@ -670,8 +661,7 @@ trait ReificationSupport {
 
       def unapply(tree: Tree): Option[List[Tree]] =
         tree match {
-          case Literal(Constant(())) =>
-            Some(Nil)
+          case Literal(Constant(())) => Some(Nil)
           case Apply(
                 MaybeTypeTreeOriginal(
                   SyntacticTypeApplied(
@@ -679,12 +669,9 @@ trait ReificationSupport {
                     targs)),
                 args)
               if sym == TupleClass(args.length).companionModule
-                && (targs.isEmpty || targs.length == args.length) =>
-            Some(args)
-          case _ if tree.isTerm =>
-            Some(tree :: Nil)
-          case _ =>
-            None
+                && (targs.isEmpty || targs.length == args.length) => Some(args)
+          case _ if tree.isTerm                                   => Some(tree :: Nil)
+          case _                                                  => None
         }
     }
 
@@ -698,15 +685,11 @@ trait ReificationSupport {
 
       def unapply(tree: Tree): Option[List[Tree]] =
         tree match {
-          case MaybeTypeTreeOriginal(UnitClassRef(_)) =>
-            Some(Nil)
+          case MaybeTypeTreeOriginal(UnitClassRef(_)) => Some(Nil)
           case MaybeTypeTreeOriginal(AppliedTypeTree(TupleClassRef(sym), args))
-              if sym == TupleClass(args.length) =>
-            Some(args)
-          case _ if tree.isType =>
-            Some(tree :: Nil)
-          case _ =>
-            None
+              if sym == TupleClass(args.length) => Some(args)
+          case _ if tree.isType                 => Some(tree :: Nil)
+          case _                                => None
         }
     }
 
@@ -734,9 +717,8 @@ trait ReificationSupport {
       def unapply(tree: Tree): Boolean =
         tree match {
           case Literal(Constant(()))
-              if tree.hasAttachment[SyntheticUnitAttachment.type] =>
-            true
-          case _ => false
+              if tree.hasAttachment[SyntheticUnitAttachment.type] => true
+          case _                                                  => false
         }
     }
 
@@ -761,10 +743,10 @@ trait ReificationSupport {
 
       def unapply(tree: Tree): Option[List[Tree]] =
         tree match {
-          case bl @ self.Block(stats, SyntheticUnit()) =>
-            Some(treeInfo.untypecheckedBlockBody(bl))
-          case bl @ self.Block(stats, expr) =>
-            Some(treeInfo.untypecheckedBlockBody(bl) :+ expr)
+          case bl @ self.Block(stats, SyntheticUnit()) => Some(
+              treeInfo.untypecheckedBlockBody(bl))
+          case bl @ self.Block(stats, expr) => Some(
+              treeInfo.untypecheckedBlockBody(bl) :+ expr)
           case SyntheticUnit()                   => Some(Nil)
           case _ if tree.isTerm && tree.nonEmpty => Some(tree :: Nil)
           case _                                 => None
@@ -805,8 +787,7 @@ trait ReificationSupport {
                   New(SyntacticAppliedType(ident, targs)),
                   nme.CONSTRUCTOR),
                 Nil,
-                List(Nil)) =>
-            Some(
+                List(Nil)) => Some(
               (Nil, SyntacticAppliedType(ident, targs) :: Nil, noSelfType, Nil))
           case treeInfo.Applied(
                 Select(
@@ -834,10 +815,8 @@ trait ReificationSupport {
                   body) ::
                 Apply(
                   Select(New(Ident(tpnme.ANON_CLASS_NAME)), nme.CONSTRUCTOR),
-                  Nil) :: Nil) =>
-            Some((earlyDefs, parents, selfType, body))
-          case _ =>
-            None
+                  Nil) :: Nil) => Some((earlyDefs, parents, selfType, body))
+          case _               => None
         }
     }
 
@@ -871,10 +850,10 @@ trait ReificationSupport {
                 tparams,
                 vparamss,
                 tpt,
-                Block(List(expr), Literal(Constant(())))) =>
-            Some((mods, nme.CONSTRUCTOR, tparams, vparamss, tpt, expr))
-          case DefDef(mods, name, tparams, vparamss, tpt, rhs) =>
-            Some((mods, name, tparams, vparamss, tpt, rhs))
+                Block(List(expr), Literal(Constant(())))) => Some(
+              (mods, nme.CONSTRUCTOR, tparams, vparamss, tpt, expr))
+          case DefDef(mods, name, tparams, vparamss, tpt, rhs) => Some(
+              (mods, name, tparams, vparamss, tpt, rhs))
           case _ => None
         }
     }
@@ -892,8 +871,7 @@ trait ReificationSupport {
           case ValDef(mods, name, tpt, rhs)
               if mods.hasFlag(MUTABLE) == isMutable =>
             Some((mods, name, tpt, rhs))
-          case _ =>
-            None
+          case _ => None
         }
     }
     object SyntacticValDef extends SyntacticValDefBase(isMutable = false)
@@ -905,8 +883,8 @@ trait ReificationSupport {
         tree match {
           case Assign(lhs, rhs)           => Some((lhs, rhs))
           case AssignOrNamedArg(lhs, rhs) => Some((lhs, rhs))
-          case Apply(Select(fn, nme.update), args :+ rhs) =>
-            Some((atPos(fn.pos)(Apply(fn, args)), rhs))
+          case Apply(Select(fn, nme.update), args :+ rhs) => Some(
+              (atPos(fn.pos)(Apply(fn, args)), rhs))
           case _ => None
         }
     }
@@ -934,11 +912,9 @@ trait ReificationSupport {
       def unapply(tree: Tree): Option[(Tree, Tree)] =
         tree match {
           case gen.ValFrom(pat, UnCheckIfRefutable(pat1, rhs1))
-              if pat.equalsStructure(pat1) =>
-            Some((pat, rhs1))
-          case gen.ValFrom(pat, rhs) =>
-            Some((pat, rhs))
-          case _ => None
+              if pat.equalsStructure(pat1) => Some((pat, rhs1))
+          case gen.ValFrom(pat, rhs)       => Some((pat, rhs))
+          case _                           => None
         }
     }
 
@@ -1002,8 +978,7 @@ trait ReificationSupport {
               nme.QUASIQUOTE_PAT_DEF,
               Typed(pat, tpt),
               transform(value))
-          case _ =>
-            super.transform(tree)
+          case _ => super.transform(tree)
         }
       def transformStats(trees: List[Tree]): List[Tree] =
         trees match {
@@ -1031,8 +1006,7 @@ trait ReificationSupport {
                   Typed(pat, tpt),
                   transform(value)) :: transformStats(tail.drop(ids.length))
             }
-          case other :: tail =>
-            transform(other) :: transformStats(tail)
+          case other :: tail => transform(other) :: transformStats(tail)
         }
       def apply(tree: Tree) = transform(tree)
       def apply(trees: List[Tree]) = transformStats(trees)
@@ -1060,8 +1034,8 @@ trait ReificationSupport {
     protected object UnPatSeqWithRes {
       def unapply(tree: Tree): Option[(List[(Tree, Tree)], List[Tree])] =
         tree match {
-          case SyntacticBlock(UnPatSeq(trees) :+ SyntacticTuple(elems)) =>
-            Some((trees, elems))
+          case SyntacticBlock(UnPatSeq(trees) :+ SyntacticTuple(elems)) => Some(
+              (trees, elems))
           case _ => None
         }
     }
@@ -1071,9 +1045,8 @@ trait ReificationSupport {
       def unapply(tree: Tree): Option[TermName] =
         tree match {
           case ValDef(mods, name, _, EmptyTree)
-              if mods.hasFlag(SYNTHETIC) && mods.hasFlag(PARAM) =>
-            Some(name)
-          case _ => None
+              if mods.hasFlag(SYNTHETIC) && mods.hasFlag(PARAM) => Some(name)
+          case _                                                => None
         }
     }
 
@@ -1095,15 +1068,14 @@ trait ReificationSupport {
         tree match {
           case Function(
                 ValDef(Modifiers(PARAM, _, _), name, tpt, EmptyTree) :: Nil,
-                body) =>
-            tpt match {
-              case SyntacticEmptyTypeTree() =>
-                Some((Bind(name, self.Ident(nme.WILDCARD)), body))
-              case _ =>
-                Some((Bind(name, Typed(self.Ident(nme.WILDCARD), tpt)), body))
+                body) => tpt match {
+              case SyntacticEmptyTypeTree() => Some(
+                  (Bind(name, self.Ident(nme.WILDCARD)), body))
+              case _ => Some(
+                  (Bind(name, Typed(self.Ident(nme.WILDCARD), tpt)), body))
             }
-          case UnVisitor(_, CaseDef(pat, EmptyTree, body) :: Nil) =>
-            Some((pat, body))
+          case UnVisitor(_, CaseDef(pat, EmptyTree, body) :: Nil) => Some(
+              (pat, body))
           case _ => None
         }
     }
@@ -1122,12 +1094,10 @@ trait ReificationSupport {
     protected object UnFilter {
       def unapply(tree: Tree): Some[(Tree, List[Tree])] =
         tree match {
-          case UnCheckIfRefutable(_, _) =>
-            Some((tree, Nil))
-          case FilterCall(UnFilter(rhs, rest), UnClosure(_, test)) =>
-            Some((rhs, rest :+ SyntacticFilter(test)))
-          case _ =>
-            Some((tree, Nil))
+          case UnCheckIfRefutable(_, _) => Some((tree, Nil))
+          case FilterCall(UnFilter(rhs, rest), UnClosure(_, test)) => Some(
+              (rhs, rest :+ SyntacticFilter(test)))
+          case _ => Some((tree, Nil))
         }
     }
 
@@ -1177,16 +1147,16 @@ trait ReificationSupport {
         val interm = tree match {
           case UnFlatMap(
                 UnFilter(rhs, filters),
-                UnClosure(pat, UnFor(rest, body))) =>
-            Some(((pat, rhs), filters ::: rest, body))
+                UnClosure(pat, UnFor(rest, body))) => Some(
+              ((pat, rhs), filters ::: rest, body))
           case UnForeach(
                 UnFilter(rhs, filters),
-                UnClosure(pat, UnFor(rest, body))) =>
-            Some(((pat, rhs), filters ::: rest, body))
-          case UnMap(UnFilter(rhs, filters), UnClosure(pat, cbody)) =>
-            Some(((pat, rhs), filters, gen.Yield(cbody)))
-          case UnForeach(UnFilter(rhs, filters), UnClosure(pat, cbody)) =>
-            Some(((pat, rhs), filters, cbody))
+                UnClosure(pat, UnFor(rest, body))) => Some(
+              ((pat, rhs), filters ::: rest, body))
+          case UnMap(UnFilter(rhs, filters), UnClosure(pat, cbody)) => Some(
+              ((pat, rhs), filters, gen.Yield(cbody)))
+          case UnForeach(UnFilter(rhs, filters), UnClosure(pat, cbody)) => Some(
+              ((pat, rhs), filters, cbody))
           case _ => None
         }
         interm.flatMap {
@@ -1278,8 +1248,7 @@ trait ReificationSupport {
                   ScalaDot(tpnme.unchecked) :: Nil,
                   noSelfType,
                   Nil),
-                annottee) =>
-            Some(annottee)
+                annottee) => Some(annottee)
           case Typed(
                 annottee,
                 MaybeTypeTreeOriginal(
@@ -1289,9 +1258,8 @@ trait ReificationSupport {
                       ScalaDot(tpnme.unchecked) :: Nil,
                       noSelfType,
                       Nil),
-                    _))) =>
-            Some(annottee)
-          case annottee => Some(annottee)
+                    _))) => Some(annottee)
+          case annottee  => Some(annottee)
         }
     }
 
@@ -1387,8 +1355,8 @@ trait ReificationSupport {
       }
       def unapply(id: Ident): Option[(TermName, Boolean)] =
         id.name match {
-          case name: TermName =>
-            Some((name, id.hasAttachment[BackquotedIdentifierAttachment.type]))
+          case name: TermName => Some(
+              (name, id.hasAttachment[BackquotedIdentifierAttachment.type]))
           case _ => None
         }
     }
@@ -1435,8 +1403,7 @@ trait ReificationSupport {
             case ImportSelector(name1, offset1, name2, offset2)
                 if name1 == name2 && offset1 == offset2 =>
               Some((name1.toTermName, offset1))
-            case _ =>
-              None
+            case _ => None
           }
       }
 
@@ -1451,13 +1418,11 @@ trait ReificationSupport {
         def unapply(
             sel: ImportSelector): Option[(TermName, Int, TermName, Int)] =
           sel match {
-            case ImportSelector(_, _, null | nme.WILDCARD, _) =>
-              None
+            case ImportSelector(_, _, null | nme.WILDCARD, _) => None
             case ImportSelector(name1, offset1, name2, offset2)
                 if name1 != name2 =>
               Some((name1.toTermName, offset1, name2.toTermName, offset2))
-            case _ =>
-              None
+            case _ => None
           }
       }
 
@@ -1467,8 +1432,8 @@ trait ReificationSupport {
           ImportSelector(name, offset, nme.WILDCARD, -1)
         def unapply(sel: ImportSelector): Option[(TermName, Int)] =
           sel match {
-            case ImportSelector(name, offset, nme.WILDCARD, _) =>
-              Some((name.toTermName, offset))
+            case ImportSelector(name, offset, nme.WILDCARD, _) => Some(
+                (name.toTermName, offset))
             case _ => None
           }
       }
@@ -1489,8 +1454,8 @@ trait ReificationSupport {
           atPos(pos)(Bind(name, WildcardSelectorRepr(pos)))
         def unapply(tree: Tree): Option[(TermName, Position)] =
           tree match {
-            case Bind(name, WildcardSelectorRepr(_)) =>
-              Some((name.toTermName, tree.pos))
+            case Bind(name, WildcardSelectorRepr(_)) => Some(
+                (name.toTermName, tree.pos))
             case _ => None
           }
       }
@@ -1501,8 +1466,8 @@ trait ReificationSupport {
           Apply(self.Ident(nme.MINGT), left :: right :: Nil)
         def unapply(tree: Apply): Option[(Tree, Tree)] =
           tree match {
-            case Apply(self.Ident(nme.MINGT), left :: right :: Nil) =>
-              Some((left, right))
+            case Apply(self.Ident(nme.MINGT), left :: right :: Nil) => Some(
+                (left, right))
             case _ => None
           }
       }
@@ -1523,10 +1488,9 @@ trait ReificationSupport {
           tree match {
             case Arrow(
                   NameSelectorRepr(name1, pos1),
-                  NameSelectorRepr(name2, pos2)) =>
-              Some((name1.toTermName, pos1, name2.toTermName, pos2))
-            case _ =>
-              None
+                  NameSelectorRepr(name2, pos2)) => Some(
+                (name1.toTermName, pos1, name2.toTermName, pos2))
+            case _ => None
           }
       }
 
@@ -1539,8 +1503,7 @@ trait ReificationSupport {
           tree match {
             case Arrow(NameSelectorRepr(name, pos), WildcardSelectorRepr(_)) =>
               Some((name, pos))
-            case _ =>
-              None
+            case _ => None
           }
       }
 
@@ -1593,8 +1556,8 @@ trait ReificationSupport {
       def apply(qual: Tree, name: TypeName): Select = Select(qual, name)
       def unapply(tree: Tree): Option[(Tree, TypeName)] =
         tree match {
-          case MaybeTypeTreeOriginal(Select(qual, name: TypeName)) =>
-            Some((qual, name))
+          case MaybeTypeTreeOriginal(Select(qual, name: TypeName)) => Some(
+              (qual, name))
           case _ => None
         }
     }
@@ -1615,10 +1578,9 @@ trait ReificationSupport {
       def unapply(tree: Tree): Option[(List[Tree], List[Tree])] =
         tree match {
           case MaybeTypeTreeOriginal(
-                CompoundTypeTree(Template(parents, _, defns))) =>
-            Some((parents, defns))
-          case _ =>
-            None
+                CompoundTypeTree(Template(parents, _, defns))) => Some(
+              (parents, defns))
+          case _ => None
         }
     }
 
@@ -1626,10 +1588,8 @@ trait ReificationSupport {
       def apply(ref: Tree): SingletonTypeTree = SingletonTypeTree(ref)
       def unapply(tree: Tree): Option[Tree] =
         tree match {
-          case MaybeTypeTreeOriginal(SingletonTypeTree(ref)) =>
-            Some(ref)
-          case _ =>
-            None
+          case MaybeTypeTreeOriginal(SingletonTypeTree(ref)) => Some(ref)
+          case _                                             => None
         }
     }
 
@@ -1638,10 +1598,9 @@ trait ReificationSupport {
         SelectFromTypeTree(qual, name)
       def unapply(tree: Tree): Option[(Tree, TypeName)] =
         tree match {
-          case MaybeTypeTreeOriginal(SelectFromTypeTree(qual, name)) =>
-            Some((qual, name))
-          case _ =>
-            None
+          case MaybeTypeTreeOriginal(SelectFromTypeTree(qual, name)) => Some(
+              (qual, name))
+          case _ => None
         }
     }
 
@@ -1649,10 +1608,9 @@ trait ReificationSupport {
       def apply(tpt: Tree, annot: Tree): Annotated = Annotated(annot, tpt)
       def unapply(tree: Tree): Option[(Tree, Tree)] =
         tree match {
-          case MaybeTypeTreeOriginal(Annotated(annot, tpt)) =>
-            Some((tpt, annot))
-          case _ =>
-            None
+          case MaybeTypeTreeOriginal(Annotated(annot, tpt)) => Some(
+              (tpt, annot))
+          case _ => None
         }
     }
 
@@ -1668,10 +1626,9 @@ trait ReificationSupport {
           })
       def unapply(tree: Tree): Option[(Tree, List[MemberDef])] =
         tree match {
-          case MaybeTypeTreeOriginal(ExistentialTypeTree(tpt, where)) =>
-            Some((tpt, where))
-          case _ =>
-            None
+          case MaybeTypeTreeOriginal(ExistentialTypeTree(tpt, where)) => Some(
+              (tpt, where))
+          case _ => None
         }
     }
   }

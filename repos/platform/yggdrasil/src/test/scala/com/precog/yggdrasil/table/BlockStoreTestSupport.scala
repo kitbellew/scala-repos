@@ -165,8 +165,7 @@ trait BaseBlockStoreTestModule[M[+_]]
 
   def sortTransspec(sortKeys: CPath*): TransSpec1 =
     InnerObjectConcat(sortKeys.zipWithIndex.map {
-      case (sortKey, idx) =>
-        WrapObject(
+      case (sortKey, idx) => WrapObject(
           sortKey.nodes.foldLeft[TransSpec1](
             DerefObjectStatic(Leaf(Source), CPathField("value"))) {
             case (innerSpec, field: CPathField) =>

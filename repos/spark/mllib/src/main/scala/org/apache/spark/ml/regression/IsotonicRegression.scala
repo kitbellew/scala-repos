@@ -253,8 +253,7 @@ class IsotonicRegressionModel private[ml] (
   @Since("1.5.0")
   override def transform(dataset: DataFrame): DataFrame = {
     val predict = dataset.schema($(featuresCol)).dataType match {
-      case DoubleType =>
-        udf { feature: Double => oldModel.predict(feature) }
+      case DoubleType => udf { feature: Double => oldModel.predict(feature) }
       case _: VectorUDT =>
         val idx = $(featureIndex)
         udf { features: Vector => oldModel.predict(features(idx)) }

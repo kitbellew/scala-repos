@@ -117,8 +117,7 @@ object GetOffsetShell {
       val partitionMetadataOpt = topicsMetadata.head.partitionsMetadata
         .find(_.partitionId == partitionId)
       partitionMetadataOpt match {
-        case Some(metadata) =>
-          metadata.leader match {
+        case Some(metadata) => metadata.leader match {
             case Some(leader) =>
               val consumer = new SimpleConsumer(
                 leader.host,

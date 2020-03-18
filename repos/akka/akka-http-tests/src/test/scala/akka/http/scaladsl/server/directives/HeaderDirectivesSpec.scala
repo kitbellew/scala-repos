@@ -52,9 +52,7 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
     }
     "reject a request if no header of the given type is present" in {
       Get("abc") ~> route ~> check {
-        inside(rejection) {
-          case MissingHeaderRejection("Origin") ⇒
-        }
+        inside(rejection) { case MissingHeaderRejection("Origin") ⇒ }
       }
     }
   }
@@ -87,9 +85,7 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
 
     "reject a request if no header of the given type is present" in {
       Get("abc") ~> route ~> check {
-        inside(rejection) {
-          case MissingHeaderRejection("Referer") ⇒
-        }
+        inside(rejection) { case MissingHeaderRejection("Referer") ⇒ }
       }
     }
   }

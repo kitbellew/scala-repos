@@ -232,8 +232,7 @@ abstract class HiveComparisonTest
     // If test sharding is enable, skip tests that are not in the correct shard.
     shardInfo.foreach {
       case (shardId, numShards)
-          if testCaseName.hashCode % numShards != shardId =>
-        return
+          if testCaseName.hashCode % numShards != shardId => return
       case (shardId, _) =>
         logDebug(s"Shard $shardId includes test '$testCaseName'")
     }
@@ -421,8 +420,7 @@ abstract class HiveComparisonTest
                       try {
                         new SQLBuilder(originalQuery.analyzed, TestHive).toSQL
                       } catch {
-                        case NonFatal(e) =>
-                          fail(
+                        case NonFatal(e) => fail(
                             s"""Cannot convert the following HiveQL query plan back to SQL query string:
                         |
                         |# Original HiveQL query string:
@@ -442,8 +440,7 @@ abstract class HiveComparisonTest
                       queryExecution.analyzed
                       queryExecution
                     } catch {
-                      case NonFatal(e) =>
-                        fail(
+                      case NonFatal(e) => fail(
                           s"""Failed to analyze the converted SQL string:
                         |
                         |# Original HiveQL query string:
@@ -519,8 +516,7 @@ abstract class HiveComparisonTest
                   val executions = queryList.map(new TestHive.QueryExecution(_))
                   executions.foreach(_.toRdd)
                   val tablesGenerated = queryList.zip(executions).flatMap {
-                    case (q, e) =>
-                      e.sparkPlan.collect {
+                    case (q, e) => e.sparkPlan.collect {
                         case i: InsertIntoHiveTable
                             if tablesRead contains i.table.tableName =>
                           (q, e, i)
@@ -529,8 +525,7 @@ abstract class HiveComparisonTest
 
                   tablesGenerated
                     .map {
-                      case (hiveql, execution, insert) =>
-                        s"""
+                      case (hiveql, execution, insert) => s"""
                      |=== Generated Table ===
                      |$hiveql
                      |$execution

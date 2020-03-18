@@ -284,14 +284,11 @@ object SparkSubmit {
         case ("yarn-cluster", null) =>
           deployMode = CLUSTER
           args.master = "yarn"
-        case ("yarn-cluster", "client") =>
-          printErrorAndExit(
+        case ("yarn-cluster", "client") => printErrorAndExit(
             "Client deploy mode is not compatible with master \"yarn-cluster\"")
-        case ("yarn-client", "cluster") =>
-          printErrorAndExit(
+        case ("yarn-client", "cluster") => printErrorAndExit(
             "Cluster deploy mode is not compatible with master \"yarn-client\"")
-        case (_, mode) =>
-          args.master = "yarn"
+        case (_, mode) => args.master = "yarn"
       }
 
       // Make sure YARN is included in our build if we're trying to use it
@@ -372,8 +369,7 @@ object SparkSubmit {
         printErrorAndExit(
           "Cluster deploy mode is currently not supported for R " +
             "applications on standalone clusters.")
-      case (LOCAL, CLUSTER) =>
-        printErrorAndExit(
+      case (LOCAL, CLUSTER) => printErrorAndExit(
           "Cluster deploy mode is not compatible with master \"local\"")
       case (_, CLUSTER) if isShell(args.primaryResource) =>
         printErrorAndExit(
@@ -868,19 +864,15 @@ object SparkSubmit {
           if (e.getCause() != null) findCause(e.getCause()) else e
         case e: InvocationTargetException =>
           if (e.getCause() != null) findCause(e.getCause()) else e
-        case e: Throwable =>
-          e
+        case e: Throwable => e
       }
 
     try { mainMethod.invoke(null, childArgs.toArray) }
     catch {
-      case t: Throwable =>
-        findCause(t) match {
-          case SparkUserAppException(exitCode) =>
-            System.exit(exitCode)
+      case t: Throwable => findCause(t) match {
+          case SparkUserAppException(exitCode) => System.exit(exitCode)
 
-          case t: Throwable =>
-            throw t
+          case t: Throwable => throw t
         }
     }
   }
@@ -894,8 +886,7 @@ object SparkSubmit {
         val file = new File(uri.getPath)
         if (file.exists()) { loader.addURL(file.toURI.toURL) }
         else { printWarning(s"Local jar $file does not exist, skipping.") }
-      case _ =>
-        printWarning(s"Skip remote jar $uri.")
+      case _ => printWarning(s"Skip remote jar $uri.")
     }
   }
 

@@ -81,7 +81,9 @@ class NettyBlockTransferSecuritySuite
     val conf1 = conf0.clone.set("spark.authenticate", "false")
     testConnection(conf0, conf1) match {
       case Success(_) => fail("Should have failed")
-      case Failure(t) => // any funny error may occur, sever will interpret SASL token as RPC
+      case Failure(
+            t
+          ) => // any funny error may occur, sever will interpret SASL token as RPC
     }
   }
 
@@ -128,8 +130,7 @@ class NettyBlockTransferSecuritySuite
         actualString should equal(blockString)
         buf.release()
         Success(())
-      case Failure(t) =>
-        Failure(t)
+      case Failure(t) => Failure(t)
     }
     exec0.close()
     exec1.close()

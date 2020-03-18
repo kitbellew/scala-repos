@@ -56,8 +56,7 @@ private[streams] class PromiseSubscriber[T](prom: Promise[T])
           state = Subscribed
           subscription.request(1)
         }
-      case Completed =>
-        subscription.cancel()
+      case Completed => subscription.cancel()
     }
 
   override def onError(cause: Throwable): Unit =
@@ -67,8 +66,7 @@ private[streams] class PromiseSubscriber[T](prom: Promise[T])
         prom.failure(
           cause
         ) // we assume any Future.onComplete handlers run asynchronously
-      case Completed =>
-        ()
+      case Completed => ()
     }
 
   override def onComplete(): Unit =
@@ -77,8 +75,7 @@ private[streams] class PromiseSubscriber[T](prom: Promise[T])
         prom.failure(new IllegalStateException(
           "Can't handle onComplete until an element has been received"))
         state = Completed
-      case Completed =>
-        ()
+      case Completed => ()
     }
 
   override def onNext(element: T): Unit =
@@ -92,8 +89,7 @@ private[streams] class PromiseSubscriber[T](prom: Promise[T])
         prom.success(
           element
         ) // we assume any Future.onComplete handlers run asynchronously
-      case Completed =>
-        ()
+      case Completed => ()
     }
 
 }

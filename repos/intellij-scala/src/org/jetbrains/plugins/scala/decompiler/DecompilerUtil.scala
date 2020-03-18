@@ -86,9 +86,7 @@ object DecompilerUtil {
             writeAttribute.writeUTF(decompilationResult.sourceName)
             writeAttribute.writeLong(decompilationResult.timeStamp)
             writeAttribute.close()
-          } catch {
-            case e: IOException =>
-          }
+          } catch { case e: IOException => }
         }
         res = decompilationResult
       }

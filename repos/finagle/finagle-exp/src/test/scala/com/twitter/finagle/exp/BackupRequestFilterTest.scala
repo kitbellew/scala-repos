@@ -62,8 +62,7 @@ class BackupRequestFilterTest extends FunSuite with MockitoSugar with Matchers {
         val ideal = quantile(latencies take i + 1, 95)
         val actual = cutoff()
         BackupRequestFilter.defaultError(maxDuration) match {
-          case 0.0 =>
-            assert(ideal == actual)
+          case 0.0 => assert(ideal == actual)
           case error =>
             val epsilon = maxDuration.inMillis * error
             actual.inMillis.toDouble should be(

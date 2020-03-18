@@ -33,8 +33,7 @@ class CachedTableSuite extends QueryTest with TestHiveSingleton {
     plan.collect {
       case InMemoryColumnarTableScan(_, _, relation) =>
         relation.cachedColumnBuffers.id
-      case _ =>
-        fail(s"Table $tableName is not cached\n" + plan)
+      case _ => fail(s"Table $tableName is not cached\n" + plan)
     }.head
   }
 

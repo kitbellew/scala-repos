@@ -98,8 +98,7 @@ class DataServiceHandler[A](
                   case NotFound(message) =>
                     HttpResponse(HttpStatus(HttpStatusCodes.NotFound, message))
 
-                  case multiple: ResourceErrors =>
-                    multiple.fold(
+                  case multiple: ResourceErrors => multiple.fold(
                       fatal => {
                         logger.error(
                           "Multiple errors encountered serving readResource of path %s: %s"
@@ -129,14 +128,12 @@ class DataServiceHandler[A](
               },
             resource =>
               resource.byteStream(mimeTypes).run map {
-                case Some((reportedType, byteStream)) =>
-                  HttpResponse(
+                case Some((reportedType, byteStream)) => HttpResponse(
                     OK,
                     headers = HttpHeaders(`Content-Type`(reportedType)),
                     content = Some(Right(byteStream)))
 
-                case None =>
-                  HttpResponse(HttpStatus(
+                case None => HttpResponse(HttpStatus(
                     HttpStatusCodes.NotFound,
                     "Could not locate content for path " + path))
               }

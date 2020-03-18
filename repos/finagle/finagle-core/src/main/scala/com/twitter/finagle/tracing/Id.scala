@@ -66,12 +66,10 @@ object TraceId {
     */
   def serialize(traceId: TraceId): Array[Byte] = {
     val flags = traceId._sampled match {
-      case None =>
-        traceId.flags
+      case None => traceId.flags
       case Some(true) =>
         traceId.flags.setFlag(Flags.SamplingKnown | Flags.Sampled)
-      case Some(false) =>
-        traceId.flags.setFlag(Flags.SamplingKnown)
+      case Some(false) => traceId.flags.setFlag(Flags.SamplingKnown)
     }
 
     val bytes = new Array[Byte](32)

@@ -90,8 +90,7 @@ class StorageLevel private (
           s.useOffHeap == useOffHeap &&
           s.deserialized == deserialized &&
           s.replication == replication
-      case _ =>
-        false
+      case _ => false
     }
 
   def isValid: Boolean =

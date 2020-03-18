@@ -833,10 +833,9 @@ trait Definitions extends api.StandardDefinitions {
 
         tp.dealias match {
           case RefinedType(List(tp), Scope(sym))
-              if isOneOfContextTypes(tp) && isPrefix(sym) =>
-            Some(tp)
-          case tp if isOneOfContextTypes(tp) => Some(tp)
-          case _                             => None
+              if isOneOfContextTypes(tp) && isPrefix(sym) => Some(tp)
+          case tp if isOneOfContextTypes(tp)              => Some(tp)
+          case _                                          => None
         }
       }
     }
@@ -855,8 +854,7 @@ trait Definitions extends api.StandardDefinitions {
             sym.isNonBottomSubClass(BlackboxContextClass) || sym
               .isNonBottomSubClass(WhiteboxContextClass)
           if (isContextCompatible) c.info else NoType
-        case _ =>
-          NoType
+        case _ => NoType
       }
     }
 
@@ -1559,8 +1557,7 @@ trait Definitions extends api.StandardDefinitions {
       sym setInfo ClassInfoType(List(AnnotationClass.tpe), newScope, sym)
       markAllCompleted(sym)
       RuntimePackageClass.info.decls.toList.filter(_.name == sym.name) match {
-        case existing :: _ =>
-          existing.asInstanceOf[ClassSymbol]
+        case existing :: _ => existing.asInstanceOf[ClassSymbol]
         case _ =>
           RuntimePackageClass.info.decls enter sym
           // This attribute needs a constructor so that modifiers in parsed Java code make sense

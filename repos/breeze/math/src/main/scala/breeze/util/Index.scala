@@ -75,9 +75,8 @@ trait Index[T] extends Iterable[T] with (T => Int) with Serializable {
 
   override def equals(other: Any): Boolean = {
     other match {
-      case that: Index[_] if this.size == that.size =>
-        this sameElements that
-      case _ => false
+      case that: Index[_] if this.size == that.size => this sameElements that
+      case _                                        => false
     }
   }
 

@@ -59,8 +59,7 @@ case class WindowSpecDefinition(
         Some(
           "Found a UnspecifiedFrame. It should be converted to a SpecifiedWindowFrame " +
             "during analysis. Please file a bug report.")
-      case frame: SpecifiedWindowFrame =>
-        frame.validate.orElse {
+      case frame: SpecifiedWindowFrame => frame.validate.orElse {
           def checkValueBasedBoundaryForRangeFrame(): Option[String] = {
             if (orderSpec.length > 1) {
               // It is not allowed to have a value-based PRECEDING and FOLLOWING
@@ -254,11 +253,9 @@ case class SpecifiedWindowFrame(
   /** If this WindowFrame is valid or not. */
   def validate: Option[String] =
     (frameType, frameStart, frameEnd) match {
-      case (_, UnboundedFollowing, _) =>
-        Some(
+      case (_, UnboundedFollowing, _) => Some(
           s"$UnboundedFollowing is not allowed as the start of a Window Frame.")
-      case (_, _, UnboundedPreceding) =>
-        Some(
+      case (_, _, UnboundedPreceding) => Some(
           s"$UnboundedPreceding is not allowed as the end of a Window Frame.")
       // case (RowFrame, start, end) => ??? RowFrame specific rule
       // case (RangeFrame, start, end) => ??? RangeFrame specific rule

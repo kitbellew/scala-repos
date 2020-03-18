@@ -108,8 +108,8 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
             val to = uris.lift(1).map(str => new URI(str))
             _sourceURIMaps ::= URIMap(from, to)
           } catch {
-            case e: URISyntaxException =>
-              error(s"${e.getInput} is not a valid URI")
+            case e: URISyntaxException => error(
+                s"${e.getInput} is not a valid URI")
           }
         }
 

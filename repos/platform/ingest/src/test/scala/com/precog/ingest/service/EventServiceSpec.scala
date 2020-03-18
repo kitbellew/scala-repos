@@ -254,8 +254,7 @@ class EventServiceSpec
                   JString(
                     "The specified API key does not exist: not gonna find it")),
                 _),
-              _) =>
-          ok
+              _) => ok
       }
     }
 
@@ -281,8 +280,7 @@ class EventServiceSpec
       result.copoint must beLike {
         case (
               HttpResponse(HttpStatus(Forbidden, _), _, Some(JString(_)), _),
-              _) =>
-          ok
+              _) => ok
       }
     }
 
@@ -295,8 +293,7 @@ class EventServiceSpec
       result.copoint must beLike {
         case (
               HttpResponse(HttpStatus(Forbidden, _), _, Some(JString(_)), _),
-              _) =>
-          ok
+              _) => ok
       }
     }
 
@@ -318,8 +315,7 @@ class EventServiceSpec
                 _),
               _) =>
           fields("errors") must beLike {
-            case JArray(errors) =>
-              atLeastOnce(errors) {
+            case JArray(errors) => atLeastOnce(errors) {
                 case JObject(fields) =>
                   fields("reason") must beLike {
                     case JString(s) =>

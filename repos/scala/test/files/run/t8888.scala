@@ -1,8 +1,7 @@
 class C {
   final def resume: Unit =
     (this: Any) match {
-      case x: C =>
-        (x: Any) match {
+      case x: C => (x: Any) match {
           case y: C =>
             () =>
               (

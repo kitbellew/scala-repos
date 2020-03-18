@@ -396,11 +396,9 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
                           currState,
                           targetState))
                     false
-                  case None =>
-                    true
+                  case None => true
                 }
-              case None =>
-                true
+              case None => true
             }
           if (leaderAndIsrIsEmpty && !controller.deleteTopicManager
                 .isPartitionToBeDeleted(topicAndPartition))

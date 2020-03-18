@@ -58,10 +58,8 @@ class IntIntParallelHashMapCheck(val tasksupport: TaskSupport)
 
   override def printDataStructureDebugInfo(ds: AnyRef) =
     ds match {
-      case pm: ParHashMap[k, v] =>
-        pm.printDebugInfo
-      case _ =>
-        println("could not match data structure type: " + ds.getClass)
+      case pm: ParHashMap[k, v] => pm.printDebugInfo
+      case _                    => println("could not match data structure type: " + ds.getClass)
     }
 }
 
@@ -98,10 +96,8 @@ abstract class ParallelHashSetCheck[T](tp: String)
 
   override def printDataStructureDebugInfo(ds: AnyRef) =
     ds match {
-      case pm: ParHashSet[t] =>
-        println("Parallel hash set")
-      case _ =>
-        println("could not match data structure type: " + ds.getClass)
+      case pm: ParHashSet[t] => println("Parallel hash set")
+      case _                 => println("could not match data structure type: " + ds.getClass)
     }
 
 }
@@ -116,9 +112,7 @@ class IntParallelHashSetCheck(val tasksupport: TaskSupport)
 
   override def printDataStructureDebugInfo(ds: AnyRef) =
     ds match {
-      case pm: ParHashMap[k, v] =>
-        pm.printDebugInfo
-      case _ =>
-        println("could not match data structure type: " + ds.getClass)
+      case pm: ParHashMap[k, v] => pm.printDebugInfo
+      case _                    => println("could not match data structure type: " + ds.getClass)
     }
 }

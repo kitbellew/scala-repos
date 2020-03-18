@@ -78,8 +78,7 @@ object CanConvolve extends SerializableLogging {
           case OptOverhang.None => data
 
           //Overhang as much as possible
-          case OptOverhang.Full =>
-            DenseVector.vertcat(
+          case OptOverhang.Full => DenseVector.vertcat(
               padding match {
                 case OptPadding.Cyclical => data(dl - (kl - 1) to dl - 1)
                 case OptPadding.Boundary =>

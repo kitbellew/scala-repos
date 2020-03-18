@@ -276,16 +276,14 @@ class ScModifierListImpl private (
       case ScalaTokenTypes.kPRIVATE if modifier != null =>
         modifier.access match {
           case ScAccessModifier.Type.PRIVATE |
-              ScAccessModifier.Type.THIS_PRIVATE =>
-            true
-          case _ => false
+              ScAccessModifier.Type.THIS_PRIVATE => true
+          case _                                 => false
         }
       case ScalaTokenTypes.kPROTECTED if modifier != null =>
         modifier.access match {
           case ScAccessModifier.Type.PROTECTED |
-              ScAccessModifier.Type.THIS_PROTECTED =>
-            true
-          case _ => false
+              ScAccessModifier.Type.THIS_PROTECTED => true
+          case _                                   => false
         }
       case _ =>
         val stub = getStub

@@ -142,8 +142,7 @@ private[kafka] class ZookeeperConsumerConnector(
     var consumerUuid: String = null
     config.consumerId match {
       case Some(consumerId) // for testing only
-          =>
-        consumerUuid = consumerId
+          => consumerUuid = consumerId
       case None // generate unique consumerId automatically
           =>
         val uuid = UUID.randomUUID()
@@ -384,8 +383,7 @@ private[kafka] class ZookeeperConsumerConnector(
   def commitOffsets(isAutoCommit: Boolean) {
 
     val offsetsToCommit = immutable.Map(topicRegistry.flatMap {
-      case (topic, partitionTopicInfos) =>
-        partitionTopicInfos.map {
+      case (topic, partitionTopicInfos) => partitionTopicInfos.map {
           case (partition, info) =>
             TopicAndPartition(
               info.topic,
@@ -1010,9 +1008,8 @@ private[kafka] class ZookeeperConsumerConnector(
             .mkString(","))
 
       fetcher match {
-        case Some(f) =>
-          f.startConnections(allPartitionInfos, cluster)
-        case None =>
+        case Some(f) => f.startConnections(allPartitionInfos, cluster)
+        case None    =>
       }
     }
 
@@ -1129,13 +1126,11 @@ private[kafka] class ZookeeperConsumerConnector(
         (1 to consumerThreadIdsPerTopic.keySet.size)
           .flatMap(_ => queuesAndStreams)
           .toList
-      case statTopicCount: StaticTopicCount =>
-        queuesAndStreams
+      case statTopicCount: StaticTopicCount => queuesAndStreams
     }
 
     val topicThreadIds = consumerThreadIdsPerTopic.map {
-      case (topic, threadIds) =>
-        threadIds.map((topic, _))
+      case (topic, threadIds) => threadIds.map((topic, _))
     }.flatten
 
     require(

@@ -101,8 +101,7 @@ object SimplifyBooleanUtil {
 
   private def booleanConst(expr: ScExpression): Option[Boolean] =
     expr match {
-      case literal: ScLiteral =>
-        literal.getText match {
+      case literal: ScLiteral => literal.getText match {
           case "true"  => Some(true)
           case "false" => Some(false)
           case _       => None
@@ -135,8 +134,7 @@ object SimplifyBooleanUtil {
           booleanConst(leftExpr) match {
             case Some(bool: Boolean) =>
               simplifyInfixWithLiteral(bool, operName, rightExpr)
-            case None =>
-              booleanConst(rightExpr) match {
+            case None => booleanConst(rightExpr) match {
                 case Some(bool: Boolean) =>
                   simplifyInfixWithLiteral(bool, operName, leftExpr)
                 case None => expr
@@ -160,11 +158,9 @@ object SimplifyBooleanUtil {
           case "||" | "|" => bool || value
         }
         result.toString
-      case _ =>
-        (value, operation) match {
+      case _ => (value, operation) match {
           case (true, "==") | (false, "!=") | (false, "^") | (true, "&&") |
-              (true, "&") | (false, "||") | (false, "|") =>
-            expr.getText
+              (true, "&") | (false, "||") | (false, "|") => expr.getText
           case (false, "==") | (true, "!=") | (true, "^") =>
             val negated: ScPrefixExpr = ScalaPsiElementFactory
               .createExpressionFromText("!a", manager)
@@ -173,11 +169,9 @@ object SimplifyBooleanUtil {
             negated.operand
               .replaceExpression(copyExpr, removeParenthesis = true)
             negated.getText
-          case (true, "||") | (true, "|") =>
-            ScalaKeyword.TRUE
-          case (false, "&&") | (false, "&") =>
-            ScalaKeyword.FALSE
-          case _ => throw new IllegalArgumentException("Wrong operation")
+          case (true, "||") | (true, "|")   => ScalaKeyword.TRUE
+          case (false, "&&") | (false, "&") => ScalaKeyword.FALSE
+          case _                            => throw new IllegalArgumentException("Wrong operation")
         }
     }
     ScalaPsiElementFactory.createExpressionFromText(text, manager)

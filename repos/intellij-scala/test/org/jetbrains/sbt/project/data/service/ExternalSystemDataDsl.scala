@@ -101,12 +101,12 @@ object ExternalSystemDataDsl {
     private def createModuleDependencies(
         moduleToNode: Map[module, ModuleNode]): Unit =
       moduleToNode.foreach {
-        case (module, moduleNode) =>
-          module.getModuleDependencies.foreach { dependency =>
-            moduleToNode.get(dependency).foreach { dependencyModuleNode =>
-              moduleNode.add(
-                new ModuleDependencyNode(moduleNode, dependencyModuleNode))
-            }
+        case (module, moduleNode) => module.getModuleDependencies.foreach {
+            dependency =>
+              moduleToNode.get(dependency).foreach { dependencyModuleNode =>
+                moduleNode.add(
+                  new ModuleDependencyNode(moduleNode, dependencyModuleNode))
+              }
           }
       }
 
@@ -114,14 +114,14 @@ object ExternalSystemDataDsl {
         moduleToNode: Map[module, ModuleNode],
         libraryToNode: Map[library, LibraryNode]): Unit =
       moduleToNode.foreach {
-        case (module, moduleNode) =>
-          module.getLibraryDependencies.foreach { dependency =>
-            libraryToNode.get(dependency).foreach { libraryNode =>
-              moduleNode.add(new LibraryDependencyNode(
-                moduleNode,
-                libraryNode,
-                LibraryLevel.PROJECT))
-            }
+        case (module, moduleNode) => module.getLibraryDependencies.foreach {
+            dependency =>
+              libraryToNode.get(dependency).foreach { libraryNode =>
+                moduleNode.add(new LibraryDependencyNode(
+                  moduleNode,
+                  libraryNode,
+                  LibraryLevel.PROJECT))
+              }
           }
       }
 

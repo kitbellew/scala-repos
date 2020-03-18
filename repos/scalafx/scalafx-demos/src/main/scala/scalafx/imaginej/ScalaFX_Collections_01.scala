@@ -113,8 +113,7 @@ object ScalaFX_Collections_01 {
           println("removed " + elements + " at position " + position)
         case Reorder(start, end, _) =>
           println("reordered from " + start + " to " + end)
-        case _ =>
-          println("unclassified change")
+        case _ => println("unclassified change")
       }
     }
     println(

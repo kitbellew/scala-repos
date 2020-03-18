@@ -136,8 +136,7 @@ class RFormula(override val uid: String)
               .setInputCol(term)
               .setOutputCol(indexCol)
             (term, indexCol)
-          case _ =>
-            (term, term)
+          case _ => (term, term)
         }
       }.toMap
 
@@ -150,8 +149,7 @@ class RFormula(override val uid: String)
           .setOutputCol(encodedCol)
         prefixesToRewrite(encodedCol + "_") = term + "_"
         encodedCol
-      case Seq(term) =>
-        term
+      case Seq(term) => term
       case terms =>
         val interactionCol = tmpColumn("interaction")
         encoderStages += new Interaction()

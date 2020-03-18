@@ -299,8 +299,7 @@ private[streaming] class ReliableKafkaReceiver[
             storeMessageAndMetadata(streamIterator.next)
           }
         } catch {
-          case e: Exception =>
-            reportError("Error handling message", e)
+          case e: Exception => reportError("Error handling message", e)
         }
       }
     }

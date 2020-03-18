@@ -82,12 +82,11 @@ abstract class TreeGen {
   def mkAttributedQualifier(tpe: Type, termSym: Symbol): Tree = {
     def failMessage = "mkAttributedQualifier(" + tpe + ", " + termSym + ")"
     tpe match {
-      case NoPrefix =>
-        EmptyTree
+      case NoPrefix => EmptyTree
       case ThisType(clazz) =>
         if (clazz.isEffectiveRoot) EmptyTree else mkAttributedThis(clazz)
-      case SingleType(pre, sym) =>
-        mkApplyIfNeeded(mkAttributedStableRef(pre, sym))
+      case SingleType(pre, sym) => mkApplyIfNeeded(
+          mkAttributedStableRef(pre, sym))
       case TypeRef(pre, sym, args) =>
         if (sym.isRoot) { mkAttributedThis(sym) }
         else if (sym.isModuleClass) {
@@ -100,11 +99,9 @@ abstract class TreeGen {
           mkAttributedIdent(termSym) setType tpe
         } else { mkAttributedRef(pre, sym) }
 
-      case ConstantType(value) =>
-        Literal(value) setType tpe
+      case ConstantType(value) => Literal(value) setType tpe
 
-      case AnnotatedType(_, atp) =>
-        mkAttributedQualifier(atp)
+      case AnnotatedType(_, atp) => mkAttributedQualifier(atp)
 
       case RefinedType(parents, _) =>
         // I am unclear whether this is reachable, but
@@ -113,8 +110,7 @@ abstract class TreeGen {
         assert(!firstStable.isEmpty, failMessage + " parents = " + parents)
         mkAttributedQualifier(firstStable.get)
 
-      case _ =>
-        abort("bad qualifier received: " + failMessage)
+      case _ => abort("bad qualifier received: " + failMessage)
     }
   }
 
@@ -349,22 +345,16 @@ abstract class TreeGen {
   /** Builds a tuple */
   def mkTuple(elems: List[Tree], flattenUnary: Boolean = true): Tree =
     elems match {
-      case Nil =>
-        Literal(Constant(()))
-      case tree :: Nil if flattenUnary =>
-        tree
-      case _ =>
-        Apply(scalaDot(TupleClass(elems.length).name.toTermName), elems)
+      case Nil                         => Literal(Constant(()))
+      case tree :: Nil if flattenUnary => tree
+      case _                           => Apply(scalaDot(TupleClass(elems.length).name.toTermName), elems)
     }
 
   def mkTupleType(elems: List[Tree], flattenUnary: Boolean = true): Tree =
     elems match {
-      case Nil =>
-        scalaDot(tpnme.Unit)
-      case List(tree) if flattenUnary =>
-        tree
-      case _ =>
-        AppliedTypeTree(scalaDot(TupleClass(elems.length).name), elems)
+      case Nil                        => scalaDot(tpnme.Unit)
+      case List(tree) if flattenUnary => tree
+      case _                          => AppliedTypeTree(scalaDot(TupleClass(elems.length).name), elems)
     }
 
   // tree1 AND tree2
@@ -435,8 +425,7 @@ abstract class TreeGen {
     val (edefs, rest) = body span treeInfo.isEarlyDef
     val (evdefs, etdefs) = edefs partition treeInfo.isEarlyValDef
     val gvdefs = evdefs map {
-      case vdef @ ValDef(_, _, tpt, _) =>
-        copyValDef(vdef)(
+      case vdef @ ValDef(_, _, tpt, _) => copyValDef(vdef)(
           // atPos for the new tpt is necessary, since the original tpt might have no position
           // (when missing type annotation for ValDef for example), so even though setOriginal modifies the
           // position of TypeTree, it would still be NoPosition. That's what the author meant.
@@ -638,9 +627,8 @@ abstract class TreeGen {
     def unapply(tree: Tree): Option[(Tree, Tree)] =
       tree match {
         case Apply(id @ Ident(nme.LARROWkw), List(pat, rhs))
-            if id.hasAttachment[ForAttachment.type] =>
-          Some((pat, rhs))
-        case _ => None
+            if id.hasAttachment[ForAttachment.type] => Some((pat, rhs))
+        case _                                      => None
       }
   }
 
@@ -665,9 +653,8 @@ abstract class TreeGen {
     def unapply(tree: Tree): Option[Tree] =
       tree match {
         case Apply(id @ Ident(nme.IFkw), List(cond))
-            if id.hasAttachment[ForAttachment.type] =>
-          Some((cond))
-        case _ => None
+            if id.hasAttachment[ForAttachment.type] => Some((cond))
+        case _                                      => None
       }
   }
 
@@ -679,9 +666,8 @@ abstract class TreeGen {
     def unapply(tree: Tree): Option[Tree] =
       tree match {
         case Apply(id @ Ident(nme.YIELDkw), List(tree))
-            if id.hasAttachment[ForAttachment.type] =>
-          Some(tree)
-        case _ => None
+            if id.hasAttachment[ForAttachment.type] => Some(tree)
+        case _                                      => None
       }
   }
 
@@ -755,8 +741,7 @@ abstract class TreeGen {
               ValDef(Modifiers(PARAM), name.toTermName, tpt, EmptyTree)
             }),
             body) setPos splitpos
-        case None =>
-          atPos(splitpos) {
+        case None => atPos(splitpos) {
             mkVisitor(
               List(CaseDef(pat, EmptyTree, body)),
               checkExhaustive = false)
@@ -848,8 +833,7 @@ abstract class TreeGen {
           atPos(wrappingPos(allpats)) { mkTuple(allpats) },
           rhs1).setPos(pos1)
         mkFor(vfrom1 :: rest1, sugarBody)
-      case _ =>
-        EmptyTree //may happen for erroneous input
+      case _ => EmptyTree //may happen for erroneous input
 
     }
   }
@@ -862,8 +846,7 @@ abstract class TreeGen {
   def mkPatDef(mods: Modifiers, pat: Tree, rhs: Tree)(implicit
       fresh: FreshNameCreator): List[ValDef] =
     matchVarPattern(pat) match {
-      case Some((name, tpt)) =>
-        List(atPos(pat.pos union rhs.pos) {
+      case Some((name, tpt)) => List(atPos(pat.pos union rhs.pos) {
           ValDef(mods, name.toTermName, tpt, rhs)
         })
 
@@ -892,8 +875,7 @@ abstract class TreeGen {
               if (tpt.isEmpty) rhsUnchecked
               else Typed(rhsUnchecked, tpt) setPos (rhs.pos union tpt.pos)
             (expr, rhsTypedUnchecked)
-          case ok =>
-            (ok, rhsUnchecked)
+          case ok => (ok, rhsUnchecked)
         }
         val vars = getVariables(pat1)
         val matchExpr = atPos((pat1.pos union rhs.pos).makeTransparent) {
@@ -1003,8 +985,7 @@ abstract class TreeGen {
       val bl = buf.length
 
       tree match {
-        case Bind(nme.WILDCARD, _) =>
-          super.traverse(tree)
+        case Bind(nme.WILDCARD, _) => super.traverse(tree)
 
         case Bind(name, Typed(tree1, tpt)) =>
           val newTree =
@@ -1018,8 +999,7 @@ abstract class TreeGen {
           add(name, TypeTree())
           traverse(tree1)
 
-        case _ =>
-          super.traverse(tree)
+        case _ => super.traverse(tree)
       }
       if (buf.length > bl) tree setPos tree.pos.makeTransparent
     }
@@ -1057,16 +1037,11 @@ abstract class TreeGen {
           }
         case Apply(fn @ Apply(_, _), args) =>
           treeCopy.Apply(tree, transform(fn), transformTrees(args))
-        case Apply(fn, args) =>
-          treeCopy.Apply(tree, fn, transformTrees(args))
-        case Typed(expr, tpt) =>
-          treeCopy.Typed(tree, transform(expr), tpt)
-        case Bind(name, body) =>
-          treeCopy.Bind(tree, name, transform(body))
-        case Alternative(_) | Star(_) =>
-          super.transform(tree)
-        case _ =>
-          tree
+        case Apply(fn, args)          => treeCopy.Apply(tree, fn, transformTrees(args))
+        case Typed(expr, tpt)         => treeCopy.Typed(tree, transform(expr), tpt)
+        case Bind(name, body)         => treeCopy.Bind(tree, name, transform(body))
+        case Alternative(_) | Star(_) => super.transform(tree)
+        case _                        => tree
       }
   }
 

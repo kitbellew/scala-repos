@@ -118,8 +118,7 @@ trait ScPattern extends ScalaPsiElement {
     val bind: Option[ScalaResolveResult] = ref.bind() match {
       case Some(ScalaResolveResult(_: ScBindingPattern | _: ScParameter, _)) =>
         val resolve = ref match {
-          case refImpl: ScStableCodeReferenceElementImpl =>
-            refImpl.doResolve(
+          case refImpl: ScStableCodeReferenceElementImpl => refImpl.doResolve(
               refImpl,
               new ExpandedExtractorResolveProcessor(
                 ref,
@@ -306,8 +305,7 @@ trait ScPattern extends ScalaPsiElement {
                 }
               case _ => false
             } match {
-              case Some(seq @ ScParameterizedType(des, seqArgs)) =>
-                this match {
+              case Some(seq @ ScParameterizedType(des, seqArgs)) => this match {
                   case n: ScNamingPattern
                       if n.getLastChild.isInstanceOf[ScSeqWildcard] =>
                     Some(subst.subst(seq))
@@ -343,13 +341,11 @@ trait ScPattern extends ScalaPsiElement {
   @CachedInsidePsiElement(this, ModCount.getBlockModificationCount)
   def expectedType: Option[ScType] =
     getContext match {
-      case list: ScPatternList =>
-        list.getContext match {
+      case list: ScPatternList => list.getContext match {
           case _var: ScVariable => _var.getType(TypingContext.empty).toOption
           case _val: ScValue    => _val.getType(TypingContext.empty).toOption
         }
-      case argList: ScPatternArgumentList =>
-        argList.getContext match {
+      case argList: ScPatternArgumentList => argList.getContext match {
           case constr: ScConstructorPattern =>
             val thisIndex: Int = constr.args.patterns.indexWhere(_ == this)
             expectedTypeForExtractorArg(
@@ -368,8 +364,7 @@ trait ScPattern extends ScalaPsiElement {
           else 1
         expectedTypeForExtractorArg(infix.reference, i, infix.expectedType, 2)
       case par: ScParenthesisedPattern => par.expectedType
-      case patternList: ScPatterns =>
-        patternList.getContext match {
+      case patternList: ScPatterns => patternList.getContext match {
           case tuple: ScTuplePattern =>
             tuple.getContext match {
               case infix: ScInfixPattern =>
@@ -427,8 +422,7 @@ trait ScPattern extends ScalaPsiElement {
         }
       case clause: ScCaseClause =>
         clause.getContext /*clauses*/ .getContext match {
-          case matchStat: ScMatchStmt =>
-            matchStat.expr match {
+          case matchStat: ScMatchStmt => matchStat.expr match {
               case Some(e) => Some(e.getType(TypingContext.empty).getOrAny)
               case _       => None
             }
@@ -437,10 +431,8 @@ trait ScPattern extends ScalaPsiElement {
               .instance(getProject)
               .getCachedClass(getResolveScope, "java.lang.Throwable")
             thr.map(ScType.designator(_))
-          case b: ScBlockExpr =>
-            b.expectedType(fromUnderscore = false) match {
-              case Some(et) =>
-                et.removeAbstracts match {
+          case b: ScBlockExpr => b.expectedType(fromUnderscore = false) match {
+              case Some(et) => et.removeAbstracts match {
                   case ScFunctionType(_, Seq())   => Some(types.Unit)
                   case ScFunctionType(_, Seq(p0)) => Some(p0)
                   case ScFunctionType(_, params) =>
@@ -457,8 +449,7 @@ trait ScPattern extends ScalaPsiElement {
       case gen: ScGenerator =>
         val analog = getAnalog
         if (analog != this) analog.expectedType else None
-      case enum: ScEnumerator =>
-        Option(enum.rvalue).flatMap { rvalue =>
+      case enum: ScEnumerator => Option(enum.rvalue).flatMap { rvalue =>
           rvalue.getType(TypingContext.empty).toOption
         }
       case _ => None
@@ -472,9 +463,8 @@ trait ScPattern extends ScalaPsiElement {
           case _                  => return this
         }
         f.getDesugarizedExpr match {
-          case Some(expr) =>
-            if (analog != null) return analog
-          case _ =>
+          case Some(expr) => if (analog != null) return analog
+          case _          =>
         }
         this
       case _ => this
@@ -525,8 +515,7 @@ object ScPattern {
         case Some(tp) if !isOneArgCaseClass =>
           res += tp
           collect(i + 1)
-        case _ =>
-          if (i == 1) res += receiverType
+        case _ => if (i == 1) res += receiverType
       }
     }
     collect(1)
@@ -562,8 +551,7 @@ object ScPattern {
     if (level >= Scala_2_11) collectFor2_11
     else {
       returnType match {
-        case ScParameterizedType(des, args) =>
-          ScType.extractClass(des) match {
+        case ScParameterizedType(des, args) => ScType.extractClass(des) match {
             case Some(clazz)
                 if clazz.qualifiedName == "scala.Option" ||
                   clazz.qualifiedName == "scala.Some" =>

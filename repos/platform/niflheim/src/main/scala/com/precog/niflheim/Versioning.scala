@@ -41,10 +41,7 @@ trait Versioning {
     try {
       while (buffer.remaining() > 0) { channel.write(buffer) }
       Success(PrecogUnit)
-    } catch {
-      case ioe: IOException =>
-        Failure(ioe)
-    }
+    } catch { case ioe: IOException => Failure(ioe) }
   }
 
   def readVersion(
@@ -58,9 +55,6 @@ trait Versioning {
       val version0: Int = buffer.getShort()
       if (magic0 == magic) { Success(version0) }
       else { Failure(new IOException("Incorrect magic number found.")) }
-    } catch {
-      case ioe: IOException =>
-        Failure(ioe)
-    }
+    } catch { case ioe: IOException => Failure(ioe) }
   }
 }

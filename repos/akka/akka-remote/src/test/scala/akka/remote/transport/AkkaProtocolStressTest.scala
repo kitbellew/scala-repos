@@ -83,10 +83,7 @@ object AkkaProtocolStressTest {
     }
 
     // Make sure the other side eventually "gets the message"
-    def done: Receive = {
-      case ResendFinal ⇒
-        controller ! ((maxSeq, losses))
-    }
+    def done: Receive = { case ResendFinal ⇒ controller ! ((maxSeq, losses)) }
   }
 
 }

@@ -95,8 +95,8 @@ class SeqIdFilterTest
 
     def mustExcept(bytes: Array[Byte], exceptionMsg: String) {
       filtered(new ThriftClientRequest(bytes, false)).poll match {
-        case Some(Throw(exc: IllegalArgumentException)) =>
-          assert(exc.getMessage == exceptionMsg)
+        case Some(Throw(exc: IllegalArgumentException)) => assert(
+            exc.getMessage == exceptionMsg)
         case _ => fail()
       }
     }

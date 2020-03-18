@@ -68,8 +68,8 @@ class Sender(path: String, totalMessages: Int, burstSize: Int, payloadSize: Int)
       context.become(active(actor))
       context.setReceiveTimeout(Duration.Undefined)
       self ! Warmup
-    case ActorIdentity(`path`, None) =>
-      println(s"Remote actor not available: $path")
+    case ActorIdentity(`path`, None) => println(
+        s"Remote actor not available: $path")
     case ReceiveTimeout => sendIdentifyRequest()
   }
 

@@ -11,9 +11,7 @@ case object O4 extends Base with Base2
 
 object Test {
   val a /*: Product with Serializable with Base */ = if (true) O1 else O2
-  a match {
-    case null =>
-  }
+  a match { case null => }
 
   def t1(a: Product with Base with Base2) =
     a match {

@@ -145,8 +145,7 @@ object NameSuggester {
         case Seq(param) =>
           add("function")
           addFromTwoTypes(param, ret, "To")
-        case _ =>
-          add("function")
+        case _ => add("function")
       }
 
     def addForParameterizedType(baseType: ScType, args: Seq[ScType]) {
@@ -201,15 +200,13 @@ object NameSuggester {
               if (isInheritor(c, baseMapClassName) || isInheritor(
                 c,
                 baseJavaMapClassName))
-                && args.size == 2 =>
-            addFromTwoTypes(args(0), args(1), "To")
+                && args.size == 2 => addFromTwoTypes(args(0), args(1), "To")
           case c
               if (isInheritor(c, baseCollectionClassName) || isInheritor(
                 c,
                 baseJavaCollectionClassName))
-                && args.size == 1 =>
-            addPlurals(args(0))
-          case _ =>
+                && args.size == 1 => addPlurals(args(0))
+          case _                  =>
         }
       }
     }
@@ -227,8 +224,7 @@ object NameSuggester {
     }
 
     typez match {
-      case ValType(name) =>
-        name match {
+      case ValType(name) => name match {
           case "Int"     => add(if (shortVersion) "i" else "int")
           case "Unit"    => add("unit")
           case "Byte"    => add("byte")
@@ -245,10 +241,9 @@ object NameSuggester {
       case ScDesignatorType(e)         => addForNamedElement(e)
       case ScTypeParameterType(name, typeParams, lowerType, upperType, ptp) =>
         addForNamedElementString(name)
-      case ScProjectionType(p, e, _) => addForNamedElement(e)
-      case ScParameterizedType(tp, args) =>
-        addForParameterizedType(tp, args)
-      case JavaArrayType(arg) => addPlurals(arg)
+      case ScProjectionType(p, e, _)     => addForNamedElement(e)
+      case ScParameterizedType(tp, args) => addForParameterizedType(tp, args)
+      case JavaArrayType(arg)            => addPlurals(arg)
       case ScCompoundType(comps, _, _) =>
         if (comps.size > 0) generateNamesByType(comps(0))
       case _ =>
@@ -266,16 +261,14 @@ object NameSuggester {
         val name = x.refName
         if (name != null && name.toUpperCase == name) { add(name.toLowerCase) }
         else { generateCamelNames(name) }
-      case x: ScMethodCall =>
-        generateNamesByExpr(x.getEffectiveInvokedExpr)
+      case x: ScMethodCall => generateNamesByExpr(x.getEffectiveInvokedExpr)
       case l: ScLiteral if l.isString =>
         l.getValue match {
           case s: String if ScalaNamesUtil.isIdentifier(s.toLowerCase) =>
             add(s.toLowerCase)
           case _ =>
         }
-      case _ =>
-        expr.getContext match {
+      case _ => expr.getContext match {
           case x: ScAssignStmt => x.assignName.foreach(add)
           case x: ScArgumentExprList =>
             x.matchedParameters.find(_._1 == expr) match {

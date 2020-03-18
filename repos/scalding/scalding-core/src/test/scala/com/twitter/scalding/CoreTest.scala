@@ -301,8 +301,7 @@ class JoinTest extends WordSpec with Matchers {
       .source(Tsv("fakeInput2"), input2)
       .sink[(String, Int, Int)](Tsv("fakeOutput")) { outBuf =>
         val actualOutput = outBuf.map {
-          case (k: String, v1: Int, v2: Int) =>
-            (k, (v1, v2))
+          case (k: String, v1: Int, v2: Int) => (k, (v1, v2))
         }.toMap
         "join tuples with the same key" in {
           correctOutput shouldBe actualOutput
@@ -378,8 +377,7 @@ class TinyJoinTest extends WordSpec with Matchers {
       .source(Tsv("fakeInput2"), input2)
       .sink[(String, Int, Int)](Tsv("fakeOutput")) { outBuf =>
         val actualOutput = outBuf.map {
-          case (k: String, v1: Int, v2: Int) =>
-            (k, (v1, v2))
+          case (k: String, v1: Int, v2: Int) => (k, (v1, v2))
         }.toMap
         (idx + ": join tuples with the same key") in {
           actualOutput shouldBe correctOutput
@@ -415,8 +413,7 @@ class TinyCollisionJoinTest extends WordSpec with Matchers {
       .source(Tsv("fakeInput2"), input2)
       .sink[(String, Int, Int)](Tsv("fakeOutput")) { outBuf =>
         val actualOutput = outBuf.map {
-          case (k: String, v1: Int, v2: Int) =>
-            (k, (v1, v2))
+          case (k: String, v1: Int, v2: Int) => (k, (v1, v2))
         }.toMap
         "join tuples with the same key" in {
           correctOutput shouldBe actualOutput

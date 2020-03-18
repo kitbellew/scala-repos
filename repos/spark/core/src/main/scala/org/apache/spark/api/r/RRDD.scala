@@ -175,15 +175,13 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
               case (key, value) =>
                 writeElem(key)
                 writeElem(value)
-              case _ =>
-                writeElem(elem)
+              case _ => writeElem(elem)
             }
           }
           stream.flush()
         } catch {
           // TODO: We should propogate this error to the task thread
-          case e: Exception =>
-            logError("R Writer thread got an exception", e)
+          case e: Exception => logError("R Writer thread got an exception", e)
         } finally { Try(output.close()) }
       }
     }.start()
@@ -216,8 +214,7 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
               output,
               boot + init + broadcast + input + compute + output))
           read()
-        case length if length >= 0 =>
-          readData(length)
+        case length if length >= 0 => readData(length)
       }
     } catch {
       case eof: EOFException =>
@@ -314,9 +311,8 @@ private class StringRRDD[T: ClassTag](
 
   override protected def readData(length: Int): String = {
     length match {
-      case length if length > 0 =>
-        SerDe.readStringBytes(dataStream, length)
-      case _ => null
+      case length if length > 0 => SerDe.readStringBytes(dataStream, length)
+      case _                    => null
     }
   }
 

@@ -124,11 +124,9 @@ object ColumnarTableModule extends Logging {
 
           StreamT.Skip(stream2 ++ foldFlatMap(tail(), rendered || rendered2))
 
-        case StreamT.Skip(tail) =>
-          StreamT.Skip(foldFlatMap(tail(), rendered))
+        case StreamT.Skip(tail) => StreamT.Skip(foldFlatMap(tail(), rendered))
 
-        case StreamT.Done =>
-          StreamT.Done
+        case StreamT.Done => StreamT.Done
       })
     }
 
@@ -200,8 +198,7 @@ object ColumnarTableModule extends Logging {
               i += 1
             }
             true
-          case _ =>
-            false
+          case _ => false
         }
       def writeToBuilder(sb: StringBuilder): Unit = {
         if (n == 0) return ()
@@ -288,13 +285,9 @@ object ColumnarTableModule extends Logging {
       val ncols = items.length
 
       // load each column into strings
-      val columns = items.map {
-        case (_, col) =>
-          renderColumn(col, height)
-      }
+      val columns = items.map { case (_, col) => renderColumn(col, height) }
       val positions = items.map {
-        case (ColumnRef(path, _), _) =>
-          indices.columnForPath(path.toString)
+        case (ColumnRef(path, _), _) => indices.columnForPath(path.toString)
       }
 
       val sb = new StringBuilder()
@@ -335,13 +328,11 @@ object ColumnarTableModule extends Logging {
     }
 
     StreamT.unfoldM((slices, none[Indices])) {
-      case (stream, pastIndices) =>
-        stream.uncons.map {
+      case (stream, pastIndices) => stream.uncons.map {
           case Some((slice, tail)) =>
             val (indices, cb) = renderSlice(pastIndices, slice)
             Some((cb, (tail, Some(indices))))
-          case None =>
-            None
+          case None => None
         }
     }
   }
@@ -358,11 +349,9 @@ object ColumnarTableModule extends Logging {
       case ApplicationJson | AnyMimeType =>
         ColumnarTableModule.renderJson(slices, "[", ",", "]")
 
-      case XJsonStream =>
-        ColumnarTableModule.renderJson(slices, "", "\n", "")
+      case XJsonStream => ColumnarTableModule.renderJson(slices, "", "\n", "")
 
-      case TextCSV =>
-        ColumnarTableModule.renderCsv(slices)
+      case TextCSV => ColumnarTableModule.renderCsv(slices)
 
       case other =>
         logger.warn(
@@ -380,12 +369,12 @@ object ColumnarTableModule extends Logging {
     import FileContent._
 
     mimeType match {
-      case Some(ApplicationJson) | None =>
-        Some(bufferOutput(toCharBuffers(ApplicationJson, blockStream)))
-      case Some(XJsonStream) =>
-        Some(bufferOutput(toCharBuffers(XJsonStream, blockStream)))
-      case Some(TextCSV) =>
-        Some(bufferOutput(toCharBuffers(TextCSV, blockStream)))
+      case Some(ApplicationJson) | None => Some(
+          bufferOutput(toCharBuffers(ApplicationJson, blockStream)))
+      case Some(XJsonStream) => Some(
+          bufferOutput(toCharBuffers(XJsonStream, blockStream)))
+      case Some(TextCSV) => Some(
+          bufferOutput(toCharBuffers(TextCSV, blockStream)))
       case Some(other) =>
         logger.warn(
           "NIHDB resource cannot be rendered to a byte stream of type %s"
@@ -715,10 +704,8 @@ trait ColumnarTableModule[M[+_]]
         // TODO: this can probably be done as one step, but for now
         // it's probably fine.
         val tables: StreamT[M, Table] = StreamT.unfoldM(groupKeys.toList) {
-          case k :: ks =>
-            evaluateGroupKey(k).map(t => Some((t, ks)))
-          case Nil =>
-            M.point(None)
+          case k :: ks => evaluateGroupKey(k).map(t => Some((t, ks)))
+          case Nil     => M.point(None)
         }
 
         val slices: StreamT[M, Slice] = tables.flatMap(_.slices)
@@ -789,8 +776,7 @@ trait ColumnarTableModule[M[+_]]
       M.point(orderHint match {
         case Some(CrossRight | CrossRightLeft) =>
           CrossRight -> right.cross(left)(TransSpec2.flip(spec))
-        case _ =>
-          CrossLeft -> left.cross(right)(spec)
+        case _ => CrossLeft -> left.cross(right)(spec)
       })
     }
   }
@@ -867,10 +853,8 @@ trait ColumnarTableModule[M[+_]]
         slices.uncons flatMap {
           case Some((slice, tail)) if slice.size > 0 =>
             loop(tail, slice.materialized :: acc, size + slice.size)
-          case Some((_, tail)) =>
-            loop(tail, acc, size)
-          case None =>
-            M.point((acc.reverse, size))
+          case Some((_, tail)) => loop(tail, acc, size)
+          case None            => M.point((acc.reverse, size))
         }
       val former = new (Id.Id ~> M) {
         def apply[A](a: Id.Id[A]): M[A] = M.point(a)
@@ -916,12 +900,10 @@ trait ColumnarTableModule[M[+_]]
             slices2.uncons map {
               case Some((head2, tail2)) =>
                 StreamT.Yield(head1 zip head2, rec(tail1, tail2))
-              case None =>
-                StreamT.Done
+              case None => StreamT.Done
             }
 
-          case None =>
-            M point StreamT.Done
+          case None => M point StreamT.Done
         })
       }
 
@@ -1444,8 +1426,7 @@ trait ColumnarTableModule[M[+_]]
                         }
                       }
 
-                    case None =>
-                      (rightStart, rightEnd) match {
+                    case None => (rightStart, rightEnd) match {
                         case (Some(_), Some(end)) =>
                           val (rpref, rsuf) = end.data.split(end.pos)
 
@@ -1695,8 +1676,7 @@ trait ColumnarTableModule[M[+_]]
                   }
 
                   transform.f(a, lslice, rslice) map {
-                    case (b, resultSlice) =>
-                      (b, resultSlice :: acc)
+                    case (b, resultSlice) => (b, resultSlice :: acc)
                   }
               }
           }
@@ -1744,8 +1724,7 @@ trait ColumnarTableModule[M[+_]]
                   StreamT.Skip(prefix ++ crossRightSingle(ltail0, rhead)(a1))
               }
 
-            case None =>
-              M.point(StreamT.Done)
+            case None => M.point(StreamT.Done)
           })
         }
 
@@ -1969,8 +1948,7 @@ trait ColumnarTableModule[M[+_]]
                   size + head.size)
               }
 
-            case None =>
-              M.point(Table(subSlices, ExactSize(size)))
+            case None => M.point(Table(subSlices, ExactSize(size)))
           }
         }
 
@@ -1989,8 +1967,7 @@ trait ColumnarTableModule[M[+_]]
               if (spanEnd < head.size) { stepPartition(head, spanEnd, tail) }
               else { dropAndSplit(comparatorGen, tail, 0) }
 
-            case None =>
-              StreamT.empty[M, Slice]
+            case None => StreamT.empty[M, Slice]
           }
         }
 
@@ -2025,8 +2002,7 @@ trait ColumnarTableModule[M[+_]]
       this.transform(keyTrans).compact(TransSpec1.Id).slices.uncons map {
         case Some((head, tail)) =>
           Table(stepPartition(head, 0, tail), UnknownSize)
-        case None =>
-          Table.empty
+        case None => Table.empty
       }
     }
 
@@ -2107,8 +2083,7 @@ trait ColumnarTableModule[M[+_]]
               merge(indices get idx, paths, leaf) map { tpe =>
                 JArrayFixedT(indices + (idx -> tpe))
               } orElse schema
-            case (None, paths) =>
-              fresh(paths, leaf)
+            case (None, paths) => fresh(paths, leaf)
             case (jtype, paths) =>
               sys.error(
                 "Invalid schema."
@@ -2167,8 +2142,7 @@ trait ColumnarTableModule[M[+_]]
 
             collectSchemas(schemas ++ next, slices)
 
-          case None =>
-            M.point(schemas)
+          case None => M.point(schemas)
         }
       }
 

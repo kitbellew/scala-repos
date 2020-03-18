@@ -75,10 +75,7 @@ object BasicCommands {
   def runHelp(s: State, h: Help)(arg: Option[String]): State = {
     val message =
       try Help.message(h, arg)
-      catch {
-        case NonFatal(ex) =>
-          ex.toString
-      }
+      catch { case NonFatal(ex) => ex.toString }
     System.out.println(message)
     s
   }
@@ -318,10 +315,8 @@ object BasicCommands {
       s: State,
       args: Option[(String, Option[Option[String]])]): State =
     args match {
-      case None =>
-        printAliases(s); s
-      case Some(x ~ None) if !x.isEmpty =>
-        printAlias(s, x.trim); s
+      case None                           => printAliases(s); s
+      case Some(x ~ None) if !x.isEmpty   => printAlias(s, x.trim); s
       case Some(name ~ Some(None))        => removeAlias(s, name.trim)
       case Some(name ~ Some(Some(value))) => addAlias(s, name.trim, value.trim)
     }

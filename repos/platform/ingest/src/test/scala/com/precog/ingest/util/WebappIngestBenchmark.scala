@@ -219,10 +219,8 @@ Usage:
       case Some(Right(HttpResponse(status, _, _, _))) if status.code == OK => ()
       case Some(Right(HttpResponse(status, _, _, _))) =>
         throw new RuntimeException("Server returned error code with request")
-      case Some(Left(ex)) =>
-        throw ex
-      case _ =>
-        throw new RuntimeException("Error processing insert request")
+      case Some(Left(ex)) => throw ex
+      case _              => throw new RuntimeException("Error processing insert request")
     }
   }
 
@@ -262,10 +260,8 @@ class WebappIngestProducer(args: Array[String]) extends IngestProducer(args) {
       case Some(Right(HttpResponse(status, _, _, _))) if status.code == OK => ()
       case Some(Right(HttpResponse(status, _, _, _))) =>
         throw new RuntimeException("Server returned error code with request")
-      case Some(Left(ex)) =>
-        throw ex
-      case _ =>
-        throw new RuntimeException("Error processing insert request")
+      case Some(Left(ex)) => throw ex
+      case _              => throw new RuntimeException("Error processing insert request")
     }
   }
 

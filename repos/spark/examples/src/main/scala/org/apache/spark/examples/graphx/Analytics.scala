@@ -179,8 +179,7 @@ object Analytics extends Logging {
             .reduce(_ + _) / 3)
         sc.stop()
 
-      case _ =>
-        println("Invalid task type.")
+      case _ => println("Invalid task type.")
     }
   }
 }

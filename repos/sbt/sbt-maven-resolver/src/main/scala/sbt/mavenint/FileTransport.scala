@@ -38,9 +38,8 @@ class FileTransport(repository: RemoteRepository) extends AbstractTransporter {
   override def implPut(put: PutTask): Unit = {
     val to = toFile(put)
     Option(put.getDataFile) match {
-      case Some(from) =>
-        IO.copyFile(from, to, true)
-      case None =>
+      case Some(from) => IO.copyFile(from, to, true)
+      case None       =>
         // Here it's most likely a SHA or somethign where we read from memory.
         val in = put.newInputStream
         try IO.transfer(in, to)

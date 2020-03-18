@@ -111,8 +111,7 @@ private[hive] trait HiveStrategies {
             otherPredicates,
             identity[Seq[Expression]],
             HiveTableScan(_, relation, pruningPredicates)(hiveContext)) :: Nil
-        case _ =>
-          Nil
+        case _ => Nil
       }
   }
 

@@ -107,23 +107,19 @@ final case class PersistentJValue(baseDir: File, fileName: String)
           case LogRecordType.USER =>
             val bytes = rec.getFields()(0)
             bytes match {
-              case Update(rawJson) =>
-                pending = Some(rawJson)
+              case Update(rawJson) => pending = Some(rawJson)
               case Written(rawPath) =>
                 lastUpdate = Some(rawPath)
                 pending = None
-              case _ =>
-                sys.error("Found unknown user record!")
+              case _ => sys.error("Found unknown user record!")
             }
 
-          case other =>
-            logger.warn("Unknown LogRecord type: " + other)
+          case other => logger.warn("Unknown LogRecord type: " + other)
         }
     })
 
     (pending, lastUpdate) match {
-      case (None, Some(_)) =>
-        jv = JParser.parseFromFile(file).valueOr(throw _)
+      case (None, Some(_)) => jv = JParser.parseFromFile(file).valueOr(throw _)
 
       case (Some(rawJson), _) =>
         jv = JParser
@@ -131,8 +127,7 @@ final case class PersistentJValue(baseDir: File, fileName: String)
           .valueOr(throw _)
         flush()
 
-      case (None, None) =>
-        flush()
+      case (None, None) => flush()
     }
   }
 }

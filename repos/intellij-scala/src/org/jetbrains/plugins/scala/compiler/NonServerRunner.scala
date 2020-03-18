@@ -118,9 +118,7 @@ class NonServerRunner(
 
     def onTextAvailable(text: String) {
       try { listener(text) }
-      catch {
-        case e: Exception =>
-      }
+      catch { case e: Exception => }
     }
 
     override def close() { reader.close() }

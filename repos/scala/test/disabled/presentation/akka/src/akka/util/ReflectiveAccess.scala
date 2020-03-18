@@ -186,10 +186,7 @@ object ReflectiveAccess {
             exception
           ) //We could just cast this to Either[Exception, T] but it's ugly
       }
-    } catch {
-      case e: Exception =>
-        Left(e)
-    }
+    } catch { case e: Exception => Left(e) }
 
   //Obtains a reference to fqn.MODULE$
   def getObjectFor[T](
@@ -208,10 +205,7 @@ object ReflectiveAccess {
             exception
           ) //We could just cast this to Either[Exception, T] but it's ugly
       }
-    } catch {
-      case e: Exception =>
-        Left(e)
-    }
+    } catch { case e: Exception => Left(e) }
 
   def getClassFor[T](
       fqn: String,

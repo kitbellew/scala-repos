@@ -239,9 +239,8 @@ object ScalaAfterNewCompletionUtil {
         clazz.qualifiedName match {
           case "scala.Boolean" | "scala.Int" | "scala.Long" | "scala.Byte" |
               "scala.Short" | "scala.AnyVal" | "scala.Char" | "scala.Unit" |
-              "scala.Float" | "scala.Double" | "scala.Any" =>
-            return null
-          case _ =>
+              "scala.Float" | "scala.Double" | "scala.Any" => return null
+          case _                                           =>
         }
         //todo: filter inner classes smarter (how? don't forget deep inner classes)
         if (clazz.containingClass != null && (!clazz.containingClass

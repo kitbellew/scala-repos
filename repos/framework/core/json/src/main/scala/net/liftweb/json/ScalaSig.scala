@@ -94,8 +94,7 @@ private[json] object ScalaSigReader {
         case TypeRefType(_, symbol, Nil) => symbol
         case TypeRefType(_, _, args) if typeArgIndex >= args.length =>
           findPrimitive(args(0))
-        case TypeRefType(_, _, args) =>
-          args(typeArgIndex) match {
+        case TypeRefType(_, _, args) => args(typeArgIndex) match {
             case ref @ TypeRefType(_, _, _) => findPrimitive(ref)
             case x                          => Meta.fail("Unexpected type info " + x)
           }

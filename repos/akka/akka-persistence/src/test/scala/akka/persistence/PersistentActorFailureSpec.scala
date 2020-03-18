@@ -54,8 +54,7 @@ object PersistentActorFailureSpec {
 
     def isWrong(messages: immutable.Seq[AtomicWrite]): Boolean =
       messages.exists {
-        case a: AtomicWrite ⇒
-          a.payload.exists {
+        case a: AtomicWrite ⇒ a.payload.exists {
             case PersistentRepr(Evt(s: String), _) ⇒ s.contains("wrong")
           }
         case _ ⇒ false
@@ -64,11 +63,9 @@ object PersistentActorFailureSpec {
     def checkSerializable(
         messages: immutable.Seq[AtomicWrite]): immutable.Seq[Try[Unit]] =
       messages.collect {
-        case a: AtomicWrite ⇒
-          a.payload.collectFirst {
+        case a: AtomicWrite ⇒ a.payload.collectFirst {
             case PersistentRepr(Evt(s: String), _: Long)
-                if s.contains("not serializable") ⇒
-              s
+                if s.contains("not serializable") ⇒ s
           } match {
             case Some(s) ⇒ Failure(new SimulatedSerializationException(s))
             case None ⇒ AsyncWriteJournal.successUnit
@@ -146,8 +143,7 @@ object PersistentActorFailureSpec {
 
   class ThrowingActor2(name: String) extends ExamplePersistentActor(name) {
     override val receiveCommand: Receive = commonBehavior orElse {
-      case Cmd(data) ⇒
-        persist(Evt(s"${data}")) { evt ⇒
+      case Cmd(data) ⇒ persist(Evt(s"${data}")) { evt ⇒
           if (data == "err")
             throw new SimulatedException("Simulated exception 1")
           updateState(evt)

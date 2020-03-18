@@ -319,8 +319,7 @@ object ScFunctionWrapper {
     }
     defaultParam match {
       case Some(param) => evalType(param.getType(TypingContext.empty))
-      case _ =>
-        function match {
+      case _ => function match {
           case fun: ScFunction if !fun.isConstructor =>
             if (fun.hasExplicitType) evalType(fun.returnType)
             else builder.append("FromTypeInference")
@@ -399,8 +398,7 @@ object ScFunctionWrapper {
       cClass: Option[PsiClass],
       function: ScMethodLike): ScSubstitutor = {
     (cClass, function) match {
-      case (Some(clazz), function: ScFunction) =>
-        clazz match {
+      case (Some(clazz), function: ScFunction) => clazz match {
           case td: ScTypeDefinition =>
             td.signaturesByName(function.name)
               .find(_.method == function) match {

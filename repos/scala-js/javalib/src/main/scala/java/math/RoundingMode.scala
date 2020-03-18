@@ -77,7 +77,6 @@ object RoundingMode {
       case BigDecimal.ROUND_HALF_UP     => HALF_UP
       case BigDecimal.ROUND_UNNECESSARY => UNNECESSARY
       case BigDecimal.ROUND_UP          => UP
-      case _ =>
-        throw new IllegalArgumentException("Invalid rounding mode")
+      case _                            => throw new IllegalArgumentException("Invalid rounding mode")
     }
 }

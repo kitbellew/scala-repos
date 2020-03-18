@@ -28,8 +28,7 @@ private[camel] class CamelSupervisor extends Actor with CamelSupport {
     "registry")
 
   override val supervisorStrategy = OneForOneStrategy() {
-    case NonFatal(e) ⇒
-      Resume
+    case NonFatal(e) ⇒ Resume
   }
 
   def receive = {
@@ -148,8 +147,7 @@ private[camel] class Registry(activationTracker: ActorRef)
       activationTracker ! EndpointFailedToDeActivate(e.actorRef, e.getCause)
       stop(e.actorRef)
       Resume
-    case NonFatal(e) ⇒
-      Resume
+    case NonFatal(e) ⇒ Resume
   })
 
   def receive = {

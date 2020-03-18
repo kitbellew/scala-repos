@@ -13,7 +13,10 @@ class Unchecked[C] {
   // related tests that are more exhauative.
   class C; class D extends C
   def okay =
-    (List(new D): Seq[D]) match { case _: List[C] => case _ => } // nowarn
+    (List(new D): Seq[D]) match {
+      case _: List[C] =>
+      case _          =>
+    } // nowarn
   class B2[A, B]
   class A2[X] extends B2[X, String]
   def okay2(x: A2[Int]) = x match { case _: B2[Int, _]       => true } // nowarn

@@ -23,9 +23,8 @@ object ScalaPatterns {
     if (!XmlPatterns.parse(builder))
       builder error ErrMsg("xml.scala.patterns.exected")
     builder.getTokenType match {
-      case ScalaTokenTypesEx.SCALA_IN_XML_INJECTION_END =>
-        builder.advanceLexer
-      case _ => builder error ErrMsg("xml.scala.injection.end.expected")
+      case ScalaTokenTypesEx.SCALA_IN_XML_INJECTION_END => builder.advanceLexer
+      case _                                            => builder error ErrMsg("xml.scala.injection.end.expected")
     }
     builder.restoreNewlinesState
     return true

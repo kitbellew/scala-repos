@@ -72,8 +72,8 @@ private[spark] object ExtractPythonUDFs extends Rule[LogicalPlan] {
                 plan.output,
                 plan
                   .transformExpressions {
-                    case p: PythonUDF if p.fastEquals(udf) =>
-                      evaluation.resultAttribute
+                    case p: PythonUDF
+                        if p.fastEquals(udf) => evaluation.resultAttribute
                   }
                   .withNewChildren(newChildren))
 

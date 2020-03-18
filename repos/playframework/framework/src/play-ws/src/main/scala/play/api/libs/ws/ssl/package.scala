@@ -39,10 +39,8 @@ package object ssl {
 
   def foldVersion[T](run16: => T, runHigher: => T): T = {
     System.getProperty("java.specification.version") match {
-      case "1.6" =>
-        run16
-      case higher =>
-        runHigher
+      case "1.6"  => run16
+      case higher => runHigher
     }
   }
 

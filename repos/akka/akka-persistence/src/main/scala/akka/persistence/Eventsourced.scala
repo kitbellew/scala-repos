@@ -124,8 +124,7 @@ private[persistence] trait Eventsourced
     */
   protected def onRecoveryFailure(cause: Throwable, event: Option[Any]): Unit =
     event match {
-      case Some(evt) ⇒
-        log.error(
+      case Some(evt) ⇒ log.error(
           cause,
           "Exception in receiveRecover when replaying event type [{}] with sequence number [{}] for " +
             "persistenceId [{}].",
@@ -191,15 +190,12 @@ private[persistence] trait Eventsourced
   private def stashInternally(currMsg: Any): Unit =
     try internalStash.stash()
     catch {
-      case e: StashOverflowException ⇒
-        internalStashOverflowStrategy match {
+      case e: StashOverflowException ⇒ internalStashOverflowStrategy match {
           case DiscardToDeadLetterStrategy ⇒
             val snd = sender()
             context.system.deadLetters.tell(DeadLetter(currMsg, snd, self), snd)
-          case ReplyToStrategy(response) ⇒
-            sender() ! response
-          case ThrowOverflowExceptionStrategy ⇒
-            throw e
+          case ReplyToStrategy(response) ⇒ sender() ! response
+          case ThrowOverflowExceptionStrategy ⇒ throw e
         }
     }
 
@@ -577,8 +573,7 @@ private[persistence] trait Eventsourced
               replayMax,
               persistenceId,
               self)
-          case other ⇒
-            stashInternally(other)
+          case other ⇒ stashInternally(other)
         }
     }
 
@@ -619,8 +614,7 @@ private[persistence] trait Eventsourced
           case ReplayMessagesFailure(cause) ⇒
             try onRecoveryFailure(cause, event = None)
             finally context.stop(self)
-          case other ⇒
-            stashInternally(other)
+          case other ⇒ stashInternally(other)
         }
     }
 

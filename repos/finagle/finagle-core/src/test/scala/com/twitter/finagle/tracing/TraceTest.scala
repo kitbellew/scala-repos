@@ -73,9 +73,8 @@ class TraceTest
       Trace.letId(Trace.nextId) {
         assert(Trace.id match {
           case TraceId(Some(traceId), Some(parentId), _, None, Flags(0))
-              if traceId == topId.traceId && parentId == topId.spanId =>
-            true
-          case _ => false
+              if traceId == topId.traceId && parentId == topId.spanId => true
+          case _                                                      => false
         })
       }
     }
@@ -270,9 +269,8 @@ class TraceTest
                 if (
                   _traceId == parentId.traceId
                 ) && (_parentId == parentId.spanId) &&
-                  (_sampled == parentId.sampled.get) =>
-              true
-            case _ => false
+                  (_sampled == parentId.sampled.get) => true
+            case _                                   => false
           })
           assert(Trace.isTerminal == false)
           assert(Trace.tracers == List(tracer))

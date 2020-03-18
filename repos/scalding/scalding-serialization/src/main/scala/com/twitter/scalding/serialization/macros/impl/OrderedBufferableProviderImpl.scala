@@ -30,8 +30,7 @@ object OrderedSerializationProviderImpl {
     case tpe
         if (!tpe.toString.contains(ImplicitOrderedBuf.macroMarker) && !(
           tpe.normalize == tpe
-        )) =>
-      buildDispatcher(tpe.normalize)
+        )) => buildDispatcher(tpe.normalize)
   }
 
   def scaldingBasicDispatchers(c: Context)(

@@ -65,8 +65,7 @@ class Project(broadcaster: ActorRef, implicit val config: EnsimeConfig)
         context.become(handleRequests)
         init()
         unstashAll()
-      case other =>
-        stash()
+      case other => stash()
     }
 
   private def init(): Unit = {
@@ -155,8 +154,7 @@ class Project(broadcaster: ActorRef, implicit val config: EnsimeConfig)
       case m: DocSigPair         => docs forward m
 
       // added here to prevent errors when client sends this repeatedly (e.g. as a keepalive
-      case ConnectionInfoReq =>
-        sender() ! ConnectionInfo()
+      case ConnectionInfoReq => sender() ! ConnectionInfo()
     }
 
 }

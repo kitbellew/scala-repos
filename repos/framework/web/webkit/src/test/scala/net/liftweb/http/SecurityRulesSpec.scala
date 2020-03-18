@@ -89,16 +89,14 @@ class ContentSecurityPolicySpec extends Specification {
         .headers(enforce = true, logViolations = true)
         .collect {
           case (headerName, _)
-              if headerName.contains("Content-Security-Policy") =>
-            headerName
+              if headerName.contains("Content-Security-Policy") => headerName
         } must_== List("Content-Security-Policy", "X-Content-Security-Policy")
 
       ContentSecurityPolicy()
         .headers(enforce = true, logViolations = false)
         .collect {
           case (headerName, _)
-              if headerName.contains("Content-Security-Policy") =>
-            headerName
+              if headerName.contains("Content-Security-Policy") => headerName
         } must_== List("Content-Security-Policy", "X-Content-Security-Policy")
     }
 
@@ -107,8 +105,7 @@ class ContentSecurityPolicySpec extends Specification {
         .headers(enforce = false, logViolations = true)
         .collect {
           case (headerName, _)
-              if headerName.contains("Content-Security-Policy") =>
-            headerName
+              if headerName.contains("Content-Security-Policy") => headerName
         } must_== List(
         "Content-Security-Policy-Report-Only",
         "X-Content-Security-Policy-Report-Only")

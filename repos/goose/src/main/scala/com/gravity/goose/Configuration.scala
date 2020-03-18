@@ -94,10 +94,7 @@ class Configuration {
         rootElement
           .select(selector)
           .flatMap(item => safeParseISO8601Date(item.attr("content")))
-      } catch {
-        case e: Exception =>
-          Nil
-      }
+      } catch { case e: Exception => Nil }
     }
 
     final val pubSelectors = Seq("meta[property~=article:published_time]")

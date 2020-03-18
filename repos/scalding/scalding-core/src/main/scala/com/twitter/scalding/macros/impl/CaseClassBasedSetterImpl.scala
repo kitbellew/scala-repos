@@ -110,11 +110,9 @@ object CaseClassBasedSetterImpl {
         case tpe
             if (tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isCaseClass) =>
           CaseClassSetter(expandMethod(normalized(tpe)).map {
-            case (fn, tpe) =>
-              (fn, matchField(tpe))
+            case (fn, tpe) => (fn, matchField(tpe))
           })
-        case tpe if allowUnknownTypes =>
-          DefaultSetter
+        case tpe if allowUnknownTypes => DefaultSetter
         case _ =>
           c.abort(
             c.enclosingPosition,

@@ -151,8 +151,7 @@ private[jackson] class JsValueDeserializer(
       case JsonTokenId.ID_START_ARRAY =>
         (None, ReadingList(ListBuffer()) +: parserContext)
 
-      case JsonTokenId.ID_END_ARRAY =>
-        parserContext match {
+      case JsonTokenId.ID_END_ARRAY => parserContext match {
           case ReadingList(content) :: stack => (Some(JsArray(content)), stack)
           case _ =>
             throw new RuntimeException(
@@ -162,8 +161,7 @@ private[jackson] class JsValueDeserializer(
       case JsonTokenId.ID_START_OBJECT =>
         (None, ReadingMap(ListBuffer()) +: parserContext)
 
-      case JsonTokenId.ID_FIELD_NAME =>
-        parserContext match {
+      case JsonTokenId.ID_FIELD_NAME => parserContext match {
           case (c: ReadingMap) :: stack =>
             (None, c.setField(jp.getCurrentName) +: stack)
           case _ =>
@@ -171,8 +169,7 @@ private[jackson] class JsValueDeserializer(
               "We should be reading map, something got wrong")
         }
 
-      case JsonTokenId.ID_END_OBJECT =>
-        parserContext match {
+      case JsonTokenId.ID_END_OBJECT => parserContext match {
           case ReadingMap(content) :: stack => (Some(JsObject(content)), stack)
           case _ =>
             throw new RuntimeException(

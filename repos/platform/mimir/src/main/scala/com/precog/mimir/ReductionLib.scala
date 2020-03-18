@@ -627,8 +627,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           case (count, sum, sumsq) if count > 0 =>
             val n = (sumsq - (sum * sum / count)) / count
             Some(n)
-          case _ =>
-            None
+          case _ => None
         }
 
       def extract(res: Result): Table =
@@ -656,8 +655,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           case (count, sum, sumsq) if count > 0 =>
             val n = sqrt(count * sumsq - sum * sum) / count
             Some(n)
-          case _ =>
-            None
+          case _ => None
         }
 
       def extract(res: Result): Table =

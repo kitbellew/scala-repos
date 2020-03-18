@@ -226,8 +226,7 @@ abstract class ClassPath[T] extends ClassFileLookup[T] {
                 x,
                 name))
         }
-      case _ =>
-        classes find (_.name == name)
+      case _ => classes find (_.name == name)
     }
 
   override def findClassFile(name: String): Option[AbstractFile] =
@@ -300,14 +299,12 @@ class DirectoryClassPath(
       // `Path.apply` and categorized existent files as `Directory`
       // or `File`.
       val isDirectory = f match {
-        case pf: io.PlainFile =>
-          pf.givenPath match {
+        case pf: io.PlainFile => pf.givenPath match {
             case _: io.Directory => true
             case _: io.File      => false
             case _               => f.isDirectory
           }
-        case _ =>
-          f.isDirectory
+        case _ => f.isDirectory
       }
       if (!isDirectory && validClassFile(f.name))
         classBuf += ClassRep(Some(f), None)

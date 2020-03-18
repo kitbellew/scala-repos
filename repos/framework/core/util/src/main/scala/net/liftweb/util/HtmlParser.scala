@@ -234,8 +234,7 @@ trait Html5Writer {
         writer.append(">")
         e.child match {
           case null =>
-          case seq =>
-            seq.foreach {
+          case seq => seq.foreach {
               case Text(str) => writer.append(str)
               case pc: PCData => {
                 val sb = new StringBuilder()
@@ -385,8 +384,7 @@ trait Html5Parser {
         in.close()
         saxer.rootElem match {
           case null => Empty
-          case e: Elem =>
-            AutoInsertedBody.unapply(e) match {
+          case e: Elem => AutoInsertedBody.unapply(e) match {
               case Some(x) => Full(x)
               case _       => Full(e)
             }

@@ -159,10 +159,8 @@ object expand {
     new Transformer() {
       override def transform(tree: Tree): Tree =
         tree match {
-          case Ident(x) if typeMap.contains(x) =>
-            TypeTree(typeMap(x))
-          case Ident(x) if termTypeMap.contains(x) =>
-            termTypeMap(x)
+          case Ident(x) if typeMap.contains(x)     => TypeTree(typeMap(x))
+          case Ident(x) if termTypeMap.contains(x) => termTypeMap(x)
           case Apply(aa @ Ident(x), args) if valExpansions.contains(x) =>
             val (tname, tmap) = valExpansions(x)
             val mappedTree = tmap(typeMap(tname))
@@ -177,8 +175,7 @@ object expand {
           case Ident(x) if valExpansions.contains(x) =>
             val (tname, tmap) = valExpansions(x)
             tmap(typeMap(tname))
-          case _ =>
-            super.transform(tree)
+          case _ => super.transform(tree)
         }
     } transform rhs
   }

@@ -682,12 +682,10 @@ class BasicOperationsSuite extends TestSuiteBase {
 
         def collectRddInfo() { // get all RDD info required for verification
           networkStream.generatedRDDs.foreach {
-            case (time, rdd) =>
-              blockRdds(time) = rdd.asInstanceOf[BlockRDD[_]]
+            case (time, rdd) => blockRdds(time) = rdd.asInstanceOf[BlockRDD[_]]
           }
           mappedStream.generatedRDDs.foreach {
-            case (time, rdd) =>
-              persistentRddIds(time) = rdd.id
+            case (time, rdd) => persistentRddIds(time) = rdd.id
           }
         }
 

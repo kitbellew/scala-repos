@@ -88,8 +88,7 @@ trait EvaluatorModule
       expr match {
         case Let(loc, _, _, _, right) => loop(env, restrict)(right)
 
-        case Solve(loc, constraints, child) =>
-          sys.error("todo")
+        case Solve(loc, constraints, child) => sys.error("todo")
 
         case Import(_, _, child) => loop(env, restrict)(child)
 
@@ -239,8 +238,7 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (JArray(values), JNum(index)) =>
-              values(index.toInt)
+            case (JArray(values), JNum(index)) => values(index.toInt)
           }
         }
 
@@ -623,8 +621,7 @@ trait EvaluatorModule
   private def linearProvPossibilities(prov: Provenance): List[Provenance] = {
     def loop(prov: Provenance): List[Provenance] =
       prov match {
-        case ProductProvenance(left, right) =>
-          loop(left) ++ loop(right)
+        case ProductProvenance(left, right) => loop(left) ++ loop(right)
 
         case CoproductProvenance(left, right) => {
           val leftRec = loop(left)

@@ -44,9 +44,8 @@ abstract class ScalaSigSymbol extends Symbol {
       (attr.symbol, this) match {
         case (s, t) if s == t => true
         case (MethodSymbol(info1, ref1), MethodSymbol(info2, ref2))
-            if info1.name == (info2.name + " ") =>
-          true
-        case _ => false
+            if info1.name == (info2.name + " ") => true
+        case _                                  => false
       }
     }
   }

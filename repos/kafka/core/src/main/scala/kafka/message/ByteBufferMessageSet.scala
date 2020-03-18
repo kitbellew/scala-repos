@@ -119,10 +119,8 @@ object ByteBufferMessageSet {
           try {
             while (true) innerMessageAndOffsets.add(readMessageFromStream())
           } catch {
-            case eofe: EOFException =>
-              compressed.close()
-            case ioe: IOException =>
-              throw new KafkaException(ioe)
+            case eofe: EOFException => compressed.close()
+            case ioe: IOException   => throw new KafkaException(ioe)
           }
           Some(innerMessageAndOffsets)
         } else None
@@ -173,8 +171,7 @@ object ByteBufferMessageSet {
               case eofe: EOFException =>
                 compressed.close()
                 allDone()
-              case ioe: IOException =>
-                throw new KafkaException(ioe)
+              case ioe: IOException => throw new KafkaException(ioe)
             }
         }
       }
@@ -682,9 +679,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
     */
   override def equals(other: Any): Boolean = {
     other match {
-      case that: ByteBufferMessageSet =>
-        buffer.equals(that.buffer)
-      case _ => false
+      case that: ByteBufferMessageSet => buffer.equals(that.buffer)
+      case _                          => false
     }
   }
 

@@ -63,9 +63,8 @@ trait ScTypeElement extends ScalaPsiElement with TypingContextOwner {
     ScalaPsiUtil.getParentOfType(this, classOf[ScTypeParam]) match {
       case tp: ScTypeParam =>
         ScalaPsiUtil.getParentOfType(tp, classOf[ScMethodLike]) match {
-          case ml: ScMethodLike =>
-            ml.effectiveParameterClauses
-          case _ =>
+          case ml: ScMethodLike => ml.effectiveParameterClauses
+          case _                =>
         }
       case _ =>
     }

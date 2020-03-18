@@ -116,9 +116,8 @@ object ScalaReflection extends ScalaReflection {
   def isNativeType(dt: DataType): Boolean =
     dt match {
       case BooleanType | ByteType | ShortType | IntegerType | LongType |
-          FloatType | DoubleType | BinaryType =>
-        true
-      case _ => false
+          FloatType | DoubleType | BinaryType => true
+      case _                                  => false
     }
 
   /**
@@ -445,10 +444,9 @@ object ScalaReflection extends ScalaReflection {
     val walkedTypePath = s"""- root class: "${clsName}"""" :: Nil
     extractorFor(inputObject, tpe, walkedTypePath) match {
       case expressions.If(_, _, s: CreateNamedStruct)
-          if tpe <:< localTypeOf[Product] =>
-        s
-      case other =>
-        CreateNamedStruct(expressions.Literal("value") :: other :: Nil)
+          if tpe <:< localTypeOf[Product] => s
+      case other => CreateNamedStruct(
+          expressions.Literal("value") :: other :: Nil)
     }
   }
 
@@ -747,10 +745,7 @@ trait ScalaReflection {
 
   /** Returns a Sequence of attributes for the given case class type. */
   def attributesFor[T: TypeTag]: Seq[Attribute] =
-    schemaFor[T] match {
-      case Schema(s: StructType, _) =>
-        s.toAttributes
-    }
+    schemaFor[T] match { case Schema(s: StructType, _) => s.toAttributes }
 
   /** Returns a catalyst DataType and its nullability for the given Scala Type using reflection. */
   def schemaFor[T: TypeTag]: Schema = schemaFor(localTypeOf[T])

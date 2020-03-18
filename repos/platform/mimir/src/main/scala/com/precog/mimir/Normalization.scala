@@ -173,8 +173,7 @@ trait NormalizationHelperModule[M[+_]]
               cols: Map[ColumnRef, Column],
               range: Range): Map[ColumnRef, Column] = {
             val numericCols = cols filter {
-              case (ColumnRef(cpath, ctype), _) =>
-                ctype.isNumeric
+              case (ColumnRef(cpath, ctype), _) => ctype.isNumeric
             }
 
             val groupedCols: Map[CPath, Map[ColumnRef, Column]] = numericCols
@@ -220,10 +219,7 @@ trait NormalizationHelperModule[M[+_]]
                 }
               }
 
-              resultsAll map {
-                case (ref, col) =>
-                  (ref, intersectColumn(col))
-              }
+              resultsAll map { case (ref, col) => (ref, intersectColumn(col)) }
             }
 
             val subsumes = singleSummary forall {

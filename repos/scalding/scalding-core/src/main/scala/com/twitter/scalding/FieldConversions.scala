@@ -237,8 +237,7 @@ trait FieldConversions extends LowPriorityFieldConversions {
     // available "all at once" by calling getComparators.)
 
     new RichFields(asList(fields).zip(fields.getComparators).map {
-      case (id: Comparable[_], comparator: Comparator[_]) =>
-        id match {
+      case (id: Comparable[_], comparator: Comparator[_]) => id match {
           case x: java.lang.Integer =>
             IntField(x)(Ordering.comparatorToOrdering(comparator), None)
           case y: String =>

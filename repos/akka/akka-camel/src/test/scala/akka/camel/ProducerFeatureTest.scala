@@ -306,8 +306,7 @@ class ProducerFeatureTest
       filterEvents(EventFilter[AkkaCamelException](occurrences = 1)) {
         val futureFailed = producer.tell("fail", testActor)
         expectMsgPF(timeoutDuration) {
-          case Failure(e) ⇒
-            e.getMessage should ===("fail")
+          case Failure(e) ⇒ e.getMessage should ===("fail")
         }
         producer.tell("OK", testActor)
         expectMsg("OK")
@@ -349,10 +348,8 @@ object ProducerFeatureTest {
       CamelExtension(context.system).activationFutureFor(child),
       timeout.duration)
     def receive = {
-      case msg: CamelMessage ⇒
-        child forward (msg)
-      case (aref: ActorRef, msg: String) ⇒
-        aref ! msg
+      case msg: CamelMessage ⇒ child forward (msg)
+      case (aref: ActorRef, msg: String) ⇒ aref ! msg
     }
   }
 
@@ -413,8 +410,7 @@ object ProducerFeatureTest {
 
   class TestResponder extends Actor {
     def receive = {
-      case msg: CamelMessage ⇒
-        msg.body match {
+      case msg: CamelMessage ⇒ msg.body match {
           case "fail" ⇒
             context.sender() ! akka.actor.Status.Failure(
               new AkkaCamelException(new Exception("failure"), msg.headers))
@@ -431,8 +427,7 @@ object ProducerFeatureTest {
       case msg: CamelMessage ⇒
         context
           .sender() ! (msg.copy(headers = msg.headers + ("test" -> "result")))
-      case msg: akka.actor.Status.Failure ⇒
-        msg.cause match {
+      case msg: akka.actor.Status.Failure ⇒ msg.cause match {
           case e: AkkaCamelException ⇒
             context.sender() ! Status.Failure(
               new AkkaCamelException(e, e.headers + ("test" -> "failure")))

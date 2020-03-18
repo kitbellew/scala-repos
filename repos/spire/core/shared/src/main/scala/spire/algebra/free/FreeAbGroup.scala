@@ -16,8 +16,7 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
     */
   def run[B](f: A => B)(implicit B: AbGroup[B]): B =
     terms.foldLeft(B.id) {
-      case (total, (a, n)) =>
-        B.op(total, B.combinen(f(a), n))
+      case (total, (a, n)) => B.op(total, B.combinen(f(a), n))
     }
 
   /**

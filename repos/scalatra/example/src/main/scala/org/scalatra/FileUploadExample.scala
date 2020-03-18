@@ -44,8 +44,7 @@ class FileUploadExample
 
   post("/") {
     fileParams.get("file") match {
-      case Some(file) =>
-        Ok(
+      case Some(file) => Ok(
           file.get(),
           Map(
             "Content-Type" -> (file.contentType.getOrElse(
@@ -55,8 +54,7 @@ class FileUploadExample
             ))
         )
 
-      case None =>
-        BadRequest(displayPage(<p>
+      case None => BadRequest(displayPage(<p>
             Hey! You forgot to select a file.
           </p>))
     }

@@ -95,8 +95,7 @@ private[spark] class CompactBuffer[T: ClassTag]
           System.arraycopy(itsElements, 0, otherElements, oldSize, itsSize - 2)
         }
 
-      case _ =>
-        values.foreach(e => this += e)
+      case _ => values.foreach(e => this += e)
     }
     this
   }

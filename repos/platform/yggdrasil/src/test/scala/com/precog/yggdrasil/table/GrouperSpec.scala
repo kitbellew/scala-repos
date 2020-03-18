@@ -127,8 +127,9 @@ trait GrouperSpec[M[+_]]
         gs1Json <- gs1.toJson
       } yield {
         key.toJValue must beLike {
-          case jo: JObject =>
-            (jo \ "tic_a") match { case JNum(i) => set must contain(i) }
+          case jo: JObject => (jo \ "tic_a") match {
+              case JNum(i) => set must contain(i)
+            }
         }
 
         val histoKey = key.toJValue(tic_aj)
@@ -191,8 +192,9 @@ trait GrouperSpec[M[+_]]
         gs1Json <- gs1.toJson
       } yield {
         key.toJValue must beLike {
-          case jo: JObject =>
-            (jo \ "tic_a") match { case JNum(i) => set must contain(i) }
+          case jo: JObject => (jo \ "tic_a") match {
+              case JNum(i) => set must contain(i)
+            }
         }
 
         val histoKey = key.toJValue(tic_aj)
@@ -250,8 +252,7 @@ trait GrouperSpec[M[+_]]
         gs1Json <- gs1.toJson
       } yield {
         key.toJValue must beLike {
-          case jo: JObject =>
-            (jo \ "tic_a") match {
+          case jo: JObject => (jo \ "tic_a") match {
               case JNum(i) => set.map(_ % 2) must contain(i)
             }
         }
@@ -630,8 +631,7 @@ trait GrouperSpec[M[+_]]
     import constants._
 
     val data1 = augmentWithIdentities(rawData1 map {
-      case (a, b0) =>
-        JObject(
+      case (a, b0) => JObject(
           JField("a", JNum(a)) :: b0.map(b => JField("b", JNum(b))).toList)
     })
 
@@ -740,8 +740,7 @@ trait GrouperSpec[M[+_]]
     import constants._
 
     val data1 = augmentWithIdentities(rawData1 map {
-      case (a, b0) =>
-        JObject(
+      case (a, b0) => JObject(
           JField("a", JNum(a)) :: b0.map(b => JField("b", JNum(b))).toList)
     })
 

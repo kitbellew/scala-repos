@@ -116,8 +116,7 @@ object Receiver {
           ctx.setReceiveTimeout(Duration.Undefined)
           empty(ctx)
         } else asked(ctx, remaining)
-      case Msg(_, msg) ⇒
-        msg match {
+      case Msg(_, msg) ⇒ msg match {
           case ExternalAddress(replyTo) ⇒ { replyTo ! ctx.self; Same }
           case g @ GetOne(d) if d <= Duration.Zero ⇒
             g.replyTo ! GetOneResult(ctx.self, None)

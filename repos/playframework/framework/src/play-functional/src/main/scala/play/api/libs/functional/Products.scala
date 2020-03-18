@@ -75,8 +75,9 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
     def tupled(implicit v: VariantExtractor[M]): M[(A1, A2)] =
       v match {
         case FunctorExtractor(fu) => apply { (a1: A1, a2: A2) => (a1, a2) }(fu)
-        case ContravariantFunctorExtractor(fu) =>
-          apply[(A1, A2)] { (a: (A1, A2)) => (a._1, a._2) }(fu)
+        case ContravariantFunctorExtractor(fu) => apply[(A1, A2)] {
+            (a: (A1, A2)) => (a._1, a._2)
+          }(fu)
         case InvariantFunctorExtractor(fu) =>
           apply[(A1, A2)](
             { (a1: A1, a2: A2) => (a1, a2) },
@@ -127,10 +128,12 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
 
     def tupled(implicit v: VariantExtractor[M]): M[(A1, A2, A3)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply { (a1: A1, a2: A2, a3: A3) => (a1, a2, a3) }(fu)
-        case ContravariantFunctorExtractor(fu) =>
-          apply[(A1, A2, A3)] { (a: (A1, A2, A3)) => (a._1, a._2, a._3) }(fu)
+        case FunctorExtractor(fu) => apply { (a1: A1, a2: A2, a3: A3) =>
+            (a1, a2, a3)
+          }(fu)
+        case ContravariantFunctorExtractor(fu) => apply[(A1, A2, A3)] {
+            (a: (A1, A2, A3)) => (a._1, a._2, a._3)
+          }(fu)
         case InvariantFunctorExtractor(fu) =>
           apply[(A1, A2, A3)](
             { (a1: A1, a2: A2, a3: A3) => (a1, a2, a3) },
@@ -190,11 +193,11 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
 
     def tupled(implicit v: VariantExtractor[M]): M[(A1, A2, A3, A4)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply { (a1: A1, a2: A2, a3: A3, a4: A4) => (a1, a2, a3, a4) }(fu)
-        case ContravariantFunctorExtractor(fu) =>
-          apply[(A1, A2, A3, A4)] { (a: (A1, A2, A3, A4)) =>
-            (a._1, a._2, a._3, a._4)
+        case FunctorExtractor(fu) => apply { (a1: A1, a2: A2, a3: A3, a4: A4) =>
+            (a1, a2, a3, a4)
+          }(fu)
+        case ContravariantFunctorExtractor(fu) => apply[(A1, A2, A3, A4)] {
+            (a: (A1, A2, A3, A4)) => (a._1, a._2, a._3, a._4)
           }(fu)
         case InvariantFunctorExtractor(fu) =>
           apply[(A1, A2, A3, A4)](
@@ -261,13 +264,11 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
 
     def tupled(implicit v: VariantExtractor[M]): M[(A1, A2, A3, A4, A5)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply { (a1: A1, a2: A2, a3: A3, a4: A4, a5: A5) =>
-            (a1, a2, a3, a4, a5)
+        case FunctorExtractor(fu) => apply {
+            (a1: A1, a2: A2, a3: A3, a4: A4, a5: A5) => (a1, a2, a3, a4, a5)
           }(fu)
-        case ContravariantFunctorExtractor(fu) =>
-          apply[(A1, A2, A3, A4, A5)] { (a: (A1, A2, A3, A4, A5)) =>
-            (a._1, a._2, a._3, a._4, a._5)
+        case ContravariantFunctorExtractor(fu) => apply[(A1, A2, A3, A4, A5)] {
+            (a: (A1, A2, A3, A4, A5)) => (a._1, a._2, a._3, a._4, a._5)
           }(fu)
         case InvariantFunctorExtractor(fu) =>
           apply[(A1, A2, A3, A4, A5)](
@@ -345,9 +346,9 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
 
     def tupled(implicit v: VariantExtractor[M]): M[(A1, A2, A3, A4, A5, A6)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply { (a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6) =>
-            (a1, a2, a3, a4, a5, a6)
+        case FunctorExtractor(fu) => apply {
+            (a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6) =>
+              (a1, a2, a3, a4, a5, a6)
           }(fu)
         case ContravariantFunctorExtractor(fu) =>
           apply[(A1, A2, A3, A4, A5, A6)] { (a: (A1, A2, A3, A4, A5, A6)) =>
@@ -443,9 +444,9 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
     def tupled(implicit
         v: VariantExtractor[M]): M[(A1, A2, A3, A4, A5, A6, A7)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply { (a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7) =>
-            (a1, a2, a3, a4, a5, a6, a7)
+        case FunctorExtractor(fu) => apply {
+            (a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7) =>
+              (a1, a2, a3, a4, a5, a6, a7)
           }(fu)
         case ContravariantFunctorExtractor(fu) =>
           apply[(A1, A2, A3, A4, A5, A6, A7)] {
@@ -558,8 +559,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
     def tupled(implicit
         v: VariantExtractor[M]): M[(A1, A2, A3, A4, A5, A6, A7, A8)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply {
+        case FunctorExtractor(fu) => apply {
             (a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8) =>
               (a1, a2, a3, a4, a5, a6, a7, a8)
           }(fu)
@@ -703,8 +703,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
     def tupled(implicit
         v: VariantExtractor[M]): M[(A1, A2, A3, A4, A5, A6, A7, A8, A9)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply {
+        case FunctorExtractor(fu) => apply {
             (
                 a1: A1,
                 a2: A2,
@@ -878,8 +877,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
     def tupled(implicit
         v: VariantExtractor[M]): M[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply {
+        case FunctorExtractor(fu) => apply {
             (
                 a1: A1,
                 a2: A2,
@@ -1066,8 +1064,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
     def tupled(implicit v: VariantExtractor[M])
         : M[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply {
+        case FunctorExtractor(fu) => apply {
             (
                 a1: A1,
                 a2: A2,
@@ -1289,8 +1286,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
     def tupled(implicit v: VariantExtractor[M])
         : M[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply {
+        case FunctorExtractor(fu) => apply {
             (
                 a1: A1,
                 a2: A2,
@@ -1550,8 +1546,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
     def tupled(implicit v: VariantExtractor[M])
         : M[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply {
+        case FunctorExtractor(fu) => apply {
             (
                 a1: A1,
                 a2: A2,
@@ -1830,8 +1825,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
     def tupled(implicit v: VariantExtractor[M])
         : M[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply {
+        case FunctorExtractor(fu) => apply {
             (
                 a1: A1,
                 a2: A2,
@@ -2232,8 +2226,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
     def tupled(implicit v: VariantExtractor[M]): M[
       (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply {
+        case FunctorExtractor(fu) => apply {
             (
                 a1: A1,
                 a2: A2,
@@ -2749,8 +2742,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
     def tupled(implicit v: VariantExtractor[M]): M[
       (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply {
+        case FunctorExtractor(fu) => apply {
             (
                 a1: A1,
                 a2: A2,
@@ -3346,8 +3338,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         A16,
         A17)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply {
+        case FunctorExtractor(fu) => apply {
             (
                 a1: A1,
                 a2: A2,
@@ -3976,8 +3967,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         A17,
         A18)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply {
+        case FunctorExtractor(fu) => apply {
             (
                 a1: A1,
                 a2: A2,
@@ -4639,8 +4629,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         A18,
         A19)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply {
+        case FunctorExtractor(fu) => apply {
             (
                 a1: A1,
                 a2: A2,
@@ -5334,8 +5323,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         A19,
         A20)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply {
+        case FunctorExtractor(fu) => apply {
             (
                 a1: A1,
                 a2: A2,
@@ -6060,8 +6048,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         A20,
         A21)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply {
+        case FunctorExtractor(fu) => apply {
             (
                 a1: A1,
                 a2: A2,
@@ -6795,8 +6782,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         A21,
         A22)] =
       v match {
-        case FunctorExtractor(fu) =>
-          apply {
+        case FunctorExtractor(fu) => apply {
             (
                 a1: A1,
                 a2: A2,

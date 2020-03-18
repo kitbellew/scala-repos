@@ -37,8 +37,7 @@ object HttpRequest {
       case method :: resource :: version :: Nil =>
         val requestLine = RequestLine(method, resource, version)
         readHeader(requestLine, Nil)
-      case _ =>
-        throw new ProtocolError("Malformed request line: " + line)
+      case _ => throw new ProtocolError("Malformed request line: " + line)
     }
   }
 
@@ -66,8 +65,7 @@ object HttpRequest {
         val newHeaderLine = line.split(':').toList match {
           case name :: value :: Nil =>
             HeaderLine(name.trim.toLowerCase, value.trim)
-          case _ =>
-            throw new ProtocolError("Malformed header line: " + line)
+          case _ => throw new ProtocolError("Malformed header line: " + line)
         }
         readHeader(requestLine, newHeaderLine :: headers)
       }

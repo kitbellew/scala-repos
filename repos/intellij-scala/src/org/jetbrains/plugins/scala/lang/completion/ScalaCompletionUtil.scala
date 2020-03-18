@@ -37,8 +37,7 @@ object ScalaCompletionUtil {
   def completeThis(ref: ScReferenceExpression): Boolean = {
     ref.qualifier match {
       case Some(_) => false
-      case None =>
-        ref.getParent match {
+      case None => ref.getParent match {
           case inf: ScInfixExpr if inf.operation == ref       => false
           case postf: ScPostfixExpr if postf.operation == ref => false
           case pref: ScPrefixExpr if pref.operation == ref    => false
@@ -145,12 +144,10 @@ object ScalaCompletionUtil {
             }
           case _ => return (true, true)
         }
-      case expr: ScReferenceExpression =>
-        parent.getParent match {
+      case expr: ScReferenceExpression => parent.getParent match {
           case _: ScBlockExpr | _: ScTemplateBody | _: ScBlock |
-              _: ScCaseClause =>
-            if (awful(parent, leaf)) return (true, true)
-          case _ =>
+              _: ScCaseClause => if (awful(parent, leaf)) return (true, true)
+          case _              =>
         }
       case _ =>
     }

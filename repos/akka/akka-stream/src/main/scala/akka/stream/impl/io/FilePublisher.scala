@@ -72,10 +72,7 @@ private[akka] final class FilePublisher(
 
   override def preStart() = {
     try { chan = FileChannel.open(f.toPath, FilePublisher.Read) }
-    catch {
-      case ex: Exception ⇒
-        onErrorThenStop(ex)
-    }
+    catch { case ex: Exception ⇒ onErrorThenStop(ex) }
 
     super.preStart()
   }

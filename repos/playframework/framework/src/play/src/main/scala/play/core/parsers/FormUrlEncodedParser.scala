@@ -55,8 +55,7 @@ object FormUrlEncodedParser {
       encoding: String): java.util.Map[String, java.util.List[String]] = {
     import scala.collection.JavaConverters._
     parse(data, encoding).map {
-      case (key, values) =>
-        key -> values.asJava
+      case (key, values) => key -> values.asJava
     }.asJava
   }
 
@@ -71,8 +70,7 @@ object FormUrlEncodedParser {
       encoding: String): java.util.Map[String, Array[String]] = {
     import scala.collection.JavaConverters._
     parse(data, encoding).map {
-      case (key, values) =>
-        key -> values.toArray
+      case (key, values) => key -> values.toArray
     }.asJava
   }
 

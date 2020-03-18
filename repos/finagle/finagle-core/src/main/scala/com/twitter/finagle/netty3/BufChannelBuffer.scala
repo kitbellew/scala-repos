@@ -99,20 +99,16 @@ object BufChannelBuffer {
     */
   def apply(buf: Buf, endianness: ByteOrder): ChannelBuffer =
     buf match {
-      case empty if empty.isEmpty =>
-        ChannelBuffers.EMPTY_BUFFER
+      case empty if empty.isEmpty => ChannelBuffers.EMPTY_BUFFER
 
-      case ChannelBufferBuf.Owned(cb) if endianness == cb.order =>
-        cb
+      case ChannelBufferBuf.Owned(cb) if endianness == cb.order => cb
 
       case Buf.ByteArray.Owned(bytes, begin, end) =>
         ChannelBuffers.wrappedBuffer(endianness, bytes, begin, end - begin)
 
-      case Buf.ByteBuffer.Owned(bb) =>
-        ChannelBuffers.wrappedBuffer(bb)
+      case Buf.ByteBuffer.Owned(bb) => ChannelBuffers.wrappedBuffer(bb)
 
-      case _ =>
-        new BufChannelBuffer(buf, endianness)
+      case _ => new BufChannelBuffer(buf, endianness)
     }
 
   /** Creates a ChannelBuffer from `buf` with big-endian ByteOrder. */

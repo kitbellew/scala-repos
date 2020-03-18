@@ -84,8 +84,7 @@ object Test extends App {
       x = 2
       (null: String).toString
     } catch {
-      case e: NullPointerException =>
-        throw e
+      case e: NullPointerException => throw e
       case _: Throwable =>
         x = 3
         return 1000

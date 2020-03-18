@@ -138,8 +138,7 @@ private[parquet] object CatalystReadSupport {
         // Only clips map types with nested key type or value type
         clipParquetMapType(parquetType.asGroupType(), t.keyType, t.valueType)
 
-      case t: StructType =>
-        clipParquetGroup(parquetType.asGroupType(), t)
+      case t: StructType => clipParquetGroup(parquetType.asGroupType(), t)
 
       case _ =>
         // UDTs and primitive types are not clipped.  For UDTs, a clipped version might not be able
@@ -299,8 +298,7 @@ private[parquet] object CatalystReadSupport {
   def expandUDT(schema: StructType): StructType = {
     def expand(dataType: DataType): DataType = {
       dataType match {
-        case t: ArrayType =>
-          t.copy(elementType = expand(t.elementType))
+        case t: ArrayType => t.copy(elementType = expand(t.elementType))
 
         case t: MapType =>
           t.copy(keyType = expand(t.keyType), valueType = expand(t.valueType))
@@ -310,11 +308,9 @@ private[parquet] object CatalystReadSupport {
             f.copy(dataType = expand(f.dataType)))
           t.copy(fields = expandedFields)
 
-        case t: UserDefinedType[_] =>
-          t.sqlType
+        case t: UserDefinedType[_] => t.sqlType
 
-        case t =>
-          t
+        case t => t
       }
     }
 

@@ -107,10 +107,8 @@ private[spark] object UIWorkloadGenerator {
               setProperties(desc)
               job()
               println("Job finished: " + desc)
-            } catch {
-              case e: Exception =>
-                println("Job Failed: " + desc)
-            } finally { barrier.release() }
+            } catch { case e: Exception => println("Job Failed: " + desc) }
+            finally { barrier.release() }
             // scalastyle:on println
           }
         }.start

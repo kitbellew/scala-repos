@@ -38,10 +38,8 @@ class ScalaTypeSurrounder extends ScalaExpressionSurrounder {
     }
 
     withType.getPsi match {
-      case x: ScParenthesisedExpr =>
-        x.expr match {
-          case Some(y: ScTypedStmt) =>
-            y.typeElement match {
+      case x: ScParenthesisedExpr => x.expr match {
+          case Some(y: ScTypedStmt) => y.typeElement match {
               case Some(te: ScTypeElement) => {
                 if (te.getText() == "Any") te.getTextRange else defaultRange
               }

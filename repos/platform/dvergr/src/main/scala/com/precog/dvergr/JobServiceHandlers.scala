@@ -93,8 +93,7 @@ class CreateJobHandler(
                   jobs.createJob(apiKey, name, tpe, data, None) map { job =>
                     HttpResponse[JValue](Created, content = Some(job.serialize))
                   }
-                case false =>
-                  Future(HttpResponse[JValue](Forbidden))
+                case false => Future(HttpResponse[JValue](Forbidden))
               }
 
             } getOrElse {
@@ -147,8 +146,7 @@ class GetJobHandler(jobs: JobManager[Future])(implicit ctx: ExecutionContext)
       Success(jobs.findJob(jobId) map {
         case Some(job) =>
           HttpResponse[JValue](OK, content = Some(job.serialize))
-        case None =>
-          HttpResponse[JValue](NotFound)
+        case None => HttpResponse[JValue](NotFound)
       })
     } getOrElse {
       Failure(DispatchError(BadRequest, "Missing 'jobId paramter."))
@@ -321,8 +319,7 @@ class ListMessagesHandler(jobs: JobManager[Future])(implicit
           jobs.listMessages(jobId, channel, prevId) map { messages =>
             HttpResponse[JValue](OK, content = Some(messages.toList.serialize))
           }
-        case Left(error) =>
-          Future(
+        case Left(error) => Future(
             HttpResponse[JValue](BadRequest, content = Some(JString(error))))
       })
     }) getOrElse {
@@ -348,8 +345,7 @@ class GetJobStateHandler(jobs: JobManager[Future])(implicit
       jobs.findJob(jobId) map {
         case Some(job) =>
           HttpResponse[JValue](OK, content = Some(job.state.serialize))
-        case None =>
-          HttpResponse[JValue](
+        case None => HttpResponse[JValue](
             NotFound,
             content = Some(JString("No job found with id " + jobId)))
       }
@@ -410,14 +406,12 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
           contentM flatMap {
             obj =>
               (obj \ "state") match {
-                case JString("started") =>
-                  transition(obj) { (timestamp, _) =>
+                case JString("started") => transition(obj) { (timestamp, _) =>
                     jobs.start(jobId, timestamp) map (Validation.fromEither(
                       _)) map (_ map (_.state))
                   }
 
-                case JString("cancelled") =>
-                  transition(obj) {
+                case JString("cancelled") => transition(obj) {
                     case (timestamp, Some(reason)) =>
                       jobs.cancel(jobId, reason, timestamp) map (Validation
                         .fromEither(_)) map (_ map (_.state))
@@ -426,14 +420,12 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
                         "Missing required field 'reason' in request body."))
                   }
 
-                case JString("finished") =>
-                  transition(obj) { (timestamp, _) =>
+                case JString("finished") => transition(obj) { (timestamp, _) =>
                     jobs.finish(jobId, timestamp) map (Validation.fromEither(
                       _)) map (_ map (_.state))
                   }
 
-                case JString("aborted") =>
-                  transition(obj) {
+                case JString("aborted") => transition(obj) {
                     case (timestamp, Some(reason)) =>
                       jobs.abort(jobId, reason, timestamp) map (Validation
                         .fromEither(_)) map (_ map (_.state))
@@ -442,8 +434,7 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
                         "Missing required field 'reason' in request body."))
                   }
 
-                case JString("expired") =>
-                  transition(obj) { (timestamp, _) =>
+                case JString("expired") => transition(obj) { (timestamp, _) =>
                     jobs.expire(jobId, timestamp) map (Validation.fromEither(
                       _)) map (_ map (_.state))
                   }
@@ -496,8 +487,7 @@ class CreateResultHandler(jobs: JobManager[Future])(implicit
       val data = chunks.fold(_ :: StreamT.empty[Future, Array[Byte]], identity)
 
       jobs.setResult(jobId, mimeType, data) map {
-        case Right(_) =>
-          HttpResponse[ByteChunk](OK)
+        case Right(_) => HttpResponse[ByteChunk](OK)
         case Left(error) =>
           HttpResponse[ByteChunk](
             NotFound,
@@ -525,12 +515,10 @@ class GetResultHandler(jobs: JobManager[Future])(implicit ctx: ExecutionContext)
     HttpResponse[ByteChunk]]] = (request: HttpRequest[ByteChunk]) => {
     Success(request.parameters get 'jobId map { jobId =>
       jobs.findJob(jobId) flatMap {
-        case None =>
-          Future(HttpResponse[ByteChunk](NotFound))
+        case None => Future(HttpResponse[ByteChunk](NotFound))
         case Some(job) =>
           jobs.getResult(jobId) map {
-            case Left(error) =>
-              HttpResponse[ByteChunk](NoContent)
+            case Left(error) => HttpResponse[ByteChunk](NoContent)
             case Right((mimeType, data)) =>
               val headers = mimeType.foldLeft(HttpHeaders.Empty) {
                 (headers, mimeType) => headers + `Content-Type`(mimeType)

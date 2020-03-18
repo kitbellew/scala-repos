@@ -24,9 +24,8 @@ object ScalaStringContextType {
     if (!file.isInstanceOf[ScalaFile]) return false
     val element = file.findElementAt(offset)
     PsiTreeUtil.getParentOfType(element, classOf[ScLiteral]) match {
-      case literal: ScLiteral =>
-        literal.isString
-      case _ => false
+      case literal: ScLiteral => literal.isString
+      case _                  => false
     }
   }
 }

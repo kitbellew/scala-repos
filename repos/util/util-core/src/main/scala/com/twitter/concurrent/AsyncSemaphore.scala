@@ -111,13 +111,11 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
         Future.value(new SemaphorePermit)
       } else {
         maxWaiters match {
-          case Some(max) if (waitq.size >= max) =>
-            MaxWaitersExceededException
+          case Some(max) if (waitq.size >= max) => MaxWaitersExceededException
           case _ =>
             val promise = new Promise[Permit]
             promise.setInterruptHandler {
-              case t: Throwable =>
-                self.synchronized {
+              case t: Throwable => self.synchronized {
                   if (promise.updateIfEmpty(Throw(t))) waitq.remove(promise)
                 }
             }
@@ -143,8 +141,7 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
       val f =
         try func
         catch {
-          case NonFatal(e) =>
-            Future.exception(e)
+          case NonFatal(e) => Future.exception(e)
           case e: Throwable =>
             permit.release()
             throw e

@@ -79,11 +79,9 @@ class ScConstructorImpl(node: ASTNode)
         if (parents.allTypeElements.length != 1) None
         else {
           parents.getContext match {
-            case e: ScExtendsBlock =>
-              e.getContext match {
-                case n: ScNewTemplateDefinition =>
-                  n.expectedType()
-                case _ => None
+            case e: ScExtendsBlock => e.getContext match {
+                case n: ScNewTemplateDefinition => n.expectedType()
+                case _                          => None
               }
             case _ => None
           }
@@ -94,13 +92,10 @@ class ScConstructorImpl(node: ASTNode)
 
   def newTemplate = {
     getContext match {
-      case parents: ScClassParents =>
-        parents.getContext match {
-          case e: ScExtendsBlock =>
-            e.getContext match {
-              case n: ScNewTemplateDefinition =>
-                Some(n)
-              case _ => None
+      case parents: ScClassParents => parents.getContext match {
+          case e: ScExtendsBlock => e.getContext match {
+              case n: ScNewTemplateDefinition => Some(n)
+              case _                          => None
             }
         }
       case _ => None
@@ -268,8 +263,7 @@ class ScConstructorImpl(node: ASTNode)
   def simpleTypeElement: Option[ScSimpleTypeElement] =
     typeElement match {
       case s: ScSimpleTypeElement => Some(s)
-      case p: ScParameterizedTypeElement =>
-        p.typeElement match {
+      case p: ScParameterizedTypeElement => p.typeElement match {
           case s: ScSimpleTypeElement => Some(s)
           case _                      => None
         }

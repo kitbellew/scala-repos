@@ -65,9 +65,8 @@ object Runner extends Logging {
 
   def cleanup(fs: Option[FileSystem], uri: Option[URI]): Unit = {
     (fs, uri) match {
-      case (Some(f), Some(u)) =>
-        f.close()
-      case _ => Unit
+      case (Some(f), Some(u)) => f.close()
+      case _                  => Unit
     }
   }
 

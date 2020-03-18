@@ -88,8 +88,7 @@ case class WrappingConfig(
   def get(key: String) = {
     updates.get(key) match {
       case s @ Some(_) => s
-      case None =>
-        if (removes.contains(key)) None else backingConfig.get(key)
+      case None        => if (removes.contains(key)) None else backingConfig.get(key)
     }
   }
 

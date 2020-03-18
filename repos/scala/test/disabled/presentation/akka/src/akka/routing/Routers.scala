@@ -18,8 +18,7 @@ trait Dispatcher {
   protected def broadcast(message: Any) {}
 
   protected def dispatch: Receive = {
-    case Routing.Broadcast(message) =>
-      broadcast(message)
+    case Routing.Broadcast(message) => broadcast(message)
     case a if routes.isDefinedAt(a) =>
       if (isSenderDefined) routes(a).forward(transform(a))(someSelf)
       else routes(a).!(transform(a))(None)

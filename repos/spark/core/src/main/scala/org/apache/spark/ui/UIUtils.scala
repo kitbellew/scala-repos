@@ -435,8 +435,7 @@ private[spark] object UIUtils extends Logging {
       // Verify that this has only anchors and span (we are wrapping in span)
       val allowedNodeLabels = Set("a", "span")
       val illegalNodes = xml \\ "_" filterNot {
-        case node: Node =>
-          allowedNodeLabels.contains(node.label)
+        case node: Node => allowedNodeLabels.contains(node.label)
       }
       if (illegalNodes.nonEmpty) {
         throw new IllegalArgumentException(
@@ -470,8 +469,7 @@ private[spark] object UIUtils extends Logging {
       }
       new RuleTransformer(rule).transform(xml)
     } catch {
-      case NonFatal(e) =>
-        <span class="description-input">{desc}</span>
+      case NonFatal(e) => <span class="description-input">{desc}</span>
     }
   }
 

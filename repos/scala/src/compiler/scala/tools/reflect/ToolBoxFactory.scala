@@ -210,8 +210,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
                 tree match {
                   case Ident(name: TermName) if invertedIndex contains name =>
                     Ident(invertedIndex(name)) setType tree.tpe
-                  case _ =>
-                    super.transform(tree)
+                  case _ => super.transform(tree)
                 }
             }.transform(result)
           new TreeTypeSubstituter(

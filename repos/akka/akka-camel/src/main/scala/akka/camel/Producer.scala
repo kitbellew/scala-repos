@@ -76,8 +76,7 @@ trait ProducerSupport extends Actor with CamelSupport {
       routeResponse(Failure(e))
       throw e
 
-    case msg ⇒
-      producerChild match {
+    case msg ⇒ producerChild match {
         case Some(child) ⇒ child forward transformOutgoingMessage(msg)
         case None ⇒ messages :+= ((sender(), msg))
       }

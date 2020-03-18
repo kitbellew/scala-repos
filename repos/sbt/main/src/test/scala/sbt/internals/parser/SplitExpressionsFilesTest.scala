@@ -53,8 +53,7 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
               path,
               SplitterComparison(
                 scala.util.Success(oldRes),
-                scala.util.Success(newRes))) if oldRes == newRes =>
-          path
+                scala.util.Success(newRes))) if oldRes == newRes => path
       }
 
       validResults.length must be_==(results.length)
@@ -67,9 +66,8 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
     val lines = statement.lines.toList
     val optionStatements =
       removeSlashAsterisk(lines, lineRange, !REVERTED_LINES) match {
-        case Some((st, lr)) =>
-          removeDoubleSlash(st, lr)
-        case _ => None
+        case Some((st, lr)) => removeDoubleSlash(st, lr)
+        case _              => None
       }
     optionStatements.map(t => t._2)
   }
@@ -104,8 +102,7 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
               reverted)
           }
         }
-      case _ =>
-        None
+      case _ => None
     }
 
   /**
@@ -130,11 +127,9 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
                 .trim
                 .nonEmpty) {
             removeSlashAsterisk(lines, lineRange, REVERTED_LINES) match {
-              case some @ Some((s, ln)) if ln == lineRange =>
-                some
-              case Some((s, ln)) =>
-                removeDoubleSlashReversed(s, ln)
-              case _ => None
+              case some @ Some((s, ln)) if ln == lineRange => some
+              case Some((s, ln))                           => removeDoubleSlashReversed(s, ln)
+              case _                                       => None
             }
 
           } else {
@@ -142,8 +137,7 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
               lines.tail,
               lineRange.copy(end = lineRange.end - 1))
           }
-        case _ =>
-          None
+        case _ => None
       }
     removeDoubleSlashReversed(statements.reverse, lineRange).map(t =>
       (t._1.reverse, t._2))
@@ -165,10 +159,8 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
         imports.map(imp => (imp._1.trim, imp._2)),
         settingsAndDefWithoutComments))
     } catch {
-      case e: ToolBoxError =>
-        scala.util.Failure(e)
-      case e: Throwable =>
-        scala.util.Failure(e)
+      case e: ToolBoxError => scala.util.Failure(e)
+      case e: Throwable    => scala.util.Failure(e)
     }
   }
 
@@ -176,8 +168,8 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
     for ((file, comparison) <- results) {
       val fileName = file.getName
       comparison match {
-        case SplitterComparison(scala.util.Failure(ex), _) =>
-          println(s"In file: $fileName, old splitter failed. ${ex.toString}")
+        case SplitterComparison(scala.util.Failure(ex), _) => println(
+            s"In file: $fileName, old splitter failed. ${ex.toString}")
         case SplitterComparison(_, scala.util.Failure(ex)) =>
           println(s"In file: $fileName, new splitter failed. ${ex.toString}")
           ex.printStackTrace()

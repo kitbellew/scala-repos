@@ -113,8 +113,7 @@ private[ml] object TreeTests extends SparkFunSuite {
         checkEqual(aye.leftChild, bee.leftChild)
         checkEqual(aye.rightChild, bee.rightChild)
       case (aye: LeafNode, bee: LeafNode) => // do nothing
-      case _ =>
-        throw new AssertionError("Found mismatched nodes")
+      case _                              => throw new AssertionError("Found mismatched nodes")
     }
   }
 
@@ -125,8 +124,7 @@ private[ml] object TreeTests extends SparkFunSuite {
   def checkEqual(a: TreeEnsembleModel, b: TreeEnsembleModel): Unit = {
     try {
       a.trees.zip(b.trees).foreach {
-        case (treeA, treeB) =>
-          TreeTests.checkEqual(treeA, treeB)
+        case (treeA, treeB) => TreeTests.checkEqual(treeA, treeB)
       }
       assert(a.treeWeights === b.treeWeights)
     } catch {

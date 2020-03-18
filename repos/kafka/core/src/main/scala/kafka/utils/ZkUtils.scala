@@ -217,8 +217,7 @@ class ZkUtils(
     val leaderAndIsrOpt = readDataMaybeNull(
       getTopicPartitionLeaderAndIsrPath(topic, partition))._1
     leaderAndIsrOpt match {
-      case Some(leaderAndIsr) =>
-        Json.parseFull(leaderAndIsr) match {
+      case Some(leaderAndIsr) => Json.parseFull(leaderAndIsr) match {
           case Some(m) =>
             Some(
               m.asInstanceOf[Map[String, Any]]
@@ -240,8 +239,7 @@ class ZkUtils(
     val leaderAndIsrOpt = readDataMaybeNull(
       getTopicPartitionLeaderAndIsrPath(topic, partition))._1
     leaderAndIsrOpt match {
-      case Some(leaderAndIsr) =>
-        Json.parseFull(leaderAndIsr) match {
+      case Some(leaderAndIsr) => Json.parseFull(leaderAndIsr) match {
           case None =>
             throw new NoEpochForPartitionException(
               "No epoch, leaderAndISR data for partition [%s,%d] is invalid"
@@ -274,8 +272,7 @@ class ZkUtils(
     val leaderAndIsrOpt = readDataMaybeNull(
       getTopicPartitionLeaderAndIsrPath(topic, partition))._1
     leaderAndIsrOpt match {
-      case Some(leaderAndIsr) =>
-        Json.parseFull(leaderAndIsr) match {
+      case Some(leaderAndIsr) => Json.parseFull(leaderAndIsr) match {
           case Some(m) =>
             m.asInstanceOf[Map[String, Any]]
               .get("isr")
@@ -293,8 +290,7 @@ class ZkUtils(
   def getReplicasForPartition(topic: String, partition: Int): Seq[Int] = {
     val jsonPartitionMapOpt = readDataMaybeNull(getTopicPath(topic))._1
     jsonPartitionMapOpt match {
-      case Some(jsonPartitionMap) =>
-        Json.parseFull(jsonPartitionMap) match {
+      case Some(jsonPartitionMap) => Json.parseFull(jsonPartitionMap) match {
           case Some(m) =>
             m.asInstanceOf[Map[String, Any]].get("partitions") match {
               case Some(replicaMap) =>
@@ -523,9 +519,8 @@ class ZkUtils(
         createParentPath(path)
         try { ZkPath.createPersistent(zkClient, path, data, acls) }
         catch {
-          case e: ZkNodeExistsException =>
-            zkClient.writeData(path, data)
-          case e2: Throwable => throw e2
+          case e: ZkNodeExistsException => zkClient.writeData(path, data)
+          case e2: Throwable            => throw e2
         }
       }
       case e2: Throwable => throw e2
@@ -655,9 +650,8 @@ class ZkUtils(
     val dataAndStat =
       try { (Some(zkClient.readData(path, stat)), stat) }
       catch {
-        case e: ZkNoNodeException =>
-          (None, stat)
-        case e2: Throwable => throw e2
+        case e: ZkNoNodeException => (None, stat)
+        case e2: Throwable        => throw e2
       }
     dataAndStat
   }
@@ -718,8 +712,7 @@ class ZkUtils(
     topics.foreach { topic =>
       val jsonPartitionMapOpt = readDataMaybeNull(getTopicPath(topic))._1
       jsonPartitionMapOpt match {
-        case Some(jsonPartitionMap) =>
-          Json.parseFull(jsonPartitionMap) match {
+        case Some(jsonPartitionMap) => Json.parseFull(jsonPartitionMap) match {
             case Some(m) =>
               m.asInstanceOf[Map[String, Any]].get("partitions") match {
                 case Some(repl) =>
@@ -746,8 +739,7 @@ class ZkUtils(
     topics.foreach { topic =>
       val jsonPartitionMapOpt = readDataMaybeNull(getTopicPath(topic))._1
       val partitionMap = jsonPartitionMapOpt match {
-        case Some(jsonPartitionMap) =>
-          Json.parseFull(jsonPartitionMap) match {
+        case Some(jsonPartitionMap) => Json.parseFull(jsonPartitionMap) match {
             case Some(m) =>
               m.asInstanceOf[Map[String, Any]].get("partitions") match {
                 case Some(replicaMap) =>
@@ -797,8 +789,7 @@ class ZkUtils(
   def parsePartitionReassignmentDataWithoutDedup(
       jsonData: String): Seq[(TopicAndPartition, Seq[Int])] = {
     Json.parseFull(jsonData) match {
-      case Some(m) =>
-        m.asInstanceOf[Map[String, Any]].get("partitions") match {
+      case Some(m) => m.asInstanceOf[Map[String, Any]].get("partitions") match {
           case Some(partitionsSeq) =>
             partitionsSeq
               .asInstanceOf[Seq[Map[String, Any]]]
@@ -808,11 +799,9 @@ class ZkUtils(
                 val newReplicas = p.get("replicas").get.asInstanceOf[Seq[Int]]
                 TopicAndPartition(topic, partition) -> newReplicas
               })
-          case None =>
-            Seq.empty
+          case None => Seq.empty
         }
-      case None =>
-        Seq.empty
+      case None => Seq.empty
     }
   }
 
@@ -824,8 +813,7 @@ class ZkUtils(
   def parseTopicsData(jsonData: String): Seq[String] = {
     var topics = List.empty[String]
     Json.parseFull(jsonData) match {
-      case Some(m) =>
-        m.asInstanceOf[Map[String, Any]].get("topics") match {
+      case Some(m) => m.asInstanceOf[Map[String, Any]].get("topics") match {
           case Some(partitionsSeq) =>
             val mapPartitionSeq = partitionsSeq
               .asInstanceOf[Seq[Map[String, Any]]]
@@ -1141,8 +1129,7 @@ class ZKCheckedEphemeral(
   private class CreateCallback extends StringCallback {
     def processResult(rc: Int, path: String, ctx: Object, name: String) {
       Code.get(rc) match {
-        case Code.OK =>
-          setResult(Code.OK)
+        case Code.OK             => setResult(Code.OK)
         case Code.CONNECTIONLOSS =>
           // try again
           createEphemeral
@@ -1286,8 +1273,7 @@ class ZKCheckedEphemeral(
     result match {
       case Code.OK =>
       // Nothing to do
-      case _ =>
-        throw ZkException.create(KeeperException.create(result))
+      case _ => throw ZkException.create(KeeperException.create(result))
     }
   }
 }

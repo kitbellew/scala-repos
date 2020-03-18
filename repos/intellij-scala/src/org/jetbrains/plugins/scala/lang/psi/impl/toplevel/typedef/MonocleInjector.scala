@@ -15,8 +15,7 @@ class MonocleInjector extends SyntheticMembersInjector {
   override def injectFunctions(source: ScTypeDefinition): Seq[String] = {
     source match {
       // Monocle lenses generation
-      case obj: ScObject =>
-        obj.fakeCompanionClassOrCompanionClass match {
+      case obj: ScObject => obj.fakeCompanionClassOrCompanionClass match {
           case clazz: ScClass
               if clazz.findAnnotation("monocle.macros.Lenses") != null =>
             mkLens(obj)

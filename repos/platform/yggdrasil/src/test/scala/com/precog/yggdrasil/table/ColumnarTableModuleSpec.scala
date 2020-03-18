@@ -127,8 +127,7 @@ trait ColumnarTableModuleSpec[M[+_]]
   def streamToString(stream: StreamT[M, CharBuffer]): String = {
     def loop(stream: StreamT[M, CharBuffer], sb: StringBuilder): M[String] =
       stream.uncons.flatMap {
-        case None =>
-          M.point(sb.toString)
+        case None => M.point(sb.toString)
         case Some((cb, tail)) =>
           sb.append(cb)
           loop(tail, sb)

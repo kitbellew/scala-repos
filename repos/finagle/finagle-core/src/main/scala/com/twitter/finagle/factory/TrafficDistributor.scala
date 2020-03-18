@@ -164,8 +164,7 @@ private[finagle] class TrafficDistributor[Req, Rep](
         val weightedAddrs: Set[(Address, Double)] = addrs.map(
           WeightedAddress.extract)
         val merged = weightedAddrs.foldLeft(active) {
-          case (cache, (addr, weight)) =>
-            cache.get(addr) match {
+          case (cache, (addr, weight)) => cache.get(addr) match {
               // An update with an existing Address that has a new weight
               // results in the the weight being overwritten but the [[ServiceFactory]]
               // instance is maintained.
@@ -192,8 +191,7 @@ private[finagle] class TrafficDistributor[Req, Rep](
         // entries are only removed in subsequent stream updates.
         val removed = merged.keySet -- weightedAddrs.map(_._1)
         removed.foldLeft(merged) {
-          case (cache, addr) =>
-            cache.get(addr) match {
+          case (cache, addr) => cache.get(addr) match {
               case Some(WeightedFactory(f, g, _))
                   if eagerEviction || f.status != Status.Open =>
                 g.setDone()
@@ -249,8 +247,7 @@ private[finagle] class TrafficDistributor[Req, Rep](
         // the cache and the associated balancer instances are closed.
         val removed = balancers.keySet -- weightedGroups.keySet
         removed.foldLeft(merged) {
-          case (cache, weight) =>
-            cache.get(weight) match {
+          case (cache, weight) => cache.get(weight) match {
               case Some(CachedBalancer(bal, _, _)) =>
                 bal.close()
                 cache - weight

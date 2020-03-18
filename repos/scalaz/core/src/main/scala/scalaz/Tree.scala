@@ -63,14 +63,10 @@ sealed abstract class Tree[A] {
         case t #:: ts if ts.isEmpty =>
           suspend(t.draw).map(subtree =>
             new StringBuilder("|") +: shift(stem, "   ", subtree))
-        case t #:: ts =>
-          for {
+        case t #:: ts => for {
             subtree <- suspend(t.draw)
             otherSubtrees <- suspend(drawSubTrees(ts))
-          } yield new StringBuilder("|") +: (shift(
-            branch,
-            trunk,
-            subtree) ++ otherSubtrees)
+          } yield new StringBuilder("|") +: (shift(branch, trunk, subtree) ++ otherSubtrees)
       }
 
     def shift(
@@ -255,10 +251,8 @@ object Tree extends TreeInstances {
 
     def unapply[A](t: Tree[A]): Option[A] = {
       t match {
-        case Node(root, Stream.Empty) =>
-          Some(root)
-        case _ =>
-          None
+        case Node(root, Stream.Empty) => Some(root)
+        case _                        => None
       }
     }
   }

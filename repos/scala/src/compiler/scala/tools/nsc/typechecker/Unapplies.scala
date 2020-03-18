@@ -186,13 +186,11 @@ trait Unapplies extends ast.TreeDSL {
           tp match {
             case AppliedTypeTree(
                   Select(_, tpnme.REPEATED_PARAM_CLASS_NAME),
-                  tps) =>
-              AppliedTypeTree(gen.rootScalaDot(tpnme.Seq), tps)
-            case _ => tp
+                  tps) => AppliedTypeTree(gen.rootScalaDot(tpnme.Seq), tps)
+            case _     => tp
           }
         constrParamss(cdef) match {
-          case Nil | Nil :: _ =>
-            gen.rootScalaDot(tpnme.Boolean)
+          case Nil | Nil :: _ => gen.rootScalaDot(tpnme.Boolean)
           case params :: _ =>
             val constrParamTypes = params.map(param => repeatedToSeq(param.tpt))
             AppliedTypeTree(

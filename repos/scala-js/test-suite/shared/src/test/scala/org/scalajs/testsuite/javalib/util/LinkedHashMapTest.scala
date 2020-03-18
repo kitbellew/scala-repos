@@ -229,8 +229,7 @@ class LinkedHashMapFactory(
               eldest: ju.Map.Entry[K, V]): Boolean = size > limit
         }
 
-      case None =>
-        new ju.LinkedHashMap[K, V](16, 0.75f, accessOrder)
+      case None => new ju.LinkedHashMap[K, V](16, 0.75f, accessOrder)
     }
   }
 }

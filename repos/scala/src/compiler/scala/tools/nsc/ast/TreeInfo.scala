@@ -20,8 +20,8 @@ abstract class TreeInfo extends scala.reflect.internal.TreeInfo {
   object BinaryOp {
     def unapply(t: Tree): Option[(Tree, Symbol, Tree)] =
       t match {
-        case Apply(sel @ Select(arg1, _), arg2 :: Nil) =>
-          Some((arg1, sel.symbol, arg2))
+        case Apply(sel @ Select(arg1, _), arg2 :: Nil) => Some(
+            (arg1, sel.symbol, arg2))
         case _ => None
       }
   }
@@ -29,8 +29,8 @@ abstract class TreeInfo extends scala.reflect.internal.TreeInfo {
   object TypeApplyOp {
     def unapply(t: Tree): Option[(Tree, Symbol, List[Type])] =
       t match {
-        case TypeApply(sel @ Select(recv, _), targs) =>
-          Some((recv, sel.symbol, targs map (_.tpe)))
+        case TypeApply(sel @ Select(recv, _), targs) => Some(
+            (recv, sel.symbol, targs map (_.tpe)))
         case _ => None
       }
   }
@@ -57,17 +57,16 @@ abstract class TreeInfo extends scala.reflect.internal.TreeInfo {
       def unapply(t: Tree): Option[Tree] =
         t match {
           case Apply(sel @ Select(ref, _), Nil)
-              if valueUnbox(ref.tpe) == sel.symbol =>
-            Some(ref)
-          case _ => None
+              if valueUnbox(ref.tpe) == sel.symbol => Some(ref)
+          case _                                   => None
         }
     }
     // new B(v). Returns B and v.
     object Box {
       def unapply(t: Tree): Option[(Tree, Type)] =
         t match {
-          case Apply(sel @ Select(New(tpt), nme.CONSTRUCTOR), v :: Nil) =>
-            Some((v, tpt.tpe.finalResultType))
+          case Apply(sel @ Select(New(tpt), nme.CONSTRUCTOR), v :: Nil) => Some(
+              (v, tpt.tpe.finalResultType))
           case _ => None
         }
     }

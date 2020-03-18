@@ -16,8 +16,7 @@ object Cli extends LilaController {
       form.bindFromRequest.fold(
         err => fuccess(BadRequest("invalid cli call")),
         {
-          case (command, password) =>
-            CliAuth(password) {
+          case (command, password) => CliAuth(password) {
               Env.api.cli(command.split(" ").toList) map { res => Ok(res) }
             }
         })

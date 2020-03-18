@@ -322,8 +322,7 @@ class ReliableProxy(
   }
 
   when(Active) {
-    case Event(Terminated(_), _) ⇒
-      terminated()
+    case Event(Terminated(_), _) ⇒ terminated()
     case Event(Ack(serial), queue) ⇒
       val q = queue dropWhile (m ⇒ compare(m.serial, serial) <= 0)
       if (compare(serial, lastAckSerial) > 0) lastAckSerial = serial
@@ -336,21 +335,18 @@ class ReliableProxy(
       stay()
     case Event(Unsent(msgs), queue) ⇒
       stay using queue ++ resend(updateSerial(msgs))
-    case Event(msg, queue) ⇒
-      stay using (queue :+ send(msg, sender()))
+    case Event(msg, queue) ⇒ stay using (queue :+ send(msg, sender()))
   }
 
   when(Connecting) {
-    case Event(Terminated(_), _) ⇒
-      stay()
+    case Event(Terminated(_), _) ⇒ stay()
     case Event(ActorIdentity(_, Some(actor)), queue) ⇒
       val curr = currentTarget
       cancelTimer(reconnectTimer)
       createTunnel(actor)
       if (currentTarget != curr) gossip(TargetChanged(currentTarget))
       if (queue.isEmpty) goto(Idle) else goto(Active) using resend(queue)
-    case Event(ActorIdentity(_, None), _) ⇒
-      stay()
+    case Event(ActorIdentity(_, None), _) ⇒ stay()
     case Event(ReconnectTick, _) ⇒
       if (maxConnectAttempts exists (_ == attemptedReconnects)) {
         logDebug("Failed to reconnect after {}", attemptedReconnects)
@@ -365,8 +361,7 @@ class ReliableProxy(
         attemptedReconnects += 1
         stay()
       }
-    case Event(Unsent(msgs), queue) ⇒
-      stay using queue ++ updateSerial(msgs)
+    case Event(Unsent(msgs), queue) ⇒ stay using queue ++ updateSerial(msgs)
     case Event(msg, queue) ⇒
       stay using (queue :+ Message(msg, sender(), nextSerial()))
   }

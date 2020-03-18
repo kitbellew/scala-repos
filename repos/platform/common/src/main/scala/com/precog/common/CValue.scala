@@ -55,20 +55,15 @@ sealed trait RValue {
   def flattenWithPath: Vector[(CPath, CValue)] = {
     def flatten0(path: CPath)(value: RValue): Vector[(CPath, CValue)] =
       value match {
-        case RObject(fields) if fields.isEmpty =>
-          Vector((path, CEmptyObject))
+        case RObject(fields) if fields.isEmpty => Vector((path, CEmptyObject))
 
-        case RArray(elems) if elems.isEmpty =>
-          Vector((path, CEmptyArray))
+        case RArray(elems) if elems.isEmpty => Vector((path, CEmptyArray))
 
-        case RObject(fields) =>
-          fields.foldLeft(Vector.empty[(CPath, CValue)]) {
-            case (acc, field) =>
-              acc ++ flatten0(path \ field._1)(field._2)
+        case RObject(fields) => fields.foldLeft(Vector.empty[(CPath, CValue)]) {
+            case (acc, field) => acc ++ flatten0(path \ field._1)(field._2)
           }
 
-        case RArray(elems) =>
-          Vector(elems: _*).zipWithIndex.flatMap { tuple =>
+        case RArray(elems) => Vector(elems: _*).zipWithIndex.flatMap { tuple =>
             val (elem, idx) = tuple
 
             flatten0(path \ idx)(elem)
@@ -84,8 +79,9 @@ sealed trait RValue {
 object RValue {
   def fromJValue(jv: JValue): RValue =
     jv match {
-      case JObject(fields) =>
-        RObject(fields map { case (k, v) => (k, fromJValue(v)) })
+      case JObject(fields) => RObject(fields map {
+          case (k, v) => (k, fromJValue(v))
+        })
       case JArray(elements) => RArray(elements map fromJValue)
       case other            => CType.toCValue(other)
     }
@@ -114,8 +110,7 @@ object RValue {
         }
 
         target match {
-          case obj @ RObject(fields) =>
-            path.nodes match {
+          case obj @ RObject(fields) => path.nodes match {
               case CPathField(name) :: nodes =>
                 val (child, rest) =
                   (fields.get(name).getOrElse(CUndefined), fields - name)
@@ -130,10 +125,9 @@ object RValue {
                     " in unsafeInsert of " + rootValue + " at " + rootPath + " in " + rootTarget)
             }
 
-          case arr @ RArray(elements) =>
-            path.nodes match {
-              case CPathIndex(index) :: nodes =>
-                RArray(arrayInsert(elements, index, CPath(nodes), value))
+          case arr @ RArray(elements) => path.nodes match {
+              case CPathIndex(index) :: nodes => RArray(
+                  arrayInsert(elements, index, CPath(nodes), value))
               case CPathField(_) :: _ =>
                 sys.error(
                   "Arrays have no fields: attempted to insert " + value + " at " + rootPath + " on " + rootTarget)
@@ -143,8 +137,7 @@ object RValue {
                     " in unsafeInsert of " + rootValue + " at " + rootPath + " in " + rootTarget)
             }
 
-          case CNull | CUndefined =>
-            path.nodes match {
+          case CNull | CUndefined => path.nodes match {
               case Nil                => value
               case CPathIndex(_) :: _ => rec(RArray.empty, path, value)
               case CPathField(_) :: _ => rec(RObject.empty, path, value)
@@ -219,8 +212,7 @@ object CValue {
       case (CArray(as, CArrayType(atpe)), CArray(bs, CArrayType(btpe)))
           if atpe == btpe =>
         (as.view zip bs.view) map {
-          case (a, b) =>
-            compareValues(atpe(a), btpe(b))
+          case (a, b) => compareValues(atpe(a), btpe(b))
         } find (_ != 0) getOrElse (as.size - bs.size)
       case (a: CNumericValue[_], b: CNumericValue[_]) =>
         compareValues(
@@ -532,10 +524,9 @@ case class CArrayType[@spec(Boolean, Long, Double) A](elemType: CValueType[A])
   def apply(value: Array[A]) = CArray(value, this)
 
   def order(as: Array[A], bs: Array[A]) =
-    (as zip bs) map {
-      case (a, b) =>
-        elemType.order(a, b)
-    } find (_ != EQ) getOrElse Ordering.fromInt(as.size - bs.size)
+    (as zip bs) map { case (a, b) => elemType.order(a, b) } find (
+      _ != EQ
+    ) getOrElse Ordering.fromInt(as.size - bs.size)
 
   def jValueFor(as: Array[A]) =
     sys.error("HOMOGENEOUS ARRAY ESCAPING! ALERT! ALERT!")

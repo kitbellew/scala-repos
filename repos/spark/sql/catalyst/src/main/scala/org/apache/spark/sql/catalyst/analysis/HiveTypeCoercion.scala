@@ -90,10 +90,8 @@ object HiveTypeCoercion {
     case (NullType, t1)       => Some(t1)
     case (t1, NullType)       => Some(t1)
 
-    case (t1: IntegralType, t2: DecimalType) if t2.isWiderThan(t1) =>
-      Some(t2)
-    case (t1: DecimalType, t2: IntegralType) if t1.isWiderThan(t2) =>
-      Some(t1)
+    case (t1: IntegralType, t2: DecimalType) if t2.isWiderThan(t1) => Some(t2)
+    case (t1: DecimalType, t2: IntegralType) if t1.isWiderThan(t2) => Some(t1)
 
     // Promote numeric types to the highest of the two
     case (t1, t2) if Seq(t1, t2).forall(numericPrecedence.contains) =>
@@ -109,12 +107,10 @@ object HiveTypeCoercion {
       right: DataType): Option[DataType] = {
     findTightestCommonTypeOfTwo(left, right).orElse((left, right) match {
       case (StringType, t2: AtomicType)
-          if t2 != BinaryType && t2 != BooleanType =>
-        Some(StringType)
+          if t2 != BinaryType && t2 != BooleanType => Some(StringType)
       case (t1: AtomicType, StringType)
-          if t1 != BinaryType && t1 != BooleanType =>
-        Some(StringType)
-      case _ => None
+          if t1 != BinaryType && t1 != BooleanType => Some(StringType)
+      case _                                       => None
     })
   }
 
@@ -126,9 +122,8 @@ object HiveTypeCoercion {
       types: Seq[DataType]): Option[DataType] = {
     types.foldLeft[Option[DataType]](Some(NullType))((r, c) =>
       r match {
-        case None => None
-        case Some(d) =>
-          findTightestCommonTypeToString(d, c)
+        case None    => None
+        case Some(d) => findTightestCommonTypeToString(d, c)
       })
   }
 
@@ -154,17 +149,15 @@ object HiveTypeCoercion {
       t1: DataType,
       t2: DataType): Option[DataType] =
     (t1, t2) match {
-      case (t1: DecimalType, t2: DecimalType) =>
-        Some(DecimalPrecision.widerDecimalType(t1, t2))
-      case (t: IntegralType, d: DecimalType) =>
-        Some(DecimalPrecision.widerDecimalType(DecimalType.forType(t), d))
-      case (d: DecimalType, t: IntegralType) =>
-        Some(DecimalPrecision.widerDecimalType(DecimalType.forType(t), d))
+      case (t1: DecimalType, t2: DecimalType) => Some(
+          DecimalPrecision.widerDecimalType(t1, t2))
+      case (t: IntegralType, d: DecimalType) => Some(
+          DecimalPrecision.widerDecimalType(DecimalType.forType(t), d))
+      case (d: DecimalType, t: IntegralType) => Some(
+          DecimalPrecision.widerDecimalType(DecimalType.forType(t), d))
       case (_: FractionalType, _: DecimalType) |
-          (_: DecimalType, _: FractionalType) =>
-        Some(DoubleType)
-      case _ =>
-        findTightestCommonTypeToString(t1, t2)
+          (_: DecimalType, _: FractionalType) => Some(DoubleType)
+      case _                                  => findTightestCommonTypeToString(t1, t2)
     }
 
   private def findWiderCommonType(types: Seq[DataType]) = {
@@ -192,8 +185,7 @@ object HiveTypeCoercion {
         case q: LogicalPlan =>
           val inputMap = q.inputSet.toSeq.map(a => (a.exprId, a)).toMap
           q transformExpressions {
-            case a: AttributeReference =>
-              inputMap.get(a.exprId) match {
+            case a: AttributeReference => inputMap.get(a.exprId) match {
                 // This can happen when a Attribute reference is born in a non-leaf node, for example
                 // due to a call to an external script like in the Transform operator.
                 // TODO: Perhaps those should actually be aliases?
@@ -438,29 +430,21 @@ object HiveTypeCoercion {
         // We may simplify the expression if one side is literal numeric values
         // TODO: Maybe these rules should go into the optimizer.
         case EqualTo(bool @ BooleanType(), Literal(value, _: NumericType))
-            if trueValues.contains(value) =>
-          bool
+            if trueValues.contains(value) => bool
         case EqualTo(bool @ BooleanType(), Literal(value, _: NumericType))
-            if falseValues.contains(value) =>
-          Not(bool)
+            if falseValues.contains(value) => Not(bool)
         case EqualTo(Literal(value, _: NumericType), bool @ BooleanType())
-            if trueValues.contains(value) =>
-          bool
+            if trueValues.contains(value) => bool
         case EqualTo(Literal(value, _: NumericType), bool @ BooleanType())
-            if falseValues.contains(value) =>
-          Not(bool)
+            if falseValues.contains(value) => Not(bool)
         case EqualNullSafe(bool @ BooleanType(), Literal(value, _: NumericType))
-            if trueValues.contains(value) =>
-          And(IsNotNull(bool), bool)
+            if trueValues.contains(value) => And(IsNotNull(bool), bool)
         case EqualNullSafe(bool @ BooleanType(), Literal(value, _: NumericType))
-            if falseValues.contains(value) =>
-          And(IsNotNull(bool), Not(bool))
+            if falseValues.contains(value) => And(IsNotNull(bool), Not(bool))
         case EqualNullSafe(Literal(value, _: NumericType), bool @ BooleanType())
-            if trueValues.contains(value) =>
-          And(IsNotNull(bool), bool)
+            if trueValues.contains(value) => And(IsNotNull(bool), bool)
         case EqualNullSafe(Literal(value, _: NumericType), bool @ BooleanType())
-            if falseValues.contains(value) =>
-          And(IsNotNull(bool), Not(bool))
+            if falseValues.contains(value) => And(IsNotNull(bool), Not(bool))
 
         case EqualTo(left @ BooleanType(), right @ NumericType()) =>
           EqualTo(Cast(left, right.dataType), right)

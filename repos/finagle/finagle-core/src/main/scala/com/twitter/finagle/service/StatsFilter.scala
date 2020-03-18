@@ -151,8 +151,7 @@ class StatsFilter[Req, Rep](
         // chain to look for a BackupRequestLost, but in practice it
         // is wrapped only once.
         true
-      case _ =>
-        false
+      case _ => false
     }
 
   def apply(request: Req, service: Service[Req, Rep]): Future[Rep] = {
@@ -169,8 +168,7 @@ class StatsFilter[Req, Rep](
           case ResponseClass.Failed(_) =>
             latencyStat.add(elapsed().inUnit(timeUnit))
             response match {
-              case Throw(e) =>
-                exceptionStatsHandler.record(statsReceiver, e)
+              case Throw(e) => exceptionStatsHandler.record(statsReceiver, e)
               case _ =>
                 exceptionStatsHandler.record(statsReceiver, SyntheticException)
             }

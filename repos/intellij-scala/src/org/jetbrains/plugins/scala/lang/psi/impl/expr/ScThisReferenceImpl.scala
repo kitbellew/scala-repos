@@ -40,12 +40,10 @@ class ScThisReferenceImpl(node: ASTNode)
 
   def refTemplate: Option[ScTemplateDefinition] =
     reference match {
-      case Some(ref) =>
-        ref.resolve match {
+      case Some(ref) => ref.resolve match {
           case td: ScTypeDefinition
-              if PsiTreeUtil.isContextAncestor(td, ref, false) =>
-            Some(td)
-          case _ => None
+              if PsiTreeUtil.isContextAncestor(td, ref, false) => Some(td)
+          case _                                               => None
         }
       case None => {
         val encl = PsiTreeUtil.getContextOfType(
@@ -91,10 +89,8 @@ object ScThisReferenceImpl {
     expr.getContext match {
       case r: ScReferenceExpression if r.qualifier.exists(_ == expr) =>
         Success(ScThisType(td), Some(expr))
-      case _ =>
-        expr.expectedType() match {
-          case Some(t) if t.isStable =>
-            Success(ScThisType(td), Some(expr))
+      case _ => expr.expectedType() match {
+          case Some(t) if t.isStable => Success(ScThisType(td), Some(expr))
           case _ =>
             Success(
               selfTypeOfClass.getOrElse(

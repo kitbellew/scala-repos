@@ -541,8 +541,7 @@ class GroupMetadataManager(
               info(
                 "Finished loading offsets from %s in %d milliseconds."
                   .format(topicPartition, time.milliseconds() - startMs))
-          case None =>
-            warn("No log found for " + topicPartition)
+          case None => warn("No log found for " + topicPartition)
         }
       } catch {
         case t: Throwable =>

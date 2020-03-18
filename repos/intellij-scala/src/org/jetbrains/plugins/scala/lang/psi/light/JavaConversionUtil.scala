@@ -71,8 +71,7 @@ object JavaConversionUtil {
         case s if keywordAnnotations.keySet.contains(s) => true
         case s
             if Set("scala.throws", "scala.inline", "scala.unchecked").contains(
-              s) =>
-          true
+              s)                             => true
         case s if s.endsWith("BeanProperty") => true
         case _                               => false
       }
@@ -115,14 +114,10 @@ object JavaConversionUtil {
             }
           } else problem
         } else problem
-      case n: ScNewTemplateDefinition =>
-        n.extendsBlock.templateParents match {
-          case Some(c: ScClassParents) =>
-            c.constructor match {
-              case Some(constr) =>
-                constr.reference match {
-                  case Some(ref) =>
-                    ref.resolve() match {
+      case n: ScNewTemplateDefinition => n.extendsBlock.templateParents match {
+          case Some(c: ScClassParents) => c.constructor match {
+              case Some(constr) => constr.reference match {
+                  case Some(ref) => ref.resolve() match {
                       case c: PsiClass =>
                         var res = "@" + c.getQualifiedName
                         constr.args match {

@@ -70,8 +70,7 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
         simple.getText.replaceAll("`", "")
 
       elem match {
-        case fun: ScFunctionalTypeElement =>
-          fun.returnTypeElement match {
+        case fun: ScFunctionalTypeElement => fun.returnTypeElement match {
             case Some(ret) =>
               val typeName = "Λ$"
               val paramText = fun.paramTypeElement match {
@@ -92,10 +91,8 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
               }
               val lambdaText =
                 s"({type $typeName[$paramText] = ${ret.getText}})#$typeName"
-              val newTE = ScalaPsiElementFactory.createTypeElementFromText(
-                lambdaText,
-                getContext,
-                this)
+              val newTE = ScalaPsiElementFactory
+                .createTypeElementFromText(lambdaText, getContext, this)
               Option(newTE)
             case _ => None
           }
@@ -177,8 +174,7 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
       element match {
         case simple: ScSimpleTypeElement
             if kindProjectorEnabled && inlineSyntaxIds.contains(
-              simple.getText) =>
-          true
+              simple.getText) => true
         case parametrized: ScParameterizedTypeElement if kindProjectorEnabled =>
           isKindProjectorInlineSyntax(parametrized.typeElement)
         case _ => false
@@ -203,17 +199,15 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
 
   protected def innerType(ctx: TypingContext): TypeResult[ScType] = {
     computeDesugarizedType match {
-      case Some(typeElement) =>
-        return typeElement.getType(TypingContext.empty)
-      case _ =>
+      case Some(typeElement) => return typeElement.getType(TypingContext.empty)
+      case _                 =>
     }
     val tr = typeElement.getType(ctx)
     val res = tr.getOrElse(return tr)
 
     //todo: possible refactoring to remove parameterized type inference in simple type
     typeElement match {
-      case s: ScSimpleTypeElement =>
-        s.reference match {
+      case s: ScSimpleTypeElement => s.reference match {
           case Some(ref) =>
             if (ref.isConstructorReference) {
               ref.resolveNoConstructor match {
@@ -252,8 +246,8 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
 
     //Find cyclic type references
     argTypesWrapped.find(_.isCyclic) match {
-      case Some(_) =>
-        fails(ScParameterizedType(res, Seq(argTypesgetOrElseped.toSeq: _*)))
+      case Some(_) => fails(
+          ScParameterizedType(res, Seq(argTypesgetOrElseped.toSeq: _*)))
       case None =>
         val typeArgs = args.map(_.getType(ctx))
         val result = ScParameterizedType(res, typeArgs.map(_.getOrAny))
@@ -282,12 +276,10 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
       computeDesugarizedType match {
         case Some(projection: ScTypeProjection) =>
           projection.typeElement match {
-            case paren: ScParenthesisedTypeElement =>
-              paren.typeElement match {
+            case paren: ScParenthesisedTypeElement => paren.typeElement match {
                 case Some(compound: ScCompoundTypeElement) =>
                   compound.refinement match {
-                    case Some(ref) =>
-                      ref.types match {
+                    case Some(ref) => ref.types match {
                         case Seq(alias: ScTypeAliasDefinition) =>
                           for (tp <- alias.typeParameters) {
                             val text = tp.getText
@@ -313,9 +305,8 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
                                   Any),
                                 state)
                             } else if (upperBound > 0 && lowerBound > 0) {
-                              val actualText = text.substring(
-                                0,
-                                math.min(lowerBound, upperBound))
+                              val actualText = text
+                                .substring(0, math.min(lowerBound, upperBound))
                               processor.execute(
                                 new ScSyntheticClass(
                                   getManager,

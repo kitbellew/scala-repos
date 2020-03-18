@@ -53,14 +53,11 @@ object PerfDelta {
           else { Faster(baseline, stats) }
         } else { NoChange(baseline, stats) }
 
-      case (Some(baseline), None) =>
-        MissingStats(baseline)
+      case (Some(baseline), None) => MissingStats(baseline)
 
-      case (None, Some(stats)) =>
-        MissingBaseline(stats)
+      case (None, Some(stats)) => MissingBaseline(stats)
 
-      case (None, None) =>
-        Missing
+      case (None, None) => Missing
     }
 }
 
@@ -114,8 +111,7 @@ trait BaselineComparisons {
     JParser.parseUnsafe(str) match {
       case JArray(tests) =>
         tests.foldLeft(Map[(List[String], Option[String]), Statistics]()) {
-          case (acc, obj) =>
-            (obj \? "stats") match {
+          case (acc, obj) => (obj \? "stats") match {
               case Some(stats) =>
                 (for {
                   JArray(jpath) <- obj \? "path" flatMap (
@@ -149,8 +145,7 @@ trait BaselineComparisons {
                 }
 
               // Stats will be misssing when the Option[Statistics] is None.
-              case None =>
-                acc
+              case None => acc
             }
         }
 
@@ -185,8 +180,7 @@ trait BaselineComparisons {
           val row = JObject(JField("path", JArray(newPath)) :: statsJson(stats))
           row :: kids.toList.flatMap(values(newPath, _))
 
-        case Tree.Node(_, kids) =>
-          kids.toList.flatMap(values(path, _))
+        case Tree.Node(_, kids) => kids.toList.flatMap(values(path, _))
       }
     }
 

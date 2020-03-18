@@ -253,8 +253,7 @@ object ImportInfo {
     @tailrec
     def isRelativeObject(o: ScObject, res: Boolean = false): Boolean = {
       o.getContext match {
-        case _: ScTemplateBody =>
-          o.containingClass match {
+        case _: ScTemplateBody => o.containingClass match {
             case containingObject: ScObject =>
               isRelativeObject(containingObject, res = true)
             case _ => false //inner of some class/trait
@@ -280,8 +279,7 @@ object ImportInfo {
           if (parts.length > 1) parts.map(name).mkString(".") else refName
         case Some(ScalaResolveResult(td: ScTypedDefinition, _)) =>
           ScalaPsiUtil.nameContext(td) match {
-            case m: ScMember =>
-              m.containingClass match {
+            case m: ScMember => m.containingClass match {
                 case o: ScObject if isRelativeObject(o, res = true) =>
                   o.qualifiedName + withDot(refName)
                 case _ => refName

@@ -124,8 +124,7 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
       } catch {
         case (_: EvaluateException | _: InvocationException |
             _: InvalidTypeException | _: IncompatibleThreadStateException |
-            _: ClassNotLoadedException) =>
-          null
+            _: ClassNotLoadedException) => null
       }
     }
 
@@ -270,8 +269,7 @@ object NonStrictCollectionsRenderer {
     } catch {
       case e @ (_: EvaluateException | _: InvocationException |
           _: InvalidTypeException | _: IncompatibleThreadStateException |
-          _: ClassNotLoadedException) =>
-        Fail[Throwable](e)
+          _: ClassNotLoadedException) => Fail[Throwable](e)
     }
   }
 

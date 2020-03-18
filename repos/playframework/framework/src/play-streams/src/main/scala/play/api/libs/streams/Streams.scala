@@ -114,8 +114,7 @@ object Streams {
       iter,
       {
         case Step.Done(x, _) => Future.successful(x)
-        case notDone: Step[T, U] =>
-          Future.failed(new Exception(
+        case notDone: Step[T, U] => Future.failed(new Exception(
             s"Can only get value from Done iteratee: $notDone"))
       })(Execution.trampoline)
   }

@@ -695,8 +695,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
                       ///println("Continuing on left; not emitting right.")
                       val nextState = (span: @unchecked) match {
                         case NoSpan => FindEqualAdvancingLeft(ridx, rkey)
-                        case LeftSpan =>
-                          state match {
+                        case LeftSpan => state match {
                             case RunRight(_, _, rauth) =>
                               RunLeft(ridx, rkey, rauth)
                             case RunLeft(_, _, rauth) =>
@@ -949,8 +948,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
         }
 
         left.uncons flatMap {
-          case Some((lhead, ltail)) =>
-            right.uncons.flatMap {
+          case Some((lhead, ltail)) => right.uncons.flatMap {
               case Some((rhead, rtail)) =>
                 //println("Got data from both left and right.")
                 //println("initial left: \n" + lhead + "\n\n")
@@ -1040,8 +1038,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
           case Some((slice, tail)) =>
             writeSlice(slice, state, sortOrder) flatMap { write0(tail, _) }
 
-          case None =>
-            M.point {
+          case None => M.point {
               val closedJDBMState = state.jdbmState.closed()
               (state.keyTransformsWithIds map (_._2), closedJDBMState.indices)
             }
@@ -1111,8 +1108,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   }
                 }
 
-              case Nil =>
-                M.point((jdbmState, updatedTransforms.reverse))
+              case Nil => M.point((jdbmState, updatedTransforms.reverse))
             }
 
           storeTransformed(jdbmState, keyTrans, Nil) map {
@@ -1202,8 +1198,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
         //     index and update the SliceIndex entry.
 
         jdbmState.indices.get(indexMapKey) map {
-          case sliceIndex: SliceIndex =>
-            (sliceIndex, jdbmState)
+          case sliceIndex: SliceIndex => (sliceIndex, jdbmState)
 
           case SortedSlice(
                 indexName,
@@ -1419,8 +1414,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   }
               }
 
-            case None =>
-              M.point(StreamT.Done)
+            case None => M.point(StreamT.Done)
           })
         }
 
@@ -1443,8 +1437,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
         (left1
           .toInternalTable()
           .toEither |@| right1.toInternalTable().toEither).tupled flatMap {
-          case (Right(left), Right(right)) =>
-            orderHint match {
+          case (Right(left), Right(right)) => orderHint match {
               case Some(JoinOrder.LeftOrder) =>
                 hashJoin(right.slice, left, flip = true) map (
                   JoinOrder.LeftOrder -> _

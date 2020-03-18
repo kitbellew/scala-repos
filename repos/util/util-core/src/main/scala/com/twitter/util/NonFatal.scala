@@ -18,9 +18,8 @@ object NonFatal {
       // VirtualMachineError includes OutOfMemoryError and other fatal errors
       case _: VirtualMachineError | _: ThreadDeath | _: InterruptedException |
           _: LinkageError |
-          _: ControlThrowable /*scala 2.10 | _: NotImplementedError*/ =>
-        false
-      case _ => true
+          _: ControlThrowable /*scala 2.10 | _: NotImplementedError*/ => false
+      case _                                                          => true
     }
 
   /**

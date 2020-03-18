@@ -80,8 +80,7 @@ trait IngestSupport extends Logging {
           ex)
       // FIXME: Provisionally accept data for ingest if one of the permissions-checking services is unavailable
     } flatMap {
-      case Some(authorities) =>
-        f(authorities)
+      case Some(authorities) => f(authorities)
 
       case None =>
         logger.warn(

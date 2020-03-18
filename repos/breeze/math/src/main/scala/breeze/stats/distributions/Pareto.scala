@@ -45,8 +45,7 @@ case class Pareto(scale: Double, shape: Double)(implicit rand: RandBasis = Rand)
     x match {
       case x if x < scale          => 0.0
       case Double.PositiveInfinity => 1.0
-      case x =>
-        1 - math.pow(scale / x, shape)
+      case x                       => 1 - math.pow(scale / x, shape)
     }
 
 }

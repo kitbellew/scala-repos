@@ -70,8 +70,7 @@ class ScAnnotationImpl private (
         args.exprs
           .map(expr =>
             expr match {
-              case ass: ScAssignStmt =>
-                ass.getLExpression match {
+              case ass: ScAssignStmt => ass.getLExpression match {
                   case ref: ScReferenceExpression
                       if ref.refName == attributeName =>
                     ass.getRExpression match {

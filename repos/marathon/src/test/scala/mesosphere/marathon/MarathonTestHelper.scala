@@ -114,8 +114,7 @@ object MarathonTestHelper {
             .setPrincipal("marathon")
             .setLabels(labels)
           resource.toBuilder.setReservation(reservation).build()
-        case None =>
-          resource
+        case None => resource
       }
     }
 

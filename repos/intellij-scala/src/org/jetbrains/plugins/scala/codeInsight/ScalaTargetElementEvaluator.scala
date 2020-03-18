@@ -56,8 +56,8 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
         case Some(resolve @ ScalaResolveResult(fun: ScFunctionDefinition, _))
             if Set("unapply", "unapplySeq").contains(fun.name) =>
           resolve.innerResolveResult match {
-            case Some(ScalaResolveResult(binding: ScBindingPattern, _)) =>
-              Some(binding)
+            case Some(ScalaResolveResult(binding: ScBindingPattern, _)) => Some(
+                binding)
             case _ => None
           }
         case _ => None
@@ -75,9 +75,8 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
             case refPattern: ScReferencePattern
                 if ScalaPsiUtil
                   .nameContext(refPattern)
-                  .isInstanceOf[ScVariable] =>
-              Some(refPattern)
-            case _ => None
+                  .isInstanceOf[ScVariable] => Some(refPattern)
+            case _                          => None
           }
         case _ => None
       }
@@ -94,9 +93,8 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
             case refPattern: ScReferencePattern
                 if ScalaPsiUtil
                   .nameContext(refPattern)
-                  .isInstanceOf[ScVariable] =>
-              Some(refPattern)
-            case _ => None
+                  .isInstanceOf[ScVariable] => Some(refPattern)
+            case _                          => None
           }
         case _ => None
       }
@@ -106,8 +104,7 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
   private object isCaseClassParameter {
     def unapply(ref: ScReferenceElement): Option[ScParameter] = {
       ref.resolve() match {
-        case p: ScParameter =>
-          p.owner match {
+        case p: ScParameter => p.owner match {
             case a: ScFunctionDefinition if a.isSyntheticApply =>
               a.containingClass match {
                 case obj: ScObject =>
@@ -140,8 +137,7 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
       allRenames: util.Map[PsiElement, String],
       namedElement: PsiNamedElement) {
     namedElement match {
-      case p: ScParameter =>
-        p.owner match {
+      case p: ScParameter => p.owner match {
           case a: ScFunctionDefinition if a.isSyntheticApply =>
             a.containingClass match {
               case obj: ScObject =>

@@ -90,8 +90,7 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
           i += 1
         }
         b.result()
-      case _ =>
-        super.zip[A1, B, That](that)(bf)
+      case _ => super.zip[A1, B, That](that)(bf)
     }
 
   override /*IterableLike*/
@@ -170,8 +169,7 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
           while (i < len && this(i) == that(i)) i += 1
           i == len
         }
-      case _ =>
-        super.sameElements(that)
+      case _ => super.sameElements(that)
     }
 
   override /*IterableLike*/
@@ -278,7 +276,6 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
           }
           true
         }
-      case _ =>
-        super.endsWith(that)
+      case _ => super.endsWith(that)
     }
 }

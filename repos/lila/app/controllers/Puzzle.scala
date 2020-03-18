@@ -152,8 +152,7 @@ object Puzzle extends LilaController {
                       env.api.puzzle find id zip
                         (env userInfos me2.some) zip
                         (env.api.attempt hasVoted me2) map {
-                        case ((p2, infos), voted) =>
-                          Ok {
+                        case ((p2, infos), voted) => Ok {
                             JsData(
                               p2 | puzzle,
                               infos,
@@ -175,8 +174,7 @@ object Puzzle extends LilaController {
                         animationDuration = env.AnimationDuration))
                     }
                 }
-              case None =>
-                fuccess {
+              case None => fuccess {
                   Ok(JsData(
                     puzzle,
                     none,

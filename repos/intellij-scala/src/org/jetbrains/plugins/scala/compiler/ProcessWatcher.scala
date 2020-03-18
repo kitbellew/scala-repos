@@ -34,8 +34,7 @@ class ProcessWatcher(process: Process, commandLine: String) {
       val text = event.getText
 
       outputType match {
-        case ProcessOutputTypes.STDOUT =>
-          lock.synchronized {
+        case ProcessOutputTypes.STDOUT => lock.synchronized {
             if (errorInStdOut || ProcessWatcher.ExceptionPattern
                   .matcher(text)
                   .find) {
@@ -44,8 +43,9 @@ class ProcessWatcher(process: Process, commandLine: String) {
             }
           }
 
-        case ProcessOutputTypes.STDERR =>
-          lock.synchronized { errorLines :+= text }
+        case ProcessOutputTypes.STDERR => lock.synchronized {
+            errorLines :+= text
+          }
 
         case _ => // do nothing
       }

@@ -341,10 +341,8 @@ class DecisionTreeClassifierSuite
       .setMaxBins(3)
     val model = dt.fit(df)
     model.rootNode match {
-      case n: InternalNode =>
-        n.split match {
-          case s: CategoricalSplit =>
-            assert(s.leftCategories === Array(1.0))
+      case n: InternalNode => n.split match {
+          case s: CategoricalSplit => assert(s.leftCategories === Array(1.0))
           case other =>
             fail(
               s"All splits should be categorical, but got ${other.getClass.getName}: $other.")

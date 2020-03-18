@@ -162,9 +162,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
             if ScratchFileService
               .getInstance()
               .getRootType(file)
-              .isInstanceOf[ScratchRootType] =>
-          true
-        case _ => false
+              .isInstanceOf[ScratchRootType] => true
+        case _                               => false
       }
     }
 
@@ -192,8 +191,7 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
         source: FileEditorManager,
         file: VirtualFile) {
       source getSelectedEditor file match {
-        case txt: TextEditor =>
-          txt.getEditor match {
+        case txt: TextEditor => txt.getEditor match {
             case ext: EditorEx =>
               PsiDocumentManager getInstance project getPsiFile ext.getDocument match {
                 case scalaFile: ScalaFile =>
@@ -218,12 +216,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
 
                         if (splitter != null) {
                           splitter setProportion ratio
-                          WorksheetFoldGroup.load(
-                            viewer,
-                            ext,
-                            project,
-                            splitter,
-                            scalaFile)
+                          WorksheetFoldGroup
+                            .load(viewer, ext, project, splitter, scalaFile)
                         }
                       }
                     case _ =>

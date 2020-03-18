@@ -74,10 +74,7 @@ private[akka] class InputStreamPublisher(
           // emit immediately, as this is the only chance to do it before we might block again
           onNext(ByteString.fromArray(arr, 0, readBytes))
       }
-    } catch {
-      case ex: Exception ⇒
-        onErrorThenStop(ex)
-    }
+    } catch { case ex: Exception ⇒ onErrorThenStop(ex) }
 
   override def postStop(): Unit = {
     super.postStop()

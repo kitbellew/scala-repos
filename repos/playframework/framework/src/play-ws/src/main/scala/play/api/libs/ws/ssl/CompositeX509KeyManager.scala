@@ -181,8 +181,7 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
     keyManagers.foreach { keyManager =>
       try { block(keyManager) }
       catch {
-        case certEx: CertificateException =>
-          exceptionList.append(certEx)
+        case certEx: CertificateException => exceptionList.append(certEx)
       }
     }
     exceptionList

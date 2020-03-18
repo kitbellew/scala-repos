@@ -101,8 +101,7 @@ final case class AdaptiveLoadBalancingRoutingLogic(
         case Some(weighted) ⇒
           if (weighted.isEmpty) NoRoutee
           else weighted(ThreadLocalRandom.current.nextInt(weighted.total) + 1)
-        case None ⇒
-          routees(ThreadLocalRandom.current.nextInt(routees.size))
+        case None ⇒ routees(ThreadLocalRandom.current.nextInt(routees.size))
       }
 
     }

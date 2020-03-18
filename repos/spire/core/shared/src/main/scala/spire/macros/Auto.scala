@@ -94,8 +94,7 @@ abstract class AutoOps {
         m.typeSignature match {
           case MethodType(List(param), ret) =>
             param.typeSignature =:= tpeB && ret =:= tpeC
-          case _ =>
-            false
+          case _ => false
         }
       )
     }

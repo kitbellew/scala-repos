@@ -244,16 +244,13 @@ sealed abstract class Interval[A](implicit order: Order[A]) {
 
   def unary_~(): List[Interval[A]] =
     this match {
-      case All() =>
-        Nil
-      case Empty() =>
-        List(All())
-      case Above(lower, lf) =>
-        List(Below(lower, lowerFlagToUpper(reverseLowerFlag(lf))))
-      case Below(upper, uf) =>
-        List(Above(upper, upperFlagToLower(reverseUpperFlag(uf))))
-      case Point(p) =>
-        List(Interval.below(p), Interval.above(p))
+      case All()   => Nil
+      case Empty() => List(All())
+      case Above(lower, lf) => List(
+          Below(lower, lowerFlagToUpper(reverseLowerFlag(lf))))
+      case Below(upper, uf) => List(
+          Above(upper, upperFlagToLower(reverseUpperFlag(uf))))
+      case Point(p) => List(Interval.below(p), Interval.above(p))
       case Bounded(lower, upper, flags) =>
         val lx = lowerFlagToUpper(reverseLowerFlag(lowerFlag(flags)))
         val ux = upperFlagToLower(reverseUpperFlag(upperFlag(flags)))
@@ -283,16 +280,13 @@ sealed abstract class Interval[A](implicit order: Order[A]) {
 
   override def toString(): String =
     this match {
-      case All() =>
-        "(-∞, ∞)"
-      case Empty() =>
-        "(Ø)"
+      case All()   => "(-∞, ∞)"
+      case Empty() => "(Ø)"
       case Above(lower, flags) =>
         if (isClosedLower(flags)) s"[$lower, ∞)" else s"($lower, ∞)"
       case Below(upper, flags) =>
         if (isClosedUpper(flags)) s"(-∞, $upper]" else s"(-∞, $upper)"
-      case Point(p) =>
-        s"[$p]"
+      case Point(p) => s"[$p]"
       case Bounded(lower, upper, flags) =>
         val s1 = if (isClosedLower(flags)) s"[$lower" else s"($lower"
         val s2 = if (isClosedUpper(flags)) s"$upper]" else s"$upper)"
@@ -523,16 +517,14 @@ sealed abstract class Interval[A](implicit order: Order[A]) {
       case All()   => error
       case Empty() => this
 
-      case Above(lower, lf) =>
-        (lower.compare(z), isClosedLower(lf)) match {
+      case Above(lower, lf) => (lower.compare(z), isClosedLower(lf)) match {
           case (x, _) if x < 0 => error // crosses zero
           case (0, true)       => error // contains zero
           case (0, false)      => this
           case _               => Bounded(z, lower.reciprocal, 1 | lowerFlagToUpper(lf))
         }
 
-      case Below(upper, uf) =>
-        (upper.compare(z), isClosedUpper(uf)) match {
+      case Below(upper, uf) => (upper.compare(z), isClosedUpper(uf)) match {
           case (x, _) if x > 0 => error // crosses zero
           case (0, true)       => error // contains zero
           case (0, false)      => this
@@ -646,24 +638,22 @@ sealed abstract class Interval[A](implicit order: Order[A]) {
     this match {
       case Empty() | All() | Above(_, _) =>
         None // TOCHECK: changed semantics, Empty().top == None
-      case Below(upper, uf) =>
-        Some(if (isOpenUpper(uf)) upper - epsilon else upper)
-      case Point(v) =>
-        Some(v)
-      case Bounded(_, upper, flags) =>
-        Some(if (isOpenUpper(flags)) upper - epsilon else upper)
+      case Below(upper, uf) => Some(
+          if (isOpenUpper(uf)) upper - epsilon else upper)
+      case Point(v) => Some(v)
+      case Bounded(_, upper, flags) => Some(
+          if (isOpenUpper(flags)) upper - epsilon else upper)
     }
 
   def bottom(epsilon: A)(implicit r: AdditiveGroup[A]): Option[A] =
     this match {
       case Empty() | All() | Below(_, _) =>
         None // TOCHECK: changed semantics, Empty().bottom == None
-      case Above(lower, lf) =>
-        Some(if (isOpenLower(lf)) lower + epsilon else lower)
-      case Point(v) =>
-        Some(v)
-      case Bounded(lower, _, flags) =>
-        Some(if (isOpenLower(flags)) lower + epsilon else lower)
+      case Above(lower, lf) => Some(
+          if (isOpenLower(lf)) lower + epsilon else lower)
+      case Point(v) => Some(v)
+      case Bounded(lower, _, flags) => Some(
+          if (isOpenLower(flags)) lower + epsilon else lower)
     }
 
   import spire.random.{Dist, Uniform}
@@ -1005,8 +995,7 @@ object Interval {
     s match {
       case NullRe()    => Interval.empty[Rational]
       case SingleRe(x) => Interval.point(Rational(x))
-      case PairRe(left, x, y, right) =>
-        (left, x, y, right) match {
+      case PairRe(left, x, y, right) => (left, x, y, right) match {
           case ("(", "-∞", "∞", ")") => Interval.all[Rational]
           case ("(", "-∞", y, ")")   => Interval.below(Rational(y))
           case ("(", "-∞", y, "]")   => Interval.atOrBelow(Rational(y))

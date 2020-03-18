@@ -251,8 +251,9 @@ trait MiscStackSpecs extends EvalStackSpecs {
       }
 
       val fives = result collect {
-        case (_, SObject(elems)) =>
-          (elems("five"): @unchecked) match { case SDecimal(d) => d }
+        case (_, SObject(elems)) => (elems("five"): @unchecked) match {
+            case SDecimal(d) => d
+          }
       }
       val weights = result2 collect { case (_, w) => w }
 
@@ -291,10 +292,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
           elems(0) must beLike {
             case SDecimal(d0) =>
-              elems(1) must beLike {
-                case SDecimal(d1) =>
-                  d0 must be_<(d1)
-              }
+              elems(1) must beLike { case SDecimal(d1) => d0 must be_<(d1) }
           }
       }
     }

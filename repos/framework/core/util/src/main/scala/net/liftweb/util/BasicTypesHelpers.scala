@@ -161,8 +161,7 @@ trait BasicTypesHelpers {
       case (Nil, Nil) => true
       case (_, Nil)   => false
       case (Nil, _)   => false
-      case (attr :: rl, right) =>
-        findFilter(attr, right) match {
+      case (attr :: rl, right) => findFilter(attr, right) match {
           case Full(rr) => compareMetaData(rl, rr)
           case _        => false
         }

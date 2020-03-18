@@ -178,8 +178,7 @@ class ExecuteRequest(
         val bitPos = idx % 8
         val byte = bitmap(bytePos)
         bitmap(bytePos) = (byte | (1 << bitPos)).toByte
-      case _ =>
-        ()
+      case _ => ()
     }
     bitmap
   }

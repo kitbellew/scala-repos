@@ -60,12 +60,9 @@ trait PresentationCompilerRequestsWorkingMode extends TestResources {
       "%s:%d:%d".format(pos.source.file.name, pos.line, pos.column)
 
     response.get(TIMEOUT) match {
-      case Some(Left(t)) =>
-        f(pos, t)
-      case None =>
-        println("TIMEOUT: " + showPos(pos))
-      case Some(r) =>
-        println("ERROR: " + r)
+      case Some(Left(t)) => f(pos, t)
+      case None          => println("TIMEOUT: " + showPos(pos))
+      case Some(r)       => println("ERROR: " + r)
     }
   }
 }

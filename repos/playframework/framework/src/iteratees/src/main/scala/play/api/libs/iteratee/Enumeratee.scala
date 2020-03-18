@@ -952,8 +952,7 @@ object Enumeratee {
                     Cont(step(it))
                 })(pec)
               Iteratee.flatten(next)
-            case Input.EOF =>
-              Done(it, Input.Empty)
+            case Input.EOF => Done(it, Input.Empty)
           }
 
         Cont(step(it))

@@ -101,12 +101,9 @@ private[scalding] object InternalService {
 
     def recurse(p: Producer[Scalding, Any]): Boolean = {
       p match {
-        case ValueFlatMappedProducer(lprod, _) =>
-          recurse(lprod)
-        case IdentityKeyedProducer(prod) =>
-          recurse(prod)
-        case NamedProducer(prod, _) =>
-          recurse(prod)
+        case ValueFlatMappedProducer(lprod, _) => recurse(lprod)
+        case IdentityKeyedProducer(prod)       => recurse(prod)
+        case NamedProducer(prod, _)            => recurse(prod)
         case LeftJoinedProducer(prod, joined) if prod == left =>
           true // done, valid dag
         case _ =>
@@ -131,8 +128,7 @@ private[scalding] object InternalService {
     // what to do if there is more than one summer here?
     dag.nodes.collectFirst {
       case summer @ Summer(p, StoreService(thatStore), _)
-          if (thatStore == store) =>
-        summer.asInstanceOf[Summer[Scalding, K, V]]
+          if (thatStore == store) => summer.asInstanceOf[Summer[Scalding, K, V]]
     }
   }
 
@@ -184,8 +180,7 @@ private[scalding] object InternalService {
           cummulativeFn: Option[(Any) => TraversableOnce[Any]])
           : Option[(Any) => TraversableOnce[Any]] =
         p match {
-          case ValueFlatMappedProducer(prod, fn) =>
-            cummulativeFn match {
+          case ValueFlatMappedProducer(prod, fn) => cummulativeFn match {
               case Some(cfn) => {
                 val newFn = (e: Any) => fn(e).flatMap { r => cfn(r) }
                 recurse(prod, Some(newFn))
@@ -193,12 +188,9 @@ private[scalding] object InternalService {
               case None => recurse(prod, Some(fn))
 
             }
-          case IdentityKeyedProducer(prod) =>
-            recurse(prod, cummulativeFn)
-          case NamedProducer(prod, _) =>
-            recurse(prod, cummulativeFn)
-          case LeftJoinedProducer(prod, joined) if prod == left =>
-            cummulativeFn
+          case IdentityKeyedProducer(prod)                      => recurse(prod, cummulativeFn)
+          case NamedProducer(prod, _)                           => recurse(prod, cummulativeFn)
+          case LeftJoinedProducer(prod, joined) if prod == left => cummulativeFn
         }
 
       val fn = recurse(summerProd, None)
@@ -299,12 +291,10 @@ private[scalding] object InternalService {
       .forceToDisk
 
     val leftOut = bothPipes.collect {
-      case (k, (Some((t, vu)), _)) =>
-        (t, (k, vu))
+      case (k, (Some((t, vu)), _)) => (t, (k, vu))
     }
     val rightOut = bothPipes.collect {
-      case (k, (_, Some((t, optuu)))) =>
-        (t, (k, optuu))
+      case (k, (_, Some((t, optuu)))) => (t, (k, optuu))
     }
     (leftOut, rightOut)
   }

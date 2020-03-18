@@ -133,8 +133,8 @@ class KafkaApis(
         case ApiKeys.LEADER_AND_ISR      => handleLeaderAndIsrRequest(request)
         case ApiKeys.STOP_REPLICA        => handleStopReplicaRequest(request)
         case ApiKeys.UPDATE_METADATA_KEY => handleUpdateMetadataRequest(request)
-        case ApiKeys.CONTROLLED_SHUTDOWN_KEY =>
-          handleControlledShutdownRequest(request)
+        case ApiKeys.CONTROLLED_SHUTDOWN_KEY => handleControlledShutdownRequest(
+            request)
         case ApiKeys.OFFSET_COMMIT     => handleOffsetCommitRequest(request)
         case ApiKeys.OFFSET_FETCH      => handleOffsetFetchRequest(request)
         case ApiKeys.GROUP_COORDINATOR => handleGroupCoordinatorRequest(request)
@@ -788,8 +788,7 @@ class KafkaApis(
       maxNumOffsets: Int): Seq[Long] = {
     logManager.getLog(
       TopicAndPartition(topicPartition.topic, topicPartition.partition)) match {
-      case Some(log) =>
-        fetchOffsetsBefore(log, timestamp, maxNumOffsets)
+      case Some(log) => fetchOffsetsBefore(log, timestamp, maxNumOffsets)
       case None =>
         if (timestamp == ListOffsetRequest.LATEST_TIMESTAMP || timestamp == ListOffsetRequest.EARLIEST_TIMESTAMP)
           Seq(0L)
@@ -817,8 +816,7 @@ class KafkaApis(
     timestamp match {
       case ListOffsetRequest.LATEST_TIMESTAMP =>
         startIndex = offsetTimeArray.length - 1
-      case ListOffsetRequest.EARLIEST_TIMESTAMP =>
-        startIndex = 0
+      case ListOffsetRequest.EARLIEST_TIMESTAMP => startIndex = 0
       case _ =>
         var isFound = false
         debug(
@@ -1058,8 +1056,7 @@ class KafkaApis(
                         payload.toLong,
                         "",
                         Errors.NONE.code))
-                  case None =>
-                    (topicPartition, unknownTopicPartitionResponse)
+                  case None => (topicPartition, unknownTopicPartitionResponse)
                 }
               }
             } catch {
@@ -1419,8 +1416,7 @@ class KafkaApis(
 
   def close() {
     quotaManagers.foreach {
-      case (apiKey, quotaManager) =>
-        quotaManager.shutdown()
+      case (apiKey, quotaManager) => quotaManager.shutdown()
     }
     info("Shutdown complete.")
   }

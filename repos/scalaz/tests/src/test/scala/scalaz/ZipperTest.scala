@@ -422,8 +422,7 @@ object ZipperTest extends SpecLite {
 
   "given nextC findBy should return Some if the element exists" ! forAll(
     intZipperWithExistingElement) {
-    case (z, e) =>
-      z.findBy(z => some(z.nextC))(x => x == e).isDefined
+    case (z, e) => z.findBy(z => some(z.nextC))(x => x == e).isDefined
   }
 
   "findBy should not blow the stack" ! prop { z: Zipper[Int] =>

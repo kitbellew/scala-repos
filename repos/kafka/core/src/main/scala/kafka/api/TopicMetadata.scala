@@ -72,8 +72,7 @@ case class TopicMetadata(
     val topicMetadataInfo = new StringBuilder
     topicMetadataInfo.append("{TopicMetadata for topic %s -> ".format(topic))
     Errors.forCode(errorCode) match {
-      case Errors.NONE =>
-        partitionsMetadata.foreach { partitionMetadata =>
+      case Errors.NONE => partitionsMetadata.foreach { partitionMetadata =>
           Errors.forCode(partitionMetadata.errorCode) match {
             case Errors.NONE =>
               topicMetadataInfo.append(

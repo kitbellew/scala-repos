@@ -51,9 +51,8 @@ trait FileDeclarationsHolder
       place: PsiElement): Boolean = {
     val isScriptProcessed = this match {
       case scalaFile: ScalaFile
-          if scalaFile.isScriptFile() && !scalaFile.isWorksheetFile =>
-        true
-      case _ => false
+          if scalaFile.isScriptFile() && !scalaFile.isWorksheetFile => true
+      case _                                                        => false
     }
 
     if (isScriptProcessed && !super[ScDeclarationSequenceHolder]

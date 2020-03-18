@@ -85,23 +85,22 @@ trait ValueClassAnnotator {
       case _ =>
     }
     valueClass.members.foreach {
-      case pat: ScPatternDefinition =>
-        pat.declaredElements.foreach { named =>
+      case pat: ScPatternDefinition => pat.declaredElements.foreach { named =>
           holder.createErrorAnnotation(
             named.nameId,
             ScalaBundle.message("value.classes.can.have.only.defs"))
         }
-      case valDef: ScValueDeclaration =>
-        valDef.declaredElements.foreach { named =>
-          holder.createErrorAnnotation(
-            named.nameId,
-            ScalaBundle.message("value.classes.can.have.only.defs"))
+      case valDef: ScValueDeclaration => valDef.declaredElements.foreach {
+          named =>
+            holder.createErrorAnnotation(
+              named.nameId,
+              ScalaBundle.message("value.classes.can.have.only.defs"))
         }
-      case varDef: ScVariableDefinition =>
-        varDef.declaredElements.foreach { named =>
-          holder.createErrorAnnotation(
-            named.nameId,
-            ScalaBundle.message("value.classes.can.have.only.defs"))
+      case varDef: ScVariableDefinition => varDef.declaredElements.foreach {
+          named =>
+            holder.createErrorAnnotation(
+              named.nameId,
+              ScalaBundle.message("value.classes.can.have.only.defs"))
         }
       case _ =>
     }
@@ -111,8 +110,7 @@ trait ValueClassAnnotator {
       valueClass: ScClass,
       holder: AnnotationHolder): Unit = {
     valueClass.constructor match {
-      case Some(c) =>
-        c.parameters match {
+      case Some(c) => c.parameters match {
           case Seq(param) if !param.isPrivateThis =>
           case Seq(param) =>
             holder.createErrorAnnotation(

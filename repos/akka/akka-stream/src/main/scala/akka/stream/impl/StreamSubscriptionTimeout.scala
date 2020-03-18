@@ -72,8 +72,7 @@ private[akka] trait StreamSubscriptionTimeoutSupport {
       actor: ActorRef,
       message: Any): Cancellable =
     subscriptionTimeoutSettings.mode match {
-      case NoopTermination ⇒
-        NoopSubscriptionTimeout
+      case NoopTermination ⇒ NoopSubscriptionTimeout
       case _ ⇒
         import context.dispatcher
         val cancellable = context.system.scheduler

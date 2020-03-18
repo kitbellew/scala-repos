@@ -369,10 +369,7 @@ class MongoRecordSpec extends Specification with MongoTestKit {
         bftr.save()
 
         val bftrFromDb = BinaryFieldTestRecord.find(bftr.id.value)
-        bftrFromDb must beLike {
-          case Full(tr) =>
-            tr mustEqual bftr
-        }
+        bftrFromDb must beLike { case Full(tr) => tr mustEqual bftr }
       }
     }
 

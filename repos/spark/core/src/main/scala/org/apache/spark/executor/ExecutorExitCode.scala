@@ -58,8 +58,7 @@ private[spark] object ExecutorExitCode {
       // TODO: replace external block store with concrete implementation name
       case EXTERNAL_BLOCK_STORE_FAILED_TO_CREATE_DIR =>
         "ExternalBlockStore failed to create a local temporary directory."
-      case HEARTBEAT_FAILURE =>
-        "Unable to send heartbeats to driver."
+      case HEARTBEAT_FAILURE => "Unable to send heartbeats to driver."
       case _ =>
         "Unknown executor exit code (" + exitCode + ")" + (
           if (exitCode > 128) {

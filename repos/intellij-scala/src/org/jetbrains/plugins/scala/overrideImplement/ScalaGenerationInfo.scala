@@ -122,8 +122,7 @@ object ScalaGenerationInfo {
       case ta: ScTypeAliasDefinition       => ta.aliasedTypeElement
       case ScPatternDefinition.expr(expr)  => expr
       case ScVariableDefinition.expr(expr) => expr
-      case method: ScFunctionDefinition =>
-        method.body match {
+      case method: ScFunctionDefinition => method.body match {
           case Some(x) => x
           case None    => return
         }

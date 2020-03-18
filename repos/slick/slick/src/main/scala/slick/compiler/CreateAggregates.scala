@@ -122,8 +122,7 @@ class CreateAggregates extends Phase {
           val a2 = Aggregate(s1, f1, StructNode(ConstArray(f -> sel1))).infer()
           (Select(Ref(s) :@ a2.nodeType, f).infer(), Map(s -> a2))
         }
-      case n :@ CollectionType(_, _) =>
-        (n, Map.empty)
+      case n :@ CollectionType(_, _) => (n, Map.empty)
       case n =>
         val mapped = n.children.map(liftAggregates(_, outer))
         val m = mapped.iterator.flatMap(_._2).toMap

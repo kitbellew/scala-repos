@@ -210,20 +210,17 @@ object GenerateUnsafeProjection
     }
 
     val writeElement = et match {
-      case t: StructType =>
-        s"""
+      case t: StructType => s"""
           $arrayWriter.setOffset($index);
           ${writeStructToBuffer(ctx, element, t.map(_.dataType), bufferHolder)}
         """
 
-      case a @ ArrayType(et, _) =>
-        s"""
+      case a @ ArrayType(et, _) => s"""
           $arrayWriter.setOffset($index);
           ${writeArrayToBuffer(ctx, element, et, bufferHolder)}
         """
 
-      case m @ MapType(kt, vt, _) =>
-        s"""
+      case m @ MapType(kt, vt, _) => s"""
           $arrayWriter.setOffset($index);
           ${writeMapToBuffer(ctx, element, kt, vt, bufferHolder)}
         """

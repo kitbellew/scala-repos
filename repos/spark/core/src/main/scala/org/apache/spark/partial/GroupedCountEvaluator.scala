@@ -42,8 +42,7 @@ private[spark] class GroupedCountEvaluator[T: ClassTag](
   override def merge(outputId: Int, taskResult: OpenHashMap[T, Long]) {
     outputsMerged += 1
     taskResult.foreach {
-      case (key, value) =>
-        sums.changeValue(key, value, _ + value)
+      case (key, value) => sums.changeValue(key, value, _ + value)
     }
   }
 

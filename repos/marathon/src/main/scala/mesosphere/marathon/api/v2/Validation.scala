@@ -58,8 +58,7 @@ object Validation {
           .flatMap(allRuleViolationsWithFullDescription(_))
           .groupBy(_.description)
           .map {
-            case (description, ruleViolation) =>
-              Json.obj(
+            case (description, ruleViolation) => Json.obj(
                 "path" -> description,
                 "errors" -> ruleViolation.map(r => JsString(r.constraint)))
           }
@@ -79,8 +78,7 @@ object Validation {
     }
 
     violation match {
-      case r: RuleViolation =>
-        Set(parentDesc.map { p =>
+      case r: RuleViolation => Set(parentDesc.map { p =>
           r.description.map {
             // Error is on object level, having a parent description. Omit 'value', prepend '/' as root.
             case "value" => r.withDescription("/" + p)
@@ -98,8 +96,7 @@ object Validation {
             case s: String => "/" + s
           } getOrElse "/")
         })
-      case g: GroupViolation =>
-        g.children.flatMap { c =>
+      case g: GroupViolation => g.children.flatMap { c =>
           val dot = g.value match {
             case _: Iterable[_] => false
             case _              => true
@@ -143,8 +140,7 @@ object Validation {
           new URI(uri.uri)
           Success
         } catch {
-          case _: URISyntaxException =>
-            Failure(
+          case _: URISyntaxException => Failure(
               Set(RuleViolation(uri.uri, "URI has invalid syntax.", None)))
         }
       }

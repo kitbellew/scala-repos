@@ -96,8 +96,9 @@ trait ZookeeperStateMonitor {
       DefaultFuturePool { op() } onFailure { ex =>
         zkWorkFailedCounter.incr()
         backoff match {
-          case wait #:: rest =>
-            DefaultTimer.doLater(wait) { scheduleReadCachePoolConfig(op, rest) }
+          case wait #:: rest => DefaultTimer.doLater(wait) {
+              scheduleReadCachePoolConfig(op, rest)
+            }
         }
       } onSuccess { _ =>
         zkWorkSucceededCounter.incr()

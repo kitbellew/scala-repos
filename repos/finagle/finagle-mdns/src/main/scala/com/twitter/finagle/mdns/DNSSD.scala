@@ -130,8 +130,7 @@ private class DNSSD {
   def resolve(record: Record): Future[ResolvedRecord] = {
     val reply = new Promise[ResolvedRecord]
     val proxy = newProxy(ResolveListenerClass) {
-      case ("serviceResolved", args) =>
-        reply.setValue(ResolvedRecord(
+      case ("serviceResolved", args) => reply.setValue(ResolvedRecord(
           flags = args(1).asInstanceOf[Int],
           ifIndex = args(2).asInstanceOf[Int],
           fullName = args(3).asInstanceOf[String],

@@ -75,8 +75,7 @@ private[csv] object CSVInferSchema {
       first: Array[DataType],
       second: Array[DataType]): Array[DataType] = {
     first.zipAll(second, NullType, NullType).map {
-      case (a, b) =>
-        findTightestCommonType(a, b).getOrElse(NullType)
+      case (a, b) => findTightestCommonType(a, b).getOrElse(NullType)
     }
   }
 

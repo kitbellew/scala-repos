@@ -448,8 +448,7 @@ class VectorIndexerModel private[ml] (
             else { featAttr }
           case (origAttr: Attribute, featAttr: NumericAttribute) =>
             origAttr.withIndex(featAttr.index.get)
-          case (origAttr: Attribute, _) =>
-            origAttr
+          case (origAttr: Attribute, _) => origAttr
         }
       } else { partialFeatureAttributes }
     val newAttributeGroup = new AttributeGroup($(outputCol), featureAttributes)

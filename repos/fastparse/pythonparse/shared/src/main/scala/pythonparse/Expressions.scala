@@ -80,10 +80,8 @@ object Expressions {
 
   def Chain(p: P[Ast.expr], op: P[Ast.operator]) =
     P(p ~ (op ~ p).rep).map {
-      case (lhs, chunks) =>
-        chunks.foldLeft(lhs) {
-          case (lhs, (op, rhs)) =>
-            Ast.expr.BinOp(lhs, op, rhs)
+      case (lhs, chunks) => chunks.foldLeft(lhs) {
+          case (lhs, (op, rhs)) => Ast.expr.BinOp(lhs, op, rhs)
         }
     }
   val expr: P[Ast.expr] = P(Chain(xor_expr, BitOr))

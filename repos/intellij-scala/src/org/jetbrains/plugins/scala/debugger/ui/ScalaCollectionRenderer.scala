@@ -106,9 +106,8 @@ object ScalaCollectionRenderer {
       case ct: ClassType
           if ct.name.startsWith("scala.collection") &&
             !DebuggerUtils.instanceOf(ct, streamClassName) && !DebuggerUtils
-            .instanceOf(ct, iteratorClassName) =>
-        true
-      case _ => evaluateBoolean(value, evaluationContext, hasDefiniteSizeEval)
+            .instanceOf(ct, iteratorClassName) => true
+      case _                                   => evaluateBoolean(value, evaluationContext, hasDefiniteSizeEval)
     }
   }
 
@@ -242,9 +241,7 @@ object ScalaCollectionRenderer {
       val evaluationContext: EvaluationContext = context
         .createEvaluationContext(value)
       try { return nonEmpty(value, context) && hasDefiniteSize(value, context) }
-      catch {
-        case e: EvaluateException =>
-      }
+      catch { case e: EvaluateException => }
 
       try {
         val children: Value = evaluateChildren(
@@ -256,10 +253,7 @@ object ScalaCollectionRenderer {
           children,
           evaluationContext,
           parentDescriptor)
-      } catch {
-        case e: EvaluateException =>
-          true
-      }
+      } catch { case e: EvaluateException => true }
     }
 
     override def getChildValueExpression(

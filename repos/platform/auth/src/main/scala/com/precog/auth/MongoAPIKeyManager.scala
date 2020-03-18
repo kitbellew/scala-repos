@@ -313,8 +313,7 @@ class MongoAPIKeyManager(
   private def updateAPIKey(apiKey: APIKey)(
       f: APIKeyRecord => Option[APIKeyRecord]): Future[Option[APIKeyRecord]] = {
     findAPIKey(apiKey).flatMap {
-      case Some(t) =>
-        f(t) match {
+      case Some(t) => f(t) match {
           case Some(nt) if nt != t =>
             database {
               val updateObj = nt.serialize.asInstanceOf[JObject]

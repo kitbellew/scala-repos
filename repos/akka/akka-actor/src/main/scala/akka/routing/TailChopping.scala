@@ -81,8 +81,7 @@ private[akka] final case class TailChoppingRoutees(
       val idx = aIdx.getAndIncrement
       if (idx < size) {
         shuffled(idx) match {
-          case ActorRefRoutee(ref) ⇒
-            promise.tryCompleteWith(ref.ask(message))
+          case ActorRefRoutee(ref) ⇒ promise.tryCompleteWith(ref.ask(message))
           case ActorSelectionRoutee(sel) ⇒
             promise.tryCompleteWith(sel.ask(message))
           case _ ⇒

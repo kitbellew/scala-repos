@@ -161,15 +161,13 @@ private[http] trait LiftMerge {
                   (element.label == "head" ||
                     element.label.startsWith("head_")) &&
                   htmlDescendant &&
-                  bodyDescendant =>
-              startingState.copy(headInBodyChild = true)
+                  bodyDescendant => startingState.copy(headInBodyChild = true)
 
             case element: Elem
                 if mergeHeadAndTail &&
                   element.label == "tail" &&
                   htmlDescendant &&
-                  bodyDescendant =>
-              startingState.copy(tailInBodyChild = true)
+                  bodyDescendant => startingState.copy(tailInBodyChild = true)
 
             case element: Elem if element.label == "body" && htmlDescendant =>
               bodyElement = element
@@ -201,8 +199,7 @@ private[http] trait LiftMerge {
                   normalizedElement.copy(child = normalizedChildren.nodes),
                   js = normalized.js & normalizedChildren.js)
 
-              case other =>
-                other
+              case other => other
             }
             .map { normalizedResults: NodeAndEventJs =>
               node match {

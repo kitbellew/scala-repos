@@ -154,8 +154,7 @@ trait Matrix[@spec(Double, Int, Float, Long) V]
       case x: Matrix[_] =>
         this.rows == x.rows && this.cols == x.cols &&
           keysIterator.forall(k => this(k) == x(k))
-      case _ =>
-        return false
+      case _ => return false
     }
 
 }

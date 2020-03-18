@@ -50,9 +50,8 @@ object SCL9429 {
             locationOnLowBattery,
             personalDataOnLowBattery,
             ccConfigOnLost,
-            sendSimChangeBySms) =>
-        val s = /*start*/ sendSimChangeBySms /*end*/
-      case _ =>
+            sendSimChangeBySms) => val s = /*start*/ sendSimChangeBySms /*end*/
+      case _                    =>
     }
   }
 }

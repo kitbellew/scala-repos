@@ -136,8 +136,7 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
       assert(innerTuples.size > 0, "Maps coming in must not be empty")
       state.fanOut(innerTuples.size)
       val cacheEntries = innerTuples.map {
-        case (k, v) =>
-          (k, (List(state), v))
+        case (k, v) => (k, (List(state), v))
       }
 
       sSummer.addAll(cacheEntries).map(handleResult(_))

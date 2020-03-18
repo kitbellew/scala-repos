@@ -68,11 +68,9 @@ private[spark] class CoarseGrainedExecutorBackend(
       }(ThreadUtils.sameThread)
       .onComplete {
         // This is a very fast action so we can use "ThreadUtils.sameThread"
-        case Success(msg) =>
-          Utils.tryLogNonFatalError {
-            Option(self).foreach(_.send(
-              msg
-            )) // msg must be RegisterExecutorResponse
+        case Success(msg) => Utils.tryLogNonFatalError {
+            Option(self)
+              .foreach(_.send(msg)) // msg must be RegisterExecutorResponse
           }
         case Failure(e) => {
           logError(s"Cannot register with driver: $driverUrl", e)
@@ -146,8 +144,8 @@ private[spark] class CoarseGrainedExecutorBackend(
     val msg = StatusUpdate(executorId, taskId, state, data)
     driver match {
       case Some(driverRef) => driverRef.send(msg)
-      case None =>
-        logWarning(s"Drop $msg because has not yet connected to driver")
+      case None => logWarning(
+          s"Drop $msg because has not yet connected to driver")
     }
   }
 }

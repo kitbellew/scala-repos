@@ -58,10 +58,8 @@ private[finagle] class CachingPool[Req, Rep](
       if (!isOpen) Future.exception(new ServiceClosedException)
       else {
         get() match {
-          case Some(service) =>
-            Future.value(new WrappedService(service))
-          case None =>
-            factory(conn) map { new WrappedService(_) }
+          case Some(service) => Future.value(new WrappedService(service))
+          case None          => factory(conn) map { new WrappedService(_) }
         }
       }
     }

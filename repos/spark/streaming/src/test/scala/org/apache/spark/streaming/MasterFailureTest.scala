@@ -439,8 +439,8 @@ private[streaming] class FileGeneratingThread(
       }
       logInfo("File generating thread finished normally")
     } catch {
-      case ie: InterruptedException =>
-        logInfo("File generating thread interrupted")
+      case ie: InterruptedException => logInfo(
+          "File generating thread interrupted")
       case e: Exception => logWarning("File generating in killing thread", e)
     } finally {
       fs.close()

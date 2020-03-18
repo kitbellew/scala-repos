@@ -81,8 +81,8 @@ class CompletionProcessor(
       case method: PsiMethod => Some(new PhysicalSignature(method, substitutor))
       case td: ScTypeAlias   => None
       case td: PsiClass      => None
-      case _ =>
-        Some(new Signature(element.name, Seq.empty, 0, substitutor, element))
+      case _ => Some(
+          new Signature(element.name, Seq.empty, 0, substitutor, element))
     }
   }
 
@@ -121,8 +121,7 @@ class CompletionProcessor(
         signature.foreach(sign => signatures += ((sign, forImplicit)))
       } else {
         signature match {
-          case Some(sign) =>
-            signatures.get(sign) match {
+          case Some(sign) => signatures.get(sign) match {
               case Some(true) =>
                 val iterator = levelSet.iterator()
                 while (iterator.hasNext) {

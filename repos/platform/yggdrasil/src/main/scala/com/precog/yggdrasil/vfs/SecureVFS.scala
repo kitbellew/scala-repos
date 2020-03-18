@@ -184,8 +184,7 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
             childMetadata <- nonRoot.toList.traverseU(vfs.findPathMetadata)
           } yield { childMetadata.toSet }
 
-        case other =>
-          for {
+        case other => for {
             children <- vfs.findDirectChildren(path)
             permitted <- EitherT.right(
               permissionsFinder.findBrowsableChildren(apiKey, path))

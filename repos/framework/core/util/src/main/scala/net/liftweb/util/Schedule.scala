@@ -67,9 +67,8 @@ sealed trait Schedule extends Loggable {
       60,
       TimeUnit.SECONDS,
       blockingQueueSize match {
-        case Full(x) =>
-          new ArrayBlockingQueue(x)
-        case _ => new LinkedBlockingQueue
+        case Full(x) => new ArrayBlockingQueue(x)
+        case _       => new LinkedBlockingQueue
       })
 
   /** The underlying <code>java.util.concurrent.ScheduledExecutor</code> */

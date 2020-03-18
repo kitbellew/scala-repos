@@ -21,18 +21,18 @@ object Tv extends LilaController {
     Open { implicit ctx =>
       lila.tv.Tv.Channel.byKey get chanKey match {
         case None => notFound
-        case Some(channel) =>
-          OptionFuResult(GameRepo.pov(gameId, color)) { pov =>
-            Env.tv.tv.getChampions zip
-              Env.game.crosstableApi(pov.game) map {
-              case (champions, crosstable) =>
-                Ok(html.tv.sides(
-                  channel,
-                  champions,
-                  pov,
-                  crosstable,
-                  streams = Nil))
-            }
+        case Some(channel) => OptionFuResult(GameRepo.pov(gameId, color)) {
+            pov =>
+              Env.tv.tv.getChampions zip
+                Env.game.crosstableApi(pov.game) map {
+                case (champions, crosstable) =>
+                  Ok(html.tv.sides(
+                    channel,
+                    champions,
+                    pov,
+                    crosstable,
+                    streams = Nil))
+              }
           }
       }
     }
@@ -51,8 +51,7 @@ object Tv extends LilaController {
             withOpening = false) zip
             Env.game.crosstableApi(game) zip
             Env.tv.tv.getChampions map {
-            case ((data, cross), champions) =>
-              NoCache {
+            case ((data, cross), champions) => NoCache {
                 Ok(html.tv.index(channel, champions, pov, data, cross, flip))
               }
           }
@@ -75,8 +74,7 @@ object Tv extends LilaController {
   private def lichessGames(channel: lila.tv.Tv.Channel)(implicit ctx: Context) =
     Env.tv.tv.getChampions zip
       Env.tv.tv.getGames(channel, 9) map {
-      case (champs, games) =>
-        NoCache {
+      case (champs, games) => NoCache {
           Ok(html.tv.games(channel, games map lila.game.Pov.first, champs))
         }
     }

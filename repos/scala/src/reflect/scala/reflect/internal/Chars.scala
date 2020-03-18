@@ -97,9 +97,8 @@ trait Chars {
   def isOperatorPart(c: Char): Boolean =
     (c: @switch) match {
       case '~' | '!' | '@' | '#' | '%' | '^' | '*' | '+' | '-' | '<' | '>' |
-          '?' | ':' | '=' | '&' | '|' | '/' | '\\' =>
-        true
-      case c => isSpecial(c)
+          '?' | ':' | '=' | '&' | '|' | '/' | '\\' => true
+      case c                                       => isSpecial(c)
     }
 }
 

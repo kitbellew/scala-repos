@@ -47,8 +47,7 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
     element match {
       case settingKey: ScNamedElement if isElementInSbtFile(element) =>
         extractDocFromSettingKey(settingKey)
-      case _ =>
-        ""
+      case _ => ""
     }
 
   private def isElementInSbtFile(element: PsiElement): Boolean =
@@ -64,8 +63,8 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
 
     val doc = keyDefinitionArgs.headOption match {
       case Some(_: ScLiteral) => getDocForNewKeyDefinition(argStrings)
-      case Some(_: ScReferenceExpressionImpl) =>
-        getDocForKeyReference(argStrings)
+      case Some(_: ScReferenceExpressionImpl) => getDocForKeyReference(
+          argStrings)
       case _ => None
     }
 
@@ -88,16 +87,13 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
 
   private def argToString(arg: ScExpression): Option[String] =
     arg match {
-      case ScLiteralImpl.string(str) =>
-        Some(str)
+      case ScLiteralImpl.string(str) => Some(str)
       case ScInfixExpr(lOp, _, rOp) =>
         val str = argToString(lOp).getOrElse("") ++
           argToString(rOp).getOrElse("")
         if (str.nonEmpty) Some(str) else None
-      case refExpr: ScReferenceExpression =>
-        Some(refExpr.getText)
-      case _ =>
-        None
+      case refExpr: ScReferenceExpression => Some(refExpr.getText)
+      case _                              => None
     }
 
   private def getDocForNewKeyDefinition(docs: Seq[String]): Option[String] =

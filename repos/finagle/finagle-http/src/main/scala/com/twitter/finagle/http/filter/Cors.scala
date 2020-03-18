@@ -228,8 +228,7 @@ object Cors {
         request: Request,
         service: Service[Request, Response]): Future[Response] = {
       val response = request match {
-        case Preflight() =>
-          Future {
+        case Preflight() => Future {
             // If preflight is not acceptable, just return a 200 without CORS headers
             handlePreflight(request) getOrElse request.response
           }

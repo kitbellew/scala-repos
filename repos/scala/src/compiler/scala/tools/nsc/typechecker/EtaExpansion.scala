@@ -29,10 +29,8 @@ trait EtaExpansion {
     def unapply(tree: Tree): Option[(List[ValDef], Tree, List[Tree])] =
       tree match {
         case Function(vparams, Apply(fn, args))
-            if (vparams corresponds args)(isMatch) =>
-          Some((vparams, fn, args))
-        case _ =>
-          None
+            if (vparams corresponds args)(isMatch) => Some((vparams, fn, args))
+        case _                                     => None
       }
   }
 
@@ -110,8 +108,7 @@ trait EtaExpansion {
           treeCopy
             .Select(tree, liftout(qual, byName = false), name)
             .clearType() setSymbol NoSymbol
-        case Ident(name) =>
-          tree
+        case Ident(name) => tree
       }
       if (tree1 ne tree) tree1 setPos tree1.pos.makeTransparent
       tree1
@@ -142,8 +139,7 @@ trait EtaExpansion {
             }
             Function(params.map(_._1), expand(Apply(tree, args), restpe))
           }
-        case _ =>
-          tree
+        case _ => tree
       }
 
     val tree1 = liftoutPrefix(tree)

@@ -75,8 +75,7 @@ class ScImplicitlyConvertible(
         // def foo(x: String) {}
         // foo(Map(y -> 1)) //Error is here
         expr.getTypeWithoutImplicits(fromUnderscore = fromUnder).toOption.map {
-          case tp =>
-            ScType.extractDesignatorSingletonType(tp) match {
+          case tp => ScType.extractDesignatorSingletonType(tp) match {
               case Some(res) => res
               case _         => tp
             }
@@ -186,16 +185,13 @@ class ScImplicitlyConvertible(
             retTp,
             newSubst,
             uSubst,
-            implicitDepSusbt) =>
-        r.element match {
+            implicitDepSusbt) => r.element match {
           case f: ScFunction if f.hasTypeParameters =>
             uSubst.getSubstitutor match {
-              case Some(substitutor) =>
-                exp match {
+              case Some(substitutor) => exp match {
                   case Some(expected) =>
-                    val additionalUSubst = Conformance.undefinedSubst(
-                      expected,
-                      newSubst.subst(retTp))
+                    val additionalUSubst = Conformance
+                      .undefinedSubst(expected, newSubst.subst(retTp))
                     (uSubst + additionalUSubst).getSubstitutor match {
                       case Some(innerSubst) =>
                         result += ImplicitResolveResult(
@@ -266,8 +262,9 @@ class ScImplicitlyConvertible(
             lastParent,
             place)) return
       p match {
-        case (_: ScTemplateBody | _: ScExtendsBlock) => //template body and inherited members are at the same level
-        case _                                       => if (!processor.changedLevel) return
+        case (_: ScTemplateBody |
+            _: ScExtendsBlock) => //template body and inherited members are at the same level
+        case _                 => if (!processor.changedLevel) return
       }
       treeWalkUp(p.getContext, p)
     }
@@ -632,16 +629,15 @@ class ScImplicitlyConvertible(
               } else if (clauses.head.parameters.length != 1 || clauses.head.isImplicit)
                 return true
               addResult(new ScalaResolveResult(f, subst, getImports(state)))
-            case b: ScBindingPattern =>
-              ScalaPsiUtil.nameContext(b) match {
+            case b: ScBindingPattern => ScalaPsiUtil.nameContext(b) match {
                 case d: ScDeclaredElementsHolder
                     if (d.isInstanceOf[ScValue] || d
                       .isInstanceOf[ScVariable]) &&
                       d.asInstanceOf[ScModifierListOwner]
                         .hasModifierProperty("implicit") =>
-                  if (!ResolveUtils.isAccessible(
-                        d.asInstanceOf[ScMember],
-                        getPlace)) return true
+                  if (!ResolveUtils
+                        .isAccessible(d.asInstanceOf[ScMember], getPlace))
+                    return true
                   val tp = subst.subst(
                     b.getType(TypingContext.empty).getOrElse(return true))
                   if (funType == null || !tp.conforms(funType)) return true
@@ -781,8 +777,8 @@ object ScImplicitlyConvertible {
       unresolvedTypeParameters: Seq[TypeParameter]) {
     def getClazz: Option[PsiClass] = {
       element.getParent match {
-        case tb: ScTemplateBody =>
-          Some(PsiTreeUtil.getParentOfType(tb, classOf[PsiClass]))
+        case tb: ScTemplateBody => Some(
+            PsiTreeUtil.getParentOfType(tb, classOf[PsiClass]))
         case _ => None
       }
     }

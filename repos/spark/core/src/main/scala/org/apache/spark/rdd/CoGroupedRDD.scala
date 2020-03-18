@@ -125,8 +125,7 @@ class CoGroupedRDD[K: ClassTag](
           case (rdd, j) =>
             // Assume each RDD contributed a single dependency, and get it
             dependencies(j) match {
-              case s: ShuffleDependency[_, _, _] =>
-                None
+              case s: ShuffleDependency[_, _, _] => None
               case _ =>
                 Some(new NarrowCoGroupSplitDep(rdd, i, rdd.partitions(i)))
             }

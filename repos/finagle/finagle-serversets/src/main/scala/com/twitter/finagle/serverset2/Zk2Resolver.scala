@@ -280,13 +280,10 @@ class Zk2Resolver(
     */
   def bind(arg: String): Var[Addr] =
     arg.split("!") match {
-      case Array(hosts, path) =>
-        addrOf(hosts, path, None)
+      case Array(hosts, path) => addrOf(hosts, path, None)
 
-      case Array(hosts, path, endpoint) =>
-        addrOf(hosts, path, Some(endpoint))
+      case Array(hosts, path, endpoint) => addrOf(hosts, path, Some(endpoint))
 
-      case _ =>
-        throw new IllegalArgumentException(s"Invalid address '${arg}'")
+      case _ => throw new IllegalArgumentException(s"Invalid address '${arg}'")
     }
 }

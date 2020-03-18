@@ -166,8 +166,8 @@ object TypeAdjuster extends ApplicationAdapter {
           .exists(isMarkedToReplace)) None
     else
       info match {
-        case cmp: CompoundInfo =>
-          Some(cmp.copy(childInfos = cmp.childInfos.flatMap(simplify)))
+        case cmp: CompoundInfo => Some(
+            cmp.copy(childInfos = cmp.childInfos.flatMap(simplify)))
         case withExpandableTypeAlias(newInfo) => simplify(newInfo)
         case withThisRef(newInfo)             => simplify(newInfo)
         case `with .type#`(newInfo)           => simplify(newInfo)
@@ -219,8 +219,7 @@ object TypeAdjuster extends ApplicationAdapter {
                       if (ScalaPsiUtil.hasStablePath(ta))
                         Some(rInfo.updateTarget(ta))
                       else Some(rInfo.withNewText(ta.name))
-                    case _ =>
-                      Some(rInfo.updateTarget(named))
+                    case _ => Some(rInfo.updateTarget(named))
                   }
                 case _: ScTypeAlias | _: ScBindingPattern =>
                   Some(rInfo.updateTarget(named))

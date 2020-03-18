@@ -73,15 +73,13 @@ class EndToEndTest
       new TestService.FutureIface {
         def query(x: String) =
           (Contexts.broadcast.get(testContext), Dtab.local) match {
-            case (None, Dtab.empty) =>
-              Future.value(x + x)
+            case (None, Dtab.empty) => Future.value(x + x)
 
             case (Some(TestContext(buf)), _) =>
               val Buf.Utf8(str) = buf
               Future.value(str)
 
-            case (_, dtab) =>
-              Future.value(dtab.show)
+            case (_, dtab) => Future.value(dtab.show)
           }
       }
     )
@@ -573,12 +571,10 @@ class EndToEndTest
   private val classifier: ResponseClassifier = ResponseClassifier.named(
     "EndToEndTestClassifier") {
     case ReqRep(TestService.Query.Args(x), Throw(_: InvalidQueryException))
-        if x == "ok" =>
-      ResponseClass.Success
+        if x == "ok" => ResponseClass.Success
     case ReqRep(_, Throw(_: InvalidQueryException)) =>
       ResponseClass.NonRetryableFailure
-    case ReqRep(_, Return(s: String)) =>
-      ResponseClass.NonRetryableFailure
+    case ReqRep(_, Return(s: String)) => ResponseClass.NonRetryableFailure
   }
 
   private def serverForClassifier(): ListeningServer = {

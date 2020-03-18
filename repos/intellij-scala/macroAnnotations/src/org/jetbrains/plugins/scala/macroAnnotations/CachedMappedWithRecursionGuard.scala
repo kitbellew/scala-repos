@@ -67,10 +67,9 @@ object CachedMappedWithRecursionGuard {
         val parameterTypes = flatParams.map(_.tpt)
         val parameterNames: List[c.universe.TermName] = flatParams.map(_.name)
         val parameterDefinitions: List[c.universe.Tree] = flatParams match {
-          case param :: Nil =>
-            List(ValDef(NoMods, param.name, param.tpt, q"$dataName"))
-          case _ =>
-            flatParams.zipWithIndex.map {
+          case param :: Nil => List(
+              ValDef(NoMods, param.name, param.tpt, q"$dataName"))
+          case _ => flatParams.zipWithIndex.map {
               case (param, i) =>
                 ValDef(
                   NoMods,

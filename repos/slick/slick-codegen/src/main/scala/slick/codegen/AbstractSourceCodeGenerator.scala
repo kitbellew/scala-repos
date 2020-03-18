@@ -191,8 +191,8 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
         case Default(value) =>
           Some(s"O.Default(${default.get})") // .get is safe here
         case SqlType(dbType) => Some(s"""O.SqlType("$dbType")""")
-        case Length(length, varying) =>
-          Some(s"O.Length($length,varying=$varying)")
+        case Length(length, varying) => Some(
+            s"O.Length($length,varying=$varying)")
         case AutoInc => Some(s"O.AutoInc")
         case NotNull | Nullable =>
           throw new SlickException(

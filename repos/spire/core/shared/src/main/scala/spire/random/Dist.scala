@@ -162,8 +162,7 @@ trait Dist[@sp A] extends Any {
 
   def rawHistogram(n: Int)(implicit gen: Generator): Map[A, Int] =
     toStream(gen).take(n).foldLeft(Map.empty[A, Int]) {
-      case (h, a) =>
-        h.updated(a, h.getOrElse(a, 0) + 1)
+      case (h, a) => h.updated(a, h.getOrElse(a, 0) + 1)
     }
 }
 

@@ -58,8 +58,7 @@ trait CurlFormat {
 
     // headers
     request.headers.foreach {
-      case (k, values) =>
-        values.foreach { v =>
+      case (k, values) => values.foreach { v =>
           b.append(s"  --header '${quote(k)}: ${quote(v)}'")
           b.append(" \\\n")
         }

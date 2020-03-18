@@ -42,10 +42,7 @@ final class ParIncOptimizer(
     def remove[K, V](map: ParMap[K, V], k: K): Option[V] = map.remove(k)
 
     def retain[K, V](map: ParMap[K, V])(p: (K, V) => Boolean): Unit = {
-      map.foreach {
-        case (k, v) =>
-          if (!p(k, v)) map.remove(k)
-      }
+      map.foreach { case (k, v) => if (!p(k, v)) map.remove(k) }
     }
 
     // Operations on AccMap

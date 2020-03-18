@@ -115,8 +115,7 @@ object DocStrings {
           .drop(firstUCIndex)
           .filter(str.startsWith("@usecase", _))
         commentSections ::: usecaseSections
-      case _ =>
-        idxs
+      case _ => idxs
     }
   }
 

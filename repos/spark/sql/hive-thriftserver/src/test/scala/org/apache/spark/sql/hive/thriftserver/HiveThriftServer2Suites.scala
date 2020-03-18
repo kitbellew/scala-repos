@@ -864,8 +864,7 @@ abstract class HiveThriftServer2Test
     // Retries up to 3 times with different port numbers if the server fails to start
     (1 to 3)
       .foldLeft(Try(startThriftServer(listeningPort, 0))) {
-        case (started, attempt) =>
-          started.orElse {
+        case (started, attempt) => started.orElse {
             listeningPort += 1
             stopThriftServer()
             Try(startThriftServer(listeningPort, attempt))

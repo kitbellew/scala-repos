@@ -8,24 +8,12 @@ import org.jetbrains.plugins.scala.lang.psi.types._
   */
 class BasicTest extends ApplicabilityTestBase {
   def testFine() {
-    assertProblems("", "") {
-      case Nil =>
-    }
-    assertProblems("()", "()") {
-      case Nil =>
-    }
-    assertProblems("()", "") {
-      case Nil =>
-    }
-    assertProblems("(p: A)", "(A)") {
-      case Nil =>
-    }
-    assertProblems("(a: A, b: B)", "(A, B)") {
-      case Nil =>
-    }
-    assertProblems("(a: A)(b: B)", "(A)(B)") {
-      case Nil =>
-    }
+    assertProblems("", "") { case Nil                   => }
+    assertProblems("()", "()") { case Nil               => }
+    assertProblems("()", "") { case Nil                 => }
+    assertProblems("(p: A)", "(A)") { case Nil          => }
+    assertProblems("(a: A, b: B)", "(A, B)") { case Nil => }
+    assertProblems("(a: A)(b: B)", "(A)(B)") { case Nil => }
   }
 
   /*def testDoesNotTakeParameters {

@@ -30,8 +30,7 @@ class FutureTest
         case Throw(ex) =>
           val t = intercept[Throwable] { Await.result(future, 1.second) }
           assert(t == ex)
-        case Return(v) =>
-          assert(Await.result(future, 1.second) == v)
+        case Return(v) => assert(Await.result(future, 1.second) == v)
       }
     }
   }
@@ -965,8 +964,7 @@ class FutureTest
             val g = e.getCause match {
               case t: NonLocalReturnControl[_] =>
                 t.asInstanceOf[NonLocalReturnControl[String]]
-              case _ =>
-                fail()
+              case _ => fail()
             }
             assert(g.value == "OK")
             "bleh"

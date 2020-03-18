@@ -30,8 +30,7 @@ object PullParserExamples extends Specification {
     val parser = (p: Parser) => {
       def parse: BigInt =
         p.nextToken match {
-          case FieldStart("postalCode") =>
-            p.nextToken match {
+          case FieldStart("postalCode") => p.nextToken match {
               case IntVal(code) => code
               case _            => p.fail("expected int")
             }

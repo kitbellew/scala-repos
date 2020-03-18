@@ -42,10 +42,7 @@ class ExecutionKMeansTest extends WordSpec with Matchers {
       })
 
       val labels = KMeans(k, vectors)
-        .flatMap {
-          case (_, _, labeledPipe) =>
-            labeledPipe.toIterableExecution
-        }
+        .flatMap { case (_, _, labeledPipe) => labeledPipe.toIterableExecution }
         .waitFor(Config.default, Local(false))
         .get
         .toList

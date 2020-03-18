@@ -26,11 +26,9 @@ object Content {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val contentMarker = builder.mark()
     builder.getTokenType match {
-      case ScalaXmlTokenTypes.XML_DATA_CHARACTERS =>
-        builder.advanceLexer()
-      case ScalaXmlTokenTypes.XML_CHAR_ENTITY_REF =>
-        builder.advanceLexer()
-      case _ =>
+      case ScalaXmlTokenTypes.XML_DATA_CHARACTERS => builder.advanceLexer()
+      case ScalaXmlTokenTypes.XML_CHAR_ENTITY_REF => builder.advanceLexer()
+      case _                                      =>
     }
 
     val patcher = ParserPatcher.getSuitablePatcher(builder)
@@ -42,13 +40,10 @@ object Content {
           !Reference.parse(builder) &&
           !ScalaExpr.parse(builder) && !patcher.parse(builder)) isReturn = true
       builder.getTokenType match {
-        case ScalaXmlTokenTypes.XML_DATA_CHARACTERS =>
-          builder.advanceLexer()
-        case ScalaXmlTokenTypes.XML_CHAR_ENTITY_REF =>
-          builder.advanceLexer()
+        case ScalaXmlTokenTypes.XML_DATA_CHARACTERS  => builder.advanceLexer()
+        case ScalaXmlTokenTypes.XML_CHAR_ENTITY_REF  => builder.advanceLexer()
         case ScalaXmlTokenTypes.XML_ENTITY_REF_TOKEN => builder.advanceLexer()
-        case _ =>
-          if (isReturn) return
+        case _                                       => if (isReturn) return
       }
       subparse()
     }

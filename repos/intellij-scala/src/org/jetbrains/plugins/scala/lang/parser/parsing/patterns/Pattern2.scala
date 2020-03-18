@@ -94,8 +94,7 @@ object Pattern2 {
             idMarker.drop()
             backupMarker.rollbackTo()
         }
-      case _ =>
-        backupMarker.drop()
+      case _ => backupMarker.drop()
     }
     pattern2Marker.drop()
     Pattern3.parse(builder)

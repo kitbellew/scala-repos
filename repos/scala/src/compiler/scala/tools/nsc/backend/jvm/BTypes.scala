@@ -152,8 +152,7 @@ abstract class BTypes {
       case 'F' => FLOAT
       case 'J' => LONG
       case 'D' => DOUBLE
-      case '[' =>
-        ArrayBType(
+      case '[' => ArrayBType(
           bTypeForDescriptorOrInternalNameFromClassfile(desc.substring(1)))
       case 'L' if desc.last == ';' =>
         classBTypeFromParsedClassfile(desc.substring(1, desc.length - 1))
@@ -195,8 +194,7 @@ abstract class BTypes {
           classNode.name == ObjectRef.internalName,
           s"class with missing super type: ${classNode.name}")
         None
-      case superName =>
-        Some(classBTypeFromParsedClassfile(superName))
+      case superName => Some(classBTypeFromParsedClassfile(superName))
     }
 
     val interfaces: List[ClassBType] = classNode.interfaces.asScala
@@ -434,8 +432,7 @@ abstract class BTypes {
                   false
               }
 
-          case UNIT =>
-            other == UNIT
+          case UNIT => other == UNIT
           case BOOL | BYTE | SHORT | CHAR =>
             this == other || other == INT || other == LONG // TODO Actually, BOOL does NOT conform to LONG. Even with adapt().
           case _ =>
@@ -463,8 +460,7 @@ abstract class BTypes {
           // Approximate `lub`. The common type of two references is always ObjectReference.
           ObjectRef
 
-        case _: MethodBType =>
-          assertionError(
+        case _: MethodBType => assertionError(
             s"unexpected method type when computing maxType: $this")
       }
 
@@ -573,23 +569,20 @@ abstract class BTypes {
           else if (other.isNumericType) other
           else uncomparable
 
-        case SHORT =>
-          other match {
+        case SHORT => other match {
             case BYTE                        => SHORT
             case CHAR                        => INT
             case INT | LONG | FLOAT | DOUBLE => other
             case _                           => uncomparable
           }
 
-        case CHAR =>
-          other match {
+        case CHAR => other match {
             case BYTE | SHORT                => INT
             case INT | LONG | FLOAT | DOUBLE => other
             case _                           => uncomparable
           }
 
-        case INT =>
-          other match {
+        case INT => other match {
             case BYTE | SHORT | CHAR   => INT
             case LONG | FLOAT | DOUBLE => other
             case _                     => uncomparable
@@ -605,8 +598,7 @@ abstract class BTypes {
           else if (other.isNumericType) FLOAT
           else uncomparable
 
-        case DOUBLE =>
-          if (other.isNumericType) DOUBLE else uncomparable
+        case DOUBLE => if (other.isNumericType) DOUBLE else uncomparable
 
         case UNIT | BOOL => uncomparable
       }

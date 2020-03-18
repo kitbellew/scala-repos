@@ -199,8 +199,7 @@ trait Choice[-In, +Out, +A, +X] extends Rule[In, Out, A, X] {
     def oneOf(list: List[Rule[In, Out, A, X]]): Result[Out, A, X] =
       list match {
         case Nil => Failure
-        case first :: rest =>
-          first(in) match {
+        case first :: rest => first(in) match {
             case Failure => oneOf(rest)
             case result  => result
           }

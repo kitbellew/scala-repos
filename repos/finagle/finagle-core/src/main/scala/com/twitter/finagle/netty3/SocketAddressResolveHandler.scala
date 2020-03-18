@@ -26,10 +26,7 @@ private[finagle] object SocketAddressResolver {
           // Shouldn't reach here.
           Left(new UnknownHostException(hostName))
         }
-      } catch {
-        case t: Throwable =>
-          Left(t)
-      }
+      } catch { case t: Throwable => Left(t) }
     }
   }
 }

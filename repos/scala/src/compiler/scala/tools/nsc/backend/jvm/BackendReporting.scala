@@ -186,8 +186,7 @@ object BackendReporting {
   sealed trait NoClassBTypeInfo extends OptimizerWarning {
     override def toString =
       this match {
-        case NoClassBTypeInfoMissingBytecode(cause) =>
-          cause.toString
+        case NoClassBTypeInfoMissingBytecode(cause) => cause.toString
 
         case NoClassBTypeInfoClassSymbolInfoFailedSI9111(classFullName) =>
           s"Failed to get the type of class symbol $classFullName due to SI-9111."

@@ -275,13 +275,11 @@ abstract class ParallelSeqCheck[T](collName: String)
     }
 
   property("prepends must be equal") = forAll(collectionPairs) {
-    case (s, coll) =>
-      s.length == 0 || s(0) +: s == coll(0) +: coll
+    case (s, coll) => s.length == 0 || s(0) +: s == coll(0) +: coll
   }
 
   property("appends must be equal") = forAll(collectionPairs) {
-    case (s, coll) =>
-      s.length == 0 || s :+ s(0) == coll :+ coll(0)
+    case (s, coll) => s.length == 0 || s :+ s(0) == coll :+ coll(0)
   }
 
   property("padTos must be equal") = forAll(collectionPairsWithLengths) {

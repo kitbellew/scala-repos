@@ -105,12 +105,10 @@ class ScalaInlineHandler extends InlineHandler {
           rp,
           classOf[ScDeclaredElementsHolder]) match {
           case v @ ScPatternDefinition.expr(e)
-              if v.declaredElements == Seq(element) =>
-            e.getText
+              if v.declaredElements == Seq(element) => e.getText
           case v @ ScVariableDefinition.expr(e)
-              if v.declaredElements == Seq(element) =>
-            e.getText
-          case _ => return null
+              if v.declaredElements == Seq(element) => e.getText
+          case _                                    => return null
         }
       case funDef: ScFunctionDefinition if funDef.parameters.isEmpty =>
         funDef.body.orNull.getText
@@ -124,10 +122,9 @@ class ScalaInlineHandler extends InlineHandler {
         val replacementOpt = reference.getElement match {
           case Parent(call: ScMethodCall) if call.argumentExpressions.isEmpty =>
             Some(call)
-          case e: ScExpression => Some(e)
-          case Parent(reference: ScTypeElement) =>
-            Some(reference)
-          case _ => None
+          case e: ScExpression                  => Some(e)
+          case Parent(reference: ScTypeElement) => Some(reference)
+          case _                                => None
         }
         replacementOpt.foreach { replacement =>
           val newValue = replacement match {
@@ -135,8 +132,7 @@ class ScalaInlineHandler extends InlineHandler {
               val oldValue = expression match {
                 case _ childOf (_: ScInterpolatedStringLiteral) =>
                   s"{" + replacementValue + "}"
-                case _ =>
-                  replacementValue
+                case _ => replacementValue
               }
               expression.replaceExpression(
                 ScalaPsiElementFactory
@@ -246,13 +242,11 @@ class ScalaInlineHandler extends InlineHandler {
 
     def isSimpleTypeAlias(typeAlias: ScTypeAliasDefinition): Boolean = {
       typeAlias.aliasedTypeElement.depthFirst.forall {
-        case t: ScTypeElement =>
-          t.calcType match {
+        case t: ScTypeElement => t.calcType match {
             case part: ScTypeParameterType => false
             case part: ScProjectionType
-                if !ScalaPsiUtil.hasStablePath(part.element) =>
-              false
-            case _ => true
+                if !ScalaPsiUtil.hasStablePath(part.element) => false
+            case _                                           => true
           }
         case _ => true
       }

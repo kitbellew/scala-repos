@@ -48,8 +48,7 @@ class FileStreamSource(
 
   private val seenFiles = new OpenHashSet[String]
   metadataLog.get(None, maxBatchId).foreach {
-    case (batchId, files) =>
-      files.foreach(seenFiles.add)
+    case (batchId, files) => files.foreach(seenFiles.add)
   }
 
   /** Returns the schema of the data from this source */

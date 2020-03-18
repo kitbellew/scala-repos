@@ -87,10 +87,8 @@ class BinaryInputStreamReaderTest extends FunSuite {
       streamPickle.unpickle[Employee]
       assert(false, "EndOfStreamException not thrown")
     } catch {
-      case _: EndOfStreamException =>
-      /* expected */
-      case _: java.io.EOFException =>
-      /* expected */
+      case _: EndOfStreamException => /* expected */
+      case _: java.io.EOFException => /* expected */
     } finally {
       assert(obj1.toString == readObj1.toString)
       assert(obj2.toString == readObj2.toString)

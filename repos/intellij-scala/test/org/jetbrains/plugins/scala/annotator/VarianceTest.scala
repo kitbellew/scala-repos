@@ -89,9 +89,7 @@ class VarianceTest extends SimpleTestCase {
   }
 
   def testValueCovariantParam() {
-    assertMatches(messages("trait M[+S] {val k: S}")) {
-      case Nil =>
-    }
+    assertMatches(messages("trait M[+S] {val k: S}")) { case Nil => }
   }
 
   def testAbstractPrivateMethod() { //test SCL-7176
@@ -107,9 +105,7 @@ class VarianceTest extends SimpleTestCase {
   }
 
   def testTypeBoundsNoError() {
-    assertMatches(messages("trait U[M[+X] <: W[X], W[+_]")) {
-      case Nil =>
-    }
+    assertMatches(messages("trait U[M[+X] <: W[X], W[+_]")) { case Nil => }
   }
 
   def testTypeBoundNoErrorParameterized() {
@@ -151,9 +147,7 @@ class VarianceTest extends SimpleTestCase {
         |  }
         |
         |  println(new Sum(0, List(1, 2)).sel)
-        |}""".stripMargin)) {
-      case Nil =>
-    }
+        |}""".stripMargin)) { case Nil => }
   }
 
   def testSCL8863() = {
@@ -161,9 +155,7 @@ class VarianceTest extends SimpleTestCase {
         |class Test[+T]{
         |  var arr: Array[T@uncheckedVariance] = null
         |}
-      """.stripMargin)) {
-      case Nil =>
-    }
+      """.stripMargin)) { case Nil => }
   }
 
   def testUV() = {
@@ -174,9 +166,7 @@ class VarianceTest extends SimpleTestCase {
         |class Test[+T] {
         |  var arr: Array[T@uV] = null
         |}
-      """.stripMargin)) {
-      case Nil =>
-    }
+      """.stripMargin)) { case Nil => }
   }
 
   def messages(@Language(value = "Scala", prefix = Header) code: String)

@@ -119,8 +119,7 @@ object TestOffsetManager {
         }
         offset += 1
       } catch {
-        case e1: ClosedByInterruptException =>
-          offsetsChannel.disconnect()
+        case e1: ClosedByInterruptException => offsetsChannel.disconnect()
         case e2: IOException =>
           println(
             "Commit thread %d: Error while committing offsets to %s:%d for group %s due to %s."
@@ -351,10 +350,8 @@ object TestOffsetManager {
       commitThreads.foreach(_.join())
       fetchThread.join()
       statsThread.join()
-    } catch {
-      case e: Throwable =>
-        println("Error: ", e)
-    } finally { cleanShutdown() }
+    } catch { case e: Throwable => println("Error: ", e) }
+    finally { cleanShutdown() }
 
     def cleanShutdown() {
       commitThreads.foreach(_.shutdown())

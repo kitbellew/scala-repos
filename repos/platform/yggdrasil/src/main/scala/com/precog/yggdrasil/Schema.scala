@@ -32,10 +32,12 @@ object Schema {
     jtype match {
       case JArrayFixedT(indices) if indices.isEmpty => Set(CEmptyArray)
       case JObjectFixedT(fields) if fields.isEmpty  => Set(CEmptyObject)
-      case JArrayFixedT(indices) =>
-        indices.values.toSet.flatMap { tpe: JType => ctypes(tpe) }
-      case JObjectFixedT(fields) =>
-        fields.values.toSet.flatMap { tpe: JType => ctypes(tpe) }
+      case JArrayFixedT(indices) => indices.values.toSet.flatMap { tpe: JType =>
+          ctypes(tpe)
+        }
+      case JObjectFixedT(fields) => fields.values.toSet.flatMap { tpe: JType =>
+          ctypes(tpe)
+        }
       case JArrayHomogeneousT(elemType) =>
         ctypes(elemType) collect {
           case cType: CValueType[_] => CArrayType(cType)
@@ -87,8 +89,7 @@ object Schema {
         case JObjectFixedT(fields) if fields.isEmpty =>
           ColumnRef(CPath(nodes.reverse), CEmptyObject) :: Nil
 
-        case JArrayFixedT(indices) =>
-          indices.toList.flatMap {
+        case JArrayFixedT(indices) => indices.toList.flatMap {
             case (idx, tpe) =>
               val refs0 = refs collect {
                 case ColumnRef(CPath(CPathIndex(`idx`), rest @ _*), ctype) =>
@@ -137,20 +138,15 @@ object Schema {
             path,
             CDouble) :: ColumnRef(path, CNum) :: Nil
 
-        case JTextT =>
-          ColumnRef(CPath(nodes.reverse), CString) :: Nil
+        case JTextT => ColumnRef(CPath(nodes.reverse), CString) :: Nil
 
-        case JBooleanT =>
-          ColumnRef(CPath(nodes.reverse), CBoolean) :: Nil
+        case JBooleanT => ColumnRef(CPath(nodes.reverse), CBoolean) :: Nil
 
-        case JDateT =>
-          ColumnRef(CPath(nodes.reverse), CDate) :: Nil
+        case JDateT => ColumnRef(CPath(nodes.reverse), CDate) :: Nil
 
-        case JPeriodT =>
-          ColumnRef(CPath(nodes.reverse), CPeriod) :: Nil
+        case JPeriodT => ColumnRef(CPath(nodes.reverse), CPeriod) :: Nil
 
-        case JNullT =>
-          ColumnRef(CPath(nodes.reverse), CNull) :: Nil
+        case JNullT => ColumnRef(CPath(nodes.reverse), CNull) :: Nil
 
         case JUnionT(ltpe, rtpe) =>
           buildPath(nodes, refs, ltpe) ++ buildPath(nodes, refs, rtpe)
@@ -382,8 +378,7 @@ object Schema {
       case (JObjectUnfixedT, (CPath.Identity, CEmptyObject)) => true
       case (JObjectUnfixedT, (CPath(CPathField(_), _*), _))  => true
       case (JObjectFixedT(fields), (CPath.Identity, CEmptyObject))
-          if fields.isEmpty =>
-        true
+          if fields.isEmpty => true
 
       case (
             JObjectFixedT(fields),
@@ -398,8 +393,7 @@ object Schema {
       case (JArrayUnfixedT, (CPath(CPathArray, _*), CArrayType(_))) => true
       case (JArrayUnfixedT, (CPath(CPathIndex(_), _*), _))          => true
       case (JArrayFixedT(elements), (CPath.Identity, CEmptyArray))
-          if elements.isEmpty =>
-        true
+          if elements.isEmpty => true
       case (JArrayFixedT(elements), (CPath(CPathIndex(i), tail @ _*), ctpe)) =>
         elements.get(i).map(includes(_, CPath(tail: _*), ctpe)).getOrElse(false)
       case (
@@ -428,8 +422,7 @@ object Schema {
     */
   def subsumes(ctpes: Seq[(CPath, CType)], jtpe: JType): Boolean =
     jtpe match {
-      case JNumberT =>
-        ctpes.exists {
+      case JNumberT => ctpes.exists {
           case (CPath.Identity, CLong | CDouble | CNum) => true
           case _                                        => false
         }
@@ -445,8 +438,7 @@ object Schema {
 
       case JObjectUnfixedT if ctpes.contains(CPath.Identity, CEmptyObject) =>
         true
-      case JObjectUnfixedT =>
-        ctpes.exists {
+      case JObjectUnfixedT => ctpes.exists {
           case (CPath(CPathField(_), _*), _) => true
           case _                             => false
         }
@@ -465,8 +457,7 @@ object Schema {
       }
 
       case JArrayUnfixedT if ctpes.contains(CPath.Identity, CEmptyArray) => true
-      case JArrayUnfixedT =>
-        ctpes.exists {
+      case JArrayUnfixedT => ctpes.exists {
           case (CPath(CPathArray, _*), _)    => true
           case (CPath(CPathIndex(_), _*), _) => true
           case _                             => false
@@ -487,8 +478,7 @@ object Schema {
           )
         }
       }
-      case JArrayHomogeneousT(jElemType) =>
-        ctpes.exists {
+      case JArrayHomogeneousT(jElemType) => ctpes.exists {
           case (CPath(CPathArray, _*), CArrayType(cElemType)) =>
             ctypes(jElemType) contains cElemType
           case _ => false

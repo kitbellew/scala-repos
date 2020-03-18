@@ -444,8 +444,7 @@ object QueryStringBindable {
         _.trim match {
           case "true"  => true
           case "false" => false
-          case b =>
-            b.toInt match {
+          case b => b.toInt match {
               case 1 => true
               case 0 => false
             }
@@ -741,8 +740,7 @@ object PathBindable {
         _.trim match {
           case "true"  => true
           case "false" => false
-          case b =>
-            b.toInt match {
+          case b => b.toInt match {
               case 1 => true
               case 0 => false
             }

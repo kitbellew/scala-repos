@@ -120,8 +120,7 @@ object Reads extends ConstraintReads with PathReads with DefaultReads {
           def reads(js: JsValue) =
             alt1.reads(js) match {
               case r @ JsSuccess(_, _) => r
-              case r @ JsError(es1) =>
-                alt2.reads(js) match {
+              case r @ JsError(es1) => alt2.reads(js) match {
                   case r2 @ JsSuccess(_, _) => r2
                   case r2 @ JsError(es2)    => JsError(JsError.merge(es1, es2))
                 }
@@ -187,8 +186,7 @@ trait LowPriorityDefaultReads {
 
             ts.iterator.zipWithIndex
               .foldLeft(Right(Vector.empty): Either[Errors, Vector[A]]) {
-                case (acc, (elt, idx)) =>
-                  (acc, fromJson[A](elt)(ra)) match {
+                case (acc, (elt, idx)) => (acc, fromJson[A](elt)(ra)) match {
                     case (Right(vs), JsSuccess(v, _)) => Right(vs :+ v)
                     case (Right(_), JsError(e))       => Left(locate(e, idx))
                     case (Left(e), _: JsSuccess[_])   => Left(e)
@@ -203,8 +201,7 @@ trait LowPriorityDefaultReads {
                   builder ++= res
                   JsSuccess(builder.result())
                 })
-          case _ =>
-            JsError(
+          case _ => JsError(
               Seq(JsPath() -> Seq(ValidationError("error.expected.jsarray"))))
         }
     }
@@ -346,8 +343,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
       def reads(json: JsValue): JsResult[java.util.Date] =
         json match {
           case JsNumber(d) => JsSuccess(new java.util.Date(d.toLong))
-          case JsString(s) =>
-            parseJDate(pattern, corrector(s)) match {
+          case JsString(s) => parseJDate(pattern, corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
                 JsError(Seq(
@@ -370,10 +366,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
     val df = new java.text.SimpleDateFormat(pattern)
     df.setLenient(false)
     try { Some(df.parse(input)) }
-    catch {
-      case x: java.text.ParseException =>
-        None
-    }
+    catch { case x: java.text.ParseException => None }
   }
 
   /**
@@ -499,8 +492,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
       def reads(json: JsValue): JsResult[LocalDateTime] =
         json match {
           case JsNumber(d) => JsSuccess(epoch(d.toLong))
-          case JsString(s) =>
-            p(parsing).parse(corrector(s)) match {
+          case JsString(s) => p(parsing).parse(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
                 JsError(Seq(
@@ -555,8 +547,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
     new Reads[OffsetDateTime] {
       def reads(json: JsValue): JsResult[OffsetDateTime] =
         json match {
-          case JsString(s) =>
-            p(parsing).parse(corrector(s)) match {
+          case JsString(s) => p(parsing).parse(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
                 JsError(Seq(
@@ -602,8 +593,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
       def reads(json: JsValue): JsResult[ZonedDateTime] =
         json match {
           case JsNumber(d) => JsSuccess(epoch(d.toLong))
-          case JsString(s) =>
-            p(parsing).parse(corrector(s)) match {
+          case JsString(s) => p(parsing).parse(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
                 JsError(Seq(
@@ -652,8 +642,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
       def reads(json: JsValue): JsResult[LocalDate] =
         json match {
           case JsNumber(d) => JsSuccess(epoch(d.toLong))
-          case JsString(s) =>
-            p(parsing).parse(corrector(s)) match {
+          case JsString(s) => p(parsing).parse(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
                 JsError(Seq(
@@ -702,8 +691,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
       def reads(json: JsValue): JsResult[Instant] =
         json match {
           case JsNumber(d) => JsSuccess(Instant ofEpochMilli d.toLong)
-          case JsString(s) =>
-            p(parsing).parse(corrector(s)) match {
+          case JsString(s) => p(parsing).parse(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
                 JsError(Seq(
@@ -785,8 +773,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
       def reads(json: JsValue): JsResult[DateTime] =
         json match {
           case JsNumber(d) => JsSuccess(new DateTime(d.toLong))
-          case JsString(s) =>
-            parseDate(corrector(s)) match {
+          case JsString(s) => parseDate(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
                 JsError(Seq(
@@ -794,8 +781,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
                     "error.expected.jodadate.format",
                     pattern))))
             }
-          case _ =>
-            JsError(
+          case _ => JsError(
               Seq(JsPath() -> Seq(ValidationError("error.expected.date"))))
         }
 
@@ -830,8 +816,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
 
       def reads(json: JsValue): JsResult[LocalDate] =
         json match {
-          case JsString(s) =>
-            parseDate(corrector(s)) match {
+          case JsString(s) => parseDate(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
                 JsError(Seq(
@@ -839,8 +824,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
                     "error.expected.jodadate.format",
                     pattern))))
             }
-          case _ =>
-            JsError(
+          case _ => JsError(
               Seq(JsPath() -> Seq(ValidationError("error.expected.date"))))
         }
 
@@ -875,8 +859,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
       def reads(json: JsValue): JsResult[LocalTime] =
         json match {
           case JsNumber(n) => JsSuccess(new LocalTime(n.toLong))
-          case JsString(s) =>
-            parseTime(corrector(s)) match {
+          case JsString(s) => parseTime(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
                 JsError(Seq(
@@ -884,8 +867,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
                     "error.expected.jodatime.format",
                     pattern))))
             }
-          case _ =>
-            JsError(
+          case _ => JsError(
               Seq(JsPath() -> Seq(ValidationError("error.expected.time"))))
         }
 
@@ -944,8 +926,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
     def reads(json: JsValue) =
       json match {
         case JsBoolean(b) => JsSuccess(b)
-        case _ =>
-          JsError(
+        case _ => JsError(
             Seq(JsPath() -> Seq(ValidationError("error.expected.jsboolean"))))
       }
   }
@@ -957,8 +938,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
     def reads(json: JsValue) =
       json match {
         case JsString(s) => JsSuccess(s)
-        case _ =>
-          JsError(
+        case _ => JsError(
             Seq(JsPath() -> Seq(ValidationError("error.expected.jsstring"))))
       }
   }
@@ -970,8 +950,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
     def reads(json: JsValue) =
       json match {
         case o: JsObject => JsSuccess(o)
-        case _ =>
-          JsError(
+        case _ => JsError(
             Seq(JsPath() -> Seq(ValidationError("error.expected.jsobject"))))
       }
   }
@@ -983,8 +962,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
     def reads(json: JsValue) =
       json match {
         case o: JsArray => JsSuccess(o)
-        case _ =>
-          JsError(
+        case _ => JsError(
             Seq(JsPath() -> Seq(ValidationError("error.expected.jsarray"))))
       }
   }
@@ -1003,8 +981,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
     def reads(json: JsValue) =
       json match {
         case s: JsString => JsSuccess(s)
-        case _ =>
-          JsError(
+        case _ => JsError(
             Seq(JsPath() -> Seq(ValidationError("error.expected.jsstring"))))
       }
   }
@@ -1016,8 +993,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
     def reads(json: JsValue) =
       json match {
         case n: JsNumber => JsSuccess(n)
-        case _ =>
-          JsError(
+        case _ => JsError(
             Seq(JsPath() -> Seq(ValidationError("error.expected.jsnumber"))))
       }
   }
@@ -1029,8 +1005,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
     def reads(json: JsValue) =
       json match {
         case b: JsBoolean => JsSuccess(b)
-        case _ =>
-          JsError(
+        case _ => JsError(
             Seq(JsPath() -> Seq(ValidationError("error.expected.jsboolean"))))
       }
   }
@@ -1088,8 +1063,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
               }
               .fold(JsError.apply, res => JsSuccess(res.toMap))
           }
-          case _ =>
-            JsError(
+          case _ => JsError(
               Seq(JsPath() -> Seq(ValidationError("error.expected.jsobject"))))
         }
     }
@@ -1125,8 +1099,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
             .getOrElse(JsError(
               Seq(JsPath() -> Seq(ValidationError("error.expected.uuid")))))
         }
-        case _ =>
-          JsError(Seq(JsPath() -> Seq(ValidationError("error.expected.uuid"))))
+        case _ => JsError(
+            Seq(JsPath() -> Seq(ValidationError("error.expected.uuid"))))
       }
   }
 

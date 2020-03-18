@@ -113,10 +113,8 @@ private sealed trait OneAndFoldable[F[_]] extends Foldable1[OneAnd[F, ?]] {
 
   override def findRight[A](fa: OneAnd[F, A])(f: A => Boolean) =
     F.findRight(fa.tail)(f) match {
-      case a @ Some(_) =>
-        a
-      case None =>
-        if (f(fa.head)) Some(fa.head) else None
+      case a @ Some(_) => a
+      case None        => if (f(fa.head)) Some(fa.head) else None
     }
 
   override def foldMap1[A, B: Semigroup](fa: OneAnd[F, A])(f: A => B) =

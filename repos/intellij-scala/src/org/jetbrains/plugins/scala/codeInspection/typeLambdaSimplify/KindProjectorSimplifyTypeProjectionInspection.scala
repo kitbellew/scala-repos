@@ -71,10 +71,9 @@ class KindProjectorSimplifyTypeProjectionInspection
               if isInsideParam && p.designator.presentableText == tp.name =>
             true
           case p: ScParameterizedType
-              if occursInsideParameterized(tp, p, isInsideParam = true) =>
-            true
-          case ta if isInsideParam && ta.presentableText == tp.name => true
-          case _                                                    => false
+              if occursInsideParameterized(tp, p, isInsideParam = true) => true
+          case ta if isInsideParam && ta.presentableText == tp.name     => true
+          case _                                                        => false
         }
       }
 
@@ -124,8 +123,7 @@ class KindProjectorSimplifyTypeProjectionInspection
                   parenType.typeElement match {
                     case Some(ct: ScCompoundTypeElement) =>
                       ct.refinement match {
-                        case Some(refinement) =>
-                          refinement.types match {
+                        case Some(refinement) => refinement.types match {
                             case Seq(alias: ScTypeAliasDefinition)
                                 if alias.nameId.getText == projection.nameId.getText =>
                               val aliasParam = alias.typeParameters

@@ -19,8 +19,7 @@ object ZAdd {
     args match {
       case head :: tail =>
         new ZAdd(ChannelBuffers.wrappedBuffer(head), ZMembers(tail))
-      case _ =>
-        throw ClientError("Invalid use of ZADD")
+      case _ => throw ClientError("Invalid use of ZADD")
     }
 }
 
@@ -364,15 +363,12 @@ case class ZInterval(value: String) {
   private val representation = value.toLowerCase match {
     case N_INF => N_INF
     case P_INF => P_INF
-    case double =>
-      double.head match {
-        case EXCLUSIVE =>
-          RequireClientProtocol.safe {
+    case double => double.head match {
+        case EXCLUSIVE => RequireClientProtocol.safe {
             NumberFormat.toDouble(double.tail)
             double
           }
-        case f =>
-          RequireClientProtocol.safe {
+        case f => RequireClientProtocol.safe {
             NumberFormat.toDouble(value)
             double
           }
@@ -521,10 +517,8 @@ trait ZStoreCompanion {
         tail.size match {
           case done if done == numkeys =>
             get(destination, numkeys, tail, None, None)
-          case more if more > numkeys =>
-            parseArgs(destination, numkeys, tail)
-          case _ =>
-            throw ClientError("Specified keys must equal numkeys")
+          case more if more > numkeys => parseArgs(destination, numkeys, tail)
+          case _                      => throw ClientError("Specified keys must equal numkeys")
         }
       case _ =>
         throw ClientError("Expected a minimum of 3 arguments for command")
@@ -536,8 +530,7 @@ trait ZStoreCompanion {
       remaining: Seq[String]) = {
     val (keys, args) = remaining.splitAt(numkeys)
     args.isEmpty match {
-      case true =>
-        get(dest, numkeys, keys, None, None)
+      case true => get(dest, numkeys, keys, None, None)
       case false =>
         val (args0, args1) = findArgs(args, numkeys)
         RequireClientProtocol(
@@ -569,10 +562,8 @@ trait ZStoreCompanion {
 
   protected def findWeights(args0: Seq[String], args1: Seq[String]) =
     Weights(args0) match {
-      case None =>
-        args1.length > 0 match {
-          case true =>
-            Weights(args1) match {
+      case None => args1.length > 0 match {
+          case true => Weights(args1) match {
               case None =>
                 throw ClientError(
                   "Have additional arguments but unable to process")
@@ -585,10 +576,8 @@ trait ZStoreCompanion {
 
   protected def findAggregate(args0: Seq[String], args1: Seq[String]) =
     Aggregate(args0) match {
-      case None =>
-        args1.length > 0 match {
-          case true =>
-            Aggregate(args1) match {
+      case None => args1.length > 0 match {
+          case true => Aggregate(args1) match {
               case None =>
                 throw ClientError(
                   "Have additional arguments but unable to process")
@@ -663,10 +652,8 @@ trait ZScoredRangeCompanion {
       max: ZInterval,
       withScores: CommandArgument) = {
     withScores match {
-      case WithScores =>
-        get(key, min, max, Some(withScores), None)
-      case _ =>
-        throw ClientError("Only WITHSCORES is supported")
+      case WithScores => get(key, min, max, Some(withScores), None)
+      case _          => throw ClientError("Only WITHSCORES is supported")
     }
   }
 
@@ -680,10 +667,8 @@ trait ZScoredRangeCompanion {
       withScores: CommandArgument,
       limit: Limit) = {
     withScores match {
-      case WithScores =>
-        get(key, min, max, Some(withScores), Some(limit))
-      case _ =>
-        throw ClientError("Only WITHSCORES supported")
+      case WithScores => get(key, min, max, Some(withScores), Some(limit))
+      case _          => throw ClientError("Only WITHSCORES supported")
     }
   }
 
@@ -699,8 +684,7 @@ trait ZScoredRangeCompanion {
     val (arg0, remaining) = doParse(sArgs)
 
     remaining.isEmpty match {
-      case true =>
-        get(key, min, max, convertScore(arg0), convertLimit(arg0))
+      case true => get(key, min, max, convertScore(arg0), convertLimit(arg0))
       case false =>
         val (arg1, leftovers) = doParse(remaining)
         leftovers.isEmpty match {
@@ -724,8 +708,7 @@ trait ZScoredRangeCompanion {
   }
   protected def findScore(arg0: ScoreOrLimit, arg1: ScoreOrLimit) =
     convertScore(arg0) match {
-      case None =>
-        convertScore(arg1) match {
+      case None => convertScore(arg1) match {
           case None => throw ClientError("No WITHSCORES found but one expected")
           case s    => s
         }
@@ -738,8 +721,7 @@ trait ZScoredRangeCompanion {
     }
   protected def findLimit(arg0: ScoreOrLimit, arg1: ScoreOrLimit) =
     convertLimit(arg0) match {
-      case None =>
-        convertLimit(arg1) match {
+      case None => convertLimit(arg1) match {
           case None => throw ClientError("No LIMIT found but one expected")
           case s    => s
         }
@@ -789,8 +771,7 @@ trait ZRangeCmdCompanion {
     rest match {
       case start :: stop :: Nil =>
         get(key, safeLong(start), safeLong(stop), None)
-      case start :: stop :: withScores :: Nil =>
-        withScores match {
+      case start :: stop :: withScores :: Nil => withScores match {
           case WithScores(arg) =>
             get(key, safeLong(start), safeLong(stop), Some(WithScores))
           case _ =>

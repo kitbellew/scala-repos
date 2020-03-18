@@ -232,10 +232,7 @@ object Template extends Logging {
 
     val name = ca.template.name getOrElse {
       try { Process("git config --global user.name").lines.toList(0) }
-      catch {
-        case e: Throwable =>
-          readLine("Please enter author's name: ")
-      }
+      catch { case e: Throwable => readLine("Please enter author's name: ") }
     }
 
     val organization = ca.template.packageName getOrElse {
@@ -246,8 +243,7 @@ object Template extends Logging {
     val email = ca.template.email getOrElse {
       try { Process("git config --global user.email").lines.toList(0) }
       catch {
-        case e: Throwable =>
-          readLine("Please enter author's e-mail address: ")
+        case e: Throwable => readLine("Please enter author's e-mail address: ")
       }
     }
 

@@ -472,8 +472,8 @@ object MixinSample extends App {
       with AuditInterceptor {
 
     override def receive: Receive = {
-      case Message(author, text) ⇒
-        println(s"${author.getOrElse("Unknown")} says '$text'")
+      case Message(author, text) ⇒ println(
+          s"${author.getOrElse("Unknown")} says '$text'")
     }
   }
 

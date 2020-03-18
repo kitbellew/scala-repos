@@ -55,9 +55,8 @@ class ScalaMacroEvaluator(project: Project)
       case f: ScFunction
           if f
             .hasAnnotation("scala.reflect.macros.internal.macroImpl")
-            .isDefined =>
-        Some(f)
-      case _ => None
+            .isDefined => Some(f)
+      case _           => None
     }
   }
 

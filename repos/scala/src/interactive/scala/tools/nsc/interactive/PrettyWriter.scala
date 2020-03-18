@@ -30,8 +30,7 @@ class PrettyWriter(wr: Writer) extends Writer {
           wr.write(':')
           wr.write(' ')
           wr.write(str, off + 1, len - 1)
-        case _ =>
-          wr.write(str, off, len)
+        case _ => wr.write(str, off, len)
       }
     } else { wr.write(str, off, len) }
   }

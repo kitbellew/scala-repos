@@ -241,8 +241,7 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
             offset,
             soft = true)
         }
-      case literal: ScLiteral =>
-        literal.getValue match {
+      case literal: ScLiteral => literal.getValue match {
           case text: String =>
             if (text == null) return PsiReference.EMPTY_ARRAY
             return getReferencesByElement(element, text, 1, soft = true)

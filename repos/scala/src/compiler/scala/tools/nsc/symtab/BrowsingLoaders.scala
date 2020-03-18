@@ -89,8 +89,9 @@ abstract class BrowsingLoaders extends GlobalSymbolLoaders {
 
       override def traverse(tree: Tree): Unit =
         tree match {
-          case PackageDef(pkg, body) =>
-            inPackagePrefix(pkg) { body foreach traverse }
+          case PackageDef(pkg, body) => inPackagePrefix(pkg) {
+              body foreach traverse
+            }
 
           case ClassDef(_, name, _, _) =>
             if (packagePrefix == root.fullName) {

@@ -1,10 +1,8 @@
 object DeeperLub {
   case class A[+T1, +T2](t1: T1, t2: T2)
   val f = 1 match {
-    case 1 =>
-      A(1, A(1, A(1, A(1, A(1, Some(1))))))
-    case _ =>
-      A(2, A(2, A(2, A(2, A(2, None)))))
+    case 1 => A(1, A(1, A(1, A(1, A(1, Some(1))))))
+    case _ => A(2, A(2, A(2, A(2, A(2, None)))))
   }
 
   class Az[+T] {}

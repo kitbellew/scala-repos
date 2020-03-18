@@ -70,8 +70,7 @@ object JacksonParser extends Logging {
         // when an object is found but an array is requested just wrap it in a list
         convertField(factory, parser, st) :: Nil
 
-      case _ =>
-        convertField(factory, parser, schema)
+      case _ => convertField(factory, parser, schema)
     }
   }
 
@@ -81,22 +80,19 @@ object JacksonParser extends Logging {
       schema: DataType): Any = {
     import com.fasterxml.jackson.core.JsonToken._
     (parser.getCurrentToken, schema) match {
-      case (null | VALUE_NULL, _) =>
-        null
+      case (null | VALUE_NULL, _) => null
 
       case (FIELD_NAME, _) =>
         parser.nextToken()
         convertField(factory, parser, schema)
 
-      case (VALUE_STRING, StringType) =>
-        UTF8String.fromString(parser.getText)
+      case (VALUE_STRING, StringType) => UTF8String.fromString(parser.getText)
 
       case (VALUE_STRING, _) if parser.getTextLength < 1 =>
         // guard the non string type
         null
 
-      case (VALUE_STRING, BinaryType) =>
-        parser.getBinaryValue
+      case (VALUE_STRING, BinaryType) => parser.getBinaryValue
 
       case (VALUE_STRING, DateType) =>
         val stringValue = parser.getText
@@ -115,8 +111,7 @@ object JacksonParser extends Logging {
         // See https://issues.apache.org/jira/browse/SPARK-10681.
         DateTimeUtils.stringToTime(parser.getText).getTime * 1000L
 
-      case (VALUE_NUMBER_INT, TimestampType) =>
-        parser.getLongValue * 1000000L
+      case (VALUE_NUMBER_INT, TimestampType) => parser.getLongValue * 1000000L
 
       case (_, StringType) =>
         val writer = new ByteArrayOutputStream()
@@ -163,29 +158,21 @@ object JacksonParser extends Logging {
       case (VALUE_NUMBER_INT | VALUE_NUMBER_FLOAT, dt: DecimalType) =>
         Decimal(parser.getDecimalValue, dt.precision, dt.scale)
 
-      case (VALUE_NUMBER_INT, ByteType) =>
-        parser.getByteValue
+      case (VALUE_NUMBER_INT, ByteType) => parser.getByteValue
 
-      case (VALUE_NUMBER_INT, ShortType) =>
-        parser.getShortValue
+      case (VALUE_NUMBER_INT, ShortType) => parser.getShortValue
 
-      case (VALUE_NUMBER_INT, IntegerType) =>
-        parser.getIntValue
+      case (VALUE_NUMBER_INT, IntegerType) => parser.getIntValue
 
-      case (VALUE_NUMBER_INT, LongType) =>
-        parser.getLongValue
+      case (VALUE_NUMBER_INT, LongType) => parser.getLongValue
 
-      case (VALUE_TRUE, BooleanType) =>
-        true
+      case (VALUE_TRUE, BooleanType) => true
 
-      case (VALUE_FALSE, BooleanType) =>
-        false
+      case (VALUE_FALSE, BooleanType) => false
 
-      case (START_OBJECT, st: StructType) =>
-        convertObject(factory, parser, st)
+      case (START_OBJECT, st: StructType) => convertObject(factory, parser, st)
 
-      case (START_ARRAY, ArrayType(st, _)) =>
-        convertArray(factory, parser, st)
+      case (START_ARRAY, ArrayType(st, _)) => convertArray(factory, parser, st)
 
       case (START_OBJECT, MapType(StringType, kt, _)) =>
         convertMap(factory, parser, kt)
@@ -219,8 +206,7 @@ object JacksonParser extends Logging {
             index,
             convertField(factory, parser, schema(index).dataType))
 
-        case None =>
-          parser.skipChildren()
+        case None => parser.skipChildren()
       }
     }
 
@@ -295,15 +281,12 @@ object JacksonParser extends Logging {
               case array: ArrayData =>
                 if (array.numElements() == 0) { Nil }
                 else { array.toArray[InternalRow](schema) }
-              case _ =>
-                failedRecord(record)
+              case _ => failedRecord(record)
             }
           }
         } catch {
-          case _: JsonProcessingException =>
-            failedRecord(record)
-          case _: SparkSQLJsonProcessingException =>
-            failedRecord(record)
+          case _: JsonProcessingException         => failedRecord(record)
+          case _: SparkSQLJsonProcessingException => failedRecord(record)
         }
       }
     }

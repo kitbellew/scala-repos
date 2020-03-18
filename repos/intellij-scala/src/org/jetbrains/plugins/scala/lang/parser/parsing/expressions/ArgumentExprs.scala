@@ -29,10 +29,8 @@ object ArgumentExprs {
           if (!Expr.parse(builder)) { builder error ErrMsg("wrong.expression") }
         }
         builder.getTokenType match {
-          case ScalaTokenTypes.tRPARENTHESIS =>
-            builder.advanceLexer() //Ate )
-          case _ =>
-            builder error ScalaBundle.message("rparenthesis.expected")
+          case ScalaTokenTypes.tRPARENTHESIS => builder.advanceLexer() //Ate )
+          case _                             => builder error ScalaBundle.message("rparenthesis.expected")
         }
         builder.restoreNewlinesState
         argMarker.done(ScalaElementTypes.ARG_EXPRS)

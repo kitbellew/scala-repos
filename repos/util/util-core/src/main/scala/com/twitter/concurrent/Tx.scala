@@ -110,14 +110,11 @@ object Tx {
               state = Done
               Future.value(Abort)
 
-            case Ackd(_, _) =>
-              throw AlreadyAckd
+            case Ackd(_, _) => throw AlreadyAckd
 
-            case Nackd(_) =>
-              throw AlreadyNackd
+            case Nackd(_) => throw AlreadyNackd
 
-            case Done =>
-              throw AlreadyDone
+            case Done => throw AlreadyDone
           }
         }
 
@@ -129,12 +126,9 @@ object Tx {
             case Ackd(who, confirm) if who ne this =>
               confirm(false)
               state = Done
-            case Ackd(_, _) =>
-              throw AlreadyAckd
-            case Nackd(_) =>
-              throw AlreadyNackd
-            case Done =>
-              throw AlreadyDone
+            case Ackd(_, _) => throw AlreadyAckd
+            case Nackd(_)   => throw AlreadyNackd
+            case Done       => throw AlreadyDone
           }
         }
       }

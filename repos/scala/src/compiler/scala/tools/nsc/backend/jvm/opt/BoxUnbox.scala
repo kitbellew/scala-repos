@@ -210,14 +210,11 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
           var replaceOK = true
           val copyOps = new CopyOpsIterator(Set(creation), finalCons, prodCons)
           while (replaceOK && copyOps.hasNext) copyOps.next() match {
-            case vi: VarInsnNode =>
-              elidableCopyOps += vi
+            case vi: VarInsnNode => elidableCopyOps += vi
 
-            case copyOp if copyOp.getOpcode == DUP =>
-              elidableCopyOps += copyOp
+            case copyOp if copyOp.getOpcode == DUP => elidableCopyOps += copyOp
 
-            case _ =>
-              replaceOK = false
+            case _ => replaceOK = false
           }
           if (replaceOK) Some(elidableCopyOps) else None
         }
@@ -236,8 +233,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
 
           // store boxed value(s) into localSlots
           val storeOps = localSlots.toList reverseMap {
-            case (slot, tp) =>
-              new VarInsnNode(tp.getOpcode(ISTORE), slot)
+            case (slot, tp) => new VarInsnNode(tp.getOpcode(ISTORE), slot)
           }
           val storeInitialValues = creation.loadInitialValues match {
             case Some(ops) => ops ::: storeOps
@@ -245,8 +241,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
           }
           if (keepBox) {
             val loadOps: List[VarInsnNode] = localSlots.map({
-              case (slot, tp) =>
-                new VarInsnNode(tp.getOpcode(ILOAD), slot)
+              case (slot, tp) => new VarInsnNode(tp.getOpcode(ILOAD), slot)
             })(collection.breakOut)
             toInsertBefore(creation.valuesConsumer) =
               storeInitialValues ::: loadOps
@@ -311,19 +306,16 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
             .groupBy(_.index)
           for ((index, tp) <- reTypedLocals)
             localsByIndex.get(index).map(_.toList) match {
-              case Some(List(local)) =>
-                local.desc = tp.getDescriptor
-              case Some(locals) =>
-                locals foreach method.localVariables.remove
-              case _ =>
+              case Some(List(local)) => local.desc = tp.getDescriptor
+              case Some(locals)      => locals foreach method.localVariables.remove
+              case _                 =>
             }
         }
 
         /** Remove box creations - leave the boxed value(s) on the stack instead. */
         def replaceCreationOps(): Unit = {
           for (creation <- allCreations) creation.loadInitialValues match {
-            case None =>
-              toDelete ++= creation.allInsns
+            case None => toDelete ++= creation.allInsns
 
             case Some(ops) =>
               toReplace(creation.valuesConsumer) = ops
@@ -343,8 +335,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
             allConsumers.foreach(extraction =>
               extraction.postExtractionAdaptationOps(
                 boxKind.boxedTypes.head) match {
-                case Nil =>
-                  toDelete ++= extraction.allInsns
+                case Nil => toDelete ++= extraction.allInsns
                 case ops =>
                   toReplace(extraction.consumer) = ops
                   toDelete ++= extraction.allInsns - extraction.consumer
@@ -558,8 +549,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
           case List(t) if t.getSize == 1 =>
             reTypedLocals += index -> t
             List((t, index))
-          case _ =>
-            valueTypes.map(t => {
+          case _ => valueTypes.map(t => {
               val newIndex = nextCopyOpLocal
               nextCopyOpLocal += t.getSize
               (t, newIndex)
@@ -888,8 +878,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
       checkTupleExtraction(insn, this, prodCons)
     def extractedValueIndex(extraction: BoxConsumer): Int =
       extraction match {
-        case StaticGetterOrInstanceRead(mi: MethodInsnNode) =>
-          tupleGetterIndex(mi.name)
+        case StaticGetterOrInstanceRead(mi: MethodInsnNode) => tupleGetterIndex(
+            mi.name)
         case PrimitiveBoxingGetter(mi)      => tupleGetterIndex(mi.name)
         case PrimitiveUnboxingGetter(mi, _) => tupleGetterIndex(mi.name)
         case _ =>
@@ -1084,8 +1074,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         typeOfExtractedValue: Type): List[AbstractInsnNode] =
       this match {
         case PrimitiveBoxingGetter(_) => List(getScalaBox(typeOfExtractedValue))
-        case PrimitiveUnboxingGetter(_, unboxedPrimitive) =>
-          List(getScalaUnbox(unboxedPrimitive))
+        case PrimitiveUnboxingGetter(_, unboxedPrimitive) => List(
+            getScalaUnbox(unboxedPrimitive))
         case _ => Nil
       }
   }

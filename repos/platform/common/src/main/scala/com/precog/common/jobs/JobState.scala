@@ -90,11 +90,9 @@ trait JobStateSerialization {
 
     override def decompose(job: JobState): JValue =
       job match {
-        case NotStarted =>
-          jobject(jfield("state", "not_started"))
+        case NotStarted => jobject(jfield("state", "not_started"))
 
-        case Started(ts, prev) =>
-          base("started", ts, prev)
+        case Started(ts, prev) => base("started", ts, prev)
 
         case Cancelled(reason, ts, prev) =>
           base("cancelled", ts, prev, Some(reason))
@@ -102,11 +100,9 @@ trait JobStateSerialization {
         case Aborted(reason, ts, prev) =>
           base("aborted", ts, prev, Some(reason))
 
-        case Expired(ts, prev) =>
-          base("expired", ts, prev)
+        case Expired(ts, prev) => base("expired", ts, prev)
 
-        case Finished(ts, prev) =>
-          base("finished", ts, prev)
+        case Finished(ts, prev) => base("finished", ts, prev)
       }
   }
 
@@ -118,11 +114,9 @@ trait JobStateSerialization {
 
     override def validated(obj: JValue) = {
       (obj \ "state").validated[String] flatMap {
-        case "not_started" =>
-          success[Error, JobState](NotStarted)
+        case "not_started" => success[Error, JobState](NotStarted)
 
-        case "started" =>
-          extractBase(obj) map (Started(_, _)).tupled
+        case "started" => extractBase(obj) map (Started(_, _)).tupled
 
         case "cancelled" =>
           ((obj \ "reason").validated[String] |@| extractBase(obj)) {
@@ -136,13 +130,11 @@ trait JobStateSerialization {
               Aborted(reason, timestamp, previous)
           }
 
-        case "expired" =>
-          extractBase(obj) map (Expired(_, _)).tupled
+        case "expired" => extractBase(obj) map (Expired(_, _)).tupled
 
         case "finished" =>
           extractBase(obj) flatMap {
-            case (timestamp, previous) =>
-              success(Finished(timestamp, previous))
+            case (timestamp, previous) => success(Finished(timestamp, previous))
           }
       }
     }

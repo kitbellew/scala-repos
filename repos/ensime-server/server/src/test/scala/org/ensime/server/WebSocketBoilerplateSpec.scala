@@ -92,9 +92,7 @@ class WebSocketBoilerplateSpec extends EnsimeSpec with SharedTestKitFixture {
 
       Source.single(input).via(endpoints).runWith(Sink.head).pipeTo(client.ref)
 
-      client.expectMsgPF() {
-        case Status.Failure(_) =>
-      }
+      client.expectMsgPF() { case Status.Failure(_) => }
   }
 
   it should "produce a marshalled Flow that errors on bad inbound JSON" in withTestKit {

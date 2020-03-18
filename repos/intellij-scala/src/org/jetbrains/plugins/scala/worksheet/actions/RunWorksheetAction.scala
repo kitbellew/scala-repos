@@ -282,8 +282,7 @@ object RunWorksheetAction {
 
   def getModuleFor(file: PsiFile): Module =
     WorksheetCompiler.getModuleForCpName(file) flatMap {
-      case name =>
-        scala.extensions.inReadAction {
+      case name => scala.extensions.inReadAction {
           Option(
             ModuleManager getInstance file.getProject findModuleByName name)
         }

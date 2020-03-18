@@ -544,8 +544,7 @@ private[kafka] class Processor(
         // be either associated with a specific socket channel or a bad request. We just ignore the bad socket channel
         // or request. This behavior might need to be reviewed if we see an exception that need the entire broker to stop.
         case e: ControlThrowable => throw e
-        case e: Throwable =>
-          error("Processor got uncaught exception.", e)
+        case e: Throwable        => error("Processor got uncaught exception.", e)
       }
     }
 

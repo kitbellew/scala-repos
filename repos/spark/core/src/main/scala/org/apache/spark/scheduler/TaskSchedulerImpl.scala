@@ -139,10 +139,8 @@ private[spark] class TaskSchedulerImpl(
     rootPool = new Pool("", schedulingMode, 0, 0)
     schedulableBuilder = {
       schedulingMode match {
-        case SchedulingMode.FIFO =>
-          new FIFOSchedulableBuilder(rootPool)
-        case SchedulingMode.FAIR =>
-          new FairSchedulableBuilder(rootPool, conf)
+        case SchedulingMode.FIFO => new FIFOSchedulableBuilder(rootPool)
+        case SchedulingMode.FAIR => new FairSchedulableBuilder(rootPool, conf)
       }
     }
     schedulableBuilder.buildPools()
@@ -181,8 +179,7 @@ private[spark] class TaskSchedulerImpl(
         new HashMap[Int, TaskSetManager])
       stageTaskSets(taskSet.stageAttemptId) = manager
       val conflictingTaskSet = stageTaskSets.exists {
-        case (_, ts) =>
-          ts.taskSet != taskSet && !ts.isZombie
+        case (_, ts) => ts.taskSet != taskSet && !ts.isZombie
       }
       if (conflictingTaskSet) {
         throw new IllegalStateException(
@@ -543,13 +540,11 @@ private[spark] class TaskSchedulerImpl(
       hostPort: String,
       reason: ExecutorLossReason): Unit =
     reason match {
-      case LossReasonPending =>
-        logDebug(
+      case LossReasonPending => logDebug(
           s"Executor $executorId on $hostPort lost, but reason not yet known.")
-      case ExecutorKilled =>
-        logInfo(s"Executor $executorId on $hostPort killed by driver.")
-      case _ =>
-        logError(s"Lost executor $executorId on $hostPort: $reason")
+      case ExecutorKilled => logInfo(
+          s"Executor $executorId on $hostPort killed by driver.")
+      case _ => logError(s"Lost executor $executorId on $hostPort: $reason")
     }
 
   /**

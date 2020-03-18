@@ -202,8 +202,8 @@ private[controllers] class AssetInfo(
     }
 
     url.getProtocol match {
-      case "file" =>
-        Some(httpDateFormat.print(new File(url.toURI).lastModified))
+      case "file" => Some(
+          httpDateFormat.print(new File(url.toURI).lastModified))
       case "jar" =>
         getLastModified[JarURLConnection](c => c.getJarEntry.getTime)
       case "bundle" => getLastModified[URLConnection](c => c.getLastModified)
@@ -408,8 +408,7 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
           .filter(someEtag => etags.split(',').exists(_.trim == someEtag))
           .flatMap(_ =>
             Some(cacheableResult(assetInfo, aggressiveCaching, NotModified)))
-      case None =>
-        for {
+      case None => for {
           ifModifiedSinceStr <- request.headers.get(IF_MODIFIED_SINCE)
           ifModifiedSince <- parseModifiedDate(ifModifiedSinceStr)
           lastModified <- assetInfo.parsedLastModified

@@ -78,8 +78,7 @@ object BinaryFormat {
         ba.value map toInt match {
           case Array(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12) =>
             readTimer(b9, b10, b11, b12) match {
-              case 0 =>
-                PausedClock(
+              case 0 => PausedClock(
                   color = color,
                   limit = readClockLimit(b1),
                   increment = b2,
@@ -88,8 +87,7 @@ object BinaryFormat {
                   whiteBerserk = whiteBerserk,
                   blackBerserk = blackBerserk
                 )
-              case timer =>
-                RunningClock(
+              case timer => RunningClock(
                   color = color,
                   limit = readClockLimit(b1),
                   increment = b2,

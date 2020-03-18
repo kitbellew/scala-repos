@@ -148,12 +148,10 @@ object LinkedClass {
 
     classDef.defs.foreach {
       // Static methods
-      case m: MethodDef if m.static =>
-        staticMethods += linkedMethod(m)
+      case m: MethodDef if m.static => staticMethods += linkedMethod(m)
 
       // Fields
-      case field @ FieldDef(_, _, _) =>
-        fields += field
+      case field @ FieldDef(_, _, _) => fields += field
 
       // Normal methods
       case m: MethodDef if m.name.isInstanceOf[Ident] =>
@@ -163,14 +161,11 @@ object LinkedClass {
       case m: MethodDef if m.name.isInstanceOf[StringLiteral] =>
         exportedMembers += linkedMethod(m)
 
-      case m: PropertyDef =>
-        exportedMembers += linkedProperty(m)
+      case m: PropertyDef => exportedMembers += linkedProperty(m)
 
-      case e: ConstructorExportDef =>
-        classExports += e
+      case e: ConstructorExportDef => classExports += e
 
-      case e: ModuleExportDef =>
-        classExports += e
+      case e: ModuleExportDef => classExports += e
 
       case tree =>
         sys.error(s"Illegal tree in ClassDef of class ${tree.getClass}")

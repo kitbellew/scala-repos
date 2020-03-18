@@ -31,8 +31,7 @@ object Bridge {
     case (
           com.twitter.finagle.exp.Address
             .ServiceFactory(sf: ServiceFactory[Req, Rep], _),
-          _) =>
-      sf
+          _)                    => sf
     case (Address.Failed(e), _) => new FailingFactory(e)
   }
 }

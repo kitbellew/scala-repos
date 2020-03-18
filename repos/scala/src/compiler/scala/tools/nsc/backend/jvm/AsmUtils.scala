@@ -118,8 +118,7 @@ object AsmUtils {
     */
   def textify(insn: AbstractInsnNode): String =
     insn match {
-      case _: InitialProducer =>
-        insn.toString
+      case _: InitialProducer => insn.toString
       case _ =>
         val trace = new TraceMethodVisitor(new Textifier)
         insn.accept(trace)

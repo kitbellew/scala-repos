@@ -93,8 +93,7 @@ object ProvenanceComputationSpecs
               tree.provenance must beLike {
                 case ProductProvenance(
                       DynamicProvenance(_),
-                      StaticProvenance("/clicks")) =>
-                  ok
+                      StaticProvenance("/clicks")) => ok
               }
               tree.errors filterNot isWarning must beEmpty
             }
@@ -130,8 +129,7 @@ object ProvenanceComputationSpecs
             tree.provenance must beLike {
               case ProductProvenance(
                     DynamicProvenance(_),
-                    StaticProvenance("/clicks")) =>
-                ok
+                    StaticProvenance("/clicks")) => ok
             }
             tree.errors filterNot isWarning must beEmpty
           }
@@ -654,8 +652,7 @@ object ProvenanceComputationSpecs
               tree.provenance must beLike {
                 case ProductProvenance(
                       DynamicProvenance(_),
-                      StaticProvenance("/foo")) =>
-                  ok
+                      StaticProvenance("/foo")) => ok
               }
               tree.errors filterNot isWarning must beEmpty
             }
@@ -696,8 +693,7 @@ object ProvenanceComputationSpecs
             tree.provenance must beLike {
               case ProductProvenance(
                     DynamicProvenance(_),
-                    StaticProvenance("/foo")) =>
-                ok
+                    StaticProvenance("/foo")) => ok
             }
             tree.errors filterNot isWarning must beEmpty
           }
@@ -1173,8 +1169,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   StaticProvenance("/clicks"),
-                  StaticProvenance("/views")) =>
-              ok
+                  StaticProvenance("/views")) => ok
           }
           tree.errors must beEmpty
         }
@@ -1191,8 +1186,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   DynamicProvenance(_),
-                  StaticProvenance("/clicks")) =>
-              ok
+                  StaticProvenance("/clicks")) => ok
           }
           tree.errors must beEmpty
         }
@@ -1210,8 +1204,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   DynamicProvenance(_),
-                  DynamicProvenance(_)) =>
-              ok
+                  DynamicProvenance(_)) => ok
           }
           tree.errors must beEmpty
         }
@@ -1247,8 +1240,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   StaticProvenance("/foobar"),
-                  StaticProvenance("/baz")) =>
-              ok
+                  StaticProvenance("/baz")) => ok
           }
           tree.errors must beEmpty
         }
@@ -1311,8 +1303,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   StaticProvenance("/foo"),
-                  StaticProvenance("/bar")) =>
-              ok
+                  StaticProvenance("/bar")) => ok
           }
           tree.errors must beEmpty
         }
@@ -1338,8 +1329,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   DynamicProvenance(_),
-                  StaticProvenance("/bar")) =>
-              ok
+                  StaticProvenance("/bar")) => ok
           }
           tree.errors must beEmpty
         }
@@ -1405,8 +1395,7 @@ object ProvenanceComputationSpecs
                   tree.provenance must beLike {
                     case CoproductProvenance(
                           StaticProvenance("/bar"),
-                          StaticProvenance("/baz")) =>
-                      ok
+                          StaticProvenance("/baz")) => ok
                   }
                   tree.errors filterNot isWarning must beEmpty
                 }
@@ -1415,8 +1404,7 @@ object ProvenanceComputationSpecs
                   tree.provenance must beLike {
                     case CoproductProvenance(
                           DynamicProvenance(_),
-                          StaticProvenance("/baz")) =>
-                      ok
+                          StaticProvenance("/baz")) => ok
                   }
                   tree.errors filterNot isWarning must beEmpty
                 }
@@ -1462,8 +1450,7 @@ object ProvenanceComputationSpecs
                 tree.provenance must beLike {
                   case CoproductProvenance(
                         StaticProvenance("/bar"),
-                        StaticProvenance("/baz")) =>
-                    ok
+                        StaticProvenance("/baz")) => ok
                 }
                 tree.errors filterNot isWarning must beEmpty
               }
@@ -1472,8 +1459,7 @@ object ProvenanceComputationSpecs
                 tree.provenance must beLike {
                   case CoproductProvenance(
                         StaticProvenance("/bar"),
-                        StaticProvenance("/baz")) =>
-                    ok
+                        StaticProvenance("/baz")) => ok
                 }
                 tree.errors filterNot isWarning must beEmpty
               }
@@ -1482,8 +1468,7 @@ object ProvenanceComputationSpecs
                 tree.provenance must beLike {
                   case CoproductProvenance(
                         DynamicProvenance(_),
-                        StaticProvenance("/baz")) =>
-                    ok
+                        StaticProvenance("/baz")) => ok
                 }
                 tree.errors filterNot isWarning must beEmpty
               }
@@ -1606,8 +1591,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   DynamicProvenance(_),
-                  StaticProvenance("/baz")) =>
-              ok
+                  StaticProvenance("/baz")) => ok
           }
           tree.errors must beEmpty
         }
@@ -1636,8 +1620,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   StaticProvenance("/bar"),
-                  StaticProvenance("/baz")) =>
-              ok
+                  StaticProvenance("/baz")) => ok
           }
           tree.errors must beEmpty
         }
@@ -1682,8 +1665,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   StaticProvenance("/foo"),
-                  StaticProvenance("/baz")) =>
-              ok
+                  StaticProvenance("/baz")) => ok
           }
           tree.errors must beEmpty
         }
@@ -1699,8 +1681,7 @@ object ProvenanceComputationSpecs
                     StaticProvenance("/foo")),
                   ProductProvenance(
                     StaticProvenance("/foo"),
-                    StaticProvenance("/bar"))) =>
-              ok
+                    StaticProvenance("/bar"))) => ok
           }
           tree.errors must beEmpty
         }
@@ -1717,8 +1698,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   StaticProvenance("/foo"),
-                  StaticProvenance("/baz")) =>
-              ok
+                  StaticProvenance("/baz")) => ok
           }
           tree.errors must beEmpty
         }
@@ -1808,8 +1788,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   DynamicProvenance(_),
-                  DynamicProvenance(_)) =>
-              ok
+                  DynamicProvenance(_)) => ok
           }
           tree.errors must beEmpty
         }
@@ -1818,8 +1797,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   DynamicProvenance(_),
-                  DynamicProvenance(_)) =>
-              ok
+                  DynamicProvenance(_)) => ok
           }
           tree.errors must beEmpty
         }
@@ -1828,8 +1806,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   DynamicProvenance(_),
-                  DynamicProvenance(_)) =>
-              ok
+                  DynamicProvenance(_)) => ok
           }
           tree.errors must beEmpty
         }
@@ -1838,8 +1815,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   DynamicProvenance(_),
-                  DynamicProvenance(_)) =>
-              ok
+                  DynamicProvenance(_)) => ok
           }
           tree.errors must beEmpty
         }
@@ -1893,8 +1869,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   CoproductProvenance(StaticProvenance("/billing"), _),
-                  _) =>
-              ok
+                  _) => ok
           }
           tree.errors must beEmpty
         }
@@ -1926,8 +1901,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   StaticProvenance("/foo"),
-                  StaticProvenance("/bazbarfoobam")) =>
-              ok
+                  StaticProvenance("/bazbarfoobam")) => ok
           }
           tree.errors must beEmpty
         }
@@ -1946,8 +1920,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   StaticProvenance("/foo"),
-                  StaticProvenance("/iamasquirrel")) =>
-              ok
+                  StaticProvenance("/iamasquirrel")) => ok
           }
           tree.errors must beEmpty
         }
@@ -1989,8 +1962,7 @@ object ProvenanceComputationSpecs
           tree.provenance must beLike {
             case CoproductProvenance(
                   StaticProvenance("/foo"),
-                  StaticProvenance("/bar")) =>
-              ok
+                  StaticProvenance("/bar")) => ok
           }
           tree.errors must beEmpty
         }
@@ -2008,8 +1980,7 @@ object ProvenanceComputationSpecs
         tree.provenance must beLike {
           case CoproductProvenance(
                 StaticProvenance("/baz"),
-                StaticProvenance("/bar")) =>
-            ok
+                StaticProvenance("/bar")) => ok
         }
         tree.errors must beEmpty
       }
@@ -2021,8 +1992,7 @@ object ProvenanceComputationSpecs
                 CoproductProvenance(
                   StaticProvenance("/baz"),
                   StaticProvenance("/bar")),
-                StaticProvenance("/qux")) =>
-            ok
+                StaticProvenance("/qux")) => ok
         }
         tree.errors must beEmpty
       }
@@ -2680,8 +2650,7 @@ object ProvenanceComputationSpecs
               tree.provenance must beLike {
                 case ProductProvenance(
                       DynamicProvenance(_),
-                      StaticProvenance("/clicks")) =>
-                  ok
+                      StaticProvenance("/clicks")) => ok
               }
               tree.errors filterNot isWarning must beEmpty
             }
@@ -2723,8 +2692,7 @@ object ProvenanceComputationSpecs
             tree.provenance must beLike {
               case ProductProvenance(
                     DynamicProvenance(_),
-                    StaticProvenance("/clicks")) =>
-                ok
+                    StaticProvenance("/clicks")) => ok
             }
             tree.errors filterNot isWarning must beEmpty
           }

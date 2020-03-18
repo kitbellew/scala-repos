@@ -100,8 +100,7 @@ class Mailer(private val smtp: Smtp) extends Notifier {
               enableRefsLink = true,
               enableAnchor = false,
               enableLineBreaks = false))) {
-          case (subject, msg) =>
-            recipients(issue) { to =>
+          case (subject, msg) => recipients(issue) { to =>
               val email = new HtmlEmail
               email.setHostName(smtp.host)
               email.setSmtpPort(smtp.port.get)
@@ -117,8 +116,7 @@ class Mailer(private val smtp: Smtp) extends Notifier {
                 .orElse(Some(
                   "notifications@gitbucket.com" -> context.loginAccount.get.userName))
                 .foreach {
-                  case (address, name) =>
-                    email.setFrom(address, name)
+                  case (address, name) => email.setFrom(address, name)
                 }
               email.setCharset("UTF-8")
               email.setSubject(subject)

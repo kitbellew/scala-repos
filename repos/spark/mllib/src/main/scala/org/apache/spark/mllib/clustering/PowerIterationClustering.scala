@@ -241,12 +241,7 @@ class PowerIterationClustering private[clustering] (
   private def pic(w: Graph[Double, Double]): PowerIterationClusteringModel = {
     val v = powerIter(w, maxIterations)
     val assignments = kMeans(v, k).mapPartitions(
-      { iter =>
-        iter.map {
-          case (id, cluster) =>
-            Assignment(id, cluster)
-        }
-      },
+      { iter => iter.map { case (id, cluster) => Assignment(id, cluster) } },
       preservesPartitioning = true)
     new PowerIterationClusteringModel(k, assignments)
   }
@@ -332,10 +327,7 @@ object PowerIterationClustering extends Logging {
       .mapPartitionsWithIndex(
         (part, iter) => {
           val random = new XORShiftRandom(part)
-          iter.map {
-            case (id, _) =>
-              (id, random.nextGaussian())
-          }
+          iter.map { case (id, _) => (id, random.nextGaussian()) }
         },
         preservesPartitioning = true)
       .cache()
@@ -392,10 +384,7 @@ object PowerIterationClustering extends Logging {
       val v1 = v.mapValues(x => x / norm)
       // compare difference
       val delta = curG
-        .joinVertices(v1) {
-          case (_, x, y) =>
-            math.abs(x - y)
-        }
+        .joinVertices(v1) { case (_, x, y) => math.abs(x - y) }
         .vertices
         .values
         .sum()

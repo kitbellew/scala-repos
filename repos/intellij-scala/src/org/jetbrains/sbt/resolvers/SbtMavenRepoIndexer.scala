@@ -86,8 +86,7 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
       if (context.getRepositoryUrl == null) updateLocal(progressIndicator)
       else updateRemote(progressIndicator)
     } catch {
-      case exc: IOException =>
-        throw new RepositoryIndexingException(root, exc)
+      case exc: IOException => throw new RepositoryIndexingException(root, exc)
     }
 
   private def updateLocal(progressIndicator: Option[ProgressIndicator]) {

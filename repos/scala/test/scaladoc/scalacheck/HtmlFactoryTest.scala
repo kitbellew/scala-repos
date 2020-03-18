@@ -104,10 +104,8 @@ object Test extends Properties("HtmlFactory") {
     for ((fileHint, check, expected) <- checks) {
       // resolve the file to be checked
       val fileName = fileHint match {
-        case Some(file) =>
-          if (file endsWith ".html") file else file + ".html"
-        case None =>
-          htmlFile
+        case Some(file) => if (file endsWith ".html") file else file + ".html"
+        case None       => htmlFile
       }
       val fileTextPretty = htmlAllFiles(fileName).text
         .replace('→', ' ')
@@ -313,9 +311,8 @@ object Test extends Properties("HtmlFactory") {
 
   property("Trac #4452") = {
     createTemplate("Trac4452.scala") match {
-      case node: scala.xml.Node =>
-        !node.toString.contains(">*")
-      case _ => false
+      case node: scala.xml.Node => !node.toString.contains(">*")
+      case _                    => false
     }
   }
 

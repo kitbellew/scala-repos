@@ -135,8 +135,7 @@ private[hive] case class HiveTableScan(
   private[hive] def prunePartitions(partitions: Seq[HivePartition]) = {
     boundPruningPred match {
       case None => partitions
-      case Some(shouldKeep) =>
-        partitions.filter { part =>
+      case Some(shouldKeep) => partitions.filter { part =>
           val dataTypes = relation.partitionKeys.map(_.dataType)
           val castedValues = part.getValues.asScala
             .zip(dataTypes)

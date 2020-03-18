@@ -259,8 +259,7 @@ private[storage] class BlockInfoManager extends Logging {
             throw new SparkException(
               s"Task $currentTaskAttemptId has not locked block $blockId for writing")
           } else { info }
-        case None =>
-          throw new SparkException(s"Block $blockId does not exist")
+        case None => throw new SparkException(s"Block $blockId does not exist")
       }
     }
 

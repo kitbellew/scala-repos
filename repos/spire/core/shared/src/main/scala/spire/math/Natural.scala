@@ -80,8 +80,7 @@ sealed abstract class Natural
     @tailrec
     def recur(next: Natural, i: Int): Unit =
       next match {
-        case End(d) =>
-          arr(i) = d.signed
+        case End(d) => arr(i) = d.signed
         case Digit(d, tail) =>
           arr(i) = d.signed
           recur(tail, i - 1)
@@ -107,10 +106,8 @@ sealed abstract class Natural
     @tailrec
     def recur(next: Natural): Natural = {
       next match {
-        case Digit(n, tail) =>
-          if (n == UInt(0)) recur(tail) else next
-        case End(n) =>
-          next
+        case Digit(n, tail) => if (n == UInt(0)) recur(tail) else next
+        case End(n)         => next
       }
     }
     recur(reversed).reversed
@@ -142,8 +139,7 @@ sealed abstract class Natural
     @tailrec
     def recur(next: Natural, s: String): String = {
       next match {
-        case End(d) =>
-          d.toLong.toString + s
+        case End(d) => d.toLong.toString + s
         case Digit(d, tail) =>
           val (q, r) = next /% Natural.denom
           if (q.isZero) r.digit.toLong.toString + s
@@ -159,20 +155,16 @@ sealed abstract class Natural
     @tailrec
     def recur(next: Natural): Boolean =
       next match {
-        case End(n) =>
-          n == UInt(0)
-        case Digit(n, tail) =>
-          if (n == UInt(0)) recur(tail) else false
+        case End(n)         => n == UInt(0)
+        case Digit(n, tail) => if (n == UInt(0)) recur(tail) else false
       }
     recur(this)
   }
 
   def isOne: Boolean =
     this match {
-      case End(n) =>
-        n == UInt(1)
-      case Digit(n, tail) =>
-        n == UInt(1) && tail.isZero
+      case End(n)         => n == UInt(1)
+      case Digit(n, tail) => n == UInt(1) && tail.isZero
     }
 
   def isOdd: Boolean = (digit & UInt(1)) == UInt(1)
@@ -207,8 +199,7 @@ sealed abstract class Natural
 
   def compare(rhs: UInt): Int =
     this match {
-      case End(d) =>
-        if (d < rhs) -1 else if (d > rhs) 1 else 0
+      case End(d) => if (d < rhs) -1 else if (d > rhs) 1 else 0
       case Digit(d, tail) =>
         if (tail.isZero) if (d > rhs) 1 else if (d < rhs) -1 else 0 else 1
     }
@@ -220,13 +211,11 @@ sealed abstract class Natural
     @tailrec
     def recur(lhs: Natural, rhs: Natural, d: Int): Int =
       lhs match {
-        case End(ld) =>
-          rhs match {
+        case End(ld) => rhs match {
             case End(rd)  => cmp(ld, rd, d)
             case _: Digit => -rhs.compare(ld)
           }
-        case Digit(ld, ltail) =>
-          rhs match {
+        case Digit(ld, ltail) => rhs match {
             case End(rd)          => lhs.compare(rd)
             case Digit(rd, rtail) => recur(ltail, rtail, cmp(ld, rd, d))
           }
@@ -289,18 +278,15 @@ sealed abstract class Natural
   def +(rhs: Natural): Natural = {
     def recur(left: Natural, right: Natural, carry: Long): Natural =
       left match {
-        case End(ld) =>
-          right match {
-            case End(rd) =>
-              Natural(ld.toLong + rd.toLong + carry)
+        case End(ld) => right match {
+            case End(rd) => Natural(ld.toLong + rd.toLong + carry)
 
             case Digit(rd, rtail) =>
               val t = ld.toLong + rd.toLong + carry
               Digit(UInt(t), rtail + UInt(t >> 32))
           }
 
-        case Digit(ld, ltail) =>
-          right match {
+        case Digit(ld, ltail) => right match {
             case End(rd) =>
               val t = ld.toLong + rd.toLong + carry
               Digit(UInt(t), ltail + UInt(t >> 32))
@@ -316,10 +302,8 @@ sealed abstract class Natural
   def -(rhs: Natural): Natural = {
     def recur(left: Natural, right: Natural, carry: Long): Natural =
       left match {
-        case End(ld) =>
-          right match {
-            case End(rd) =>
-              Natural(ld.toLong - rd.toLong - carry)
+        case End(ld) => right match {
+            case End(rd) => Natural(ld.toLong - rd.toLong - carry)
 
             case Digit(rd, rtail) =>
               val t = ld.toLong - rd.toLong - carry
@@ -328,8 +312,7 @@ sealed abstract class Natural
               else Digit(UInt(t), tl)
           }
 
-        case Digit(ld, ltail) =>
-          right match {
+        case Digit(ld, ltail) => right match {
             case End(rd) =>
               val t = ld.toLong - rd.toLong - carry
               val tl = ltail - UInt(-(t >> 32))
@@ -352,8 +335,7 @@ sealed abstract class Natural
   def *(rhs: Natural): Natural =
     lhs match {
       case End(ld) => rhs * ld
-      case Digit(ld, ltail) =>
-        rhs match {
+      case Digit(ld, ltail) => rhs match {
           case End(rd) => lhs * rd
           case Digit(rd, rtail) =>
             Digit(UInt(0), Digit(UInt(0), ltail * rtail)) +
@@ -387,19 +369,14 @@ sealed abstract class Natural
 
   def /(rhs: Natural): Natural = {
     rhs match {
-      case End(rd) =>
-        lhs / rd
+      case End(rd) => lhs / rd
 
-      case Digit(rd, rtail) =>
-        lhs match {
-          case End(ld) =>
-            End(UInt(0))
+      case Digit(rd, rtail) => lhs match {
+          case End(ld) => End(UInt(0))
 
-          case Digit(ld, ltail) =>
-            rhs.compare(UInt(1)) match {
+          case Digit(ld, ltail) => rhs.compare(UInt(1)) match {
               case -1 => throw new IllegalArgumentException("/ by zero")
-              case 0 =>
-                lhs
+              case 0  => lhs
               case 1 =>
                 val p = rhs.powerOfTwo
                 if (p >= 0) { lhs >> p }
@@ -413,12 +390,10 @@ sealed abstract class Natural
     rhs match {
       case End(rd) => lhs % rd
 
-      case Digit(rd, rtail) =>
-        lhs match {
+      case Digit(rd, rtail) => lhs match {
           case End(ld) => End(ld)
 
-          case Digit(ld, ltail) =>
-            rhs.compare(UInt(1)) match {
+          case Digit(ld, ltail) => rhs.compare(UInt(1)) match {
               case -1 => throw new IllegalArgumentException("/ by zero")
               case 0  => End(UInt(0))
               case 1 =>
@@ -434,12 +409,10 @@ sealed abstract class Natural
     rhs match {
       case End(rd) => (lhs / rd, lhs % rd)
 
-      case Digit(rd, rtail) =>
-        lhs match {
+      case Digit(rd, rtail) => lhs match {
           case End(ld) => (End(UInt(0)), lhs)
 
-          case Digit(ld, ltail) =>
-            rhs.compare(UInt(1)) match {
+          case Digit(ld, ltail) => rhs.compare(UInt(1)) match {
               case -1 => throw new IllegalArgumentException("/ by zero")
               case 0  => (lhs, Natural(0))
               case 1 =>
@@ -478,8 +451,7 @@ sealed abstract class Natural
     val m: Int = n & 0x1f
     def recur(next: Natural, carry: Long): Natural =
       next match {
-        case End(d) =>
-          Natural((d.toLong << m) | carry)
+        case End(d) => Natural((d.toLong << m) | carry)
         case Digit(d, tail) =>
           val t = (d.toLong << m) | carry
           Digit(UInt(t), recur(tail, t >> 32))
@@ -505,8 +477,7 @@ sealed abstract class Natural
     val m: Int = n & 0x1f
     def recur(next: Natural, carry: Long): Natural =
       next match {
-        case End(d) =>
-          Natural((d.toLong >> m) | carry)
+        case End(d) => Natural((d.toLong >> m) | carry)
         case Digit(d, tail) =>
           val t = (d.toLong | carry) << (32 - m)
           Digit(UInt(t >> 32), recur(tail, t & 0xFFFFFFFFL))
@@ -516,13 +487,11 @@ sealed abstract class Natural
 
   def |(rhs: Natural): Natural =
     lhs match {
-      case End(ld) =>
-        rhs match {
+      case End(ld) => rhs match {
           case End(rd)          => End(ld | rd)
           case Digit(rd, rtail) => Digit(ld | rd, rtail)
         }
-      case Digit(ld, ltail) =>
-        rhs match {
+      case Digit(ld, ltail) => rhs match {
           case End(rd)          => Digit(ld | rd, ltail)
           case Digit(rd, rtail) => Digit(ld | rd, ltail | rtail)
         }
@@ -537,13 +506,11 @@ sealed abstract class Natural
   def &(rhs: Natural): Natural = {
     def and(lhs: Natural, rhs: Natural): Natural =
       lhs match {
-        case End(ld) =>
-          rhs match {
+        case End(ld) => rhs match {
             case End(rd)          => End(ld & rd)
             case Digit(rd, rtail) => End(ld & rd)
           }
-        case Digit(ld, ltail) =>
-          rhs match {
+        case Digit(ld, ltail) => rhs match {
             case End(rd)          => End(ld & rd)
             case Digit(rd, rtail) => Digit(ld & rd, and(ltail, rtail))
           }
@@ -556,13 +523,11 @@ sealed abstract class Natural
   def ^(rhs: Natural): Natural = {
     def xor(lhs: Natural, rhs: Natural): Natural =
       lhs match {
-        case End(ld) =>
-          rhs match {
+        case End(ld) => rhs match {
             case End(rd)          => End(ld ^ rd)
             case Digit(rd, rtail) => Digit(ld ^ rd, rtail)
           }
-        case Digit(ld, ltail) =>
-          rhs match {
+        case Digit(ld, ltail) => rhs match {
             case End(rd)          => Digit(ld ^ rd, ltail)
             case Digit(rd, rtail) => Digit(ld ^ rd, ltail ^ rtail)
           }
@@ -670,8 +635,7 @@ object Natural extends NaturalInstances {
             val q = d / n
             val r = d % n
             recur(tail, r, End(q))
-          case _ =>
-            throw new IllegalArgumentException("bug in reversed")
+          case _ => throw new IllegalArgumentException("bug in reversed")
         }
       }
     }

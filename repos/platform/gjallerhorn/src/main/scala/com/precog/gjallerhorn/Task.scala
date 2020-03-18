@@ -48,14 +48,12 @@ abstract class Task(settings: Settings) extends Specification {
     Http(rb).map { r =>
       val s = r.getResponseBody
       r.getStatusCode match {
-        case 200 =>
-          JParser.parseFromString(s).fold(ApiBadJson, ApiResponse)
+        case 200                     => JParser.parseFromString(s).fold(ApiBadJson, ApiResponse)
         case n if 200 < n && n < 300 =>
           // things like 201 may not have a message body
           if (s.isEmpty) ApiResponse(JNull)
           else JParser.parseFromString(s).fold(ApiBadJson, ApiResponse)
-        case n =>
-          ApiFailure(n, s)
+        case n => ApiFailure(n, s)
       }
     }
 

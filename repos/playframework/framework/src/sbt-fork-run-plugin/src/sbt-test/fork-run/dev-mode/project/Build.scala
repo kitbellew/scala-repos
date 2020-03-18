@@ -68,8 +68,8 @@ object DevModeBuild {
           if (h.getResponseCode != 200)
             throw new Exception(
               s"Bad response code ${h.getResponseCode} from server")
-        case _ =>
-          println(s"Not an HttpURLConnection? ${connection.getClass.getName}")
+        case _ => println(
+            s"Not an HttpURLConnection? ${connection.getClass.getName}")
       }
       connection.disconnect()
     } catch {

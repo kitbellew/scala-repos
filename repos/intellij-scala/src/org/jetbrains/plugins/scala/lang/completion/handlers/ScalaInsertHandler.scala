@@ -145,8 +145,7 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
       var elem = element
       var parent = elem.getParent
       while (parent match {
-               case _: ScStableCodeReferenceElement =>
-                 parent.getParent match {
+               case _: ScStableCodeReferenceElement => parent.getParent match {
                    case _: ScThisReference | _: ScSuperReference => true
                    case _                                        => false
                  }
@@ -247,8 +246,7 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
       case named: PsiNamedElement
           if item.isNamedParameter => //some is impossible here
         val shouldAddEqualsSign = element.getParent match {
-          case ref: ScReferenceExpression =>
-            ref.getParent match {
+          case ref: ScReferenceExpression => ref.getParent match {
               case ass: ScAssignStmt if ass.getLExpression == ref =>
                 ass.getParent match {
                   case args: ScArgumentExprList => false

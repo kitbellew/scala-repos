@@ -122,8 +122,7 @@ trait EvaluatorTestSupport[M[+_]]
           val eventsV = events.toStream
             .traverse[({ type λ[α] = Validation[ResourceError, α] })#λ, Stream[
               JValue]] {
-              case JString(pathStr) =>
-                success {
+              case JString(pathStr) => success {
                   indexLock synchronized { // block the WHOLE WORLD
                     val path = Path(pathStr)
 

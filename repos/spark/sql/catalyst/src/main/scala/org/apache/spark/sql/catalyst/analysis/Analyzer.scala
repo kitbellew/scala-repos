@@ -153,18 +153,15 @@ class Analyzer(
     def apply(plan: LogicalPlan): LogicalPlan =
       plan resolveOperators {
         // Lookup WindowSpecDefinitions. This rule works with unresolved children.
-        case WithWindowDefinition(windowDefinitions, child) =>
-          child.transform {
-            case p =>
-              p.transformExpressions {
+        case WithWindowDefinition(windowDefinitions, child) => child.transform {
+            case p => p.transformExpressions {
                 case UnresolvedWindowExpression(
                       c,
                       WindowSpecReference(windowName)) =>
                   val errorMessage =
                     s"Window specification $windowName is not defined in the WINDOW clause."
-                  val windowSpecDefinition = windowDefinitions.getOrElse(
-                    windowName,
-                    failAnalysis(errorMessage))
+                  val windowSpecDefinition = windowDefinitions
+                    .getOrElse(windowName, failAnalysis(errorMessage))
                   WindowExpression(c, windowSpecDefinition)
               }
           }
@@ -255,8 +252,7 @@ class Analyzer(
     private def hasGroupingId(expr: Seq[Expression]): Boolean = {
       expr.exists(_.collectFirst {
         case u: UnresolvedAttribute
-            if resolver(u.name, VirtualColumn.groupingIdName) =>
-          u
+            if resolver(u.name, VirtualColumn.groupingIdName) => u
       }.isDefined)
     }
 
@@ -363,8 +359,7 @@ class Analyzer(
     def apply(plan: LogicalPlan): LogicalPlan =
       plan transform {
         case p: Pivot
-            if !p.childrenResolved | !p.aggregates.forall(_.resolved) =>
-          p
+            if !p.childrenResolved | !p.aggregates.forall(_.resolved) => p
         case Pivot(groupByExprs, pivotColumn, pivotValues, aggregates, child) =>
           val singleAgg = aggregates.size == 1
           val pivotAggregates: Seq[NamedExpression] = pivotValues.flatMap {
@@ -377,10 +372,8 @@ class Analyzer(
                   // Assumption is the aggregate function ignores nulls. This is true for all current
                   // AggregateFunction's with the exception of First and Last in their default mode
                   // (which we handle) and possibly some Hive UDAF's.
-                  case First(expr, _) =>
-                    First(ifExpr(expr), Literal(true))
-                  case Last(expr, _) =>
-                    Last(ifExpr(expr), Literal(true))
+                  case First(expr, _) => First(ifExpr(expr), Literal(true))
+                  case Last(expr, _)  => Last(ifExpr(expr), Literal(true))
                   case a: AggregateFunction =>
                     a.withNewChildren(a.children.map(ifExpr))
                 }
@@ -708,8 +701,9 @@ class Analyzer(
     // Else, throw exception.
     try {
       expr transformUp {
-        case u @ UnresolvedAttribute(nameParts) =>
-          withPosition(u) { plan.resolve(nameParts, resolver).getOrElse(u) }
+        case u @ UnresolvedAttribute(nameParts) => withPosition(u) {
+            plan.resolve(nameParts, resolver).getOrElse(u)
+          }
         case UnresolvedExtractValue(child, fieldName) if child.resolved =>
           ExtractValue(child, fieldName, resolver)
       }
@@ -1599,8 +1593,7 @@ class Analyzer(
     val projectList = joinType match {
       case LeftOuter =>
         leftKeys ++ lUniqueOutput ++ rUniqueOutput.map(_.withNullability(true))
-      case LeftSemi =>
-        leftKeys ++ lUniqueOutput
+      case LeftSemi => leftKeys ++ lUniqueOutput
       case RightOuter =>
         rightKeys ++ lUniqueOutput.map(_.withNullability(true)) ++ rUniqueOutput
       case FullOuter =>
@@ -1611,10 +1604,8 @@ class Analyzer(
         joinedCols ++
           lUniqueOutput.map(_.withNullability(true)) ++
           rUniqueOutput.map(_.withNullability(true))
-      case Inner =>
-        leftKeys ++ lUniqueOutput ++ rUniqueOutput
-      case _ =>
-        sys.error("Unsupported natural join type " + joinType)
+      case Inner => leftKeys ++ lUniqueOutput ++ rUniqueOutput
+      case _     => sys.error("Unsupported natural join type " + joinType)
     }
     // use Project to trim unnecessary fields
     Project(projectList, Join(left, right, joinType, newCondition))
@@ -1747,15 +1738,13 @@ object ResolveUpCast extends Rule[LogicalPlan] {
           case (from: NumericType, to: DecimalType) if !to.isWiderThan(from) =>
             fail(child, to, walkedTypePath)
           case (from: DecimalType, to: NumericType)
-              if !from.isTighterThan(to) =>
-            fail(child, to, walkedTypePath)
+              if !from.isTighterThan(to) => fail(child, to, walkedTypePath)
           case (from, to) if illegalNumericPrecedence(from, to) =>
             fail(child, to, walkedTypePath)
           case (TimestampType, DateType) =>
             fail(child, DateType, walkedTypePath)
-          case (StringType, to: NumericType) =>
-            fail(child, to, walkedTypePath)
-          case _ => Cast(child, dataType.asNullable)
+          case (StringType, to: NumericType) => fail(child, to, walkedTypePath)
+          case _                             => Cast(child, dataType.asNullable)
         }
     }
   }

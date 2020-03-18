@@ -162,8 +162,7 @@ object PatternAnnotator {
           case infix: ScInfixPattern =>
             val numPatterns: Int = infix.rightPattern match {
               case Some(_: ScInfixPattern) => 2
-              case Some(right) =>
-                right.subpatterns match {
+              case Some(right) => right.subpatterns match {
                   case Seq() => 2
                   case s     => s.length + 1
                 }
@@ -172,8 +171,7 @@ object PatternAnnotator {
             (Option(infix.reference), numPatterns)
         }
         reference match {
-          case Some(ref) =>
-            ref.bind() match {
+          case Some(ref) => ref.bind() match {
               case Some(ScalaResolveResult(fun: ScFunction, _))
                   if fun.name == "unapply" =>
                 fun.returnType match {
@@ -223,8 +221,7 @@ object PatternAnnotator {
     scType match {
       case _ if ScType.isSingletonType(scType) =>
         ScType.extractDesignatorSingletonType(scType).getOrElse(scType)
-      case _ =>
-        scType.recursiveUpdate {
+      case _ => scType.recursiveUpdate {
           case ScAbstractType(_, _, upper)            => (true, upper)
           case ScTypeParameterType(_, _, _, upper, _) => (true, upper.v)
           case tp                                     => (false, tp)
@@ -267,9 +264,8 @@ object PatternAnnotatorUtil {
       def unapply(scType: ScType): Option[ScType] =
         scType match {
           case ScParameterizedType(ScDesignatorType(elem: ScClass), Seq(arg))
-              if elem.qualifiedName == "scala.Array" =>
-            Some(arg)
-          case _ => None
+              if elem.qualifiedName == "scala.Array" => Some(arg)
+          case _                                     => None
         }
     }
 
@@ -286,8 +282,7 @@ object PatternAnnotatorUtil {
     def constrPatternType(
         patternRef: ScStableCodeReferenceElement): Option[ScType] = {
       patternRef.advancedResolve match {
-        case Some(srr) =>
-          srr.getElement match {
+        case Some(srr) => srr.getElement match {
             case fun: ScFunction if fun.parameters.size == 1 =>
               Some(srr.substitutor.subst(fun.paramTypes.head))
             case _ => None
@@ -297,10 +292,8 @@ object PatternAnnotatorUtil {
     }
 
     pattern match {
-      case c: ScConstructorPattern =>
-        constrPatternType(c.ref)
-      case inf: ScInfixPattern =>
-        constrPatternType(inf.reference)
+      case c: ScConstructorPattern => constrPatternType(c.ref)
+      case inf: ScInfixPattern     => constrPatternType(inf.reference)
       case tuple: ScTuplePattern =>
         val project = pattern.getProject
         val subPat = tuple.subpatterns
@@ -311,10 +304,9 @@ object PatternAnnotatorUtil {
         else None
       case typed: ScTypedPattern =>
         typed.typePattern.map(_.typeElement.calcType)
-      case naming: ScNamingPattern =>
-        patternType(naming.named)
-      case parenth: ScParenthesisedPattern =>
-        patternType(parenth.subpattern.orNull)
+      case naming: ScNamingPattern => patternType(naming.named)
+      case parenth: ScParenthesisedPattern => patternType(
+          parenth.subpattern.orNull)
       case null => None
       case _    => pattern.getType(TypingContext.empty).toOption
     }

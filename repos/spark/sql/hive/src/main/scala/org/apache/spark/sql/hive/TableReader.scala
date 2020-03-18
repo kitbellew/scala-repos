@@ -241,10 +241,7 @@ private[hive] class HadoopTableReader(
         // Splits all attributes into two groups, partition key attributes and those that are not.
         // Attached indices indicate the position of each attribute in the output schema.
         val (partitionKeyAttrs, nonPartitionKeyAttrs) = attributes.zipWithIndex
-          .partition {
-            case (attr, _) =>
-              relation.partitionKeys.contains(attr)
-          }
+          .partition { case (attr, _) => relation.partitionKeys.contains(attr) }
 
         def fillPartitionKeys(
             rawPartValues: Array[String],
@@ -403,8 +400,7 @@ private[hive] object HadoopTableReader extends HiveInspectors with Logging {
     logDebug(soi.toString)
 
     val (fieldRefs, fieldOrdinals) = nonPartitionKeyAttrs.map {
-      case (attr, ordinal) =>
-        soi.getStructFieldRef(attr.name) -> ordinal
+      case (attr, ordinal) => soi.getStructFieldRef(attr.name) -> ordinal
     }.unzip
 
     /**

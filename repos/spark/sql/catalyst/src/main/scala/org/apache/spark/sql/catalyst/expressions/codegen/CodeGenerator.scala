@@ -118,8 +118,7 @@ class CodegenContext {
   def declareMutableStates(): String = {
     mutableStates
       .map {
-        case (javaType, variableName, _) =>
-          s"private $javaType $variableName;"
+        case (javaType, variableName, _) => s"private $javaType $variableName;"
       }
       .mkString("\n")
   }

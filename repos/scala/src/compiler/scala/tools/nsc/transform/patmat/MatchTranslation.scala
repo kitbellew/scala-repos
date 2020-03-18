@@ -723,8 +723,7 @@ trait MatchTranslation {
                   t,
                   x,
                   treeCopy.Select(sel, binderRef(i.pos), name) :: Nil)
-              case _ =>
-                super.transform(t)
+              case _ => super.transform(t)
             }
         }
         splice transform extractorCallIncludingDummy

@@ -41,8 +41,7 @@ class SchedulerActor(scheduler: Scheduler) extends Actor with Stash {
         import scala.collection.JavaConversions._
         scheduler.resourceOffers(driver, offers)
 
-      case status: TaskStatus =>
-        scheduler.statusUpdate(driver, status)
+      case status: TaskStatus => scheduler.statusUpdate(driver, status)
     }
 
   override def postStop(): Unit = {

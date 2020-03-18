@@ -84,7 +84,6 @@ class EnterInHashCommentHandler extends EnterHandlerDelegateAdapter {
           caretModel.moveToOffset(caretOffset + 2)
           Result.Default
         } else Result.Continue
-      case _ =>
-        Result.Continue
+      case _ => Result.Continue
     }
 }

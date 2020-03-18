@@ -329,14 +329,12 @@ abstract class SymbolTable
                 t1.typeSymbol.isAbstractType && t2.typeSymbol == definitions.ObjectClass
               ) =>
             t1 // drop intersection with Object for abstract types in varargs. UnCurry can handle them.
-          case t =>
-            t
+          case t => t
         }
         val newParams = method.newSyntheticValueParams(
           formals.init :+ definitions.javaRepeatedType(elemtp))
         MethodType(newParams, rtpe)
-      case PolyType(tparams, rtpe) =>
-        PolyType(tparams, arrayToRepeated(rtpe))
+      case PolyType(tparams, rtpe) => PolyType(tparams, arrayToRepeated(rtpe))
     }
 
   abstract class SymLoader extends LazyType {

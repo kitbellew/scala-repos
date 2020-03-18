@@ -567,8 +567,7 @@ object KafkaTools extends Command {
 
   def parseEventMessage(msg: MessageAndOffset) =
     EventMessageEncoding.read(msg.message.payload).flatMap {
-      case \/-(parsed: IngestMessage) =>
-        Success(parsed)
+      case \/-(parsed: IngestMessage) => Success(parsed)
 
       case -\/((_, path, msgGen)) =>
         path.elements.headOption
@@ -577,11 +576,9 @@ object KafkaTools extends Command {
           }
           .toSuccess("Could not determine account from path")
 
-      case \/-(parsed: ArchiveMessage) =>
-        Success(parsed)
+      case \/-(parsed: ArchiveMessage) => Success(parsed)
 
-      case other =>
-        Failure("Could not determine message from " + other)
+      case other => Failure("Could not determine message from " + other)
     }
 
   sealed trait Format {
@@ -732,8 +729,7 @@ object ZookeeperTools extends Command {
     }
 
     config.checkpointUpdate.foreach {
-      case (path, data) =>
-        data match {
+      case (path, data) => data match {
           case "initial" =>
             println("Loading initial checkpoint")
             setCheckpoint(path, YggCheckpoint.Empty)
@@ -758,8 +754,7 @@ object ZookeeperTools extends Command {
       path: String,
       children: Buffer[(String, String)]) {
     children match {
-      case l if l.size == 0 =>
-        println("no %s at: %s".format(name, path))
+      case l if l.size == 0 => println("no %s at: %s".format(name, path))
       case children =>
         println("%s for: %s".format(name, path))
         children.foreach {

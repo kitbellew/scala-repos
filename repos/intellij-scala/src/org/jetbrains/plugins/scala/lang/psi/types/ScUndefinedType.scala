@@ -35,8 +35,7 @@ case class ScUndefinedType(tpt: ScTypeParameterType) extends NonValueType {
         (true, undefinedSubst.addUpper((u2.tpt.name, u2.tpt.getId), this))
       case u2: ScUndefinedType if u2.level < level =>
         (true, undefinedSubst.addUpper((tpt.name, tpt.getId), u2))
-      case u2: ScUndefinedType if u2.level == level =>
-        (true, undefinedSubst)
+      case u2: ScUndefinedType if u2.level == level => (true, undefinedSubst)
       case rt =>
         undefinedSubst = undefinedSubst.addLower((tpt.name, tpt.getId), rt)
         undefinedSubst = undefinedSubst.addUpper((tpt.name, tpt.getId), rt)

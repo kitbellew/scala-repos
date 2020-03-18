@@ -48,16 +48,14 @@ private[akka] class ActorRefSourceActor(
 
   def receive =
     ({
-      case Cancel ⇒
-        context.stop(self)
+      case Cancel ⇒ context.stop(self)
 
       case _: Status.Success ⇒
         if (bufferSize == 0 || buffer.isEmpty)
           context.stop(self) // will complete the stream successfully
         else context.become(drainBufferThenComplete)
 
-      case Status.Failure(cause) if isActive ⇒
-        onErrorThenStop(cause)
+      case Status.Failure(cause) if isActive ⇒ onErrorThenStop(cause)
 
     }: Receive).orElse(requestElem).orElse(receiveElem)
 
@@ -110,8 +108,7 @@ private[akka] class ActorRefSourceActor(
   }
 
   def drainBufferThenComplete: Receive = {
-    case Cancel ⇒
-      context.stop(self)
+    case Cancel ⇒ context.stop(self)
 
     case Status.Failure(cause) if isActive ⇒
       // errors must be signaled as soon as possible,

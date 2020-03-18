@@ -74,8 +74,7 @@ class DecodingToResponseTest extends FunSuite {
         assert(line.key == Buf.Utf8(key))
         assert(line.values.size == values.size)
         line.values.zipWithIndex.foreach {
-          case (token, tokIdx) =>
-            assert(token == Buf.Utf8(values(tokIdx)))
+          case (token, tokIdx) => assert(token == Buf.Utf8(values(tokIdx)))
         }
     }
   }

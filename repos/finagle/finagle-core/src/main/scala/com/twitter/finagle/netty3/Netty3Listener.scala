@@ -133,9 +133,7 @@ object Netty3Listener {
       try {
         val method = engine.getClass.getMethod("shutdown")
         method.invoke(engine)
-      } catch {
-        case _: NoSuchMethodException =>
-      }
+      } catch { case _: NoSuchMethodException => }
 
     pipeline.addFirst(
       "sslConnect",
@@ -187,8 +185,8 @@ object Netty3Listener {
       Transport.Liveness]
     val Transport.TLSServerEngine(engine) = params[Transport.TLSServerEngine]
     val snooper = params[Transport.Verbose] match {
-      case Transport.Verbose(true) =>
-        Some(ChannelSnooper(label)(logger.log(Level.INFO, _, _)))
+      case Transport.Verbose(true) => Some(
+          ChannelSnooper(label)(logger.log(Level.INFO, _, _)))
       case _ => None
     }
     val Transport.Options(noDelay, reuseAddr) = params[Transport.Options]
@@ -398,9 +396,8 @@ private[netty3] class ServerBridge[In, Out](
           _: WriteTimedOutException | _: javax.net.ssl.SSLException =>
         Level.FINEST
       case e: java.io.IOException
-          if FinestIOExceptionMessages.contains(e.getMessage) =>
-        Level.FINEST
-      case _ => Level.WARNING
+          if FinestIOExceptionMessages.contains(e.getMessage) => Level.FINEST
+      case _                                                  => Level.WARNING
     }
 
   override def channelConnected(

@@ -43,8 +43,7 @@ class ScalaComponentTypeOfMacro extends Macro {
 
     outerItems
       .flatMap {
-        case lookupItem: ScalaLookupItem =>
-          lookupItem.element match {
+        case lookupItem: ScalaLookupItem => lookupItem.element match {
             case typeDef: ScTypeDefinition =>
               typeDef
                 .getType(TypingContext.empty)

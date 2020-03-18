@@ -45,8 +45,7 @@ class ContinuousQueryListenerBus(sparkListenerBus: LiveListenerBus)
     */
   def post(event: ContinuousQueryListener.Event) {
     event match {
-      case s: QueryStarted =>
-        postToAll(s)
+      case s: QueryStarted => postToAll(s)
       case _ =>
         sparkListenerBus.post(new WrappedContinuousQueryListenerEvent(event))
     }
@@ -54,9 +53,8 @@ class ContinuousQueryListenerBus(sparkListenerBus: LiveListenerBus)
 
   override def onOtherEvent(event: SparkListenerEvent): Unit = {
     event match {
-      case WrappedContinuousQueryListenerEvent(e) =>
-        postToAll(e)
-      case _ =>
+      case WrappedContinuousQueryListenerEvent(e) => postToAll(e)
+      case _                                      =>
     }
   }
 
@@ -64,8 +62,7 @@ class ContinuousQueryListenerBus(sparkListenerBus: LiveListenerBus)
       listener: ContinuousQueryListener,
       event: ContinuousQueryListener.Event): Unit = {
     event match {
-      case queryStarted: QueryStarted =>
-        listener.onQueryStarted(queryStarted)
+      case queryStarted: QueryStarted => listener.onQueryStarted(queryStarted)
       case queryProgress: QueryProgress =>
         listener.onQueryProgress(queryProgress)
       case queryTerminated: QueryTerminated =>

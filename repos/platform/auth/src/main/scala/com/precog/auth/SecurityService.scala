@@ -116,10 +116,7 @@ trait SecurityService
                       }
                     }
                 } ->
-                stop[State] {
-                  case State(_, stoppable) =>
-                    stoppable
-                }
+                stop[State] { case State(_, stoppable) => stoppable }
           }
         }
       }

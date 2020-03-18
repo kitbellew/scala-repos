@@ -180,8 +180,7 @@ private[twitter] object Message {
 
           hd
 
-        case None =>
-          bufOfChar(0) // 0 keys
+        case None => bufOfChar(0) // 0 keys
       }
 
       ChannelBuffers.wrappedBuffer(header, req)
@@ -229,8 +228,7 @@ private[twitter] object Message {
         // Note: here and below we don't use the scala dereferencing sugar of
         // `val (k, v) = seq.head` as that caused unnecessary Tuple2 allocations.
         iter.next() match {
-          case (k, v) =>
-            n += 2 + k.readableBytes + 2 + v.readableBytes
+          case (k, v) => n += 2 + k.readableBytes + 2 + v.readableBytes
         }
       }
 
@@ -302,8 +300,7 @@ private[twitter] object Message {
       var seq = contexts
       while (seq.nonEmpty) {
         seq.head match {
-          case (k, v) =>
-            n += 2 + k.readableBytes + 2 + v.readableBytes
+          case (k, v) => n += 2 + k.readableBytes + 2 + v.readableBytes
         }
         seq = seq.tail
       }

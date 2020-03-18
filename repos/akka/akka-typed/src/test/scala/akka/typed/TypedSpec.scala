@@ -140,8 +140,7 @@ object TypedSpec {
   def guardian(outstanding: Map[ActorRef[_], ActorRef[Status]] = Map.empty)
       : Behavior[Command] =
     FullTotal {
-      case Sig(ctx, f @ t.Failed(ex, test)) ⇒
-        outstanding get test match {
+      case Sig(ctx, f @ t.Failed(ex, test)) ⇒ outstanding get test match {
           case Some(reply) ⇒
             reply ! Failed(ex)
             f.decide(t.Failed.Stop)
@@ -150,8 +149,7 @@ object TypedSpec {
             f.decide(t.Failed.Stop)
             Same
         }
-      case Sig(ctx, Terminated(test)) ⇒
-        outstanding get test match {
+      case Sig(ctx, Terminated(test)) ⇒ outstanding get test match {
           case Some(reply) ⇒
             reply ! Success
             guardian(outstanding - test)

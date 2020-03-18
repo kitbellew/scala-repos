@@ -29,8 +29,7 @@ class FieldFromDelayedInitInspection
       "Field from DelayedInit") {
   override def actionFor(
       holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
-    case ref: ScReferenceExpression =>
-      ref.bind() match {
+    case ref: ScReferenceExpression => ref.bind() match {
         case Some(FieldInDelayedInit(delayedInitClass)) =>
           val classContainers = ref.parentsInFile.collect {
             case td: ScTemplateDefinition => td

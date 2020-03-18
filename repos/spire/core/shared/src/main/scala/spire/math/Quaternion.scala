@@ -119,8 +119,7 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
       case that: Quaternion[_] => this === that
       case that: Complex[_] =>
         r == that.real && i == that.imag && anyIsZero(j) && anyIsZero(k)
-      case that =>
-        sillyIsReal && r == that
+      case that => sillyIsReal && r == that
     }
 
   def ===(that: Quaternion[_]): Boolean =
@@ -155,10 +154,8 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
 
   def signum(implicit o: IsReal[A]): Int =
     r.signum match {
-      case 0 =>
-        i.signum match {
-          case 0 =>
-            j.signum match {
+      case 0 => i.signum match {
+          case 0 => j.signum match {
               case 0 => k.signum
               case n => n
             }

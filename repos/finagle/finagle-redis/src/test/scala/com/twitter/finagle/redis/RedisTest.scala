@@ -40,13 +40,11 @@ trait RedisRequestTest extends RedisTest {
 
   def unwrap(list: Seq[AnyRef])(fn: PartialFunction[Command, Unit]) =
     list.toList match {
-      case head :: Nil =>
-        head match {
-          case c: Command =>
-            fn.isDefinedAt(c) match {
+      case head :: Nil => head match {
+          case c: Command => fn.isDefinedAt(c) match {
               case true => fn(c)
-              case false =>
-                fail("Didn't find expected type in list: %s".format(c.getClass))
+              case false => fail(
+                  "Didn't find expected type in list: %s".format(c.getClass))
             }
           case _ => fail("Expected to find a command in the list")
         }
@@ -117,8 +115,7 @@ trait RedisClientServerIntegrationTest
       expects: List[String],
       contains: Boolean = false) =
     Await.result(reply) match {
-      case MBulkReply(msgs) =>
-        contains match {
+      case MBulkReply(msgs) => contains match {
           case true =>
             assert(
               expects.isEmpty == false,

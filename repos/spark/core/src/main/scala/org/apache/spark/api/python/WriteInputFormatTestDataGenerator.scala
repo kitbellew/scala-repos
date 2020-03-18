@@ -167,10 +167,7 @@ object WriteInputFormatTestDataGenerator {
       (1, false))
     sc.parallelize(bools).saveAsSequenceFile(boolPath)
     sc.parallelize(intKeys)
-      .map {
-        case (k, v) =>
-          (new IntWritable(k), NullWritable.get())
-      }
+      .map { case (k, v) => (new IntWritable(k), NullWritable.get()) }
       .saveAsSequenceFile(nullPath)
 
     // Create test data for ArrayWritable
@@ -201,8 +198,7 @@ object WriteInputFormatTestDataGenerator {
         case (i, m) =>
           val mw = new MapWritable()
           m.foreach {
-            case (k, v) =>
-              mw.put(new DoubleWritable(k), new Text(v))
+            case (k, v) => mw.put(new DoubleWritable(k), new Text(v))
           }
           (new IntWritable(i), mw)
       }

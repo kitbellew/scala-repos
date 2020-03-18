@@ -31,9 +31,8 @@ class ConvertToInfixIntention extends PsiElementBaseIntentionAction {
               ref: ScStableCodeReferenceElement,
               Parent(Parent(param: ScParameterizedTypeElement))))
           if param.typeArgList.typeArgs.size == 2 && !ref.refName.forall(
-            _.isLetterOrDigit) =>
-        true
-      case _ => false
+            _.isLetterOrDigit) => true
+      case _                   => false
     }
   }
 

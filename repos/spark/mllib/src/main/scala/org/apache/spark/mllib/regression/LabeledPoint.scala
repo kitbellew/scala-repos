@@ -55,8 +55,7 @@ object LabeledPoint {
       NumericParser.parse(s) match {
         case Seq(label: Double, numeric: Any) =>
           LabeledPoint(label, Vectors.parseNumeric(numeric))
-        case other =>
-          throw new SparkException(s"Cannot parse $other.")
+        case other => throw new SparkException(s"Cannot parse $other.")
       }
     } else { // dense format used before v1.0
       val parts = s.split(',')

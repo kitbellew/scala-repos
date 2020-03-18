@@ -122,8 +122,7 @@ class IntroSpec extends TypedSpec {
         ctx.watch(gabblerRef)
         chatRoom ! GetSession("ol’ Gabbler", gabblerRef)
         Same
-      case Sig(_, Terminated(ref)) ⇒
-        Stopped
+      case Sig(_, Terminated(ref)) ⇒ Stopped
     }
 
     val system = ActorSystem("ChatRoomDemo", Props(main))

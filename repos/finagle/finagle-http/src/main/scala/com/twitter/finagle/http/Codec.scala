@@ -366,8 +366,7 @@ private object TraceInfo {
     Header.All foreach { request.headers.remove(_) }
 
     id match {
-      case Some(id) =>
-        Trace.letId(id) {
+      case Some(id) => Trace.letId(id) {
           traceRpc(request)
           f
         }

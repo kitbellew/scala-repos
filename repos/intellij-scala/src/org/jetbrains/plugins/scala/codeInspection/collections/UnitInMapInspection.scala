@@ -31,9 +31,8 @@ class UnitInMapInspection extends OperationOnCollectionInspection {
           getLikeCollectionClasses) =>
       val isInBlock = call.getParent match {
         case _: ScBlock | _: ScTemplateBody | _: ScEarlyDefinitions |
-            _: ScalaFile =>
-          true
-        case _ => false
+            _: ScalaFile => true
+        case _           => false
       }
       val fixes =
         if (isInBlock)
@@ -46,9 +45,8 @@ class UnitInMapInspection extends OperationOnCollectionInspection {
         .calculateReturns()
         .collect {
           case expr @ ExpressionType(ft @ ScFunctionType(Unit, _))
-              if arg.getType().getOrAny.equiv(ft) =>
-            expr
-          case expr @ ExpressionType(Unit) => expr
+              if arg.getType().getOrAny.equiv(ft) => expr
+          case expr @ ExpressionType(Unit)        => expr
         }
         .filter(_.getTextLength > 0)
 

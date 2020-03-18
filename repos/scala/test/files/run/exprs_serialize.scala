@@ -19,10 +19,7 @@ object Test extends App {
       fin.close()
 
       println(reexpr)
-    } catch {
-      case ex: Exception =>
-        println(ex)
-    }
+    } catch { case ex: Exception => println(ex) }
 
   test(reify(2))
   test(reify { def foo = "hello"; foo + "world!" })

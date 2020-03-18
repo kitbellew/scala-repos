@@ -139,8 +139,7 @@ private[akka] object Reflect {
         curr.getGenericInterfaces collectFirst {
           case c: Class[_] if marker isAssignableFrom c ⇒ c
           case t: ParameterizedType
-              if marker isAssignableFrom t.getRawType.asInstanceOf[Class[_]] ⇒
-            t
+              if marker isAssignableFrom t.getRawType.asInstanceOf[Class[_]] ⇒ t
         } match {
           case None ⇒
             throw new IllegalArgumentException(

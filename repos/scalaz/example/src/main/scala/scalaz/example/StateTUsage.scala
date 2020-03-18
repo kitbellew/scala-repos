@@ -111,15 +111,13 @@ object LaunchburyInterpreter extends App {
     // Lambda and Let define new bound variables, so we substitute fresh variables into them
     // Var and Apply just recursively traverse the AST
     e match {
-      case Lambda(x, e2) =>
-        for {
+      case Lambda(x, e2) => for {
           y <- getFreshVar
           e3 <- freshen(sub(HashMap(x -> y))(e2))
         } yield Lambda(y, e3)
       case Apply(e2, x) => freshen(e2) >>= (e3 => pure(Apply(e3, x)))
       case Var(_)       => pure(e)
-      case Let(bs, e2) =>
-        for {
+      case Let(bs, e2) => for {
           fs <- getFreshVar.replicateM(bs.size)
           // Seq[((originalVar, Expr), freshVar)]
           newBindings = bs.toSeq.zip(fs)
@@ -153,8 +151,7 @@ object LaunchburyInterpreter extends App {
           case Lambda(y, e3) => reduce(sub(HashMap(y -> x))(e3))
           case _             => sys.error("Ill-typed lambda term")
         }
-      case Var(x) =>
-        for {
+      case Var(x) => for {
           state <- init: State[ReduceState, ReduceState]
           e2 = state.heap(x)
           _ <- modify((s: ReduceState) => s.copy(heap = s.heap - x))

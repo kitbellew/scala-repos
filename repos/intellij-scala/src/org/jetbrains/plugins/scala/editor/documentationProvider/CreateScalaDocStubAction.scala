@@ -53,8 +53,7 @@ class CreateScalaDocStubAction
       case id: PsiElement
           if id.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER =>
         id.getParent match {
-          case docOwner: ScDocCommentOwner =>
-            docOwner.docComment match {
+          case docOwner: ScDocCommentOwner => docOwner.docComment match {
               case Some(comment) => recreateStub(docOwner, editor.getDocument)
               case None          => createStub(docOwner, editor.getDocument)
             }
@@ -133,8 +132,7 @@ class CreateScalaDocStubAction
         else oldComment.getLastChild.getPrevSibling
 
       (firstAnchor.getTextRange.getEndOffset /: (groupNames zip paramMaps)) {
-        case (anchor, (name, paramMap)) =>
-          (anchor /: paramMap) {
+        case (anchor, (name, paramMap)) => (anchor /: paramMap) {
             case (currentAnchor, param) =>
               val newTagText =
                 if (psiDocument.getText(

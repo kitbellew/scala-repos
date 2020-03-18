@@ -266,10 +266,10 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
           handshakeInfo.getUid.toInt, // 64 bits are allocated in the wire formats, but we use only 32 for now
           cookie))
       case CommandType.DISASSOCIATE ⇒ Disassociate(AssociationHandle.Unknown)
-      case CommandType.DISASSOCIATE_SHUTTING_DOWN ⇒
-        Disassociate(AssociationHandle.Shutdown)
-      case CommandType.DISASSOCIATE_QUARANTINED ⇒
-        Disassociate(AssociationHandle.Quarantined)
+      case CommandType.DISASSOCIATE_SHUTTING_DOWN ⇒ Disassociate(
+          AssociationHandle.Shutdown)
+      case CommandType.DISASSOCIATE_QUARANTINED ⇒ Disassociate(
+          AssociationHandle.Quarantined)
       case CommandType.HEARTBEAT ⇒ Heartbeat
       case x ⇒
         throw new PduCodecException(

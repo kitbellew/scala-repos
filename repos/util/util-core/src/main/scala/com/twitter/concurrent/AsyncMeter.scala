@@ -267,8 +267,7 @@ class AsyncMeter private[concurrent] (
           case (p, num) if bucket.tryGet(num) =>
             q.poll() // we wait to remove until after we're able to get tokens
             Some(p)
-          case _ =>
-            None
+          case _ => None
         }
       }
       control match {

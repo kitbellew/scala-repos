@@ -250,8 +250,7 @@ class SparkListenerSuite
     val d2 = d.map { i => w(i) -> i * 2 }.setName("shuffle input 1")
     val d3 = d.map { i => w(i) -> (0 to (i % 5)) }.setName("shuffle input 2")
     val d4 = d2.cogroup(d3, numSlices).map {
-      case (k, (v1, v2)) =>
-        w(k) -> (v1.size, v2.size)
+      case (k, (v1, v2)) => w(k) -> (v1.size, v2.size)
     }
     d4.setName("A Cogroup")
     d4.collectAsMap()
@@ -503,10 +502,7 @@ private class SparkContextStoppingListener(val sc: SparkContext)
   var sparkExSeen = false
   override def onJobEnd(job: SparkListenerJobEnd): Unit = {
     try { sc.stop() }
-    catch {
-      case se: SparkException =>
-        sparkExSeen = true
-    }
+    catch { case se: SparkException => sparkExSeen = true }
   }
 }
 

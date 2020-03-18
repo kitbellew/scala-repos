@@ -20,16 +20,14 @@ object EmptyElemTag {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val tagMarker = builder.mark()
     builder.getTokenType match {
-      case ScalaXmlTokenTypes.XML_START_TAG_START =>
-        builder.advanceLexer()
+      case ScalaXmlTokenTypes.XML_START_TAG_START => builder.advanceLexer()
       case _ =>
         tagMarker.drop()
         return false
     }
     builder.getTokenType match {
-      case ScalaXmlTokenTypes.XML_NAME =>
-        builder.advanceLexer()
-      case _ => builder error ErrMsg("xml.name.expected")
+      case ScalaXmlTokenTypes.XML_NAME => builder.advanceLexer()
+      case _                           => builder error ErrMsg("xml.name.expected")
     }
     while (Attribute.parse(builder)) {}
     builder.getTokenType match { //looks like this code became obsolete long ago

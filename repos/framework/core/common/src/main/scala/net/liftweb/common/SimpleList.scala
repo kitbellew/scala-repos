@@ -167,8 +167,7 @@ final case class SimpleList[T](underlying: List[T]) extends JavaList[T] {
     def check(): Boolean =
       it.hasNext() match {
         case false => true
-        case _ =>
-          contains(it.next().asInstanceOf[Object]) match {
+        case _ => contains(it.next().asInstanceOf[Object]) match {
             case false => false
             case _     => check()
           }
@@ -322,8 +321,7 @@ final case class SimpleVector[T](underlying: Vector[T]) extends JavaList[T] {
     def check(): Boolean =
       it.hasNext() match {
         case false => true
-        case _ =>
-          contains(it.next().asInstanceOf[Object]) match {
+        case _ => contains(it.next().asInstanceOf[Object]) match {
             case false => false
             case _     => check()
           }

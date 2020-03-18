@@ -208,8 +208,7 @@ abstract class MappedDecimal[T <: Mapper[T]](
         inst,
         accessor,
         {
-          case f: MappedDecimal[T] =>
-            f.wholeSet(
+          case f: MappedDecimal[T] => f.wholeSet(
               if (v == null) defaultValue else coerce(BigDecimal(v.getTime)))
         })
 
@@ -246,8 +245,7 @@ abstract class MappedDecimal[T <: Mapper[T]](
         inst,
         accessor,
         {
-          case f: MappedDecimal[T] =>
-            f.wholeSet(
+          case f: MappedDecimal[T] => f.wholeSet(
               if (v == null) defaultValue else coerce(BigDecimal(v.toString)))
         })
 

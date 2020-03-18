@@ -94,8 +94,7 @@ object ScalaStubsUtil {
                 case Success(tp, _) =>
                   def checkTp(tp: ScType): Boolean = {
                     tp match {
-                      case c: ScCompoundType =>
-                        c.components.exists(checkTp)
+                      case c: ScCompoundType => c.components.exists(checkTp)
                       case _ =>
                         ScType.extractClass(
                           tp,

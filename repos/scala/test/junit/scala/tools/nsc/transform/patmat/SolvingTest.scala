@@ -181,8 +181,7 @@ object TestSolver extends Logic with Solving {
           case False       => FalseF
           case s: Sym      => lit(s)
           case Not(s: Sym) => negLit(s)
-          case And(ps) =>
-            ps.toArray flatMap conjunctiveNormalForm
+          case And(ps)     => ps.toArray flatMap conjunctiveNormalForm
           case Or(ps) =>
             ps map conjunctiveNormalForm reduceLeft { (a, b) =>
               distribute(a, b)

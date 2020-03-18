@@ -38,8 +38,7 @@ trait PostalCodeTypedField extends StringTypedField {
   def validatePostalCode(in: ValueType): List[FieldError] = {
     toBoxMyType(in) match {
       case Full(zip) if (optional_? && zip.isEmpty) => Nil
-      case _ =>
-        country.value match {
+      case _ => country.value match {
           case Countries.USA =>
             valRegex(
               RegexPattern.compile("[0-9]{5}(\\-[0-9]{4})?"),

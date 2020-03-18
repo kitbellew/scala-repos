@@ -122,8 +122,7 @@ class HttpConnectHandler(
 
         super.connectRequested(ctx, wrappedEvent)
 
-      case _ =>
-        fail(ctx.getChannel, new InconsistentStateException(addr))
+      case _ => fail(ctx.getChannel, new InconsistentStateException(addr))
     }
   }
 

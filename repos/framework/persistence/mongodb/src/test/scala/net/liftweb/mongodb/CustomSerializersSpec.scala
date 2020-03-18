@@ -113,8 +113,7 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
 
       // retrieve it and compare
       Person.find(jack._id) must beLike {
-        case Some(j) =>
-          j._id mustEqual jack._id
+        case Some(j) => j._id mustEqual jack._id
       }
     }
 
@@ -129,8 +128,7 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
 
       // retrieve it and compare
       PersonWithObjectId.find(jack._id) must beLike {
-        case Some(j) =>
-          j._id mustEqual jack._id
+        case Some(j) => j._id mustEqual jack._id
       }
     }
 
@@ -165,8 +163,7 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
 
       // retrieve it and compare
       PersonWithDateTime.find(jack._id) must beLike {
-        case Some(j) =>
-          j.birthDate mustEqual jack.birthDate
+        case Some(j) => j.birthDate mustEqual jack.birthDate
       }
     }
 
@@ -184,8 +181,7 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
 
       // retrieve it and compare
       PersonWithDate.find(jack._id) must beLike {
-        case Some(j) =>
-          j.birthDate mustEqual jack.birthDate
+        case Some(j) => j.birthDate mustEqual jack.birthDate
       }
     }
 
@@ -201,8 +197,7 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
 
       // retrieve it and compare
       PersonWithUUID.find(jack._id) must beLike {
-        case Some(j) =>
-          j._id mustEqual jack._id
+        case Some(j) => j._id mustEqual jack._id
       }
     }
   }

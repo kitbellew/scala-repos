@@ -42,8 +42,7 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
   def makeUniverse(source: Either[List[String], String]): Option[Universe] = {
     assert(settings.docformat.value == "html")
     source match {
-      case Left(files) =>
-        new compiler.Run() compile files
+      case Left(files) => new compiler.Run() compile files
       case Right(sourceCode) =>
         new compiler.Run() compileSources List(
           new BatchSourceFile("newSource", sourceCode))
@@ -102,8 +101,7 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
         force = false)
     case e @ (_: ClassNotFoundException | _: IllegalAccessException |
         _: InstantiationException | _: SecurityException |
-        _: ClassCastException) =>
-      reporter.error(
+        _: ClassCastException) => reporter.error(
         null,
         s"Cannot load the doclet class ${settings.docgenerator.value} (specified with ${settings.docgenerator.name}): $e. Leaving the default settings will generate the html version of scaladoc."
       )

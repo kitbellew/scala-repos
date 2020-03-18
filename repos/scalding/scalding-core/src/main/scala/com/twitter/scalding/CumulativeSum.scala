@@ -43,8 +43,7 @@ object CumulativeSum {
       pipe.group
         .sortBy { case (u, _) => u }
         .scanLeft(Nil: List[(U, V)]) {
-          case (acc, (u, v)) =>
-            acc match {
+          case (acc, (u, v)) => acc match {
               case List((previousU, previousSum)) =>
                 List((u, sg.plus(previousSum, v)))
               case _ => List((u, v))
@@ -73,8 +72,7 @@ object CumulativeSum {
         .group
         .sortBy { case (s, v) => s }
         .scanLeft(None: Option[(Option[V], V, S)]) {
-          case (acc, (s, v)) =>
-            acc match {
+          case (acc, (s, v)) => acc match {
               case Some((previousPreviousSum, previousSum, previousS)) => {
                 Some((Some(previousSum), sg.plus(v, previousSum), s))
               }
@@ -91,23 +89,22 @@ object CumulativeSum {
 
       val summands = pipe
         .map {
-          case (k, (u, v)) =>
-            (k, partition(u)) -> (Some(u), v)
+          case (k, (u, v)) => (k, partition(u)) -> (Some(u), v)
         } ++ sumPerS
 
       summands.group
         .sortBy { case (u, _) => u }
         .scanLeft(None: Option[(Option[U], V)]) {
-          case (acc, (maybeU, v)) =>
-            acc match {
+          case (acc, (maybeU, v)) => acc match {
               case Some((_, previousSum)) =>
                 Some((maybeU, sg.plus(v, previousSum)))
               case _ => Some((maybeU, v))
             }
         }
         .flatMap {
-          case ((k, s), acc) =>
-            for (uv <- acc; u <- uv._1) yield { (k, (u, uv._2)) }
+          case ((k, s), acc) => for (uv <- acc; u <- uv._1) yield {
+              (k, (u, uv._2))
+            }
         }
     }
   }

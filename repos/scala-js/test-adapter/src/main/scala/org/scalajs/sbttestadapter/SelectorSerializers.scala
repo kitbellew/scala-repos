@@ -50,10 +50,8 @@ private[testadapter] object SelectorSerializers {
     def deserialize(x: JSON): Selector = {
       val obj = new JSONObjExtractor(x)
       obj.fld[String]("selType") match {
-        case "SuiteSelector" =>
-          new SuiteSelector()
-        case "TestSelector" =>
-          new TestSelector(obj.fld[String]("testName"))
+        case "SuiteSelector" => new SuiteSelector()
+        case "TestSelector"  => new TestSelector(obj.fld[String]("testName"))
         case "NestedSuiteSelector" =>
           new NestedSuiteSelector(obj.fld[String]("suiteId"))
         case "NestedTestSelector" =>

@@ -40,14 +40,11 @@ trait HashJoin {
 
   override def output: Seq[Attribute] = {
     joinType match {
-      case Inner =>
-        left.output ++ right.output
-      case LeftOuter =>
-        left.output ++ right.output.map(_.withNullability(true))
+      case Inner     => left.output ++ right.output
+      case LeftOuter => left.output ++ right.output.map(_.withNullability(true))
       case RightOuter =>
         left.output.map(_.withNullability(true)) ++ right.output
-      case LeftSemi =>
-        left.output
+      case LeftSemi => left.output
       case x =>
         throw new IllegalArgumentException(
           s"HashJoin should not take $x as the JoinType")
@@ -97,8 +94,7 @@ trait HashJoin {
             width -= bits
           }
         // TODO: support BooleanType, DateType and TimestampType
-        case other =>
-          return keys
+        case other => return keys
       }
     }
     keyExpr :: Nil

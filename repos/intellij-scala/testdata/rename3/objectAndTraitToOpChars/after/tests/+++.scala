@@ -17,8 +17,6 @@ trait +++ {
 object Test {
   def main(args: Array[String]) {
     +++()
-    1 match {
-      case +++(i) =>
-    }
+    1 match { case +++(i) => }
   }
 }

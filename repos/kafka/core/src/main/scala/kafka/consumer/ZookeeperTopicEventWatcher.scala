@@ -71,8 +71,7 @@ class ZookeeperTopicEventWatcher(
             eventHandler.handleTopicEvent(latestTopics)
           }
         } catch {
-          case e: Throwable =>
-            error("error in handling child changes", e)
+          case e: Throwable => error("error in handling child changes", e)
         }
       }
     }

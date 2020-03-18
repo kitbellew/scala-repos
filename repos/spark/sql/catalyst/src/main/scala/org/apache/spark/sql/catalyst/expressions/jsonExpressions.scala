@@ -80,11 +80,9 @@ private[this] object JsonPathParser extends RegexParsers {
 
   def parse(str: String): Option[List[PathInstruction]] = {
     this.parseAll(expression, str) match {
-      case Success(result, _) =>
-        Some(result)
+      case Success(result, _) => Some(result)
 
-      case NoSuccess(msg, next) =>
-        None
+      case NoSuccess(msg, next) => None
     }
   }
 }
@@ -369,10 +367,7 @@ case class JsonTuple(children: Seq[Expression])
       Utils.tryWithResource(jsonFactory.createParser(json.getBytes)) { parser =>
         parseRow(parser, input)
       }
-    } catch {
-      case _: JsonProcessingException =>
-        nullRow
-    }
+    } catch { case _: JsonProcessingException => nullRow }
   }
 
   private def parseRow(

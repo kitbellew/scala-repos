@@ -269,14 +269,11 @@ object FSMTimingSpec {
           context.asInstanceOf[ActorCell].mailbox.hasMessages,
           1.second.dilated)
         stay forMax (1.millis.dilated) replying Tick
-      case Event(Tock, _) ⇒
-        goto(TestCancelStateTimerInNamedTimerMessage2)
+      case Event(Tock, _) ⇒ goto(TestCancelStateTimerInNamedTimerMessage2)
     }
     when(TestCancelStateTimerInNamedTimerMessage2) {
-      case Event(StateTimeout, _) ⇒
-        goto(Initial)
-      case Event(Cancel, _) ⇒
-        goto(Initial) replying Cancel
+      case Event(StateTimeout, _) ⇒ goto(Initial)
+      case Event(Cancel, _) ⇒ goto(Initial) replying Cancel
     }
     when(TestUnhandled) {
       case Event(SetHandler, _) ⇒

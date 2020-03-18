@@ -11,10 +11,8 @@ object CacheUtils {
         case Some(v) :: vss =>
           bld.append(mangleVersionString(v))
           loop(vss)
-        case None :: _ =>
-          None
-        case Nil =>
-          Some(bld.toString)
+        case None :: _ => None
+        case Nil       => Some(bld.toString)
       }
     }
 

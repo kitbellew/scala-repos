@@ -246,8 +246,7 @@ class ErrorFormatter(
         names: List[String],
         sep: String ⇒ JStringBuilder): JStringBuilder =
       remainingPrefix match {
-        case NonTerminal(Named(name), _) :: tail ⇒
-          rec(tail, name :: names, sep)
+        case NonTerminal(Named(name), _) :: tail ⇒ rec(tail, name :: names, sep)
         case NonTerminal(RuleCall, _) :: tail ⇒
           sep(" ").append('/').append(render(names)).append("/ ")
           rec(tail, Nil, dontSep)

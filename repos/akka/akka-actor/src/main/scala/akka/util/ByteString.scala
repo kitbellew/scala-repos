@@ -736,8 +736,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
         clearTemp()
         _builder ++= bs.bytestrings
         _length += bs.length
-      case xs: WrappedArray.ofByte ⇒
-        putByteArrayUnsafe(xs.array.clone)
+      case xs: WrappedArray.ofByte ⇒ putByteArrayUnsafe(xs.array.clone)
       case seq: collection.IndexedSeq[Byte] if shouldResizeTempFor(seq.length) ⇒
         val copied = new Array[Byte](seq.length)
         seq.copyToArray(copied)
@@ -750,8 +749,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
         xs.copyToArray(_temp, _tempLength)
         _tempLength += seq.length
         _length += seq.length
-      case _ ⇒
-        super.++=(xs)
+      case _ ⇒ super.++=(xs)
     }
     this
   }

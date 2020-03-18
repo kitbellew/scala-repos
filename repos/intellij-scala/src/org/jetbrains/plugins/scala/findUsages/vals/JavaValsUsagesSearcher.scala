@@ -114,9 +114,8 @@ class JavaValsUsagesSearcher
       inReadAction {
         ScalaPsiUtil.nameContext(td) match {
           case _: ScValue | _: ScVariable | _: ScClassParameter
-              if td.getName != "" =>
-            Some(td)
-          case _ => None
+              if td.getName != "" => Some(td)
+          case _                  => None
         }
       }
   }

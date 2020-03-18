@@ -137,8 +137,7 @@ class VertexRDDImpl[VD] private[graphx] (
     val otherPartition = other match {
       case other: VertexRDD[_] if this.partitioner == other.partitioner =>
         other.partitionsRDD
-      case _ =>
-        VertexRDD(other.partitionBy(this.partitioner.get)).partitionsRDD
+      case _ => VertexRDD(other.partitionBy(this.partitioner.get)).partitionsRDD
     }
     val newPartitionsRDD = partitionsRDD.zipPartitions(
       otherPartition,

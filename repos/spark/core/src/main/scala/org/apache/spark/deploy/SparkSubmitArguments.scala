@@ -340,14 +340,11 @@ private[deploy] class SparkSubmitArguments(
   /** Fill in values by parsing user options. */
   override protected def handle(opt: String, value: String): Boolean = {
     opt match {
-      case NAME =>
-        name = value
+      case NAME => name = value
 
-      case MASTER =>
-        master = value
+      case MASTER => master = value
 
-      case CLASS =>
-        mainClass = value
+      case CLASS => mainClass = value
 
       case DEPLOY_MODE =>
         if (value != "client" && value != "cluster") {
@@ -356,35 +353,25 @@ private[deploy] class SparkSubmitArguments(
         }
         deployMode = value
 
-      case NUM_EXECUTORS =>
-        numExecutors = value
+      case NUM_EXECUTORS => numExecutors = value
 
-      case TOTAL_EXECUTOR_CORES =>
-        totalExecutorCores = value
+      case TOTAL_EXECUTOR_CORES => totalExecutorCores = value
 
-      case EXECUTOR_CORES =>
-        executorCores = value
+      case EXECUTOR_CORES => executorCores = value
 
-      case EXECUTOR_MEMORY =>
-        executorMemory = value
+      case EXECUTOR_MEMORY => executorMemory = value
 
-      case DRIVER_MEMORY =>
-        driverMemory = value
+      case DRIVER_MEMORY => driverMemory = value
 
-      case DRIVER_CORES =>
-        driverCores = value
+      case DRIVER_CORES => driverCores = value
 
-      case DRIVER_CLASS_PATH =>
-        driverExtraClassPath = value
+      case DRIVER_CLASS_PATH => driverExtraClassPath = value
 
-      case DRIVER_JAVA_OPTIONS =>
-        driverExtraJavaOptions = value
+      case DRIVER_JAVA_OPTIONS => driverExtraJavaOptions = value
 
-      case DRIVER_LIBRARY_PATH =>
-        driverExtraLibraryPath = value
+      case DRIVER_LIBRARY_PATH => driverExtraLibraryPath = value
 
-      case PROPERTIES_FILE =>
-        propertiesFile = value
+      case PROPERTIES_FILE => propertiesFile = value
 
       case KILL_SUBMISSION =>
         submissionToKill = value
@@ -402,60 +389,43 @@ private[deploy] class SparkSubmitArguments(
         }
         action = REQUEST_STATUS
 
-      case SUPERVISE =>
-        supervise = true
+      case SUPERVISE => supervise = true
 
-      case QUEUE =>
-        queue = value
+      case QUEUE => queue = value
 
-      case FILES =>
-        files = Utils.resolveURIs(value)
+      case FILES => files = Utils.resolveURIs(value)
 
-      case PY_FILES =>
-        pyFiles = Utils.resolveURIs(value)
+      case PY_FILES => pyFiles = Utils.resolveURIs(value)
 
-      case ARCHIVES =>
-        archives = Utils.resolveURIs(value)
+      case ARCHIVES => archives = Utils.resolveURIs(value)
 
-      case JARS =>
-        jars = Utils.resolveURIs(value)
+      case JARS => jars = Utils.resolveURIs(value)
 
-      case PACKAGES =>
-        packages = value
+      case PACKAGES => packages = value
 
-      case PACKAGES_EXCLUDE =>
-        packagesExclusions = value
+      case PACKAGES_EXCLUDE => packagesExclusions = value
 
-      case REPOSITORIES =>
-        repositories = value
+      case REPOSITORIES => repositories = value
 
-      case CONF =>
-        value.split("=", 2).toSeq match {
+      case CONF => value.split("=", 2).toSeq match {
           case Seq(k, v) => sparkProperties(k) = v
           case _ =>
             SparkSubmit.printErrorAndExit(s"Spark config without '=': $value")
         }
 
-      case PROXY_USER =>
-        proxyUser = value
+      case PROXY_USER => proxyUser = value
 
-      case PRINCIPAL =>
-        principal = value
+      case PRINCIPAL => principal = value
 
-      case KEYTAB =>
-        keytab = value
+      case KEYTAB => keytab = value
 
-      case HELP =>
-        printUsageAndExit(0)
+      case HELP => printUsageAndExit(0)
 
-      case VERBOSE =>
-        verbose = true
+      case VERBOSE => verbose = true
 
-      case VERSION =>
-        SparkSubmit.printVersionAndExit()
+      case VERSION => SparkSubmit.printVersionAndExit()
 
-      case USAGE_ERROR =>
-        printUsageAndExit(1)
+      case USAGE_ERROR => printUsageAndExit(1)
 
       case _ =>
         throw new IllegalArgumentException(s"Unexpected argument '$opt'.")

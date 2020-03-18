@@ -31,8 +31,7 @@ trait Resolvers {
                 isBlackbox,
                 owner,
                 meth,
-                targs)) =>
-          (macroImplRef, isBlackbox, owner, meth, targs)
+                targs)) => (macroImplRef, isBlackbox, owner, meth, targs)
         case SilentResultValue(macroImplRef) =>
           MacroImplReferenceWrongShapeError()
         case SilentTypeError(err) => abort(err.errPos, err.errMsg)

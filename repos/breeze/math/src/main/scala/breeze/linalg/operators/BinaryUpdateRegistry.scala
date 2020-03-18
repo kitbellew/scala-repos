@@ -48,9 +48,8 @@ trait BinaryUpdateRegistry[A <: AnyRef, B, Op <: OpType]
     val cached = cache.get(ac -> bc)
     if (cached != null) {
       cached match {
-        case None => bindingMissing(a, b)
-        case Some(m) =>
-          m.asInstanceOf[InPlaceImpl2[Op, A, B]].apply(a, b)
+        case None    => bindingMissing(a, b)
+        case Some(m) => m.asInstanceOf[InPlaceImpl2[Op, A, B]].apply(a, b)
       }
     } else {
       val options = resolve(ac, bc.asInstanceOf[Class[_ <: B]])

@@ -79,11 +79,10 @@ trait VectorInstances extends VectorInstances0 {
           case Vector(\/-(b), tail @ _*) :: rest =>
             bs += b
             go(tail.toVector :: rest)
-          case Vector(-\/(a0), tail @ _*) :: rest =>
-            go(f(a0) :: tail.toVector :: rest)
-          case Vector() :: rest =>
-            go(rest)
-          case Nil =>
+          case Vector(-\/(a0), tail @ _*) :: rest => go(
+              f(a0) :: tail.toVector :: rest)
+          case Vector() :: rest => go(rest)
+          case Nil              =>
         }
       go(List(f(a)))
       bs.result

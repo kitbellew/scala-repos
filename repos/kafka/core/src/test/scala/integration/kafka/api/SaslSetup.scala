@@ -68,12 +68,9 @@ trait SaslSetup {
   private def createKeytabAndJaasFiles(mode: SaslSetupMode): (File, File) = {
     val keytabFile = TestUtils.tempFile()
     val jaasFileName: String = mode match {
-      case ZkSasl =>
-        JaasTestUtils.genZkFile
-      case KafkaSasl =>
-        JaasTestUtils.genKafkaFile(keytabFile.getAbsolutePath)
-      case _ =>
-        JaasTestUtils.genZkAndKafkaFile(keytabFile.getAbsolutePath)
+      case ZkSasl    => JaasTestUtils.genZkFile
+      case KafkaSasl => JaasTestUtils.genKafkaFile(keytabFile.getAbsolutePath)
+      case _         => JaasTestUtils.genZkAndKafkaFile(keytabFile.getAbsolutePath)
     }
     val jaasFile = new File(jaasFileName)
 

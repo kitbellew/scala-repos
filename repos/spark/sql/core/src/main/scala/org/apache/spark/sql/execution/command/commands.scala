@@ -200,8 +200,7 @@ case class SetCommand(kv: Option[(String, Option[String])])
       case Some(("-v", None)) =>
         val runFunc = (sqlContext: SQLContext) => {
           sqlContext.conf.getAllDefinedConfs.map {
-            case (key, defaultValue, doc) =>
-              Row(key, defaultValue, doc)
+            case (key, defaultValue, doc) => Row(key, defaultValue, doc)
           }
         }
         val schema = StructType(

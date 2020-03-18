@@ -18,10 +18,7 @@ object ScalingProposition {
     val toKillMap = Task.tasksById(toKill.getOrElse(Set.empty))
 
     val (sentencedAndRunningMap, notSentencedAndRunningMap) =
-      runningTaskMap partition {
-        case (k, v) =>
-          toKillMap.contains(k)
-      }
+      runningTaskMap partition { case (k, v) => toKillMap.contains(k) }
     // overall number of tasks that need to be killed
     val killCount = math.max(
       runningTasks.size - scaleTo,

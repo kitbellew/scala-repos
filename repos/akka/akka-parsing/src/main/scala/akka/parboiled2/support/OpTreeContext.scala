@@ -452,8 +452,7 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
       }
 
     base match {
-      case q"$a.this.int2NTimes($n)" ⇒
-        n match {
+      case q"$a.this.int2NTimes($n)" ⇒ n match {
           case Literal(Constant(i: Int)) ⇒
             if (i <= 0) c.abort(base.pos, "`x` in `x.times` must be positive")
             else if (i == 1) rule
@@ -465,8 +464,7 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
               n.pos,
               "Invalid int base expression for `.times(...)`: " + n)
         }
-      case q"$a.this.range2NTimes($r)" ⇒
-        r match {
+      case q"$a.this.range2NTimes($r)" ⇒ r match {
           case q"scala.Predef.intWrapper($mn).to($mx)" ⇒
             handleRange(mn, mx, r) // Scala 2.12
           case q"scala.this.Predef.intWrapper($mn).to($mx)" ⇒
@@ -617,8 +615,7 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
                   case x
                       if isSubClass(
                         resultTypeTree.tpe,
-                        "akka.parboiled2.Rule") ⇒
-                    expand(x, wrapped)
+                        "akka.parboiled2.Rule") ⇒ expand(x, wrapped)
                   case x ⇒ q"__push($x)"
                 }
               val valDefs = args
@@ -880,13 +877,11 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
 
   def block(a: Tree, b: Tree): Tree =
     a match {
-      case Block(a1, a2) ⇒
-        b match {
+      case Block(a1, a2) ⇒ b match {
           case Block(b1, b2) ⇒ Block(a1 ::: a2 :: b1, b2)
           case _ ⇒ Block(a1 ::: a2 :: Nil, b)
         }
-      case _ ⇒
-        b match {
+      case _ ⇒ b match {
           case Block(b1, b2) ⇒ Block(a :: b1, b2)
           case _ ⇒ Block(a :: Nil, b)
         }

@@ -100,8 +100,7 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
       xs.foldLeft(Map.empty[String, Long]) {
         case (acc, ((CLong | CDouble | CNum), count)) =>
           acc + ("Number" -> (acc.getOrElse("Number", 0L) + count))
-        case (acc, (ctype, count)) =>
-          acc + (CType.nameOf(ctype) -> count)
+        case (acc, (ctype, count)) => acc + (CType.nameOf(ctype) -> count)
       } mapValues (_.serialize)
     }
 
@@ -114,8 +113,7 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
             case otherError                => \/.left(otherError)
           },
           {
-            case PathStructure(types, children) =>
-              \/.right(JObject(
+            case PathStructure(types, children) => \/.right(JObject(
                 "children" -> children.serialize,
                 "types" -> JObject(normalizeTypes(types))))
           }
@@ -135,8 +133,7 @@ class BrowseServiceHandler[A](
   val service = (request: HttpRequest[A]) =>
     success { (apiKey: APIKey, path: Path) =>
       request.parameters.get('type).map(_.toLowerCase) map {
-        case "size" =>
-          size(apiKey, path) map { sz => JObject("size" -> sz) }
+        case "size" => size(apiKey, path) map { sz => JObject("size" -> sz) }
 
         case "children" =>
           val kids =
@@ -181,8 +178,7 @@ class BrowseServiceHandler[A](
                 "errors" -> JArray("sorry, we're looking into it!".serialize))))
           },
           {
-            case ResourceError.NotFound(message) =>
-              HttpResponse[JValue](
+            case ResourceError.NotFound(message) => HttpResponse[JValue](
                 HttpStatusCodes.NotFound,
                 content = Some(JObject(
                   "errors" -> JArray(
@@ -191,8 +187,7 @@ class BrowseServiceHandler[A](
                       .serialize)))
               )
 
-            case PermissionsError(message) =>
-              HttpResponse[JValue](
+            case PermissionsError(message) => HttpResponse[JValue](
                 Forbidden,
                 content = Some(JObject(
                   "errors" -> JArray(

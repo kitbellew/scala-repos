@@ -117,10 +117,8 @@ object SourceCodeGenerator {
 
   def main(args: Array[String]): Unit = {
     args.toList match {
-      case uri :: Nil =>
-        run(new URI(uri), None)
-      case uri :: outputDir :: Nil =>
-        run(new URI(uri), Some(outputDir))
+      case uri :: Nil              => run(new URI(uri), None)
+      case uri :: outputDir :: Nil => run(new URI(uri), Some(outputDir))
       case profile :: jdbcDriver :: url :: outputDir :: pkg :: Nil =>
         run(profile, jdbcDriver, url, outputDir, pkg, None, None, true)
       case profile :: jdbcDriver :: url :: outputDir :: pkg :: user :: password :: Nil =>

@@ -233,8 +233,7 @@ abstract class BaseYarnClusterSuite
       props.setProperty("spark.hadoop." + e.getKey(), e.getValue())
     }
     sys.props.foreach {
-      case (k, v) =>
-        if (k.startsWith("spark.")) { props.setProperty(k, v) }
+      case (k, v) => if (k.startsWith("spark.")) { props.setProperty(k, v) }
     }
     extraConf.foreach { case (k, v) => props.setProperty(k, v) }
 

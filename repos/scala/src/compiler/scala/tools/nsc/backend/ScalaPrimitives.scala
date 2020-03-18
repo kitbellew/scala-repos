@@ -462,34 +462,30 @@ abstract class ScalaPrimitives {
   def isArrayNew(code: Int): Boolean =
     code match {
       case NEW_ZARRAY | NEW_BARRAY | NEW_SARRAY | NEW_CARRAY | NEW_IARRAY |
-          NEW_LARRAY | NEW_FARRAY | NEW_DARRAY | NEW_OARRAY =>
-        true
-      case _ => false
+          NEW_LARRAY | NEW_FARRAY | NEW_DARRAY | NEW_OARRAY => true
+      case _                                                => false
     }
 
   def isArrayLength(code: Int): Boolean =
     code match {
       case ZARRAY_LENGTH | BARRAY_LENGTH | SARRAY_LENGTH | CARRAY_LENGTH |
           IARRAY_LENGTH | LARRAY_LENGTH | FARRAY_LENGTH | DARRAY_LENGTH |
-          OARRAY_LENGTH | LENGTH =>
-        true
-      case _ => false
+          OARRAY_LENGTH | LENGTH => true
+      case _                     => false
     }
 
   def isArrayGet(code: Int): Boolean =
     code match {
       case ZARRAY_GET | BARRAY_GET | SARRAY_GET | CARRAY_GET | IARRAY_GET |
-          LARRAY_GET | FARRAY_GET | DARRAY_GET | OARRAY_GET | APPLY =>
-        true
-      case _ => false
+          LARRAY_GET | FARRAY_GET | DARRAY_GET | OARRAY_GET | APPLY => true
+      case _                                                        => false
     }
 
   def isArraySet(code: Int): Boolean =
     code match {
       case ZARRAY_SET | BARRAY_SET | SARRAY_SET | CARRAY_SET | IARRAY_SET |
-          LARRAY_SET | FARRAY_SET | DARRAY_SET | OARRAY_SET | UPDATE =>
-        true
-      case _ => false
+          LARRAY_SET | FARRAY_SET | DARRAY_SET | OARRAY_SET | UPDATE => true
+      case _                                                         => false
     }
 
   /** Check whether the given code is a comparison operator */
@@ -561,8 +557,7 @@ abstract class ScalaPrimitives {
 
     code match {
 
-      case APPLY =>
-        typeToBType(elementType) match {
+      case APPLY => typeToBType(elementType) match {
           case BOOL                          => ZARRAY_GET
           case BYTE                          => BARRAY_GET
           case SHORT                         => SARRAY_GET
@@ -572,12 +567,10 @@ abstract class ScalaPrimitives {
           case FLOAT                         => FARRAY_GET
           case DOUBLE                        => DARRAY_GET
           case _: ClassBType | _: ArrayBType => OARRAY_GET
-          case _ =>
-            abort("Unexpected array element type: " + elementType)
+          case _                             => abort("Unexpected array element type: " + elementType)
         }
 
-      case UPDATE =>
-        typeToBType(elementType) match {
+      case UPDATE => typeToBType(elementType) match {
           case BOOL                          => ZARRAY_SET
           case BYTE                          => BARRAY_SET
           case SHORT                         => SARRAY_SET
@@ -587,12 +580,10 @@ abstract class ScalaPrimitives {
           case FLOAT                         => FARRAY_SET
           case DOUBLE                        => DARRAY_SET
           case _: ClassBType | _: ArrayBType => OARRAY_SET
-          case _ =>
-            abort("Unexpected array element type: " + elementType)
+          case _                             => abort("Unexpected array element type: " + elementType)
         }
 
-      case LENGTH =>
-        typeToBType(elementType) match {
+      case LENGTH => typeToBType(elementType) match {
           case BOOL                          => ZARRAY_LENGTH
           case BYTE                          => BARRAY_LENGTH
           case SHORT                         => SARRAY_LENGTH
@@ -602,12 +593,10 @@ abstract class ScalaPrimitives {
           case FLOAT                         => FARRAY_LENGTH
           case DOUBLE                        => DARRAY_LENGTH
           case _: ClassBType | _: ArrayBType => OARRAY_LENGTH
-          case _ =>
-            abort("Unexpected array element type: " + elementType)
+          case _                             => abort("Unexpected array element type: " + elementType)
         }
 
-      case _ =>
-        code
+      case _ => code
     }
   }
 

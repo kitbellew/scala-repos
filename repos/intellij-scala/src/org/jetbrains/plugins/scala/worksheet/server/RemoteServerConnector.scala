@@ -116,8 +116,7 @@ class RemoteServerConnector(
 
       ExitCode.OK
     } catch {
-      case e: SocketException =>
-        ExitCode.OK // someone has stopped the server
+      case e: SocketException => ExitCode.OK // someone has stopped the server
     }
   }
 

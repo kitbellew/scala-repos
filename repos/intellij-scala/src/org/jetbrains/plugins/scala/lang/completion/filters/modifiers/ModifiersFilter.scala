@@ -23,9 +23,8 @@ class ModifiersFilter extends ElementFilter {
     if (leaf != null) {
       val parent = leaf.getParent
       parent match {
-        case _: ScClassParameter =>
-          return true
-        case _ =>
+        case _: ScClassParameter => return true
+        case _                   =>
       }
       val tuple = ScalaCompletionUtil.getForAll(parent, leaf)
       if (tuple._1) return tuple._2

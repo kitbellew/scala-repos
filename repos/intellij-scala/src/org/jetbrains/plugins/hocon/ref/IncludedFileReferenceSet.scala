@@ -155,8 +155,7 @@ object IncludedFileReference {
         else if (name.endsWith(JsonExt)) 1
         else if (name.endsWith(PropsExt)) 2
         else 3
-      case _ =>
-        3
+      case _ => 3
     }
   }
 }

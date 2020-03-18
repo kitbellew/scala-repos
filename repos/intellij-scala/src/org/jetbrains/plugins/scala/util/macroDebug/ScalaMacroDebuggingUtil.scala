@@ -160,8 +160,7 @@ object ScalaMacroDebuggingUtil {
     element match {
       case methodInvocation: MethodInvocation =>
         methodInvocation.getEffectiveInvokedExpr match {
-          case ref: ScReferenceExpression =>
-            ref.resolve() match {
+          case ref: ScReferenceExpression => ref.resolve() match {
               case _: ScMacroDefinition => true
               case _                    => false
             }

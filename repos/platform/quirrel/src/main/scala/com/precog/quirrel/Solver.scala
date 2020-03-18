@@ -72,8 +72,7 @@ trait Solver extends parser.AST with typer.Binder {
       },
       {
         case Add(loc, Mul(loc2, w, x), Mul(loc3, y, z))
-            if x equalsIgnoreLoc z =>
-          Set(Mul(loc2, Add(loc, w, y), x))
+            if x equalsIgnoreLoc z => Set(Mul(loc2, Add(loc, w, y), x))
       },
       {
         case Sub(loc, Mul(loc2, x, y), z) if y equalsIgnoreLoc z =>
@@ -81,16 +80,14 @@ trait Solver extends parser.AST with typer.Binder {
       },
       {
         case Sub(loc, Mul(loc2, w, x), Mul(loc3, y, z))
-            if x equalsIgnoreLoc z =>
-          Set(Mul(loc2, Sub(loc, w, y), x))
+            if x equalsIgnoreLoc z => Set(Mul(loc2, Sub(loc, w, y), x))
       },
       {
         case Add(loc, Div(loc2, x, y), z) =>
           Set(Div(loc2, Add(loc, x, Mul(loc, z, y)), y))
       },
       {
-        case Add(loc, Div(loc2, w, x), Div(loc3, y, z)) =>
-          Set(Div(
+        case Add(loc, Div(loc2, w, x), Div(loc3, y, z)) => Set(Div(
             loc2,
             Add(loc, Mul(loc2, w, z), Mul(loc3, y, x)),
             Mul(loc2, x, z)))
@@ -116,8 +113,7 @@ trait Solver extends parser.AST with typer.Binder {
           Set(Div(loc2, Sub(loc, x, Mul(loc, z, y)), y))
       },
       {
-        case Sub(loc, Div(loc2, w, x), Div(loc3, y, z)) =>
-          Set(Div(
+        case Sub(loc, Div(loc2, w, x), Div(loc3, y, z)) => Set(Div(
             loc2,
             Sub(loc, Mul(loc2, w, z), Mul(loc3, y, x)),
             Mul(loc2, x, z)))
@@ -320,12 +316,10 @@ trait Solver extends parser.AST with typer.Binder {
 
     val result = leftRight flatMap {
       case (loc, left, right)
-          if predicate.isDefinedAt(left) && predicate(left) =>
-        Some(right)
+          if predicate.isDefinedAt(left) && predicate(left) => Some(right)
 
       case (loc, left, right)
-          if predicate.isDefinedAt(right) && predicate(right) =>
-        Some(left)
+          if predicate.isDefinedAt(right) && predicate(right) => Some(left)
 
       case (loc, left, right) => {
         // try both addition and multiplication groups

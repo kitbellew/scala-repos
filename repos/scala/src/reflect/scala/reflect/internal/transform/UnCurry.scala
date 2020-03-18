@@ -41,16 +41,13 @@ trait UnCurry {
             substitutedResult))
         case MethodType(
               params,
-              ExistentialType(tparams, restpe @ MethodType(_, _))) =>
-          abort("unexpected curried method types with intervening existential")
+              ExistentialType(tparams, restpe @ MethodType(_, _))) => abort(
+            "unexpected curried method types with intervening existential")
         case MethodType(h :: t, restpe) if h.isImplicit =>
           apply(MethodType(h.cloneSymbol.resetFlag(IMPLICIT) :: t, restpe))
-        case NullaryMethodType(restpe) =>
-          apply(MethodType(List(), restpe))
-        case DesugaredParameterType(desugaredTpe) =>
-          apply(desugaredTpe)
-        case _ =>
-          expandAlias(mapOver(tp))
+        case NullaryMethodType(restpe)            => apply(MethodType(List(), restpe))
+        case DesugaredParameterType(desugaredTpe) => apply(desugaredTpe)
+        case _                                    => expandAlias(mapOver(tp))
       }
     }
   }
@@ -58,14 +55,12 @@ trait UnCurry {
   object DesugaredParameterType {
     def unapply(tpe: Type): Option[Type] =
       tpe match {
-        case TypeRef(pre, ByNameParamClass, arg :: Nil) =>
-          Some(functionType(List(), arg))
-        case TypeRef(pre, RepeatedParamClass, arg :: Nil) =>
-          Some(seqType(arg))
-        case TypeRef(pre, JavaRepeatedParamClass, arg :: Nil) =>
-          Some(arrayType(if (isUnboundedGeneric(arg)) ObjectTpe else arg))
-        case _ =>
-          None
+        case TypeRef(pre, ByNameParamClass, arg :: Nil) => Some(
+            functionType(List(), arg))
+        case TypeRef(pre, RepeatedParamClass, arg :: Nil) => Some(seqType(arg))
+        case TypeRef(pre, JavaRepeatedParamClass, arg :: Nil) => Some(
+            arrayType(if (isUnboundedGeneric(arg)) ObjectTpe else arg))
+        case _ => None
       }
   }
 
@@ -78,10 +73,8 @@ trait UnCurry {
           if (parents1 eq parents) tp
           else
             ClassInfoType(parents1, decls, clazz) // @MAT normalize in decls??
-        case PolyType(_, _) =>
-          mapOver(tp)
-        case _ =>
-          tp
+        case PolyType(_, _) => mapOver(tp)
+        case _              => tp
       }
     }
   }

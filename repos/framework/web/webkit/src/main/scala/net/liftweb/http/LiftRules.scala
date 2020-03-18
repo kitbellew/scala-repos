@@ -405,8 +405,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         ret.fixSessionTime()
         ret
 
-      case Failure(_, _, _) =>
-        LiftRules.statelessSession.vend.apply(req)
+      case Failure(_, _, _) => LiftRules.statelessSession.vend.apply(req)
 
       case _ =>
         val ret = LiftSession(req)
@@ -540,9 +539,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   var determineContentType: PartialFunction[(Box[Req], Box[String]), String] = {
     case (_, Full(accept))
         if this.useXhtmlMimeType && accept.toLowerCase.contains(
-          "application/xhtml+xml") =>
-      "application/xhtml+xml; charset=utf-8"
-    case _ => "text/html; charset=utf-8"
+          "application/xhtml+xml") => "application/xhtml+xml; charset=utf-8"
+    case _                         => "text/html; charset=utf-8"
   }
 
   lazy val liftVersion: String = {
@@ -710,8 +708,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     if (passNotFoundToChain) Empty
     else
       session match {
-        case Full(session) =>
-          Full(session.checkRedirect(requestState.createNotFound))
+        case Full(session) => Full(
+            session.checkRedirect(requestState.createNotFound))
         case _ => Full(requestState.createNotFound)
       }
   }
@@ -1349,10 +1347,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   private[http] def dispatchTable(req: HTTPRequest): List[DispatchPF] = {
     req match {
       case null => dispatch.toList
-      case _ =>
-        SessionMaster.getSession(req, Empty) match {
-          case Full(s) =>
-            S.initIfUninitted(s) {
+      case _ => SessionMaster.getSession(req, Empty) match {
+          case Full(s) => S.initIfUninitted(s) {
               S.highLevelSessionDispatchList.map(_.dispatch) :::
                 dispatch.toList
             }
@@ -1679,11 +1675,11 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     case (SafeNodeSeq(n), headers, cookies, req) =>
       cvt(Group(n), headers, cookies, req, 200)
 
-    case (Full(o), headers, cookies, req) =>
-      convertResponse((o, headers, cookies, req))
+    case (Full(o), headers, cookies, req) => convertResponse(
+        (o, headers, cookies, req))
 
-    case (Some(o), headers, cookies, req) =>
-      convertResponse((o, headers, cookies, req))
+    case (Some(o), headers, cookies, req) => convertResponse(
+        (o, headers, cookies, req))
     case (bad, _, _, req) => req.createNotFound
   }
 
@@ -2292,8 +2288,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       def finder(in: List[F => Box[T]]): Box[T] =
         in match {
           case Nil => Empty
-          case x :: xs =>
-            x(param) match {
+          case x :: xs => x(param) match {
               case Full(r) => Full(r)
               case _       => finder(xs)
             }

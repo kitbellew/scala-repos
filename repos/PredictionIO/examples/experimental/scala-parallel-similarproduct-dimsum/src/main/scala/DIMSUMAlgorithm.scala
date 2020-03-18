@@ -85,10 +85,7 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
 
     // collect Item as Map and convert ID to Int index
     val items: Map[Int, Item] = data.items
-      .map {
-        case (id, item) =>
-          (itemStringIntMap(id), item)
-      }
+      .map { case (id, item) => (itemStringIntMap(id), item) }
       .collectAsMap
       .toMap
     val itemCount = items.size
@@ -214,8 +211,7 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
 
     val ord = Ordering.by[(Int, Double), Double](_._2).reverse
     val itemScores = getTopN(aggregatedScores, query.num)(ord).map {
-      case (i, s) =>
-        new ItemScore(item = model.itemIntStringMap(i), score = s)
+      case (i, s) => new ItemScore(item = model.itemIntStringMap(i), score = s)
     }.toArray
 
     new PredictedResult(itemScores)

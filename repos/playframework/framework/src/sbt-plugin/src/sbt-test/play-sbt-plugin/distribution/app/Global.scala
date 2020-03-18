@@ -15,9 +15,7 @@ object Global extends GlobalSettings {
           // We won't reach here if the app shuts down normally, because an exception will be thrown
           println("Forcibly terminating JVM that hasn't been shut down")
           System.exit(1)
-        } catch {
-          case _: Throwable =>
-        }
+        } catch { case _: Throwable => }
       }
     }
     thread.setDaemon(true)

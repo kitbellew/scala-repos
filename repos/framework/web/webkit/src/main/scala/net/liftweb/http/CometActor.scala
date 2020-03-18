@@ -813,8 +813,8 @@ trait BaseCometActor
     * chain back to this implementation.
     */
   override def exceptionHandler: PartialFunction[Throwable, Unit] = {
-    case ResponseShortcutException(_, Full(redirectUri), _) =>
-      partialUpdate(RedirectTo(redirectUri))
+    case ResponseShortcutException(_, Full(redirectUri), _) => partialUpdate(
+        RedirectTo(redirectUri))
 
     case other if super.exceptionHandler.isDefinedAt(other) =>
       super.exceptionHandler(other)
@@ -905,8 +905,7 @@ trait BaseCometActor
       if (redo) { performReRender(false) }
     }
 
-    case AskRender =>
-      askingWho match {
+    case AskRender => askingWho match {
         case Full(who) => forwardMessageTo(AskRender, who) //  forward AskRender
         case _ => {
           val out =
@@ -937,8 +936,7 @@ trait BaseCometActor
         }
       }
 
-    case ActionMessageSet(msgs, req) =>
-      S.doCometParams(req.params) {
+    case ActionMessageSet(msgs, req) => S.doCometParams(req.params) {
         val computed: List[Any] = msgs.flatMap { f =>
           try { List(f()) }
           catch {
@@ -960,8 +958,7 @@ trait BaseCometActor
       listenerTransition()
     }
 
-    case AnswerQuestion(what, otherListeners) =>
-      askingWho.foreach { ah =>
+    case AnswerQuestion(what, otherListeners) => askingWho.foreach { ah =>
         {
           reply(
             "A null message to release the actor from its send and await reply... do not delete this message")

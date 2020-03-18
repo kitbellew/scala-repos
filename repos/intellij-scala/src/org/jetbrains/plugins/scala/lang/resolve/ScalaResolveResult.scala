@@ -234,8 +234,7 @@ class ScalaResolveResult(
           case pack: PsiPackage =>
             val qualifier = pack.getQualifiedName
             return getPackagePrecedence(qualifier)
-          case clazz: PsiClass =>
-            return getClazzPrecedence(clazz)
+          case clazz: PsiClass => return getClazzPrecedence(clazz)
           case memb @ (_: ScBindingPattern | _: PsiMember) =>
             val clazzStub = ScalaPsiUtil.getContextOfType(
               getActualElement,
@@ -252,13 +251,10 @@ class ScalaResolveResult(
                 case "scala.Predef"               => return SCALA_PREDEF
                 case "scala.LowPriorityImplicits" => return SCALA_PREDEF
                 case "scala"                      => return SCALA
-                case _ =>
-                  clazz match {
+                case _ => clazz match {
                     case o: ScObject
-                        if o.isPackageObject && !PsiTreeUtil.isContextAncestor(
-                          o,
-                          place,
-                          false) =>
+                        if o.isPackageObject && !PsiTreeUtil
+                          .isContextAncestor(o, place, false) =>
                       var q = o.qualifiedName
                       val packageSuffix: String = ".`package`"
                       if (q.endsWith(packageSuffix))
@@ -279,14 +275,12 @@ class ScalaResolveResult(
       // TODO this conflates imported functions and imported implicit views. ScalaResolveResult should really store
       //      these separately.
       importUsed match {
-        case _: ImportWildcardSelectorUsed =>
-          getActualElement match {
+        case _: ImportWildcardSelectorUsed => getActualElement match {
             case p: PsiPackage                    => WILDCARD_IMPORT_PACKAGE
             case o: ScObject if o.isPackageObject => WILDCARD_IMPORT_PACKAGE
             case _                                => WILDCARD_IMPORT
           }
-        case _: ImportSelectorUsed =>
-          getActualElement match {
+        case _: ImportSelectorUsed => getActualElement match {
             case p: PsiPackage                    => IMPORT_PACKAGE
             case o: ScObject if o.isPackageObject => IMPORT_PACKAGE
             case _                                => IMPORT

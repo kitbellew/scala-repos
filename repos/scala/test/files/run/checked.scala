@@ -95,8 +95,7 @@ object Test extends App {
       t
       println("[FAIL]: No UFE thrown")
     } catch {
-      case UninitializedFieldError(msg) =>
-        println("[OK] Caught UFE: " + msg)
+      case UninitializedFieldError(msg) => println("[OK] Caught UFE: " + msg)
     }
 
   val d = new D()

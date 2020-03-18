@@ -28,8 +28,7 @@ private[twitter] class StreamClientDispatcher[Req: RequestType](
 
   private[this] def readChunks(out: Broker[Buf]): Future[Unit] =
     trans.read() flatMap {
-      case chunk: HttpChunk if chunk.isLast =>
-        Future.Done
+      case chunk: HttpChunk if chunk.isLast => Future.Done
 
       case chunk: HttpChunk =>
         out.send(ChannelBufferBuf.Owned(chunk.getContent)).sync() before
@@ -57,10 +56,8 @@ private[twitter] class StreamClientDispatcher[Req: RequestType](
               done.setDone()
             } else {
               readChunks(out) respond {
-                case Return(_) | Throw(_: ChannelClosedException) =>
-                  err ! EOF
-                case Throw(exc) =>
-                  err ! exc
+                case Return(_) | Throw(_: ChannelClosedException) => err ! EOF
+                case Throw(exc)                                   => err ! exc
               } ensure done.setDone()
             }
 

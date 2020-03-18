@@ -310,8 +310,7 @@ abstract class ExplicitOuter
       val savedOuterParam = outerParam
       try {
         tree match {
-          case Template(_, _, _) =>
-            outerParam = NoSymbol
+          case Template(_, _, _) => outerParam = NoSymbol
           case DefDef(_, _, _, (param :: _) :: _, _, _)
               if sym.isClassConstructor && isInner(sym.owner) =>
             outerParam = param.symbol
@@ -456,8 +455,7 @@ abstract class ExplicitOuter
         case DefDef(_, _, _, vparamss, _, rhs) =>
           if (sym.isClassConstructor) {
             rhs match {
-              case Literal(_) =>
-                sys.error("unexpected case") //todo: remove
+              case Literal(_) => sys.error("unexpected case") //todo: remove
               case _ =>
                 val clazz = sym.owner
                 val vparamss1 =
@@ -513,8 +511,7 @@ abstract class ExplicitOuter
             case _: This =>
               assert(outerParam != NoSymbol, tree)
               outerValue
-            case _ =>
-              gen.mkAttributedQualifier(qual.tpe.prefix match {
+            case _ => gen.mkAttributedQualifier(qual.tpe.prefix match {
                 case NoPrefix => sym.owner.outerClass.thisType
                 case x        => x
               })

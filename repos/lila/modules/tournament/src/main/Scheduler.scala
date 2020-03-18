@@ -198,8 +198,7 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
           List( // random opening replaces hourly 2 times a day
             11 -> opening1,
             23 -> opening2)).flatMap {
-          case (hour, opening) =>
-            List(
+          case (hour, opening) => List(
               Schedule(
                 Hourly,
                 Bullet,

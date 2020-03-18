@@ -253,10 +253,8 @@ abstract class ScaladocModelTest extends DirectTest {
           case _ => ""
         }
       c match {
-        case c: Comment =>
-          extractText(c.body)
-        case b: Body =>
-          extractText(b)
+        case c: Comment => extractText(c.body)
+        case b: Body    => extractText(b)
       }
     }
 

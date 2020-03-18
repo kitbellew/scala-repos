@@ -158,8 +158,7 @@ private[akka] class MsgEncoder extends OneToOneEncoder {
           case AddressReply(node, addr) ⇒
             w.setAddr(
               TCP.AddressRequest.newBuilder.setNode(node.name).setAddr(addr))
-          case _: Done ⇒
-            w.setDone("")
+          case _: Done ⇒ w.setDone("")
         }
         w.build
       case _ ⇒ throw new IllegalArgumentException("wrong message " + msg)

@@ -109,9 +109,8 @@ abstract class QueryServiceHandler[A](implicit M: Monad[Future])
 
     opts.output match {
       case FileContent.TextCSV =>
-        response.copy(headers =
-          response.headers + `Content-Type`(text / csv) + `Content-Disposition`(
-            attachment(Some("results.csv"))))
+        response.copy(headers = response.headers + `Content-Type`(
+          text / csv) + `Content-Disposition`(attachment(Some("results.csv"))))
       case _ =>
         response.copy(headers =
           response.headers + `Content-Type`(application / json))
@@ -285,8 +284,7 @@ class SyncQueryServiceHandler(
         val result = StreamT.unfoldM(some(prefix :: data)) {
           case Some(stream) =>
             stream.uncons flatMap {
-              case Some((buffer, tail)) =>
-                M.point(Some((buffer, Some(tail))))
+              case Some((buffer, tail)) => M.point(Some((buffer, Some(tail))))
               case None =>
                 val warningsM = jobManager.listMessages(
                   jobId,
@@ -318,8 +316,7 @@ class SyncQueryServiceHandler(
                 }
             }
 
-          case None =>
-            M.point(None)
+          case None => M.point(None)
         }
 
         HttpResponse[QueryResult](OK, content = Some(Right(result)))
@@ -340,10 +337,8 @@ class SyncQueryServiceHandler(
         case Some((s, tail)) => StreamT.Yield(s, loop(tail))
         case None            => StreamT.Done
       } recover {
-        case _: QueryCancelledException =>
-          StreamT.Done
-        case _: QueryExpiredException =>
-          StreamT.Done
+        case _: QueryCancelledException => StreamT.Done
+        case _: QueryExpiredException   => StreamT.Done
         case ex =>
           val msg = new StringWriter()
           ex.printStackTrace(new PrintWriter(msg))

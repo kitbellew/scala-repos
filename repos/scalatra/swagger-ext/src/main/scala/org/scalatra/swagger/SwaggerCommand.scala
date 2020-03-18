@@ -92,8 +92,7 @@ object SwaggerCommandSupport {
 
     def parametersFromCommand[C <: Command: Manifest](cmd: => C): B = {
       SwaggerCommandSupport.parametersFromCommand(cmd) match {
-        case (parameters, None) =>
-          underlying.parameters(parameters: _*)
+        case (parameters, None) => underlying.parameters(parameters: _*)
         case (parameters, Some(model)) =>
           registerModel(model)
           underlying.parameters(parameters: _*)

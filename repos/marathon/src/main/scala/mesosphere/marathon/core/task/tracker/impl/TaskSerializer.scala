@@ -149,8 +149,7 @@ object TaskSerializer {
       case launched: Task.LaunchedEphemeral =>
         setLaunched(launched.appVersion, launched.status, launched.networking)
 
-      case reserved: Task.Reserved =>
-        setReservation(reserved.reservation)
+      case reserved: Task.Reserved => setReservation(reserved.reservation)
 
       case launchedOnR: Task.LaunchedOnReservation =>
         setLaunched(

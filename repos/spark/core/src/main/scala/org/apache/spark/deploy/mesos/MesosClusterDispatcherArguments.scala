@@ -76,8 +76,7 @@ private[mesos] class MesosClusterDispatcherArguments(
         propertiesFile = value
         parse(tail)
 
-      case ("--help") :: tail =>
-        printUsageAndExit(0)
+      case ("--help") :: tail => printUsageAndExit(0)
 
       case Nil => {
         if (masterUrl == null) {
@@ -88,8 +87,7 @@ private[mesos] class MesosClusterDispatcherArguments(
         }
       }
 
-      case _ =>
-        printUsageAndExit(1)
+      case _ => printUsageAndExit(1)
     }
 
   private def printUsageAndExit(exitCode: Int): Unit = {

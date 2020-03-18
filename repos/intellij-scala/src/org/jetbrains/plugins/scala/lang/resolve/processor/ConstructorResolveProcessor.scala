@@ -122,8 +122,7 @@ class ConstructorResolveProcessor(
                     fromType = fromType,
                     isAccessible = isAccessible(constr, ref) && accessible)))
               }
-            case _ =>
-              addResult(r)
+            case _ => addResult(r)
           }
         case _ =>
       }

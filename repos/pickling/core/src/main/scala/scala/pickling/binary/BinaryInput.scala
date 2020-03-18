@@ -91,8 +91,7 @@ abstract class BinaryInput {
         i |= (getByte.toInt) & 0xFF
         lookahead = None
         i
-      case None =>
-        getInt
+      case None => getInt
     }
   }
 

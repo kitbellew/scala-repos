@@ -352,8 +352,7 @@ trait TransSpecableModule[M[+_]]
                 instructions.WrapObject,
                 Cross(_),
                 Const(CString(field)),
-                right) =>
-            alg.WrapObject(node)(loop(right), field)
+                right) => alg.WrapObject(node)(loop(right), field)
 
           case node @ Join(
                 DerefObject,
@@ -441,8 +440,7 @@ trait TransSpecableModule[M[+_]]
                 instructions.WrapObject,
                 Cross(_),
                 Const(CString(field)),
-                right) =>
-            alg.WrapObject(node)(loop(right), field)
+                right) => alg.WrapObject(node)(loop(right), field)
 
           case node @ Join(
                 DerefObject,
@@ -465,8 +463,7 @@ trait TransSpecableModule[M[+_]]
                 instructions.ArraySwap,
                 Cross(_),
                 left,
-                ConstInt(index)) =>
-            alg.ArraySwap(node)(loop(left), index)
+                ConstInt(index)) => alg.ArraySwap(node)(loop(left), index)
 
           case node @ Join(JoinObject, Cross(_), left, Const(RObject.empty)) =>
             alg.InnerObjectConcat(node)(loop(left))
@@ -490,20 +487,17 @@ trait TransSpecableModule[M[+_]]
                 op,
                 joinSort @ (IdentitySort | ValueSort(_)),
                 left,
-                right) =>
-            alg.binOp(node)(loop(left), loop(right), op)
+                right) => alg.binOp(node)(loop(left), loop(right), op)
 
           case node @ dag.Filter(
                 joinSort @ (IdentitySort | ValueSort(_)),
                 left,
-                right) =>
-            alg.Filter(node)(loop(left), loop(right))
+                right) => alg.Filter(node)(loop(left), loop(right))
 
           case node @ Operate(instructions.WrapArray, parent) =>
             alg.WrapArray(node)(loop(parent))
 
-          case node @ Operate(op, parent) =>
-            alg.Op1(node)(loop(parent), op)
+          case node @ Operate(op, parent) => alg.Op1(node)(loop(parent), op)
 
           case node => alg.unmatched(node)
         }

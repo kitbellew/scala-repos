@@ -39,8 +39,7 @@ trait ScAssignStmt extends ScExpression {
 
   def isNamedParameter: Boolean = {
     getLExpression match {
-      case expr: ScReferenceExpression =>
-        expr.bind() match {
+      case expr: ScReferenceExpression => expr.bind() match {
           case Some(r) => r.isNamedParameter
           case _       => false
         }
@@ -63,18 +62,14 @@ trait ScAssignStmt extends ScExpression {
     */
   def assignNavigationElement: PsiElement = {
     getLExpression match {
-      case methodCall: ScMethodCall =>
-        methodCall.applyOrUpdateElement match {
+      case methodCall: ScMethodCall => methodCall.applyOrUpdateElement match {
           case Some(r) => r.getActualElement
           case None    => null
         }
-      case left =>
-        resolveAssignment match {
+      case left => resolveAssignment match {
           case Some(ScalaResolveResult(elem, _)) => elem
-          case _ =>
-            left match {
-              case ref: ScReferenceExpression =>
-                ref.resolve() match {
+          case _ => left match {
+              case ref: ScReferenceExpression => ref.resolve() match {
                   case v: ScVariable                  => v
                   case p: ScClassParameter if p.isVar => p
                   case f: PsiField                    => f
@@ -89,18 +84,15 @@ trait ScAssignStmt extends ScExpression {
   def isDynamicNamedAssignment: Boolean = {
     getContext match {
       case context @ (_: ScTuple | _: ScParenthesisedExpr |
-          _: ScArgumentExprList) =>
-        context.getContext match {
+          _: ScArgumentExprList) => context.getContext match {
           case m: MethodInvocation if m.argumentExpressions.contains(this) =>
             m.getEffectiveInvokedExpr match {
-              case r: ScReferenceExpression =>
-                r.bind() match {
+              case r: ScReferenceExpression => r.bind() match {
                   case Some(resolveResult)
                       if resolveResult.isDynamic &&
                         resolveResult.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED =>
                     return true
-                  case _ =>
-                    m.applyOrUpdateElement match {
+                  case _ => m.applyOrUpdateElement match {
                       case Some(innerResult)
                           if innerResult.isDynamic &&
                             innerResult.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED =>

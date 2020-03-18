@@ -26,8 +26,7 @@ final class LobbyApi(
       ctx.me.fold(seekApi.forAnon)(seekApi.forUser) zip
       (ctx.me ?? GameRepo.urgentGames) zip
       getFilter(ctx) map {
-      case (((hooks, seeks), povs), filter) =>
-        Json.obj(
+      case (((hooks, seeks), povs), filter) => Json.obj(
           "me" -> ctx.me.map { u => Json.obj("username" -> u.username) },
           "version" -> lobbyVersion(),
           "hooks" -> JsArray(hooks map (_.render)),

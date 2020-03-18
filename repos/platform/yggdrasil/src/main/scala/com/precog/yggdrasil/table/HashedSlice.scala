@@ -73,8 +73,7 @@ object HashedSlice {
   */
 private final class SliceHasher(slice: Slice) {
   private val hashers: Array[ColumnHasher] = slice.columns.toArray map {
-    case (ref, col) =>
-      ColumnHasher(ref, col)
+    case (ref, col) => ColumnHasher(ref, col)
   }
 
   @tailrec

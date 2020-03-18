@@ -93,8 +93,7 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
               handleRestResponse(s)
               handled = true
             }
-          case unexpected =>
-            handleUnexpectedRestResponse(unexpected)
+          case unexpected => handleUnexpectedRestResponse(unexpected)
         }
       } catch {
         case e: SubmitRestConnectionException =>
@@ -125,8 +124,7 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
               handleRestResponse(k)
               handled = true
             }
-          case unexpected =>
-            handleUnexpectedRestResponse(unexpected)
+          case unexpected => handleUnexpectedRestResponse(unexpected)
         }
       } catch {
         case e: SubmitRestConnectionException =>
@@ -158,8 +156,7 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
           case s: SubmissionStatusResponse if s.success =>
             if (!quiet) { handleRestResponse(s) }
             handled = true
-          case unexpected =>
-            handleUnexpectedRestResponse(unexpected)
+          case unexpected => handleUnexpectedRestResponse(unexpected)
         }
       } catch {
         case e: SubmitRestConnectionException =>

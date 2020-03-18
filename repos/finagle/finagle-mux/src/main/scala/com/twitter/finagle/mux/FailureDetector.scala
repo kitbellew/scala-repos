@@ -179,8 +179,7 @@ object FailureDetector {
           nanoTime = nanoTime,
           statsReceiver = statsReceiver)
 
-      case list("none") =>
-        NullFailureDetector
+      case list("none") => NullFailureDetector
 
       case list(_*) =>
         log.warning(

@@ -30,24 +30,22 @@ final class Live(roundMap: ActorRef) {
     GameRepo game id flatMap {
       _ filter (g => g.playable && g.imported) match {
         case None => fufail("No such playing game: " + id)
-        case Some(game) =>
-          Uci(move) match {
-            case None =>
-              move match {
-                case "1-0" =>
-                  fuccess {
+        case Some(game) => Uci(move) match {
+            case None => move match {
+                case "1-0" => fuccess {
                     roundMap ! Tell(game.id, Resign(game.blackPlayer.id))
                   }
-                case "0-1" =>
-                  fuccess {
+                case "0-1" => fuccess {
                     roundMap ! Tell(game.id, Resign(game.whitePlayer.id))
                   }
-                case "1/2-1/2" =>
-                  fuccess { roundMap ! Tell(game.id, DrawForce) }
+                case "1/2-1/2" => fuccess {
+                    roundMap ! Tell(game.id, DrawForce)
+                  }
                 case m => fufail("Importer invalid move: " + m)
               }
-            case Some(uci) =>
-              fuccess { applyMove(Pov(game, game.player.color), uci) }
+            case Some(uci) => fuccess {
+                applyMove(Pov(game, game.player.color), uci)
+              }
           }
       }
     }

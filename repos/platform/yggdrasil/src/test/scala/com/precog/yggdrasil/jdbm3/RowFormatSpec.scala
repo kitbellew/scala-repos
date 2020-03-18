@@ -62,8 +62,7 @@ class RowFormatSpec
     @tailrec
     def build(as: List[A], prev: List[List[A]]): List[List[A]] =
       as match {
-        case Nil =>
-          prev.reverse
+        case Nil => prev.reverse
         case a :: _ =>
           val bs = as takeWhile { b => f(a) == f(b) }
           build(as drop bs.size, bs :: prev)
@@ -103,8 +102,7 @@ class RowFormatSpec
           case (CEmptyObject, col: EmptyObjectColumn)     => ok
           case (CEmptyArray, col: EmptyArrayColumn)       => ok
           case (CArray(xs, cType), col: HomogeneousArrayColumn[_])
-              if cType == col.tpe =>
-            col(row) must_== xs
+              if cType == col.tpe => col(row) must_== xs
         })
     }
   }

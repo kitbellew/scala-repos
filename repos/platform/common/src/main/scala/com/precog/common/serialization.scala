@@ -50,8 +50,7 @@ package object serialization {
             Failure(Extractor.Error.invalid(
               "No mime types found in " + jv.renderCompact))
 
-          case primary :: rest =>
-            Success(primary)
+          case primary :: rest => Success(primary)
         }
     }
 }

@@ -76,8 +76,7 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
               progressIndicator.setText(index.root)
               try { index.update(Some(progressIndicator)) }
               catch {
-                case exc: ResolverException =>
-                  notifyWarning(exc.getMessage)
+                case exc: ResolverException => notifyWarning(exc.getMessage)
                 case exc: LockReleaseFailedException =>
                   notifyWarning(SbtBundle(
                     "sbt.resolverIndexer.luceneLockException",
@@ -106,11 +105,9 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
           val index = SbtResolverIndex.load(indexDir)
           indexes.add(index)
         } catch {
-          case exc: ResolverException =>
-            notifyWarning(exc.getMessage)
+          case exc: ResolverException => notifyWarning(exc.getMessage)
           case _: PersistentEnumeratorBase.CorruptedException |
-              _: IOException =>
-            cleanUpCorruptedIndex(indexDir)
+              _: IOException => cleanUpCorruptedIndex(indexDir)
         }
       }
     }

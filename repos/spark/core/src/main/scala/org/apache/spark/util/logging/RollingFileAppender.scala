@@ -67,8 +67,7 @@ private[spark] class RollingFileAppender(
       openFile()
       if (maxRetainedFiles > 0) { deleteOldFiles() }
     } catch {
-      case e: Exception =>
-        logError(s"Error rolling over $activeFile", e)
+      case e: Exception => logError(s"Error rolling over $activeFile", e)
     }
   }
 

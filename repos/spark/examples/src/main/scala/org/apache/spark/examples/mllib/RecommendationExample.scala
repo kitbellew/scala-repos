@@ -44,18 +44,13 @@ object RecommendationExample {
 
     // Evaluate the model on rating data
     val usersProducts = ratings.map {
-      case Rating(user, product, rate) =>
-        (user, product)
+      case Rating(user, product, rate) => (user, product)
     }
     val predictions = model.predict(usersProducts).map {
-      case Rating(user, product, rate) =>
-        ((user, product), rate)
+      case Rating(user, product, rate) => ((user, product), rate)
     }
     val ratesAndPreds = ratings
-      .map {
-        case Rating(user, product, rate) =>
-          ((user, product), rate)
-      }
+      .map { case Rating(user, product, rate) => ((user, product), rate) }
       .join(predictions)
     val MSE = ratesAndPreds
       .map {

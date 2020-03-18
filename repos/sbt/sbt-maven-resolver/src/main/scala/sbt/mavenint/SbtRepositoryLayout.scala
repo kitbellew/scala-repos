@@ -23,8 +23,7 @@ class SbtPluginLayoutFactory extends RepositoryLayoutFactory {
       session: RepositorySystemSession,
       repository: RemoteRepository): RepositoryLayout = {
     repository.getContentType match {
-      case SbtRepositoryLayout.LAYOUT_NAME =>
-        SbtRepositoryLayout
+      case SbtRepositoryLayout.LAYOUT_NAME => SbtRepositoryLayout
       case _ =>
         throw new NoRepositoryLayoutException(
           repository,

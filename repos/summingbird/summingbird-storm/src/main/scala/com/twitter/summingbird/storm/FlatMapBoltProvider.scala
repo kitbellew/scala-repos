@@ -55,12 +55,8 @@ object FlatMapBoltProvider {
       existingOp: FlatMapOperation[T, (K, V)])(batcher: Batcher)
       : FlatMapOperation[(Timestamp, T), ((K, BatchID), (Timestamp, V))] =
     FlatMapOperation.generic[(Timestamp, T), ((K, BatchID), (Timestamp, V))]({
-      case (ts, data) =>
-        existingOp.apply(data).map { vals =>
-          vals.map {
-            case (k, v) =>
-              ((k, batcher.batchOf(ts)), (ts, v))
-          }
+      case (ts, data) => existingOp.apply(data).map { vals =>
+          vals.map { case (k, v) => ((k, batcher.batchOf(ts)), (ts, v)) }
         }
     })
 

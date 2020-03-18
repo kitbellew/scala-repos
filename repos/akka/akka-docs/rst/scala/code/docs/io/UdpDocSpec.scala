@@ -85,10 +85,8 @@ object ScalaUdpDocSpec {
         if (data.utf8String == "hello")
           connection ! UdpConnected.Send(ByteString("world"))
       //#connected
-      case msg: String =>
-        connection ! UdpConnected.Send(ByteString(msg))
-      case UdpConnected.Disconnect =>
-        connection ! UdpConnected.Disconnect
+      case msg: String               => connection ! UdpConnected.Send(ByteString(msg))
+      case UdpConnected.Disconnect   => connection ! UdpConnected.Disconnect
       case UdpConnected.Disconnected => context.stop(self)
     }
   }

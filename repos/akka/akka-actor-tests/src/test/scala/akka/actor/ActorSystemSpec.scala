@@ -95,9 +95,7 @@ object ActorSystemSpec {
     testActor ! ref2.getClass
     latch.countDown()
 
-    def receive = {
-      case _ ⇒
-    }
+    def receive = { case _ ⇒ }
   }
 
   class SlowDispatcher(_config: Config, _prerequisites: DispatcherPrerequisites)

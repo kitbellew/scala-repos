@@ -72,10 +72,8 @@ object SimplePattern extends ParserNode {
         }
         if (Pattern parse builder) {
           builder.getTokenType match {
-            case ScalaTokenTypes.tRPARENTHESIS =>
-              builder.advanceLexer() //Ate )
-            case _ =>
-              builder error ScalaBundle.message("rparenthesis.expected")
+            case ScalaTokenTypes.tRPARENTHESIS => builder.advanceLexer() //Ate )
+            case _                             => builder error ScalaBundle.message("rparenthesis.expected")
           }
           builder.restoreNewlinesState
           simplePatternMarker.done(ScalaElementTypes.PATTERN_IN_PARENTHESIS)
@@ -213,10 +211,8 @@ object SimplePattern extends ParserNode {
             }
           }
           builder.getTokenType match {
-            case ScalaTokenTypes.tRPARENTHESIS =>
-              builder.advanceLexer() //Ate )
-            case _ =>
-              builder error ErrMsg("rparenthesis.expected")
+            case ScalaTokenTypes.tRPARENTHESIS => builder.advanceLexer() //Ate )
+            case _                             => builder error ErrMsg("rparenthesis.expected")
           }
           builder.restoreNewlinesState
           args.done(ScalaElementTypes.PATTERN_ARGS)

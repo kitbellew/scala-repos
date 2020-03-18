@@ -56,14 +56,11 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
       case DOC_INLINE_TAG_START =>
         isInInlinedTag = true
         parseTag
-      case DOC_TAG_NAME =>
-        parseTag
-      case DOC_INNER_CODE_TAG =>
-        parseInnerCode
+      case DOC_TAG_NAME       => parseTag
+      case DOC_INNER_CODE_TAG => parseInnerCode
       case DOC_COMMENT_DATA | DOC_COMMENT_BAD_CHARACTER | DOC_WHITESPACE |
           DOC_COMMENT_LEADING_ASTERISKS | DOC_COMMENT_START | DOC_COMMENT_END |
-          DOC_MACROS =>
-        builder.advanceLexer()
+          DOC_MACROS => builder.advanceLexer()
       case badToken @ _ =>
         System.out.println("Error: " + badToken)
         builder.advanceLexer()
@@ -249,8 +246,7 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
             VERSION_TAG | USECASE_TAG | EXAMPLE_TAG | TODO_TAG |
             INHERITDOC_TAG | CONSTRUCTOR_TAG =>
         //do nothing
-        case _ =>
-          builder.error("unknown tag")
+        case _ => builder.error("unknown tag")
       }
     }
 
@@ -267,8 +263,7 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
             val valueMarker = builder.mark()
             builder.advanceLexer()
             valueMarker.done(DOC_TAG_VALUE_TOKEN)
-          case _ =>
-            builder.advanceLexer()
+          case _ => builder.advanceLexer()
         }
       } else if (DOC_TAG_NAME eq builder.getTokenType) {
         marker.done(DOC_TAG)

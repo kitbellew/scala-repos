@@ -50,10 +50,8 @@ class IntParallelHashSetCheck(val tasksupport: TaskSupport)
     with IntValues {
   override def printDataStructureDebugInfo(ds: AnyRef) =
     ds match {
-      case pm: ParHashSet[t] =>
-        println("Mutable parallel hash set")
-      case _ =>
-        println("could not match data structure type: " + ds.getClass)
+      case pm: ParHashSet[t] => println("Mutable parallel hash set")
+      case _                 => println("could not match data structure type: " + ds.getClass)
     }
 
   override def checkDataStructureInvariants(

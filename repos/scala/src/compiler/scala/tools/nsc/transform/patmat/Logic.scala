@@ -250,12 +250,9 @@ trait Logic extends Debugging {
                 case ops    => Or(ops: _*)
               }
             }
-          case Not(Not(a)) =>
-            simplify(a)
-          case Not(p) =>
-            Not(simplify(p))
-          case p =>
-            p
+          case Not(Not(a)) => simplify(a)
+          case Not(p)      => Not(simplify(p))
+          case p           => p
         }
 
       val nnf = negationNormalForm(f)
@@ -836,8 +833,7 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
                   // for Idents, can encode uniqueness of symbol as uniqueness of the corresponding singleton type
                   // for Selects, which are handled by the next case, the prefix of the select varies independently of the symbol (see pos/virtpatmat_unreach_select.scala)
                   singleType(tp.prefix, p.symbol)
-                case _ =>
-                  Const.uniqueTpForTree(p)
+                case _ => Const.uniqueTpForTree(p)
               }
 
           val toString =

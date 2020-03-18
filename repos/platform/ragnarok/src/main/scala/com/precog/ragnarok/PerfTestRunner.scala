@@ -52,8 +52,7 @@ trait PerfTestRunner[M[+_], T] {
       case Tree.Node((test, a, _), children) =>
         val kids = children map (fill(_))
         val t = kids.foldLeft(None: Option[(T, T)]) {
-          case (acc, Tree.Node((_, _, t), _)) =>
-            acc |+| t
+          case (acc, Tree.Node((_, _, t), _)) => acc |+| t
         }
         Tree.node((test, a, t), kids)
     }
@@ -86,10 +85,7 @@ trait PerfTestRunner[M[+_], T] {
   def runM[A](test: Tree[(PerfTest, A)]): M[RunResult[A]] = {
     test match {
       case Tree.Node((test @ RunQuery(q), a), _) =>
-        timeQuery(q) map {
-          case (t, _) =>
-            Tree.leaf((test, a, Some(t)))
-        }
+        timeQuery(q) map { case (t, _) => Tree.leaf((test, a, Some(t))) }
 
       case Tree.Node((RunSequential, a), tests) =>
         tests.foldLeft(List[RunResult[A]]().pure[M]) { (acc, test) =>
@@ -108,8 +104,7 @@ trait PerfTestRunner[M[+_], T] {
       case Tree.Node((g: Group, a), tests) =>
         // tests really should only have size 1 in this case...
         runM(Tree.node((RunConcurrent, a), tests)) map {
-          case Tree.Node((_, a, t), tests) =>
-            Tree.node((g, a, t), tests)
+          case Tree.Node((_, a, t), tests) => Tree.node((g, a, t), tests)
         }
     }
   }

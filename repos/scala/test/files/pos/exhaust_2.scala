@@ -18,39 +18,23 @@ object ExhaustivityWarnBugReportMinimal {
 
   val v: (Some[_], FoundNode[_]) = (???, ???)
   //Warning here:
-  v match {
-    case (x: Some[t], _: FoundNode[_]) =>
-  }
-  v match {
-    case (x: Some[t], _) =>
-  }
+  v match { case (x: Some[t], _: FoundNode[_]) => }
+  v match { case (x: Some[t], _)               => }
 
-  v match {
-    case (x: Some[_], _) =>
-  }
+  v match { case (x: Some[_], _) => }
   case class Foo[T]()
 
   val vp: (Foo[_], FoundNode[_]) = (???, ???)
-  vp match {
-    case (x: Foo[_], _) =>
-  }
+  vp match { case (x: Foo[_], _) => }
 
   //No warning here:
-  v match {
-    case (Some(y), _) =>
-  }
+  v match { case (Some(y), _) => }
 
-  v match {
-    case (x, _) =>
-  }
+  v match { case (x, _) => }
 
   val v2: (Some[_], Int) = (???, ???)
-  v2 match {
-    case (x: Some[t], _) =>
-  }
+  v2 match { case (x: Some[t], _) => }
 
   val v3: (Option[_], FoundNode[_]) = (???, ???)
-  v match {
-    case (x: Option[_], _) =>
-  }
+  v match { case (x: Option[_], _) => }
 }

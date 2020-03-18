@@ -172,8 +172,7 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
     implicit val semi = sg
     val capturedBatcher = batcher
     commutativity match {
-      case Commutative =>
-        delta.map { flow =>
+      case Commutative => delta.map { flow =>
           flow.map { typedP =>
             sumByBatches(typedP, capturedBatcher, Commutative)
               .map { case (LTuple2(k, _), (ts, v)) => (ts, (k, v)) }
@@ -292,8 +291,7 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
                 (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))])
         : TypedPipe[(Timestamp, (K, (Option[V], V)))] =
       res.flatMap {
-        case (k, (batchid, (optopt, opt))) =>
-          opt.map {
+        case (k, (batchid, (optopt, opt))) => opt.map {
             case (ts, v) =>
               val prev = flatOpt(optopt).map(_._2)
               (ts, (k, (prev, v)))

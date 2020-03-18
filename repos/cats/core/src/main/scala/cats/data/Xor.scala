@@ -145,13 +145,11 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
       AA: Semigroup[AA],
       BB: Semigroup[BB]): AA Xor BB =
     this match {
-      case Xor.Left(a1) =>
-        that match {
+      case Xor.Left(a1) => that match {
           case Xor.Left(a2)  => Xor.Left(AA.combine(a1, a2))
           case Xor.Right(b2) => Xor.Left(a1)
         }
-      case Xor.Right(b1) =>
-        that match {
+      case Xor.Right(b1) => that match {
           case Xor.Left(a2)  => Xor.Left(a2)
           case Xor.Right(b2) => Xor.Right(BB.combine(b1, b2))
         }
@@ -287,8 +285,7 @@ trait XorFunctions {
     def apply[A](f: => A)(implicit CT: ClassTag[T], NT: NotNull[T]): T Xor A =
       try { right(f) }
       catch {
-        case t if CT.runtimeClass.isInstance(t) =>
-          left(t.asInstanceOf[T])
+        case t if CT.runtimeClass.isInstance(t) => left(t.asInstanceOf[T])
       }
   }
 

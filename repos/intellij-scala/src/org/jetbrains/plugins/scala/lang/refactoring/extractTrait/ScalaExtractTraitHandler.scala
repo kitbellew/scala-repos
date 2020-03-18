@@ -289,8 +289,7 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
 
     private def collectConflicts(ref: ScReferenceElement, resolve: PsiElement) {
       resolve match {
-        case named: PsiNamedElement =>
-          ScalaPsiUtil.nameContext(named) match {
+        case named: PsiNamedElement => ScalaPsiUtil.nameContext(named) match {
             case m: ScMember if m.containingClass == clazz && m.isPrivate =>
               val message = ScalaBundle.message(
                 "private.member.cannot.be.used.in.extracted.member",
@@ -308,9 +307,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
               conflicts.putValue(m, message)
             case m: PsiMember
                 if m.containingClass != null && ref.qualifier.exists(
-                  _.isInstanceOf[ScSuperReference]) && clazz.isInheritor(
-                  m.containingClass,
-                  deep = true) =>
+                  _.isInstanceOf[ScSuperReference]) && clazz
+                  .isInheritor(m.containingClass, deep = true) =>
               val message = ScalaBundle.message(
                 "super.reference.used.in.extracted.member",
                 currentMemberName)

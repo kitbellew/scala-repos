@@ -67,9 +67,7 @@ class ScalaIntroduceFieldFromExpressionHandler
         editor,
         file,
         "Choose class for Introduce Field") { convertExpressionToField }
-    } catch {
-      case _: IntroduceException =>
-    }
+    } catch { case _: IntroduceException => }
   }
 
   override def invoke(

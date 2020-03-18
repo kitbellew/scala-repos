@@ -43,8 +43,7 @@ object CategoricalNaiveBayes {
             (
               c._1 + 1L,
               c._2.zip(features).map {
-                case (m, feature) =>
-                  m.updated(feature, m(feature) + 1L)
+                case (m, feature) => m.updated(feature, m(feature) + 1L)
               })
           },
         mergeCombiners = (
@@ -58,8 +57,7 @@ object CategoricalNaiveBayes {
           (
             labelCount1 + labelCount2,
             featureCounts1.zip(featureCounts2).map {
-              case (m1, m2) =>
-                m2 ++ m2.map { case (k, v) => k -> (v + m2(k)) }
+              case (m1, m2) => m2 ++ m2.map { case (k, v) => k -> (v + m2(k)) }
             })
         }
       )

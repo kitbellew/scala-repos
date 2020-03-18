@@ -27,10 +27,8 @@ class Chopstick extends Actor {
   //It will refuse to be taken by other hakkers
   //But the owning hakker can put it back
   def takenBy(hakker: ActorRef): Receive = {
-    case Take(otherHakker) =>
-      otherHakker ! Busy(self)
-    case Put(`hakker`) =>
-      become(available)
+    case Take(otherHakker) => otherHakker ! Busy(self)
+    case Put(`hakker`)     => become(available)
   }
 
   //When a Chopstick is available, it can be taken by a hakker
@@ -173,8 +171,7 @@ class Hakker(name: String, chair: Int) extends Actor {
     case SubscribeToHakkerStateChanges =>
       subscribers += sender()
       context watch sender()
-    case Terminated(subscriber) =>
-      subscribers -= subscriber
+    case Terminated(subscriber) => subscribers -= subscriber
   }
 
   def initializing: Receive = { case Identify => identify("Initializing") }

@@ -720,8 +720,7 @@ class DAGSchedulerSuite
     checkStageId(stageId, attemptIdx, stageAttempt)
     assert(scheduler.stageIdToStage(stageId).isInstanceOf[ResultStage])
     val taskResults = stageAttempt.tasks.zipWithIndex.map {
-      case (task, idx) =>
-        (Success, partitionToResult(idx))
+      case (task, idx) => (Success, partitionToResult(idx))
     }
     complete(stageAttempt, taskResults.toSeq)
   }
@@ -2340,8 +2339,9 @@ class DAGSchedulerSuite
       extraAccumUpdates: Seq[AccumulableInfo] = Seq.empty[AccumulableInfo],
       taskInfo: TaskInfo = createFakeTaskInfo()): CompletionEvent = {
     val accumUpdates = reason match {
-      case Success =>
-        task.initialAccumulators.map { a => a.toInfo(Some(a.zero), None) }
+      case Success => task.initialAccumulators.map { a =>
+          a.toInfo(Some(a.zero), None)
+        }
       case ef: ExceptionFailure => ef.accumUpdates
       case _                    => Seq.empty[AccumulableInfo]
     }

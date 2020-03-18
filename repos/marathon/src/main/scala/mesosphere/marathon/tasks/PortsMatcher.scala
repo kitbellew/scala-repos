@@ -61,8 +61,7 @@ class PortsMatcher(
       case (appPorts, None) if app.requirePorts =>
         findPortsInOffer(appPorts, failLog = true)
 
-      case (appPorts, None) =>
-        randomPorts(appPorts.size)
+      case (appPorts, None) => randomPorts(appPorts.size)
     }
   }
 
@@ -208,9 +207,8 @@ object PortsMatcher {
             lastRangeOpt: Option[protos.Range],
             next: Seq[PortWithRole]): Unit = {
           (lastRangeOpt, next.headOption) match {
-            case (None, _) =>
-            case (Some(lastRange), None) =>
-              builder += lastRange
+            case (None, _)               =>
+            case (Some(lastRange), None) => builder += lastRange
             case (Some(lastRange), Some(nextPort))
                 if lastRange.end == nextPort.port - 1 =>
               process(
@@ -280,8 +278,7 @@ object PortsMatcher {
         var startPortIdxOfCurrentRange = 0
         val rangeIdx = shuffled.indexWhere {
           case range: PortRange
-              if startPortIdxOfCurrentRange + range.size > startPortIdx =>
-            true
+              if startPortIdxOfCurrentRange + range.size > startPortIdx => true
           case range: PortRange =>
             startPortIdxOfCurrentRange += range.size
             false

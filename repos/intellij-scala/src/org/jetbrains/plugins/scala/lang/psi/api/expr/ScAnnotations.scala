@@ -38,10 +38,8 @@ trait ScAnnotations extends ScalaPsiElement with PsiReferenceList {
   private def extractExceptionType(a: ScAnnotation): PsiClassType = {
     val constr = a.annotationExpr.constr
     constr.typeElement match {
-      case te: ScSimpleTypeElement =>
-        te.reference match {
-          case Some(ref) =>
-            ref.bind() match {
+      case te: ScSimpleTypeElement => te.reference match {
+          case Some(ref) => ref.bind() match {
               case Some(r: ScalaResolveResult)
                   if r.getActualElement.isInstanceOf[PsiClass] &&
                     r.getActualElement
@@ -55,9 +53,8 @@ trait ScAnnotations extends ScalaPsiElement with PsiReferenceList {
                         ScType.extractClass(tp, Some(getProject)) match {
                           case Some(clazz)
                               if clazz.qualifiedName == "java.lang.Class" =>
-                            ScType.extractClass(
-                              arg(0),
-                              Some(getProject)) match {
+                            ScType
+                              .extractClass(arg(0), Some(getProject)) match {
                               case Some(p) =>
                                 JavaPsiFacade
                                   .getInstance(getProject)

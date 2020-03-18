@@ -359,9 +359,7 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
         messageTimestampDiffMaxMs = 1000L
       )
       fail("Should throw InvalidMessageException.")
-    } catch {
-      case e: InvalidTimestampException =>
-    }
+    } catch { case e: InvalidTimestampException => }
 
     try {
       compressedMessages.validateMessagesAndAssignOffsets(
@@ -374,9 +372,7 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
         messageTimestampDiffMaxMs = 1000L
       )
       fail("Should throw InvalidMessageException.")
-    } catch {
-      case e: InvalidTimestampException =>
-    }
+    } catch { case e: InvalidTimestampException => }
   }
 
   @Test

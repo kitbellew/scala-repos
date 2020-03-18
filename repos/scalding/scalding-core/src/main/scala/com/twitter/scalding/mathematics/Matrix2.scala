@@ -428,8 +428,7 @@ case class Product[R, C, C2, V](
 
   override lazy val toTypedPipe: TypedPipe[(R, C2, V)] = {
     expressions match {
-      case Some(m) =>
-        m.get(this) match {
+      case Some(m) => m.get(this) match {
           case Some(pipe) => pipe
           case None => {
             val result = computePipe()
@@ -678,8 +677,7 @@ trait Scalar2[V] extends Serializable {
     MatrixLiteral(
       that.toTypedPipe
         .mapWithValue(value) {
-          case ((r, c, v), optV) =>
-            (r, c, f.div(v, optV.getOrElse(f.zero)))
+          case ((r, c, v), optV) => (r, c, f.div(v, optV.getOrElse(f.zero)))
         },
       that.sizeHint)(that.rowOrd, that.colOrd)
 

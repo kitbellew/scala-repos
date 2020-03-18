@@ -167,10 +167,7 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
   }
 
   def checkValues(row1: Seq[Any], row2: Seq[Any]): Unit = {
-    row1.zip(row2).foreach {
-      case (r1, r2) =>
-        checkValue(r1, r2)
-    }
+    row1.zip(row2).foreach { case (r1, r2) => checkValue(r1, r2) }
   }
 
   def checkValues(
@@ -178,8 +175,7 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
       row2: InternalRow,
       row2Schema: StructType): Unit = {
     row1.zip(row2.toSeq(row2Schema)).foreach {
-      case (r1, r2) =>
-        checkValue(r1, r2)
+      case (r1, r2) => checkValue(r1, r2)
     }
   }
 

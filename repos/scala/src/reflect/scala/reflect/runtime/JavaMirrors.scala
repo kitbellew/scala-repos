@@ -210,8 +210,8 @@ private[scala] trait JavaMirrors
         def unapply(schemaAndValue: (jClass[_], Any)): Option[Any] =
           schemaAndValue match {
             case (StringClass | PrimitiveClass(), value) => Some(value)
-            case (ClassClass, value: jClass[_]) =>
-              Some(classToScala(value).toType)
+            case (ClassClass, value: jClass[_]) => Some(
+                classToScala(value).toType)
             case (EnumClass(), value: Enum[_]) => Some(enumToSymbol(value))
             case _                             => None
           }
@@ -223,8 +223,8 @@ private[scala] trait JavaMirrors
             ArrayAnnotArg(
               value map (x =>
                 apply(ScalaRunTime.arrayElementClass(clazz) -> x)))
-          case (AnnotationClass(), value: jAnnotation) =>
-            NestedAnnotArg(JavaAnnotationProxy(value))
+          case (AnnotationClass(), value: jAnnotation) => NestedAnnotArg(
+              JavaAnnotationProxy(value))
           case _ => UnmappableAnnotArg
         }
     }
@@ -707,14 +707,14 @@ private[scala] trait JavaMirrors
           case Object_ne              => objReceiver ne objArg0
           case Object_synchronized    => objReceiver.synchronized(objArg0)
           case sym if isGetClass(sym) => preciseClass(receiver)
-          case Any_asInstanceOf =>
-            fail("Any.asInstanceOf requires a type argument")
-          case Any_isInstanceOf =>
-            fail("Any.isInstanceOf requires a type argument")
-          case Object_asInstanceOf =>
-            fail("AnyRef.%s is an internal method" format symbol.name)
-          case Object_isInstanceOf =>
-            fail("AnyRef.%s is an internal method" format symbol.name)
+          case Any_asInstanceOf => fail(
+              "Any.asInstanceOf requires a type argument")
+          case Any_isInstanceOf => fail(
+              "Any.isInstanceOf requires a type argument")
+          case Object_asInstanceOf => fail(
+              "AnyRef.%s is an internal method" format symbol.name)
+          case Object_isInstanceOf => fail(
+              "AnyRef.%s is an internal method" format symbol.name)
           case Array_length => ScalaRunTime.array_length(objReceiver)
           case Array_apply =>
             ScalaRunTime.array_apply(objReceiver, args(0).asInstanceOf[Int])
@@ -885,10 +885,8 @@ private[scala] trait JavaMirrors
             }
         }
       } catch {
-        case ex: MissingRequirementError =>
-          handleError(ex)
-        case ex: IOException =>
-          handleError(ex)
+        case ex: MissingRequirementError => handleError(ex)
+        case ex: IOException             => handleError(ex)
       }
     }
 
@@ -1380,8 +1378,7 @@ private[scala] trait JavaMirrors
                 glb(jwild.getUpperBounds.toList map typeToScala map objToAny)))
             tparams += tparam
             typeRef(NoPrefix, tparam, List())
-          case _ =>
-            typeToScala(arg)
+          case _ => typeToScala(arg)
         }
       (args map targToScala, tparams.toList)
     }
@@ -1404,8 +1401,8 @@ private[scala] trait JavaMirrors
           val args0 = japplied.getActualTypeArguments
           val (args, bounds) = targsToScala(pre.typeSymbol, args0.toList)
           newExistentialType(bounds, typeRef(pre, sym, args))
-        case jarr: GenericArrayType =>
-          arrayType(typeToScala(jarr.getGenericComponentType))
+        case jarr: GenericArrayType => arrayType(
+            typeToScala(jarr.getGenericComponentType))
         case jtvar: jTypeVariable[_] =>
           val tparam = typeParamToScala(jtvar)
           typeRef(NoPrefix, tparam, List())
@@ -1635,10 +1632,10 @@ private[scala] trait JavaMirrors
         case TypeRef(_, ArrayClass, List(elemtpe)) =>
           ScalaRunTime.arrayClass(typeToJavaClass(elemtpe))
         case TypeRef(_, sym: ClassSymbol, _) => classToJava(sym.asClass)
-        case tpe @ TypeRef(_, sym: AliasTypeSymbol, _) =>
-          typeToJavaClass(tpe.dealias)
-        case SingleType(_, sym: ModuleSymbol) =>
-          classToJava(sym.moduleClass.asClass)
+        case tpe @ TypeRef(_, sym: AliasTypeSymbol, _) => typeToJavaClass(
+            tpe.dealias)
+        case SingleType(_, sym: ModuleSymbol) => classToJava(
+            sym.moduleClass.asClass)
         case _ =>
           throw new NoClassDefFoundError(
             "no Java class corresponding to " + tpe + " found")

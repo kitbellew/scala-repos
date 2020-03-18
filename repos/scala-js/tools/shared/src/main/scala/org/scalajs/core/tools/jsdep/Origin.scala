@@ -13,8 +13,7 @@ final class Origin(val moduleName: String, val configuration: String) {
       case that: Origin =>
         this.moduleName == that.moduleName &&
           this.configuration == that.configuration
-      case _ =>
-        false
+      case _ => false
     }
 
   override def hashCode(): Int = {

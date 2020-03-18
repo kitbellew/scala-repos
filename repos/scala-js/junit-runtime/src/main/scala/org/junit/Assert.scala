@@ -33,8 +33,7 @@ object Assert {
           val cleanMsg: String = if (message == null) "" else message
           throw new ComparisonFailure(cleanMsg, expectedString, actualString)
 
-        case _ =>
-          failNotEquals(message, expected, actual)
+        case _ => failNotEquals(message, expected, actual)
       }
     }
   }

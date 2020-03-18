@@ -732,8 +732,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
         }
       }
     } catch {
-      case CancelException =>
-        debugLog("cancelled")
+      case CancelException => debugLog("cancelled")
       case ex: FreshRunReq =>
         if (debugIDE) {
           println("FreshRunReq thrown during response")
@@ -879,8 +878,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
     val unitOfSrc: SourceFile => RichCompilationUnit = src =>
       unitOfFile(src.file)
     sources filterNot (getUnit(_).isDefined) match {
-      case Nil =>
-        f(unitOfSrc)
+      case Nil => f(unitOfSrc)
       case unknown =>
         reloadSources(unknown)
         try { f(unitOfSrc) }
@@ -966,8 +964,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
       case DocDef(comment, defn) if defn.symbol == sym =>
         fillDocComment(defn.symbol, comment)
         EmptyTree
-      case _: ValOrDefDef =>
-        EmptyTree
+      case _: ValOrDefDef => EmptyTree
     }
   }
 
@@ -1005,10 +1002,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
         singleType(NoPrefix, tree.symbol)
       case Select(qual, _) if treeInfo.admitsTypeSelection(tree) =>
         singleType(qual.tpe, tree.symbol)
-      case Import(expr, selectors) =>
-        tree.symbol.info match {
-          case ImportType(expr) =>
-            expr match {
+      case Import(expr, selectors) => tree.symbol.info match {
+          case ImportType(expr) => expr match {
               case s @ Select(qual, name)
                   if treeInfo.admitsTypeSelection(expr) =>
                 singleType(qual.tpe, s.symbol)
@@ -1374,8 +1369,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
         val positionDelta: Int = pos.start - focus1.pos.start
         val subName = name.subName(0, positionDelta)
         CompletionResult.ScopeMembers(positionDelta, allMembers, subName)
-      case _ =>
-        CompletionResult.NoResults
+      case _ => CompletionResult.NoResults
     }
   }
 
@@ -1416,8 +1410,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
       response: Response[Tree],
       onSameThread: Boolean = true) {
     getUnit(source) match {
-      case Some(unit) =>
-        getParsedEnteredNow(source, response)
+      case Some(unit) => getParsedEnteredNow(source, response)
       case None =>
         try {
           if (keepLoaded || outOfDate && onSameThread)

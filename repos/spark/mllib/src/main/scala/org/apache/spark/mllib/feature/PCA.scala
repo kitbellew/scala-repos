@@ -49,8 +49,7 @@ class PCA @Since("1.4.0") (@Since("1.4.0") val k: Int) {
     val (pc, explainedVariance) = mat
       .computePrincipalComponentsAndExplainedVariance(k)
     val densePC = pc match {
-      case dm: DenseMatrix =>
-        dm
+      case dm: DenseMatrix  => dm
       case sm: SparseMatrix =>
         /* Convert a sparse matrix to dense.
          *
@@ -65,10 +64,8 @@ class PCA @Since("1.4.0") (@Since("1.4.0") val k: Int) {
 
     }
     val denseExplainedVariance = explainedVariance match {
-      case dv: DenseVector =>
-        dv
-      case sv: SparseVector =>
-        sv.toDense
+      case dv: DenseVector  => dv
+      case sv: SparseVector => sv.toDense
     }
     new PCAModel(k, densePC, denseExplainedVariance)
   }
@@ -103,8 +100,7 @@ class PCAModel private[spark] (
   @Since("1.4.0")
   override def transform(vector: Vector): Vector = {
     vector match {
-      case dv: DenseVector =>
-        pc.transpose.multiply(dv)
+      case dv: DenseVector                     => pc.transpose.multiply(dv)
       case SparseVector(size, indices, values) =>
         /* SparseVector -> single row SparseMatrix */
         val sm = Matrices

@@ -203,8 +203,7 @@ private[columnar] object ColumnBuilder {
       case map: MapType       => new MapColumnBuilder(map)
       case udt: UserDefinedType[_] =>
         return apply(udt.sqlType, initialSize, columnName, useCompression)
-      case other =>
-        throw new Exception(s"not suppported type: $other")
+      case other => throw new Exception(s"not suppported type: $other")
     }
 
     builder.initialize(initialSize, columnName, useCompression)

@@ -697,8 +697,7 @@ trait GroupSolver
       case _: Union | _: Intersect | _: Difference | _: Cond => false
 
       // TODO replace with NaryOp(_, values) once scalac is actually fixed
-      case expr: NaryOp =>
-        expr.values forall { isPrimitive(_, sigma) }
+      case expr: NaryOp => expr.values forall { isPrimitive(_, sigma) }
 
       case _ => false
     }
@@ -864,8 +863,7 @@ trait GroupSolver
 
       case expr @ Dispatch(_, id, actuals) => {
         expr.binding match {
-          case LetBinding(let) =>
-            (Set(let.left), enterLet(sigma, let, actuals))
+          case LetBinding(let) => (Set(let.left), enterLet(sigma, let, actuals))
 
           case FormalBinding(let) => (Set(sigma((id, let))), sigma)
 

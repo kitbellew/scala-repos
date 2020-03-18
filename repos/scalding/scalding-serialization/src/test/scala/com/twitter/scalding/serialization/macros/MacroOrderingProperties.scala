@@ -173,8 +173,7 @@ class MyData(override val _1: Int, override val _2: Option[Long])
 
   override def equals(obj: scala.Any): Boolean =
     obj match {
-      case o: MyData =>
-        (o._2, _2) match {
+      case o: MyData => (o._2, _2) match {
           case (Some(l), Some(r)) => r == l && _1 == o._1
           case (None, None)       => _1 == o._1
           case _                  => false

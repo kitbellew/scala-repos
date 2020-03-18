@@ -75,13 +75,11 @@ object ScalaConsoleInfo {
     synchronized {
       allConsoles.get(editor.getProject) match {
         case null => NULL
-        case list =>
-          list.find {
+        case list => list.find {
             case (
                   console: ScalaLanguageConsole,
                   model: ConsoleHistoryController,
-                  handler: ProcessHandler) =>
-              console.getConsoleEditor == editor
+                  handler: ProcessHandler) => console.getConsoleEditor == editor
           } match {
             case Some(res) => res
             case _         => NULL
@@ -94,13 +92,11 @@ object ScalaConsoleInfo {
     synchronized {
       allConsoles.get(file.getProject) match {
         case null => NULL
-        case list =>
-          list.find {
+        case list => list.find {
             case (
                   console: ScalaLanguageConsole,
                   model: ConsoleHistoryController,
-                  handler: ProcessHandler) =>
-              console.getFile == file
+                  handler: ProcessHandler) => console.getFile == file
           } match {
             case Some(res) => res
             case _         => NULL

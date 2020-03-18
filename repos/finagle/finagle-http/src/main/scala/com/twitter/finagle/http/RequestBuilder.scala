@@ -389,8 +389,7 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
           contentType.getOrElse(null),
           false)
 
-      case SimpleElement(name, value) =>
-        encoder.addBodyAttribute(name, value)
+      case SimpleElement(name, value) => encoder.addBodyAttribute(name, value)
     }
     val encodedReq = encoder.finalizeRequest()
 
@@ -434,8 +433,7 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
   private[http] def withoutContent(method: Method): Request = {
     val req = Request(config.version, method, resource)
     config.headers foreach {
-      case (field, values) =>
-        values foreach { v => req.headers.add(field, v) }
+      case (field, values) => values foreach { v => req.headers.add(field, v) }
     }
     req
   }

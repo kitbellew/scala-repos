@@ -35,8 +35,7 @@ class DecompilerTest extends TestCase {
       .replace("\r", "")
 
     (Decompiler.decompile(fileName, bytes): @unchecked) match {
-      case Some((_, text)) =>
-        Assert.assertEquals(expectedResult, text)
+      case Some((_, text)) => Assert.assertEquals(expectedResult, text)
     }
   }
 

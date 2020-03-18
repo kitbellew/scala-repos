@@ -89,28 +89,17 @@ class BinaryPickleBuilder(format: BinaryPickleFormat, out: BinaryOutput)
         // and everything will work out automatically!
 
         tag.key match { // PERF: should store typestring once in hints.
-          case KEY_UNIT =>
-            output.putByte(UNIT_TAG)
-          case KEY_NULL =>
-            output.putByte(NULL_TAG)
-          case KEY_BYTE =>
-            output.putByte(picklee.asInstanceOf[Byte])
-          case KEY_SHORT =>
-            output.putShort(picklee.asInstanceOf[Short])
-          case KEY_CHAR =>
-            output.putChar(picklee.asInstanceOf[Char])
-          case KEY_INT =>
-            output.putInt(picklee.asInstanceOf[Int])
-          case KEY_LONG =>
-            output.putLong(picklee.asInstanceOf[Long])
-          case KEY_BOOLEAN =>
-            output.putBoolean(picklee.asInstanceOf[Boolean])
-          case KEY_FLOAT =>
-            output.putFloat(picklee.asInstanceOf[Float])
-          case KEY_DOUBLE =>
-            output.putDouble(picklee.asInstanceOf[Double])
-          case KEY_STRING =>
-            output.putString(picklee.asInstanceOf[String])
+          case KEY_UNIT    => output.putByte(UNIT_TAG)
+          case KEY_NULL    => output.putByte(NULL_TAG)
+          case KEY_BYTE    => output.putByte(picklee.asInstanceOf[Byte])
+          case KEY_SHORT   => output.putShort(picklee.asInstanceOf[Short])
+          case KEY_CHAR    => output.putChar(picklee.asInstanceOf[Char])
+          case KEY_INT     => output.putInt(picklee.asInstanceOf[Int])
+          case KEY_LONG    => output.putLong(picklee.asInstanceOf[Long])
+          case KEY_BOOLEAN => output.putBoolean(picklee.asInstanceOf[Boolean])
+          case KEY_FLOAT   => output.putFloat(picklee.asInstanceOf[Float])
+          case KEY_DOUBLE  => output.putDouble(picklee.asInstanceOf[Double])
+          case KEY_STRING  => output.putString(picklee.asInstanceOf[String])
           case KEY_ARRAY_BYTE =>
             output.putByteArray(picklee.asInstanceOf[Array[Byte]])
           case KEY_ARRAY_CHAR =>
@@ -127,8 +116,7 @@ class BinaryPickleBuilder(format: BinaryPickleFormat, out: BinaryOutput)
             output.putFloatArray(picklee.asInstanceOf[Array[Float]])
           case KEY_ARRAY_DOUBLE =>
             output.putDoubleArray(picklee.asInstanceOf[Array[Double]])
-          case _ =>
-            if (hints.isElidedType) output.putByte(ELIDED_TAG)
+          case _ => if (hints.isElidedType) output.putByte(ELIDED_TAG)
         }
       }
       this
@@ -199,15 +187,13 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
       else {
         val lookahead = in.getByte()
         lookahead match {
-          case NULL_TAG =>
-            FastTypeTag.Null
+          case NULL_TAG => FastTypeTag.Null
           case ELIDED_TAG =>
             hints.elidedType.getOrElse(
               throw new PicklingException(
                 s"Type is elided in pickle, but no elide hint was provided by unpickler!"))
-          case REF_TAG =>
-            FastTypeTag.Ref
-          case _ =>
+          case REF_TAG => FastTypeTag.Ref
+          case _       =>
             // do not consume lookahead byte
             val res =
               try { in.getStringWithLookahead(lookahead) }

@@ -523,8 +523,7 @@ trait IndicesModule[M[+_]]
     def joinSubSlices(
         tpls: List[(SliceIndex, (Seq[Int], Seq[RValue]))]): Slice =
       tpls match {
-        case Nil =>
-          sys.error("empty slice") // FIXME
+        case Nil => sys.error("empty slice") // FIXME
         case (index, (ids, vals)) :: tail =>
           var rows = index.getRowsForKeys(ids, vals)
           tail.foreach {

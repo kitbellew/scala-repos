@@ -49,8 +49,7 @@ object QueueLaws extends Properties("Queue") {
     val q = Queue.linkedBlocking[(Int, Try[Int])]
     items.foreach { i => q.put((i, Try(i * i))) }
     q.foldLeft((0, true)) {
-      case ((cnt, good), (i, ti)) =>
-        ti match {
+      case ((cnt, good), (i, ti)) => ti match {
           case Return(ii) => (cnt + 1, good)
           case Throw(e)   => (cnt + 1, false)
         }
@@ -60,8 +59,7 @@ object QueueLaws extends Properties("Queue") {
     val q = Queue.linkedNonBlocking[(Int, Try[Int])]
     items.foreach { i => q.put((i, Try(i * i))) }
     q.foldLeft((0, true)) {
-      case ((cnt, good), (i, ti)) =>
-        ti match {
+      case ((cnt, good), (i, ti)) => ti match {
           case Return(ii) => (cnt + 1, good)
           case Throw(e)   => (cnt + 1, false)
         }
@@ -72,20 +70,16 @@ object QueueLaws extends Properties("Queue") {
     val q = Queue.arrayBlocking[(Int, Try[Int])](items.size + 1)
     items.foreach { i => q.put((i, Try(i * i))) }
     var works = true
-    q.foreach {
-      case (i, Return(ii)) =>
-        works = works && (ii == i * i)
-    }
+    q.foreach { case (i, Return(ii)) => works = works && (ii == i * i) }
     works && (q.size == 0)
   }
   property("Queue foldLeft works") = forAll { (items: List[Int]) =>
     // Make sure we can fit everything
     val q = Queue.arrayBlocking[(Int, Try[Int])](items.size + 1)
     items.foreach { i => q.put((i, Try(i * i))) }
-    q.foldLeft(true) {
-      case (works, (i, Return(ii))) =>
-        (ii == i * i)
-    } && (q.size == 0)
+    q.foldLeft(true) { case (works, (i, Return(ii))) => (ii == i * i) } && (
+      q.size == 0
+    )
   }
 
   property("Queue poll + size is correct") = forAll { (items: List[Int]) =>

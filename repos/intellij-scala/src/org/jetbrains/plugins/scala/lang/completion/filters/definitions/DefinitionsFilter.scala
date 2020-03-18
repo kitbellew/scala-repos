@@ -28,8 +28,7 @@ class DefinitionsFilter extends ElementFilter {
     if (leaf != null) {
       val parent = leaf.getParent
       parent match {
-        case _: ScClassParameter =>
-          return true
+        case _: ScClassParameter      => return true
         case _: ScReferenceExpression =>
         case _                        => return false
       }
@@ -40,8 +39,7 @@ class DefinitionsFilter extends ElementFilter {
           case parent @ (_: ScBlock | _: ScCaseClause | _: ScTemplateBody |
               _: ScClassParameter | _: ScalaFile) =>
             parent match {
-              case clause: ScCaseClause =>
-                clause.funType match {
+              case clause: ScCaseClause => clause.funType match {
                   case Some(elem) =>
                     if (leaf.getTextRange.getStartOffset <= elem.getTextRange.getStartOffset)
                       return null

@@ -116,8 +116,7 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
 
   def poll(jobId: JobId): Future[Option[(Option[MimeType], String)]] = {
     jobManager.getResult(jobId) flatMap {
-      case Left(_) =>
-        Future(None)
+      case Left(_) => Future(None)
       case Right((mimeType, stream)) =>
         stream.foldLeft(new Array[Byte](0))(_ ++ _) map { data =>
           Some(mimeType -> new String(data, "UTF-8"))
@@ -134,8 +133,7 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
       finalJob <- job.state match {
         case NotStarted | Started(_, _) | Cancelled(_, _, _) =>
           waitForJobCompletion(jobId)
-        case _ =>
-          Future(job)
+        case _ => Future(job)
       }
     } yield finalJob
   }
@@ -238,8 +236,7 @@ trait TestManagedPlatform
                     i + 1))
                 }.liftM[JobQueryT]
 
-              case _ =>
-                shardQueryMonad.point { None }
+              case _ => shardQueryMonad.point { None }
             }
           }.liftM[JobQueryT]
         }

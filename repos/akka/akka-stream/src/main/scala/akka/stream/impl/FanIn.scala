@@ -268,8 +268,7 @@ private[akka] object FanIn {
           registerCompleted(id)
           inputs(id).subreceive(ActorSubscriberMessage.OnComplete)
           if (!receivedInput && isAllCompleted) onCompleteWhenNoInput()
-        case OnError(id, e) ⇒
-          onError(id, e)
+        case OnError(id, e) ⇒ onError(id, e)
       })
 
   }

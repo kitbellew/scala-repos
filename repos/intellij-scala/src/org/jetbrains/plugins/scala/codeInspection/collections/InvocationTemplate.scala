@@ -34,8 +34,7 @@ class InvocationTemplate(nameCondition: String => Boolean) {
       expr: ScExpression): Option[(ScExpression, Seq[ScExpression])] = {
     stripped(expr) match {
       case (mc: ScMethodCall) childOf (parentCall: ScMethodCall)
-          if !parentCall.isApplyOrUpdateCall =>
-        None
+          if !parentCall.isApplyOrUpdateCall => None
       case MethodRepr(_, qualOpt, Some(ref), args)
           if nameCondition(ref.refName) && refCondition(ref) =>
         Some(qualOpt.orNull, args)

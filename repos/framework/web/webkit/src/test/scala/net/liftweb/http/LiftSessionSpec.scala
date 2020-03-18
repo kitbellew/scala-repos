@@ -30,11 +30,9 @@ object LiftSessionSpec extends Specification {
     def render = NodeSeq.Empty
 
     override def lowPriority = {
-      case n: Int =>
-        receivedMessages :+= n
-      case NoOp =>
-        reply(NoOp)
-      case _ =>
+      case n: Int => receivedMessages :+= n
+      case NoOp   => reply(NoOp)
+      case _      =>
     }
   }
 

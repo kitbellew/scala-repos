@@ -142,15 +142,13 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       .sortBy(myPair =>
         myPair.first match {
           case wrapper: ScFunctionWrapper
-              if wrapper.function.isInstanceOf[ScFunctionDeclaration] =>
-            1
+              if wrapper.function.isInstanceOf[ScFunctionDeclaration] => 1
           case wrapper: ScFunctionWrapper
               if wrapper.function.isInstanceOf[ScFunctionDefinition] =>
             wrapper.containingClass match {
               case myClass: ScTemplateDefinition
-                  if myClass.members.contains(wrapper.function) =>
-                0
-              case _ => 1
+                  if myClass.members.contains(wrapper.function) => 0
+              case _                                            => 1
             }
           case _ => 1
         })
@@ -234,11 +232,9 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
               .getTypes(c, Some(clazzType), this)
               .allFirstSeq()
               .flatMap(_.map { case (_, n) => (n.info, n.substitutor) })
-          case _ =>
-            allTypeAliases
+          case _ => allTypeAliases
         }
-      case _ =>
-        allTypeAliases
+      case _ => allTypeAliases
     }
   }
 
@@ -251,8 +247,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
           case (_, x) =>
             !x.info.isInstanceOf[PhysicalSignature] &&
               (x.info.namedElement match {
-                case v =>
-                  ScalaPsiUtil.nameContext(v) match {
+                case v => ScalaPsiUtil.nameContext(v) match {
                     case _: ScVariable => v.name == x.info.name
                     case _: ScValue    => v.name == x.info.name
                     case _             => true
@@ -275,8 +270,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                   case (_, x) =>
                     !x.info.isInstanceOf[PhysicalSignature] &&
                       (x.info.namedElement match {
-                        case v =>
-                          ScalaPsiUtil.nameContext(v) match {
+                        case v => ScalaPsiUtil.nameContext(v) match {
                             case _: ScVariable => v.name == x.info.name
                             case _: ScValue    => v.name == x.info.name
                             case _             => true
@@ -284,11 +278,9 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                       })
                 })
               .map { case (_, n) => (n.info.namedElement, n.substitutor) }
-          case _ =>
-            allVals
+          case _ => allVals
         }
-      case _ =>
-        allVals
+      case _ => allVals
     }
   }
 
@@ -318,11 +310,9 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
               .map { case (_, n) => n.info.asInstanceOf[PhysicalSignature] } ++
               syntheticMethodsNoOverride.map(
                 new PhysicalSignature(_, ScSubstitutor.empty))
-          case _ =>
-            allMethods
+          case _ => allMethods
         }
-      case _ =>
-        allMethods
+      case _ => allMethods
     }
   }
 
@@ -342,11 +332,9 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
               .getSignatures(c, Some(clazzType), this)
               .allFirstSeq()
               .flatMap(_.map { case (_, n) => n.info })
-          case _ =>
-            allSignatures
+          case _ => allSignatures
         }
-      case _ =>
-        allSignatures
+      case _ => allSignatures
     }
   }
 
@@ -398,8 +386,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     var state = oldState
     //exception cases
     this match {
-      case s: ScTypeParametersOwner =>
-        s.typeParametersClause match {
+      case s: ScTypeParametersOwner => s.typeParametersClause match {
           case Some(tpc) if PsiTreeUtil.isContextAncestor(tpc, place, false) =>
             return true
           case _ =>
@@ -443,16 +430,11 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       case _ =>
         eb.earlyDefinitions match {
           case Some(ed) if PsiTreeUtil.isContextAncestor(ed, place, true) =>
-          case _ =>
-            extendsBlock match {
+          case _ => extendsBlock match {
               case e: ScExtendsBlock if e != null =>
-                if (PsiTreeUtil.isContextAncestor(
-                      e,
-                      place,
-                      true) || !PsiTreeUtil.isContextAncestor(
-                      this,
-                      place,
-                      true)) {
+                if (PsiTreeUtil
+                      .isContextAncestor(e, place, true) || !PsiTreeUtil
+                      .isContextAncestor(this, place, true)) {
                   this match {
                     case t: ScTypeDefinition
                         if selfTypeElement != None &&

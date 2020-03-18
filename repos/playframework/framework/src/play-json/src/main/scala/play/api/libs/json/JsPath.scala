@@ -48,13 +48,11 @@ case class RecursiveSearch(key: String) extends PathNode {
 
   private[json] def splitChildren(json: JsValue) =
     json match {
-      case obj: JsObject =>
-        obj.fields.toList.map {
+      case obj: JsObject => obj.fields.toList.map {
           case (k, v) =>
             if (k == this.key) Right(this -> v) else Left(KeyPathNode(k) -> v)
         }
-      case arr: JsArray =>
-        arr.value.toList.zipWithIndex.map {
+      case arr: JsArray => arr.value.toList.zipWithIndex.map {
           case (js, j) => Left(IdxPathNode(j) -> js)
         }
 
@@ -90,8 +88,7 @@ case class KeyPathNode(key: String) extends PathNode {
 
   private[json] def splitChildren(json: JsValue) =
     json match {
-      case obj: JsObject =>
-        obj.fields.toList.map {
+      case obj: JsObject => obj.fields.toList.map {
           case (k, v) =>
             if (k == this.key) Right(this -> v) else Left(KeyPathNode(k) -> v)
         }
@@ -115,8 +112,7 @@ case class IdxPathNode(idx: Int) extends PathNode {
 
   def set(json: JsValue, transform: JsValue => JsValue): JsValue =
     json match {
-      case arr: JsArray =>
-        JsArray(arr.value.zipWithIndex.map {
+      case arr: JsArray => JsArray(arr.value.zipWithIndex.map {
           case (js, j) => if (j == idx) transform(js) else js
         })
       case _ => transform(json)
@@ -124,8 +120,7 @@ case class IdxPathNode(idx: Int) extends PathNode {
 
   private[json] def splitChildren(json: JsValue) =
     json match {
-      case arr: JsArray =>
-        arr.value.toList.zipWithIndex.map {
+      case arr: JsArray => arr.value.toList.zipWithIndex.map {
           case (js, j) =>
             if (j == idx) Right(this -> js) else Left(IdxPathNode(j) -> js)
         }
@@ -144,20 +139,17 @@ object JsPath extends JsPath(List.empty) {
     def buildSubPath(path: JsPath, value: JsValue) = {
       def step(path: List[PathNode], value: JsValue): JsObject = {
         path match {
-          case List() =>
-            value match {
+          case List() => value match {
               case obj: JsObject => obj
               case _ =>
                 throw new RuntimeException(
                   "when empty JsPath, expecting JsObject")
             }
-          case List(p) =>
-            p match {
+          case List(p) => p match {
               case KeyPathNode(key) => Json.obj(key -> value)
               case _                => throw new RuntimeException("expected KeyPathNode")
             }
-          case head :: tail =>
-            head match {
+          case head :: tail => head match {
               case KeyPathNode(key) => Json.obj(key -> step(tail, value))
               case _                => throw new RuntimeException("expected KeyPathNode")
             }
@@ -190,11 +182,11 @@ case class JsPath(path: List[PathNode] = List()) {
 
   def asSingleJsResult(json: JsValue): JsResult[JsValue] =
     this(json) match {
-      case Nil =>
-        JsError(Seq(this -> Seq(ValidationError("error.path.missing"))))
+      case Nil => JsError(
+          Seq(this -> Seq(ValidationError("error.path.missing"))))
       case List(js) => JsSuccess(js)
-      case _ :: _ =>
-        JsError(Seq(this -> Seq(ValidationError("error.path.result.multiple"))))
+      case _ :: _ => JsError(
+          Seq(this -> Seq(ValidationError("error.path.result.multiple"))))
     }
 
   def asSingleJson(json: JsValue): JsLookupResult =
@@ -209,10 +201,9 @@ case class JsPath(path: List[PathNode] = List()) {
         path: List[PathNode],
         json: JsValue): Either[JsError, JsResult[JsValue]] =
       path match {
-        case Nil =>
-          Left(JsError(Seq(this -> Seq(ValidationError("error.path.empty")))))
-        case List(node) =>
-          node(json) match {
+        case Nil => Left(
+            JsError(Seq(this -> Seq(ValidationError("error.path.empty")))))
+        case List(node) => node(json) match {
             case Nil =>
               Right(JsError(
                 Seq(this -> Seq(ValidationError("error.path.missing")))))
@@ -221,8 +212,7 @@ case class JsPath(path: List[PathNode] = List()) {
               Right(JsError(Seq(
                 this -> Seq(ValidationError("error.path.result.multiple")))))
           }
-        case head :: tail =>
-          head(json) match {
+        case head :: tail => head(json) match {
             case Nil =>
               Left(JsError(
                 Seq(this -> Seq(ValidationError("error.path.missing")))))
@@ -272,11 +262,9 @@ case class JsPath(path: List[PathNode] = List()) {
       lpath.path match {
         case Nil     => JsSuccess(json)
         case List(p) => stepNode(json, p).repath(lpath)
-        case head :: tail =>
-          head(json) match {
+        case head :: tail => head(json) match {
             case Nil => JsError(lpath, ValidationError("error.path.missing"))
-            case List(js) =>
-              js match {
+            case List(js) => js match {
                 case o: JsObject =>
                   step(o, JsPath(tail))
                     .repath(lpath)
@@ -291,13 +279,11 @@ case class JsPath(path: List[PathNode] = List()) {
     }
 
     js match {
-      case o: JsObject =>
-        step(o, this) match {
+      case o: JsObject => step(o, this) match {
           case s: JsSuccess[JsObject] => s.copy(path = this)
           case e                      => e
         }
-      case _ =>
-        JsError(this, ValidationError("error.expected.jsobject"))
+      case _ => JsError(this, ValidationError("error.expected.jsobject"))
     }
   }
 

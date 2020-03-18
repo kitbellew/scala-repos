@@ -379,8 +379,8 @@ class TypedActorSpec
       filterEvents(EventFilter[IllegalStateException]("expected")) {
         val boss = system.actorOf(Props(new Actor {
           override val supervisorStrategy = OneForOneStrategy() {
-            case e: IllegalStateException if e.getMessage == "expected" ⇒
-              SupervisorStrategy.Resume
+            case e: IllegalStateException
+                if e.getMessage == "expected" ⇒ SupervisorStrategy.Resume
           }
           def receive = {
             case p: TypedProps[_] ⇒

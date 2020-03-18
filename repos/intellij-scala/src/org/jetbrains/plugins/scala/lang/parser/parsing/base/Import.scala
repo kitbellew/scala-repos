@@ -19,9 +19,8 @@ object Import {
   def parse(builder: ScalaPsiBuilder) {
     val importMarker = builder.mark
     builder.getTokenType match {
-      case ScalaTokenTypes.kIMPORT =>
-        builder.advanceLexer //Ate import
-      case _ => builder error ErrMsg("unreachable.error")
+      case ScalaTokenTypes.kIMPORT => builder.advanceLexer //Ate import
+      case _                       => builder error ErrMsg("unreachable.error")
     }
     ImportExpr parse builder
     while (builder.getTokenType == ScalaTokenTypes.tCOMMA) {

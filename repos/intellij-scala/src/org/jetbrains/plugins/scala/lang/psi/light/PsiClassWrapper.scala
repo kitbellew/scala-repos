@@ -144,8 +144,7 @@ class PsiClassWrapper(
     definition match {
       case o: ScObject =>
         o.members.flatMap {
-          case o: ScObject =>
-            o.fakeCompanionClass match {
+          case o: ScObject => o.fakeCompanionClass match {
               case Some(clazz) => Seq(o, clazz)
               case None        => Seq(o)
             }

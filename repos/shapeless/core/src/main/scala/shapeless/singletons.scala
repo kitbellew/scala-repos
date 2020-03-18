@@ -167,9 +167,8 @@ trait SingletonTypeUtils extends ReprTypes {
               List(
                 SymTpe,
                 TypeRef(_, TaggedSym, List(ConstantType(Constant(s: String))))),
-              _) =>
-          Some(s)
-        case _ => None
+              _) => Some(s)
+        case _   => None
       }
   }
 
@@ -184,8 +183,7 @@ trait SingletonTypeUtils extends ReprTypes {
         case (Literal(k: Constant), _) => Some(c.internal.constantType(k))
         case (LiteralSymbol(s), _)     => Some(SingletonSymbolType(s))
         case (_, keyType @ SingleType(p, v))
-            if !v.isParameter && !isValueClass(v) =>
-          Some(keyType)
+            if !v.isParameter && !isValueClass(v) => Some(keyType)
         case (q""" $sops.narrow """, _) if sops.tpe <:< singletonOpsTpe =>
           Some(sops.tpe.member(TypeName("T")).typeSignature)
         case _ => None
@@ -328,12 +326,10 @@ class SingletonTypeMacros(val c: whitebox.Context)
 
   def extractResult(t: Tree)(mkResult: (Type, Tree) => Tree): Tree =
     (t.tpe, t) match {
-      case (tpe @ ConstantType(c: Constant), _) =>
-        mkResult(tpe, Literal(c))
+      case (tpe @ ConstantType(c: Constant), _) => mkResult(tpe, Literal(c))
 
       case (tpe @ SingleType(p, v), tree)
-          if !v.isParameter && !isValueClass(v) =>
-        mkResult(tpe, tree)
+          if !v.isParameter && !isValueClass(v) => mkResult(tpe, tree)
 
       case (SymTpe, LiteralSymbol(s)) =>
         mkResult(SingletonSymbolType(s), mkSingletonSymbol(s))
@@ -430,8 +426,7 @@ class SingletonTypeMacros(val c: whitebox.Context)
   def narrowSymbol[S <: String: WeakTypeTag](t: Tree): Tree = {
     (weakTypeOf[S], t) match {
       case (ConstantType(Constant(s1: String)), LiteralSymbol(s2))
-          if s1 == s2 =>
-        mkSingletonSymbol(s1)
+          if s1 == s2 => mkSingletonSymbol(s1)
       case _ =>
         c.abort(
           c.enclosingPosition,

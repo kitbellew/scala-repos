@@ -33,12 +33,12 @@ object TypeCheckerWithExplicitTypes_MonadTransformers {
   def typeCheck(expr: Exp): ReaderT[V, TypeEnv, Type] =
     expr match {
       case Lit(v) => liftK(success(litToTy(v)))
-      case Id(x) =>
-        for { env <- ask[V, TypeEnv]; res <- liftK(find(x, env)) } yield res
+      case Id(x) => for {
+          env <- ask[V, TypeEnv]; res <- liftK(find(x, env))
+        } yield res
       // make sure the first branch is a boolean and then
       // make sure the second and third branches have the same type
-      case If(tst, texp, fexp) =>
-        for {
+      case If(tst, texp, fexp) => for {
           t <- typeCheck(tst)
           _ <- liftK(compare(
             t,
@@ -53,25 +53,21 @@ object TypeCheckerWithExplicitTypes_MonadTransformers {
             lt,
             "if branches not the same type, got: " + (lt, rt)))
         } yield res
-      case Fun(arg, argType, body) =>
-        for {
+      case Fun(arg, argType, body) => for {
           t <- local((env: TypeEnv) => env + (arg -> argType))(typeCheck(body))
         } yield TyLam(argType, t)
       // make sure the first argument to function application is indeed a function
       // then make sure that the arguments match the explicit declarations
-      case App(operator, operand) =>
-        for {
+      case App(operator, operand) => for {
           operatorType <- typeCheck(operator)
           operandType <- typeCheck(operand)
           res <- liftK(operatorType match {
-            case TyLam(argType, resultType) =>
-              compare(
+            case TyLam(argType, resultType) => compare(
                 argType,
                 operandType,
                 resultType,
                 "function expected arg of type: " + argType + ", but got: " + operandType)
-            case _ =>
-              typeError(
+            case _ => typeError(
                 "function application expected function, but got: " + operatorType)
           })
         } yield res

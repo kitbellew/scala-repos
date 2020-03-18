@@ -141,11 +141,9 @@ object Reflect {
     maybeClass.map {
 
       // Directly implements the scala trait
-      case scalaTrait(scalaClass) =>
-        Left(scalaClass)
+      case scalaTrait(scalaClass) => Left(scalaClass)
       // Implements the java interface
-      case javaInterface(java) =>
-        Right(java)
+      case javaInterface(java) => Right(java)
 
       case unknown =>
         throw new PlayException(

@@ -164,8 +164,7 @@ class IndexedRowMatrix @Since("1.0.0") (
     val U =
       if (computeU) {
         val indexedRows = indices.zip(svd.U.rows).map {
-          case (i, v) =>
-            IndexedRow(i, v)
+          case (i, v) => IndexedRow(i, v)
         }
         new IndexedRowMatrix(indexedRows, nRows, svd.U.numCols().toInt)
       } else { null }
@@ -182,8 +181,7 @@ class IndexedRowMatrix @Since("1.0.0") (
   def multiply(B: Matrix): IndexedRowMatrix = {
     val mat = toRowMatrix().multiply(B)
     val indexedRows = rows.map(_.index).zip(mat.rows).map {
-      case (i, v) =>
-        IndexedRow(i, v)
+      case (i, v) => IndexedRow(i, v)
     }
     new IndexedRowMatrix(indexedRows, nRows, B.numCols)
   }
@@ -201,10 +199,7 @@ class IndexedRowMatrix @Since("1.0.0") (
     rows.collect().foreach {
       case IndexedRow(rowIndex, vector) =>
         val i = rowIndex.toInt
-        vector.foreachActive {
-          case (j, v) =>
-            mat(i, j) = v
-        }
+        vector.foreachActive { case (j, v) => mat(i, j) = v }
     }
     mat
   }

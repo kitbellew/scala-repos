@@ -246,8 +246,7 @@ trait EntityPage extends HtmlPage {
         <a href={relativeLinkTo(companion)} title={
           docEntityKindToCompanionTitle(tpl)
         }>{templateName}</a>
-      case _ =>
-        templateName
+      case _ => templateName
     }
     val owner = {
       if (tpl.isRootPackage || tpl.inTemplate.isRootPackage) NodeSeq.Empty
@@ -467,9 +466,8 @@ trait EntityPage extends HtmlPage {
               <h3>{tpl.groupName(group)}</h3>
               {
           tpl.groupDescription(group) match {
-            case Some(body) =>
-              <div class="comment cmt">{bodyToHtml(body)}</div>
-            case _ => NodeSeq.Empty
+            case Some(body) => <div class="comment cmt">{bodyToHtml(body)}</div>
+            case _          => NodeSeq.Empty
           }
         }
             </div>)
@@ -619,8 +617,7 @@ trait EntityPage extends HtmlPage {
             }
             paramEntry ++ paramCommentToHtml(rest, comment)
 
-          case _ =>
-            NodeSeq.Empty
+          case _ => NodeSeq.Empty
         }
 
       mbr.comment.fold(NodeSeq.Empty) { comment =>
@@ -658,8 +655,7 @@ trait EntityPage extends HtmlPage {
             conversionOwnerQualifiedNane)
 
           val constraintText = conv.constraints match {
-            case Nil =>
-              NodeSeq.Empty
+            case Nil => NodeSeq.Empty
             case List(constraint) =>
               scala.xml.Text(
                 "This conversion will take place only if ") ++ constraintToHtml(
@@ -728,8 +724,7 @@ trait EntityPage extends HtmlPage {
 
           } else NodeSeq.Empty
         }
-      case _ =>
-        NodeSeq.Empty
+      case _ => NodeSeq.Empty
     }
 
     // --- start attributes block vals
@@ -822,17 +817,15 @@ trait EntityPage extends HtmlPage {
     }
 
     val deprecation: NodeSeq = mbr.deprecation match {
-      case Some(deprecation) if !isReduced =>
-        <dt>Deprecated</dt>
+      case Some(deprecation) if !isReduced => <dt>Deprecated</dt>
           <dd class="cmt">{bodyToHtml(deprecation)}</dd>
-      case _ => NodeSeq.Empty
+      case _                               => NodeSeq.Empty
     }
 
     val migration: NodeSeq = mbr.migration match {
-      case Some(migration) if !isReduced =>
-        <dt>Migration</dt>
+      case Some(migration) if !isReduced => <dt>Migration</dt>
           <dd class="cmt">{bodyToHtml(migration)}</dd>
-      case _ => NodeSeq.Empty
+      case _                             => NodeSeq.Empty
     }
 
     val mainComment: NodeSeq = mbr.comment match {
@@ -1017,8 +1010,7 @@ trait EntityPage extends HtmlPage {
     import comment._
     import comment.{Text => CText}
     mbr.visibility match {
-      case PrivateInInstance() =>
-        Some(Paragraph(CText("private[this]")))
+      case PrivateInInstance() => Some(Paragraph(CText("private[this]")))
       case PrivateInTemplate(owner) if (owner == mbr.inTemplate) =>
         Some(Paragraph(CText("private")))
       case PrivateInTemplate(owner) =>
@@ -1026,8 +1018,7 @@ trait EntityPage extends HtmlPage {
           CText("private["),
           EntityLink(comment.Text(owner.qualifiedName), LinkToTpl(owner)),
           CText("]")))))
-      case ProtectedInInstance() =>
-        Some(Paragraph(CText("protected[this]")))
+      case ProtectedInInstance() => Some(Paragraph(CText("protected[this]")))
       case ProtectedInTemplate(owner) if (owner == mbr.inTemplate) =>
         Some(Paragraph(CText("protected")))
       case ProtectedInTemplate(owner) =>
@@ -1035,8 +1026,7 @@ trait EntityPage extends HtmlPage {
           CText("protected["),
           EntityLink(comment.Text(owner.qualifiedName), LinkToTpl(owner)),
           CText("]")))))
-      case Public() =>
-        None
+      case Public() => None
     }
   }
 
@@ -1181,8 +1171,7 @@ trait EntityPage extends HtmlPage {
         }
       case _ if isSelf =>
         <h4 id="signature" class="signature">{inside(hasLinks = true)}</h4>
-      case _ =>
-        permalink(mbr) ++ { inside(hasLinks = true) }
+      case _ => permalink(mbr) ++ { inside(hasLinks = true) }
     }
 
   }
@@ -1203,9 +1192,8 @@ trait EntityPage extends HtmlPage {
         case '}' =>
           indent -= 1
           goodLookingXml ++= Text("}")
-        case '\n' =>
-          goodLookingXml ++= <br/> ++ indentation
-        case _ => goodLookingXml ++= Text(c.toString)
+        case '\n' => goodLookingXml ++= <br/> ++ indentation
+        case _    => goodLookingXml ++= Text(c.toString)
       }
       def indentation: NodeSeq = {
         var indentXml = NodeSeq.Empty
@@ -1289,8 +1277,7 @@ trait EntityPage extends HtmlPage {
       case dtpl: DocTemplateEntity =>
         val sig = signature(dtpl, isSelf = false, isReduced = true) \ "_"
         sig
-      case tpl: TemplateEntity =>
-        Text(tpl.name)
+      case tpl: TemplateEntity => Text(tpl.name)
     }
     else typeToHtml(superType, hasLinks = true)
 

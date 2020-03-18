@@ -402,8 +402,7 @@ case class WholeStageCodegen(child: SparkPlan)
       assert(input != null)
       if (input.nonEmpty) {
         val colExprs = output.zipWithIndex.map {
-          case (attr, i) =>
-            BoundReference(i, attr.dataType, attr.nullable)
+          case (attr, i) => BoundReference(i, attr.dataType, attr.nullable)
         }
         val evaluateInputs = evaluateVariables(input)
         // generate the code to create a UnsafeRow
@@ -474,8 +473,7 @@ case class CollapseCodegenStages(conf: SQLConf) extends Rule[SparkPlan] {
       case p if !supportCodegen(p) =>
         // collapse them recursively
         InputAdapter(insertWholeStageCodegen(p))
-      case p =>
-        p.withNewChildren(p.children.map(insertInputAdapter))
+      case p => p.withNewChildren(p.children.map(insertInputAdapter))
     }
 
   /**

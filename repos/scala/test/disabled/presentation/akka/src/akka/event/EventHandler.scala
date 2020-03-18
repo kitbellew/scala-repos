@@ -214,8 +214,7 @@ object EventHandler extends ListenerManagement {
           event.thread.getName,
           instance.getClass.getSimpleName,
           message))
-      case event =>
-        println(generic.format(formattedTimestamp, event.toString))
+      case event => println(generic.format(formattedTimestamp, event.toString))
     }
   }
 

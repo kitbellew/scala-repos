@@ -8,9 +8,7 @@ object Test {
 
   // we don't look into guards
   val turnOffChecks = true
-  List(1) match {
-    case _ if turnOffChecks =>
-  }
+  List(1) match { case _ if turnOffChecks => }
 
   // we back off when there are any user-defined extractors
   // in fact this is exhaustive, but we pretend we don't know since List's unapplySeq is not special to the compiler

@@ -218,8 +218,7 @@ class FileJobManager[M[+_]] private[FileJobManager] (
     cache
       .get(jobId)
       .map {
-        case FileJobState(_, status, _) =>
-          status match {
+        case FileJobState(_, status, _) => status match {
             case Some(curStatus)
                 if curStatus.id == prevStatus.getOrElse(curStatus.id) =>
               for (m <- addMessage(jobId, JobManager.channels.Status, jval))

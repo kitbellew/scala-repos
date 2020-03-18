@@ -489,12 +489,10 @@ private[akka] final case class Batch[In, Out](
             left -= costFn(pending)
             pending = null.asInstanceOf[In]
           } catch {
-            case NonFatal(ex) ⇒
-              decider(ex) match {
+            case NonFatal(ex) ⇒ decider(ex) match {
                 case Supervision.Stop ⇒ failStage(ex)
                 case Supervision.Restart ⇒ restartState()
-                case Supervision.Resume ⇒
-                  pending = null.asInstanceOf[In]
+                case Supervision.Resume ⇒ pending = null.asInstanceOf[In]
               }
           }
         } else { agg = null.asInstanceOf[Out] }
@@ -515,11 +513,9 @@ private[akka] final case class Batch[In, Out](
                 agg = seed(elem)
                 left -= cost
               } catch {
-                case NonFatal(ex) ⇒
-                  decider(ex) match {
+                case NonFatal(ex) ⇒ decider(ex) match {
                     case Supervision.Stop ⇒ failStage(ex)
-                    case Supervision.Restart ⇒
-                      restartState()
+                    case Supervision.Restart ⇒ restartState()
                     case Supervision.Resume ⇒
                   }
               }
@@ -529,11 +525,9 @@ private[akka] final case class Batch[In, Out](
                 agg = aggregate(agg, elem)
                 left -= cost
               } catch {
-                case NonFatal(ex) ⇒
-                  decider(ex) match {
+                case NonFatal(ex) ⇒ decider(ex) match {
                     case Supervision.Stop ⇒ failStage(ex)
-                    case Supervision.Restart ⇒
-                      restartState()
+                    case Supervision.Restart ⇒ restartState()
                     case Supervision.Resume ⇒
                   }
               }
@@ -563,8 +557,7 @@ private[akka] final case class Batch[In, Out](
               else {
                 try { agg = seed(pending) }
                 catch {
-                  case NonFatal(ex) ⇒
-                    decider(ex) match {
+                  case NonFatal(ex) ⇒ decider(ex) match {
                       case Supervision.Stop ⇒ failStage(ex)
                       case Supervision.Resume ⇒
                       case Supervision.Restart ⇒
@@ -1338,8 +1331,7 @@ private[stream] final class StatefulMapConcat[In, Out](
           currentIterator = plainFun(grab(in)).iterator
           pushPull()
         } catch {
-          case NonFatal(ex) ⇒
-            decider(ex) match {
+          case NonFatal(ex) ⇒ decider(ex) match {
               case Supervision.Stop ⇒ failStage(ex)
               case Supervision.Resume ⇒ if (!hasBeenPulled(in)) pull(in)
               case Supervision.Restart ⇒

@@ -180,9 +180,8 @@ object LimitPushDown extends Rule[LogicalPlan] {
       case (IntegerLiteral(maxRow), Some(childMaxRows))
           if maxRow < childMaxRows =>
         LocalLimit(limitExp, stripGlobalLimitIfPresent(plan))
-      case (_, None) =>
-        LocalLimit(limitExp, stripGlobalLimitIfPresent(plan))
-      case _ => plan
+      case (_, None) => LocalLimit(limitExp, stripGlobalLimitIfPresent(plan))
+      case _         => plan
     }
   }
 
@@ -209,8 +208,7 @@ object LimitPushDown extends Rule[LogicalPlan] {
         val newJoin = joinType match {
           case RightOuter => join.copy(right = maybePushLimit(exp, right))
           case LeftOuter  => join.copy(left = maybePushLimit(exp, left))
-          case FullOuter =>
-            (left.maxRows, right.maxRows) match {
+          case FullOuter => (left.maxRows, right.maxRows) match {
               case (None, None) =>
                 if (left.statistics.sizeInBytes >= right.statistics.sizeInBytes) {
                   join.copy(left = maybePushLimit(exp, left))
@@ -360,10 +358,7 @@ object ColumnPruning extends Rule[LogicalPlan] {
         val newProjects = e.projections.map { proj =>
           proj
             .zip(e.output)
-            .filter {
-              case (e, a) =>
-                newOutput.contains(a)
-            }
+            .filter { case (e, a) => newOutput.contains(a) }
             .unzip
             ._1
         }
@@ -406,8 +401,7 @@ object ColumnPruning extends Rule[LogicalPlan] {
           val newChildren = u.children.map { p =>
             val selected = p.output.zipWithIndex
               .filter {
-                case (a, i) =>
-                  newOutput.contains(firstChild.output(i))
+                case (a, i) => newOutput.contains(firstChild.output(i))
               }
               .map(_._1)
             Project(selected, p)
@@ -426,8 +420,7 @@ object ColumnPruning extends Rule[LogicalPlan] {
 
       // Eliminate no-op Projects
       case p @ Project(projectList, child)
-          if sameOutput(child.output, p.output) =>
-        child
+          if sameOutput(child.output, p.output) => child
 
       // Can't prune the columns on LeafNode
       case p @ Project(_, l: LeafNode) => p
@@ -549,18 +542,14 @@ object LikeSimplification extends Rule[LogicalPlan] {
 
   def apply(plan: LogicalPlan): LogicalPlan =
     plan transformAllExpressions {
-      case Like(l, Literal(utf, StringType)) =>
-        utf.toString match {
+      case Like(l, Literal(utf, StringType)) => utf.toString match {
           case startsWith(pattern) if !pattern.endsWith("\\") =>
             StartsWith(l, Literal(pattern))
-          case endsWith(pattern) =>
-            EndsWith(l, Literal(pattern))
+          case endsWith(pattern) => EndsWith(l, Literal(pattern))
           case contains(pattern) if !pattern.endsWith("\\") =>
             Contains(l, Literal(pattern))
-          case equalTo(pattern) =>
-            EqualTo(l, Literal(pattern))
-          case _ =>
-            Like(l, Literal.create(utf, StringType))
+          case equalTo(pattern) => EqualTo(l, Literal(pattern))
+          case _                => Like(l, Literal.create(utf, StringType))
         }
     }
 }
@@ -582,8 +571,7 @@ object NullPropagation extends Rule[LogicalPlan] {
       case q: LogicalPlan =>
         q transformExpressionsUp {
           case e @ AggregateExpression(Count(exprs), _, _)
-              if !exprs.exists(nonNullLiteral) =>
-            Cast(Literal(0L), e.dataType)
+              if !exprs.exists(nonNullLiteral) => Cast(Literal(0L), e.dataType)
           case e @ IsNull(c) if !c.nullable =>
             Literal.create(false, BooleanType)
           case e @ IsNotNull(c) if !c.nullable =>
@@ -636,8 +624,7 @@ object NullPropagation extends Rule[LogicalPlan] {
           case e @ BinaryComparison(_, Literal(null, _)) =>
             Literal.create(null, e.dataType)
 
-          case e: StringRegexExpression =>
-            e.children match {
+          case e: StringRegexExpression => e.children match {
               case Literal(null, _) :: right :: Nil =>
                 Literal.create(null, e.dataType)
               case left :: Literal(null, _) :: Nil =>
@@ -645,8 +632,7 @@ object NullPropagation extends Rule[LogicalPlan] {
               case _ => e
             }
 
-          case e: StringPredicate =>
-            e.children match {
+          case e: StringPredicate => e.children match {
               case Literal(null, _) :: right :: Nil =>
                 Literal.create(null, e.dataType)
               case left :: Literal(null, _) :: Nil =>
@@ -700,8 +686,7 @@ object InferFiltersFromConstraints
             if (newFilters.nonEmpty)
               Option(And(newFilters.reduce(And), condition))
             else None
-          case None =>
-            additionalConstraints.reduceOption(And)
+          case None => additionalConstraints.reduceOption(And)
         }
         if (newConditionOpt.isDefined)
           Join(left, right, joinType, newConditionOpt)
@@ -901,10 +886,8 @@ object CombineFilters extends Rule[LogicalPlan] with PredicateHelper {
         (ExpressionSet(splitConjunctivePredicates(fc)) --
           ExpressionSet(splitConjunctivePredicates(nc)))
           .reduceOption(And) match {
-          case Some(ac) =>
-            Filter(And(ac, nc), grandChild)
-          case None =>
-            nf
+          case Some(ac) => Filter(And(ac, nc), grandChild)
+          case None     => nf
         }
     }
 }

@@ -342,24 +342,20 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
                             if value == ExprValue =>
                           implToDef get implParam map (defParam =>
                             SingleType(NoPrefix, defParam.symbol)) getOrElse pre
-                        case _ =>
-                          pre
+                        case _ => pre
                       }
                       val args1 = args map mapOver
                       TypeRef(pre1, sym, args1)
-                    case _ =>
-                      mapOver(tp)
+                    case _ => mapOver(tp)
                   }
               }
 
               UnsigmaTypeMap(tpe)
-            case _ =>
-              tpe
+            case _ => tpe
           }
 
         unsigma(runtimeType)
-      case _ =>
-        ErrorType
+      case _ => ErrorType
     }
   }
 
@@ -874,8 +870,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
     val nowDelayed = !typer.context.macrosEnabled || undetparams.nonEmpty
 
     (wasDelayed, nowDelayed) match {
-      case (true, true) =>
-        Delay(expandee)
+      case (true, true) => Delay(expandee)
       case (true, false) =>
         val expanded = macroExpandAll(typer, expandee)
         if (expanded exists (_.isErroneous)) Failure(expandee)
@@ -1054,8 +1049,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
             context.enrichmentEnabled = typer.context.enrichmentEnabled
             context.macrosEnabled = typer.context.macrosEnabled
             macroExpand(newTyper(context), tree, EXPRmode, WildcardType)
-          case _ =>
-            tree
+          case _ => tree
         })
     }.transform(expandee)
 }

@@ -122,12 +122,9 @@ private[streams] class EnumeratorSubscription[T, U >: T](
       throw new IllegalArgumentException(
         s"The number of requested elements must be > 0: requested $elements elements")
     exclusive {
-      case Requested(0, its) =>
-        state = Requested(elements, extendIteratee(its))
-      case Requested(n, its) =>
-        state = Requested(n + elements, its)
-      case Completed | Cancelled =>
-        () // FIXME: Check rules
+      case Requested(0, its)     => state = Requested(elements, extendIteratee(its))
+      case Requested(n, its)     => state = Requested(n + elements, its)
+      case Completed | Cancelled => () // FIXME: Check rules
     }
   }
 
@@ -136,14 +133,11 @@ private[streams] class EnumeratorSubscription[T, U >: T](
       case Requested(_, its) =>
         val cancelLink: Iteratee[T, Unit] = Done(())
         its match {
-          case Unattached =>
-            enum(cancelLink)
-          case Attached(link0) =>
-            link0.success(cancelLink)
+          case Unattached      => enum(cancelLink)
+          case Attached(link0) => link0.success(cancelLink)
         }
         state = Cancelled
-      case Cancelled | Completed =>
-        ()
+      case Cancelled | Completed => ()
     }
 
   // Methods called by the iteratee when it receives input
@@ -160,8 +154,7 @@ private[streams] class EnumeratorSubscription[T, U >: T](
       case Requested(n, its) =>
         subr.onNext(el)
         state = Requested(n - 1, extendIteratee(its))
-      case Cancelled =>
-        ()
+      case Cancelled => ()
       case Completed =>
         throw new IllegalStateException(
           "Shouldn't receive another element once completed")
@@ -173,10 +166,8 @@ private[streams] class EnumeratorSubscription[T, U >: T](
     */
   private def emptyEnumerated(): Unit =
     exclusive {
-      case Requested(n, its) =>
-        state = Requested(n, extendIteratee(its))
-      case Cancelled =>
-        ()
+      case Requested(n, its) => state = Requested(n, extendIteratee(its))
+      case Cancelled         => ()
       case Completed =>
         throw new IllegalStateException(
           "Shouldn't receive an empty input once completed")
@@ -190,8 +181,7 @@ private[streams] class EnumeratorSubscription[T, U >: T](
       case Requested(_, _) =>
         subr.onComplete()
         state = Completed
-      case Cancelled =>
-        ()
+      case Cancelled => ()
       case Completed =>
         throw new IllegalStateException("Shouldn't receive EOF once completed")
     }
@@ -207,13 +197,10 @@ private[streams] class EnumeratorSubscription[T, U >: T](
       case Requested(_, _) =>
         state = Completed
         result match {
-          case Failure(error) =>
-            subr.onError(error)
-          case Success(_) =>
-            subr.onComplete()
+          case Failure(error) => subr.onError(error)
+          case Success(_)     => subr.onComplete()
         }
-      case Cancelled =>
-        ()
+      case Cancelled => ()
       case Completed =>
         () // Subscriber was already completed when the enumerator produced EOF
     }
@@ -229,15 +216,12 @@ private[streams] class EnumeratorSubscription[T, U >: T](
     val linkIteratee: Iteratee[T, Unit] = Iteratee.flatten(link.future)
     val iteratee: Iteratee[T, Unit] = Cont { input =>
       input match {
-        case Input.El(el) =>
-          elementEnumerated(el)
-        case Input.Empty =>
-          emptyElement match {
+        case Input.El(el) => elementEnumerated(el)
+        case Input.Empty => emptyElement match {
             case None     => emptyEnumerated()
             case Some(el) => elementEnumerated(el)
           }
-        case Input.EOF =>
-          eofEnumerated()
+        case Input.EOF => eofEnumerated()
       }
       linkIteratee
     }
@@ -245,8 +229,7 @@ private[streams] class EnumeratorSubscription[T, U >: T](
       case Unattached =>
         enum(iteratee).onComplete(enumeratorApplicationComplete)(
           Execution.trampoline)
-      case Attached(link0) =>
-        link0.success(iteratee)
+      case Attached(link0) => link0.success(iteratee)
     }
     Attached(link)
   }

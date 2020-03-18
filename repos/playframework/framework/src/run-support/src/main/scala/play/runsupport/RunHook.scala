@@ -62,10 +62,7 @@ object RunHook {
 
         hooks foreach { hook =>
           try { f(hook) }
-          catch {
-            case NonFatal(e) =>
-              failures += hook -> e
-          }
+          catch { case NonFatal(e) => failures += hook -> e }
         }
 
         // Throw failure if it occurred....

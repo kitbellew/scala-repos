@@ -54,8 +54,7 @@ class TwitterCacheResolver extends Resolver {
   def bind(arg: String) = {
     arg.split("!") match {
       // twcache!<host1>:<port>:<weight>:<key>,<host2>:<port>:<weight>:<key>,<host3>:<port>:<weight>:<key>
-      case Array(hosts) =>
-        CacheNodeGroup(hosts).set.map(toUnresolvedAddr)
+      case Array(hosts) => CacheNodeGroup(hosts).set.map(toUnresolvedAddr)
 
       // twcache!zkhost:2181!/twitter/service/cache/<stage>/<name>
       case Array(zkHosts, path) =>
@@ -138,8 +137,7 @@ object CacheNodeGroup {
       useOnlyResolvedAddress: Boolean = false) =
     new Group[CacheNode] {
       protected[finagle] val set: Var[Set[CacheNode]] = va map {
-        case Addr.Bound(addrs, _) =>
-          addrs.collect {
+        case Addr.Bound(addrs, _) => addrs.collect {
             case Address.Inet(ia, CacheNodeMetadata(weight, key)) =>
               CacheNode(ia.getHostName, ia.getPort, weight, key)
             case Address.Inet(ia, _)

@@ -14,8 +14,8 @@ object Consumers {
       def endpointUri = "file:data/input/actor"
 
       def receive = {
-        case msg: CamelMessage =>
-          println("received %s" format msg.bodyAs[String])
+        case msg: CamelMessage => println(
+            "received %s" format msg.bodyAs[String])
       }
     }
     //#Consumer1

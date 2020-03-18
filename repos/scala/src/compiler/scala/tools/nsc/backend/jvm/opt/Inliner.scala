@@ -262,8 +262,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
                 reachableImpl(xs ::: callees.toList, visited + x)
               }
 
-            case Nil =>
-              false
+            case Nil => false
           }
         reachableImpl(List(start), Set.empty)
       }
@@ -352,8 +351,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       mainCallsite: Callsite): List[InlineRequest] = {
     def impl(post: InlineRequest, at: Callsite): List[InlineRequest] = {
       post.callsite.inlinedClones.find(_.clonedWhenInlining == at) match {
-        case Some(clonedCallsite) =>
-          List(InlineRequest(clonedCallsite.callsite, post.post))
+        case Some(clonedCallsite) => List(
+            InlineRequest(clonedCallsite.callsite, post.post))
         case None =>
           post.post.flatMap(impl(_, post.callsite)).flatMap(impl(_, at))
       }
@@ -1018,8 +1017,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
         case _: InvokeDynamicInsnNode => Left(UnknownInvokeDynamicInstruction)
 
-        case ci: LdcInsnNode =>
-          ci.cst match {
+        case ci: LdcInsnNode => ci.cst match {
             case t: asm.Type =>
               classIsAccessible(
                 bTypeForDescriptorOrInternalNameFromClassfile(

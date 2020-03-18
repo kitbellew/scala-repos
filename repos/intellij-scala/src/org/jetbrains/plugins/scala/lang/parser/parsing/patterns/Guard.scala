@@ -18,8 +18,7 @@ object Guard {
   def parse(builder: ScalaPsiBuilder, noIf: Boolean): Boolean = {
     val guardMarker = builder.mark
     builder.getTokenType match {
-      case ScalaTokenTypes.kIF =>
-        builder.advanceLexer //Ate if
+      case ScalaTokenTypes.kIF => builder.advanceLexer //Ate if
       case _ =>
         if (!noIf) {
           guardMarker.drop()

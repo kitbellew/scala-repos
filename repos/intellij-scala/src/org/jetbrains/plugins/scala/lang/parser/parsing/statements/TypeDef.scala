@@ -17,15 +17,13 @@ object TypeDef {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val faultMarker = builder.mark
     builder.getTokenType match {
-      case ScalaTokenTypes.kTYPE =>
-        builder.advanceLexer //Ate type
+      case ScalaTokenTypes.kTYPE => builder.advanceLexer //Ate type
       case _ =>
         faultMarker.rollbackTo
         return false
     }
     builder.getTokenType match {
-      case ScalaTokenTypes.tIDENTIFIER =>
-        builder.advanceLexer //Ate identifier
+      case ScalaTokenTypes.tIDENTIFIER => builder.advanceLexer //Ate identifier
       case _ =>
         builder error ScalaBundle.message("identifier.expected")
         faultMarker.rollbackTo

@@ -61,8 +61,7 @@ private[spark] object MetadataUtils {
             attr match {
               case _: NumericAttribute | UnresolvedAttribute => Iterator()
               case binAttr: BinaryAttribute                  => Iterator(idx -> 2)
-              case nomAttr: NominalAttribute =>
-                nomAttr.getNumValues match {
+              case nomAttr: NominalAttribute => nomAttr.getNumValues match {
                   case Some(numValues: Int) => Iterator(idx -> numValues)
                   case None =>
                     throw new IllegalArgumentException(

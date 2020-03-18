@@ -21,11 +21,9 @@ abstract class BaseDescription extends Description {
 
   override def appendValue(value: AnyRef): Description = {
     value match {
-      case null =>
-        append("null")
+      case null => append("null")
 
-      case value: String =>
-        append(toJavaSyntax(value))
+      case value: String => append(toJavaSyntax(value))
 
       case value: java.lang.Character =>
         append('"')

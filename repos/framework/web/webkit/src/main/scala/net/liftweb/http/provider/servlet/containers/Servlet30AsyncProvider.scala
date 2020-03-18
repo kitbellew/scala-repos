@@ -50,10 +50,7 @@ object Servlet30AsyncProvider extends AsyncProviderMeta {
       val complete = asyncClass.getMethod("complete")
       val isSupported = cc.getMethod("isAsyncSupported")
       (true, cc, asyncClass, startAsync, getResponse, complete, isSupported)
-    } catch {
-      case e: Exception =>
-        (false, null, null, null, null, null, null)
-    }
+    } catch { case e: Exception => (false, null, null, null, null, null, null) }
   }
 
   def suspendResumeSupport_? : Boolean = { hasContinuations_? }

@@ -40,9 +40,8 @@ case class Average(child: Expression) extends DeclarativeAggregate {
     TypeUtils.checkForNumericExpr(child.dataType, "function average")
 
   private lazy val resultType = child.dataType match {
-    case DecimalType.Fixed(p, s) =>
-      DecimalType.bounded(p + 4, s + 4)
-    case _ => DoubleType
+    case DecimalType.Fixed(p, s) => DecimalType.bounded(p + 4, s + 4)
+    case _                       => DoubleType
   }
 
   private lazy val sumDataType = child.dataType match {
@@ -77,7 +76,6 @@ case class Average(child: Expression) extends DeclarativeAggregate {
       // increase the precision and scale to prevent precision loss
       val dt = DecimalType.bounded(p + 14, s + 4)
       Cast(Cast(sum, dt) / Cast(count, dt), resultType)
-    case _ =>
-      Cast(sum, resultType) / Cast(count, resultType)
+    case _ => Cast(sum, resultType) / Cast(count, resultType)
   }
 }

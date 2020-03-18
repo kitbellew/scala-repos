@@ -201,8 +201,7 @@ class Dataset[T] private[sql] (
       case Union(children) if children.forall(hasSideEffects) =>
         LogicalRDD(queryExecution.analyzed.output, queryExecution.toRdd)(
           sqlContext)
-      case _ =>
-        queryExecution.analyzed
+      case _ => queryExecution.analyzed
     }
   }
 
@@ -342,8 +341,7 @@ class Dataset[T] private[sql] (
     )
 
     val newCols = logicalPlan.output.zip(colNames).map {
-      case (oldAttribute, newName) =>
-        Column(oldAttribute).as(newName)
+      case (oldAttribute, newName) => Column(oldAttribute).as(newName)
     }
     select(newCols: _*)
   }
@@ -848,8 +846,7 @@ class Dataset[T] private[sql] (
     */
   def col(colName: String): Column =
     colName match {
-      case "*" =>
-        Column(ResolvedStar(queryExecution.analyzed.output))
+      case "*" => Column(ResolvedStar(queryExecution.analyzed.output))
       case _ =>
         val expr = resolve(colName)
         Column(expr)
@@ -2345,8 +2342,7 @@ class Dataset[T] private[sql] (
     val files: Seq[String] = logicalPlan.collect {
       case LogicalRelation(fsBasedRelation: FileRelation, _, _) =>
         fsBasedRelation.inputFiles
-      case fr: FileRelation =>
-        fr.inputFiles
+      case fr: FileRelation => fr.inputFiles
     }.flatten
     files.toSet.toArray
   }
@@ -2421,10 +2417,8 @@ class Dataset[T] private[sql] (
       sortExprs: Seq[Column]): Dataset[T] = {
     val sortOrder: Seq[SortOrder] = sortExprs.map { col =>
       col.expr match {
-        case expr: SortOrder =>
-          expr
-        case expr: Expression =>
-          SortOrder(expr, Ascending)
+        case expr: SortOrder  => expr
+        case expr: Expression => SortOrder(expr, Ascending)
       }
     }
     withTypedPlan { Sort(sortOrder, global = global, logicalPlan) }

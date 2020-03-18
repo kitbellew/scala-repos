@@ -35,8 +35,7 @@ object Macro {
         val boostrapSym = typeOf[test.Bootstrap].companion.member(TermName(
           "bootstrap"))
         Indy(boostrapSym, l :: Nil)
-      case _ =>
-        q"_root_.java.util.regex.Pattern.compile($s)"
+      case _ => q"_root_.java.util.regex.Pattern.compile($s)"
     }
   }
 }

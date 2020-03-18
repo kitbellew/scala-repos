@@ -160,8 +160,7 @@ trait ScParameter
 
   def isAnonymousParameter: Boolean =
     getContext match {
-      case clause: ScParameterClause =>
-        clause.getContext.getContext match {
+      case clause: ScParameterClause => clause.getContext.getContext match {
           case f: ScFunctionExpr => true
           case _                 => false
         }
@@ -170,8 +169,7 @@ trait ScParameter
 
   def expectedParamType: Option[ScType] =
     getContext match {
-      case clause: ScParameterClause =>
-        clause.getContext.getContext match {
+      case clause: ScParameterClause => clause.getContext.getContext match {
           // For parameter of anonymous functions to infer parameter's type from an appropriate
           // an. fun's type
           case f: ScFunctionExpr =>
@@ -223,9 +221,8 @@ trait ScParameter
     if (param.baseDefaultParam) return true
     if (visited.contains(param)) return false
     getSuperParameter match {
-      case Some(superParam) =>
-        calcIsDefaultParam(superParam, visited + param)
-      case _ => false
+      case Some(superParam) => calcIsDefaultParam(superParam, visited + param)
+      case _                => false
     }
   }
 
@@ -257,13 +254,11 @@ trait ScParameter
                 }
               }
               containingMember match {
-                case c: ScClass =>
-                  c.getSourceMirrorClass match {
+                case c: ScClass => c.getSourceMirrorClass match {
                     case c: ScClass => extractFromParameterOwner(c)
                     case _          => res
                   }
-                case f: ScFunction =>
-                  f.getNavigationElement match {
+                case f: ScFunction => f.getNavigationElement match {
                     case f: ScFunction => extractFromParameterOwner(f)
                     case _             => res
                   }
@@ -284,8 +279,7 @@ trait ScParameter
           case p: ScParameters =>
             val j = p.clauses.indexOf(clause)
             p.getParent match {
-              case fun: ScFunction =>
-                fun.superMethod match {
+              case fun: ScFunction => fun.superMethod match {
                   case Some(method: ScFunction) =>
                     val clauses: Seq[ScParameterClause] =
                       method.paramClauses.clauses

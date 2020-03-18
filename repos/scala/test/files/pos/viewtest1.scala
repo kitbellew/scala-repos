@@ -18,8 +18,7 @@ case class Node[c <% Ordered[c]](elem: c, l: Tree[c], r: Tree[c])
 abstract class Tree[+a <% Ordered[a]] {
   def insert[b >: a <% Ordered[b]](x: b): Tree[b] =
     this match {
-      case Empty =>
-        new Node(x, Empty, Empty)
+      case Empty => new Node(x, Empty, Empty)
       case Node(elem, l, r) =>
         if (x == elem) this
         else if (x < elem) Node(elem, l insert x, r)
@@ -27,9 +26,8 @@ abstract class Tree[+a <% Ordered[a]] {
     }
   def elements: List[a] =
     this match {
-      case Empty => List()
-      case Node(elem, l, r) =>
-        l.elements ::: List(elem) ::: r.elements
+      case Empty            => List()
+      case Node(elem, l, r) => l.elements ::: List(elem) ::: r.elements
     }
 }
 

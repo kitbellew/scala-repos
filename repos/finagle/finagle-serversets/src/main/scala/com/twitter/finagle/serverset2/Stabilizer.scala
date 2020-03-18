@@ -124,8 +124,7 @@ private[serverset2] object Stabilizer {
       val states: Event[State] = (va.changes select removalEpoch.event)
         .foldLeft(initState) {
           // Addr update
-          case (st @ State(limbo, active, last), Left(addr)) =>
-            addr match {
+          case (st @ State(limbo, active, last), Left(addr)) => addr match {
               case Addr.Failed(_) =>
                 State(
                   None,
@@ -151,13 +150,10 @@ private[serverset2] object Stabilizer {
             }
 
           // The removalEpoch turned
-          case (st @ State(limbo, active, last), Right(())) =>
-            last match {
-              case Addr.Bound(bound, _) =>
-                State(active, Some(bound), last)
+          case (st @ State(limbo, active, last), Right(())) => last match {
+              case Addr.Bound(bound, _) => State(active, Some(bound), last)
 
-              case Addr.Neg =>
-                State(active, Some(Set.empty), Addr.Neg)
+              case Addr.Neg => State(active, Some(Set.empty), Addr.Neg)
 
               case Addr.Pending | Addr.Failed(_) =>
                 // If the last address is nonbound, we ignore it and
@@ -194,17 +190,14 @@ private[serverset2] object Stabilizer {
                 // There's a change to the serverset and we haven't published in >= batchEpoch. Publish.
                 else States(Some(newAddr), newAddr, None, now)
 
-              case Right(_) =>
-                st.next match {
+              case Right(_) => st.next match {
                   // Epoch turned, but we have published in < batchEpoch. Noop
                   case _ if now - st.lastEmit < batchEpoch.period =>
                     st.copy(publish = None)
                   // Epoch turned but there is no next state. Noop
-                  case None =>
-                    st.copy(publish = None)
+                  case None => st.copy(publish = None)
                   // Epoch turned, there's a next state, and we haven't published in >= batchEpoch. Publish.
-                  case Some(next) =>
-                    States(Some(next), next, None, now)
+                  case Some(next) => States(Some(next), next, None, now)
                 }
             }
         }

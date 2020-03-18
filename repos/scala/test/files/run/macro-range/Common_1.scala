@@ -35,9 +35,8 @@ abstract class Utils {
     fn match {
       case Function(vparams, body) =>
         new TreeSubstituter(vparams map (_.symbol), args) transform body
-      case Block(stats, expr) =>
-        Block(stats, makeApply(expr, args))
-      case _ =>
+      case Block(stats, expr) => Block(stats, makeApply(expr, args))
+      case _                  =>
         // todo. read the compiler config and print if -Ydebug is set
         //println("no beta on "+fn+" "+fn.getClass)
         Apply(fn, args)

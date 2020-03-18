@@ -332,16 +332,15 @@ private[deploy] class Master(
             }
           }
         }
-        case None =>
-          logWarning(s"Got status update for unknown executor $appId/$execId")
+        case None => logWarning(
+            s"Got status update for unknown executor $appId/$execId")
       }
     }
 
     case DriverStateChanged(driverId, state, exception) => {
       state match {
         case DriverState.ERROR | DriverState.FINISHED | DriverState.KILLED |
-            DriverState.FAILED =>
-          removeDriver(driverId, state, exception)
+            DriverState.FAILED => removeDriver(driverId, state, exception)
         case _ =>
           throw new Exception(
             s"Received unexpected state update for driver $driverId: $state")
@@ -371,8 +370,7 @@ private[deploy] class Master(
         case Some(app) =>
           logInfo("Application has been re-registered: " + appId)
           app.state = ApplicationState.WAITING
-        case None =>
-          logWarning("Master change ack from unknown app: " + appId)
+        case None => logWarning("Master change ack from unknown app: " + appId)
       }
 
       if (canCompleteRecovery) { completeRecovery() }
@@ -403,8 +401,8 @@ private[deploy] class Master(
               worker.drivers(driverId) = driver
             }
           }
-        case None =>
-          logWarning("Scheduler state from unknown worker: " + workerId)
+        case None => logWarning(
+            "Scheduler state from unknown worker: " + workerId)
       }
 
       if (canCompleteRecovery) { completeRecovery() }
@@ -434,8 +432,7 @@ private[deploy] class Master(
               worker.endpoint.send(KillDriver(driverId))
             }
           }
-        case None =>
-          logWarning("Worker state from unknown worker: " + workerId)
+        case None => logWarning("Worker state from unknown worker: " + workerId)
       }
 
     case UnregisterApplication(applicationId) =>
@@ -626,8 +623,8 @@ private[deploy] class Master(
         app.state = ApplicationState.UNKNOWN
         app.driver.send(MasterChanged(self, masterWebUiUrl))
       } catch {
-        case e: Exception =>
-          logInfo("App " + app.id + " had exception on reconnect")
+        case e: Exception => logInfo(
+            "App " + app.id + " had exception on reconnect")
       }
     }
 
@@ -644,8 +641,8 @@ private[deploy] class Master(
         worker.state = WorkerState.UNKNOWN
         worker.endpoint.send(MasterChanged(self, masterWebUiUrl))
       } catch {
-        case e: Exception =>
-          logInfo("Worker " + worker.id + " had exception on reconnect")
+        case e: Exception => logInfo(
+            "Worker " + worker.id + " had exception on reconnect")
       }
     }
   }
@@ -1256,8 +1253,7 @@ private[deploy] class Master(
         driver.exception = exception
         driver.worker.foreach(w => w.removeDriver(driver))
         schedule()
-      case None =>
-        logWarning(s"Asked to remove unknown driver: $driverId")
+      case None => logWarning(s"Asked to remove unknown driver: $driverId")
     }
   }
 }

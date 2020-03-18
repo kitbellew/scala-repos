@@ -65,8 +65,7 @@ class ScalaFindUsagesProvider extends FindUsagesProvider {
       case _: PsiField     => "field"
       case _: PsiParameter => "parameter"
       case _: PsiVariable  => "variable"
-      case f: ScFieldId =>
-        ScalaPsiUtil.nameContext(f) match {
+      case f: ScFieldId => ScalaPsiUtil.nameContext(f) match {
           case v: ScValue    => "pattern"
           case v: ScVariable => "variable"
           case _             => "pattern"

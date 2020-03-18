@@ -57,8 +57,7 @@ object SwankProtocolCommon {
         case SexpList(Nil) =>
           // special case: no param case classes
           SexpData(key -> th.hint)
-        case other =>
-          serializationError(
+        case other => serializationError(
             s"expected ${th.hint}'s wrap to be SexpData, was $other")
       }
     final def read(sexp: Sexp): T =
@@ -120,8 +119,7 @@ object SwankProtocolCommon {
           RefactorType.allTypes
             .find(_.symbol.name == name)
             .getOrElse(deserializationError(sexp))
-        case _ =>
-          deserializationError(sexp)
+        case _ => deserializationError(sexp)
       }
   }
 
@@ -133,8 +131,7 @@ object SwankProtocolCommon {
           DeclaredAs.allDeclarations
             .find(_.symbol.name == name)
             .getOrElse(deserializationError(sexp))
-        case _ =>
-          deserializationError(sexp)
+        case _ => deserializationError(sexp)
       }
   }
 
@@ -325,9 +322,8 @@ object SwankProtocolResponse {
           value.convertTo[DebugArrayInstance]
         case s if s == DebugStringHint.hint =>
           value.convertTo[DebugStringInstance]
-        case s if s == DebugNullHint.hint =>
-          value.convertTo[DebugNullValue]
-        case _ => deserializationError(hint)
+        case s if s == DebugNullHint.hint => value.convertTo[DebugNullValue]
+        case _                            => deserializationError(hint)
       }
   }
 
@@ -692,8 +688,7 @@ object SwankProtocolRequest {
     def write(or: OffsetRange): Sexp = ???
     def read(sexp: Sexp): OffsetRange =
       sexp match {
-        case SexpNumber(a) =>
-          OffsetRange(a.intValue, a.intValue)
+        case SexpNumber(a) => OffsetRange(a.intValue, a.intValue)
         case SexpList(SexpNumber(a) :: SexpNumber(b) :: Nil) =>
           OffsetRange(a.intValue, b.intValue)
         case _ => deserializationError(sexp)
@@ -813,11 +808,9 @@ object SwankProtocolRequest {
 
       def read(value: Sexp): T =
         value match {
-          case SexpNil => g.from(r.read(Nil))
-          case SexpList(els) =>
-            g.from(r.read(els))
-          case x =>
-            deserializationError(x)
+          case SexpNil       => g.from(r.read(Nil))
+          case SexpList(els) => g.from(r.read(els))
+          case x             => deserializationError(x)
         }
     }
 
@@ -830,8 +823,7 @@ object SwankProtocolRequest {
           PatchInsert(i.intValue, text)
         case SexpList(
               SexpString("*") :: SexpNumber(i) :: SexpNumber(j) :: SexpString(
-                text) :: Nil) =>
-          PatchReplace(i.intValue, j.intValue, text)
+                text) :: Nil) => PatchReplace(i.intValue, j.intValue, text)
         case SexpList(
               SexpString("-") :: SexpNumber(i) :: SexpNumber(j) :: Nil) =>
           PatchDelete(i.intValue, j.intValue)
@@ -907,8 +899,8 @@ object SwankProtocolRequest {
                 start.intValue,
                 end.intValue)
 
-            case List((Loc.File, SexpString(f))) =>
-              OrganiseImportsRefactorDesc(File(f).canon)
+            case List((Loc.File, SexpString(f))) => OrganiseImportsRefactorDesc(
+                File(f).canon)
 
             case List(
                   (Loc.End, SexpNumber(_)),
@@ -1088,8 +1080,7 @@ object SwankProtocolRequest {
                 callIdBI) :: Nil) =>
           val callId = callIdBI.intValue()
           Try(form.convertTo[RpcRequest]) match {
-            case Success(v) =>
-              RpcRequestEnvelope(v, callId)
+            case Success(v)  => RpcRequestEnvelope(v, callId)
             case Failure(ex) =>
               // we failed to parse to a valid s, but we have a call id - so we
               // should return an rpc abort rather than :reader-error as emacs tends to bork.

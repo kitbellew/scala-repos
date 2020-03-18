@@ -108,9 +108,7 @@ private[streaming] class RecurringTimer(
     try {
       while (!stopped) { triggerActionForNextInterval() }
       triggerActionForNextInterval()
-    } catch {
-      case e: InterruptedException =>
-    }
+    } catch { case e: InterruptedException => }
   }
 }
 

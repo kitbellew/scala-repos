@@ -90,10 +90,8 @@ class HashPartitioner(partitions: Int) extends Partitioner {
 
   override def equals(other: Any): Boolean =
     other match {
-      case h: HashPartitioner =>
-        h.numPartitions == numPartitions
-      case _ =>
-        false
+      case h: HashPartitioner => h.numPartitions == numPartitions
+      case _                  => false
     }
 
   override def hashCode: Int = numPartitions
@@ -194,8 +192,7 @@ class RangePartitioner[K: Ordering: ClassTag, V](
     other match {
       case r: RangePartitioner[_, _] =>
         r.rangeBounds.sameElements(rangeBounds) && r.ascending == ascending
-      case _ =>
-        false
+      case _ => false
     }
 
   override def hashCode(): Int = {

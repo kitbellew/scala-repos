@@ -246,8 +246,7 @@ private[parquet] class CatalystRowConverter(
 
     catalystType match {
       case BooleanType | IntegerType | LongType | FloatType | DoubleType |
-          BinaryType =>
-        new CatalystPrimitiveConverter(updater)
+          BinaryType => new CatalystPrimitiveConverter(updater)
 
       case ByteType =>
         new CatalystPrimitiveConverter(updater) {
@@ -294,8 +293,7 @@ private[parquet] class CatalystRowConverter(
             s"$parquetType.  Parquet DECIMAL type can only be backed by INT32, INT64, " +
             "FIXED_LEN_BYTE_ARRAY, or BINARY.")
 
-      case StringType =>
-        new CatalystStringConverter(updater)
+      case StringType => new CatalystStringConverter(updater)
 
       case TimestampType =>
         // TODO Implements `TIMESTAMP_MICROS` once parquet-mr has that.
@@ -554,15 +552,13 @@ private[parquet] class CatalystRowConverter(
         case (t: PrimitiveType, _)                    => true
         case (t: GroupType, _) if t.getFieldCount > 1 => true
         case (t: GroupType, _)
-            if t.getFieldCount == 1 && t.getName == "array" =>
-          true
+            if t.getFieldCount == 1 && t.getName == "array" => true
         case (t: GroupType, _)
             if t.getFieldCount == 1 && t.getName == parentName + "_tuple" =>
           true
         case (t: GroupType, StructType(Array(f)))
-            if f.name == t.getFieldName(0) =>
-          true
-        case _ => false
+            if f.name == t.getFieldName(0) => true
+        case _                             => false
       }
     }
 

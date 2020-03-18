@@ -136,13 +136,11 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
                 primaryConstr.getClassTypeParameters match {
                   case Some(a: ScTypeParamClause) =>
                     doInspection(primaryConstr.parameters, a.typeParameters)
-                  case None =>
-                    doInspection(primaryConstr.parameters, null)
+                  case None => doInspection(primaryConstr.parameters, null)
                 }
               case None => registerBadParams()
             }
-          case traitt: ScTrait =>
-            doInspection(null, traitt.typeParameters)
+          case traitt: ScTrait => doInspection(null, traitt.typeParameters)
           case typeAlias: ScTypeAlias => //scaladoc can't process tparams for type alias now
             for (tag <- s.findTagsByName(MyScaladocParsing.TYPE_PARAM_TAG)) {
               holder.registerProblem(holder.getManager.createProblemDescriptor(

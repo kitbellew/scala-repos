@@ -53,8 +53,7 @@ trait DAGTransform extends DAG {
         case UnfixedSolution(id, target) =>
           UnfixedSolution(id, transformAux(target))
 
-        case Extra(target) =>
-          Extra(transformAux(target))
+        case Extra(target) => Extra(transformAux(target))
       }
 
     def transformAux(graph: DepGraph): DepGraph = {
@@ -64,33 +63,33 @@ trait DAGTransform extends DAG {
 
           case graph @ New(parent) => f(New(transformAux(parent))(graph.loc))
 
-          case graph @ AbsoluteLoad(parent, jtpe) =>
-            f(AbsoluteLoad(transformAux(parent), jtpe)(graph.loc))
+          case graph @ AbsoluteLoad(parent, jtpe) => f(
+              AbsoluteLoad(transformAux(parent), jtpe)(graph.loc))
 
-          case graph @ RelativeLoad(parent, jtpe) =>
-            f(RelativeLoad(transformAux(parent), jtpe)(graph.loc))
+          case graph @ RelativeLoad(parent, jtpe) => f(
+              RelativeLoad(transformAux(parent), jtpe)(graph.loc))
 
-          case graph @ Operate(op, parent) =>
-            f(Operate(op, transformAux(parent))(graph.loc))
+          case graph @ Operate(op, parent) => f(
+              Operate(op, transformAux(parent))(graph.loc))
 
-          case graph @ Reduce(red, parent) =>
-            f(Reduce(red, transformAux(parent))(graph.loc))
+          case graph @ Reduce(red, parent) => f(
+              Reduce(red, transformAux(parent))(graph.loc))
 
-          case MegaReduce(reds, parent) =>
-            f(MegaReduce(reds, transformAux(parent)))
+          case MegaReduce(reds, parent) => f(
+              MegaReduce(reds, transformAux(parent)))
 
-          case graph @ Morph1(m, parent) =>
-            f(Morph1(m, transformAux(parent))(graph.loc))
+          case graph @ Morph1(m, parent) => f(
+              Morph1(m, transformAux(parent))(graph.loc))
 
-          case graph @ Morph2(m, left, right) =>
-            f(Morph2(m, transformAux(left), transformAux(right))(graph.loc))
+          case graph @ Morph2(m, left, right) => f(
+              Morph2(m, transformAux(left), transformAux(right))(graph.loc))
 
           case graph @ Join(op, joinSort, left, right) =>
             f(Join(op, joinSort, transformAux(left), transformAux(right))(
               graph.loc))
 
-          case graph @ Assert(pred, child) =>
-            f(Assert(transformAux(pred), transformAux(child))(graph.loc))
+          case graph @ Assert(pred, child) => f(
+              Assert(transformAux(pred), transformAux(child))(graph.loc))
 
           case graph @ Cond(pred, left, leftJoin, right, rightJoin) =>
             f(
@@ -101,27 +100,27 @@ trait DAGTransform extends DAG {
                 transformAux(right),
                 rightJoin)(graph.loc))
 
-          case graph @ Observe(data, samples) =>
-            f(Observe(transformAux(data), transformAux(samples))(graph.loc))
+          case graph @ Observe(data, samples) => f(
+              Observe(transformAux(data), transformAux(samples))(graph.loc))
 
-          case graph @ IUI(union, left, right) =>
-            f(IUI(union, transformAux(left), transformAux(right))(graph.loc))
+          case graph @ IUI(union, left, right) => f(
+              IUI(union, transformAux(left), transformAux(right))(graph.loc))
 
-          case graph @ Diff(left, right) =>
-            f(Diff(transformAux(left), transformAux(right))(graph.loc))
+          case graph @ Diff(left, right) => f(
+              Diff(transformAux(left), transformAux(right))(graph.loc))
 
           case graph @ Filter(cross, target, boolean) =>
             f(Filter(cross, transformAux(target), transformAux(boolean))(
               graph.loc))
 
-          case AddSortKey(parent, sortField, valueField, id) =>
-            f(AddSortKey(transformAux(parent), sortField, valueField, id))
+          case AddSortKey(parent, sortField, valueField, id) => f(
+              AddSortKey(transformAux(parent), sortField, valueField, id))
 
-          case Memoize(parent, priority) =>
-            f(Memoize(transformAux(parent), priority))
+          case Memoize(parent, priority) => f(
+              Memoize(transformAux(parent), priority))
 
-          case graph @ Distinct(parent) =>
-            f(Distinct(transformAux(parent))(graph.loc))
+          case graph @ Distinct(parent) => f(
+              Distinct(transformAux(parent))(graph.loc))
 
           case s @ Split(spec, child, id) => {
             val spec2 = transformSpec(spec)
@@ -130,12 +129,11 @@ trait DAGTransform extends DAG {
           }
 
           // not using extractors due to bug
-          case s: SplitGroup =>
-            f(SplitGroup(s.id, s.identities, s.parentId)(s.loc))
+          case s: SplitGroup => f(
+              SplitGroup(s.id, s.identities, s.parentId)(s.loc))
 
           // not using extractors due to bug
-          case s: SplitParam =>
-            f(SplitParam(s.id, s.parentId)(s.loc))
+          case s: SplitParam => f(SplitParam(s.id, s.parentId)(s.loc))
         }
 
       memotable.get(new DepGraphWrapper(graph)) getOrElse {

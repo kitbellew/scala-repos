@@ -233,8 +233,7 @@ trait ColumnarTableLibModule[M[+_]]
                   def columns(tpe: JType) = schema.columns(f(tpe))
                 }
                 r.reducer(ctx).reduce(cols0, range)
-              case None =>
-                r.reducer(ctx).reduce(schema, range)
+              case None => r.reducer(ctx).reduce(schema, range)
             }
           }
         }

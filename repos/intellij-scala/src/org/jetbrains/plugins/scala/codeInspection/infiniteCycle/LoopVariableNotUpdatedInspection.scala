@@ -43,9 +43,8 @@ class LoopVariableNotUpdatedInspection
     scope.breadthFirst.exists {
       case ScAssignStmt(left, _) => true
       case e @ ScInfixExpr(ResolvesTo(Target), _, _)
-          if e.isAssignmentOperator =>
-        true
-      case _ => false
+          if e.isAssignmentOperator => true
+      case _                        => false
     }
   }
 }

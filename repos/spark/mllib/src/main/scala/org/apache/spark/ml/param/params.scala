@@ -96,10 +96,8 @@ class Param[T](
   /** Encodes a param value into JSON, which can be decoded by [[jsonDecode()]]. */
   def jsonEncode(value: T): String = {
     value match {
-      case x: String =>
-        compact(render(JString(x)))
-      case v: Vector =>
-        v.toJson
+      case x: String => compact(render(JString(x)))
+      case v: Vector => v.toJson
       case _ =>
         throw new NotImplementedError(
           "The default jsonEncode only supports string and vector. " +
@@ -129,8 +127,7 @@ private[ml] object Param {
   /** Decodes a param value from JSON. */
   def jsonDecode[T](json: String): T = {
     parse(json) match {
-      case JString(x) =>
-        x.asInstanceOf[T]
+      case JString(x) => x.asInstanceOf[T]
       case JObject(v) =>
         val keys = v.map(_._1)
         assert(
@@ -280,28 +277,20 @@ private[param] object DoubleParam {
   /** Encodes a param value into JValue. */
   def jValueEncode(value: Double): JValue = {
     value match {
-      case _ if value.isNaN =>
-        JString("NaN")
-      case Double.NegativeInfinity =>
-        JString("-Inf")
-      case Double.PositiveInfinity =>
-        JString("Inf")
-      case _ =>
-        JDouble(value)
+      case _ if value.isNaN        => JString("NaN")
+      case Double.NegativeInfinity => JString("-Inf")
+      case Double.PositiveInfinity => JString("Inf")
+      case _                       => JDouble(value)
     }
   }
 
   /** Decodes a param value from JValue. */
   def jValueDecode(jValue: JValue): Double = {
     jValue match {
-      case JString("NaN") =>
-        Double.NaN
-      case JString("-Inf") =>
-        Double.NegativeInfinity
-      case JString("Inf") =>
-        Double.PositiveInfinity
-      case JDouble(x) =>
-        x
+      case JString("NaN")  => Double.NaN
+      case JString("-Inf") => Double.NegativeInfinity
+      case JString("Inf")  => Double.PositiveInfinity
+      case JDouble(x)      => x
       case _ =>
         throw new IllegalArgumentException(s"Cannot decode $jValue to Double.")
     }
@@ -384,28 +373,20 @@ private object FloatParam {
   /** Encodes a param value into JValue. */
   def jValueEncode(value: Float): JValue = {
     value match {
-      case _ if value.isNaN =>
-        JString("NaN")
-      case Float.NegativeInfinity =>
-        JString("-Inf")
-      case Float.PositiveInfinity =>
-        JString("Inf")
-      case _ =>
-        JDouble(value)
+      case _ if value.isNaN       => JString("NaN")
+      case Float.NegativeInfinity => JString("-Inf")
+      case Float.PositiveInfinity => JString("Inf")
+      case _                      => JDouble(value)
     }
   }
 
   /** Decodes a param value from JValue. */
   def jValueDecode(jValue: JValue): Float = {
     jValue match {
-      case JString("NaN") =>
-        Float.NaN
-      case JString("-Inf") =>
-        Float.NegativeInfinity
-      case JString("Inf") =>
-        Float.PositiveInfinity
-      case JDouble(x) =>
-        x.toFloat
+      case JString("NaN")  => Float.NaN
+      case JString("-Inf") => Float.NegativeInfinity
+      case JString("Inf")  => Float.PositiveInfinity
+      case JDouble(x)      => x.toFloat
       case _ =>
         throw new IllegalArgumentException(s"Cannot decode $jValue to Float.")
     }
@@ -532,8 +513,7 @@ class DoubleArrayParam(
 
   override def jsonDecode(json: String): Array[Double] = {
     parse(json) match {
-      case JArray(values) =>
-        values.map(DoubleParam.jValueDecode).toArray
+      case JArray(values) => values.map(DoubleParam.jValueDecode).toArray
       case _ =>
         throw new IllegalArgumentException(
           s"Cannot decode $json to Array[Double].")
@@ -967,10 +947,7 @@ final class ParamMap private[ml] (private val map: mutable.Map[Param[Any], Any])
   override def toString: String = {
     map.toSeq
       .sortBy(_._1.name)
-      .map {
-        case (param, value) =>
-          s"\t${param.parent}-${param.name}: $value"
-      }
+      .map { case (param, value) => s"\t${param.parent}-${param.name}: $value" }
       .mkString("{\n", ",\n", "\n}")
   }
 
@@ -999,10 +976,7 @@ final class ParamMap private[ml] (private val map: mutable.Map[Param[Any], Any])
     */
   @Since("1.2.0")
   def toSeq: Seq[ParamPair[_]] = {
-    map.toSeq.map {
-      case (param, value) =>
-        ParamPair(param, value)
-    }
+    map.toSeq.map { case (param, value) => ParamPair(param, value) }
   }
 
   /**

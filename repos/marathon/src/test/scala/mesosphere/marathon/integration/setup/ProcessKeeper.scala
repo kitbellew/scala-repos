@@ -227,8 +227,7 @@ object ProcessKeeper {
     val upOrExited = Future.firstCompletedOf(Seq(up.future, processExitCode))(
       ExecutionContext.global)
     Try(Await.result(upOrExited, timeout)) match {
-      case Success(result) =>
-        result match {
+      case Success(result) => result match {
           case ProcessExited =>
             throw new IllegalStateException(
               s"Process $name exited before coming up. Give up. $processBuilder")

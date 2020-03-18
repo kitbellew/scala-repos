@@ -41,9 +41,8 @@ class ScalaRefactoringSupportProvider extends RefactoringSupportProvider {
   override def isSafeDeleteAvailable(element: PsiElement): Boolean =
     element match {
       case _: ScTypeDefinition | _: ScFunction | _: ScFieldId |
-          _: ScReferencePattern =>
-        true
-      case _ => false
+          _: ScReferencePattern => true
+      case _                    => false
     }
 
   override def getExtractMethodHandler: RefactoringActionHandler =

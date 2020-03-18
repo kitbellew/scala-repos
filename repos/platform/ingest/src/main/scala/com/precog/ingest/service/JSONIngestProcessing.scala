@@ -100,8 +100,7 @@ final class JSONIngestProcessing(
               case value            => Seq(value)
             }
 
-          case JSONStreamStyle =>
-            values
+          case JSONStreamStyle => values
         }
 
       def ingestAllOrNothing(
@@ -319,8 +318,7 @@ final class JSONIngestProcessing(
       durability match {
         case LocalDurability =>
           ingestJSONChunk(errorHandling, storeMode, None, dataStream) map {
-            case IngestReport(ingested, errors) =>
-              errorHandling match {
+            case IngestReport(ingested, errors) => errorHandling match {
                 case StopOnFirstError | AllOrNothing =>
                   StreamingResult(ingested, errors.headOption.map(_._2))
 

@@ -185,8 +185,7 @@ class WindowLookupJoinedTest extends WordSpec with Matchers {
       serv.get(k).flatMap { in1s =>
         in1s
           .filter {
-            case (t1, _, _) =>
-              (t1 < t) && ((t.toLong - t1.toLong) < win)
+            case (t1, _, _) => (t1 < t) && ((t.toLong - t1.toLong) < win)
           }
           .reduceOption(ord.max(_, _))
           .map { _._3 }

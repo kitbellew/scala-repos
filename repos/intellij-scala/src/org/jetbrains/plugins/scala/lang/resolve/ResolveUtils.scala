@@ -147,8 +147,7 @@ object ResolveUtils {
       retType,
       m match {
         case f: FakePsiMethod => f.params.toSeq
-        case _ =>
-          m.getParameterList.getParameters.map { param =>
+        case _ => m.getParameterList.getParameters.map { param =>
             val scType = s.subst(param.exactParamType())
             new Parameter(
               "",
@@ -184,14 +183,12 @@ object ResolveUtils {
       forCompletion: Boolean = false): Boolean = {
     var place = _place
     memb match {
-      case b: ScBindingPattern =>
-        b.nameContext match {
+      case b: ScBindingPattern => b.nameContext match {
           case memb: ScMember => return isAccessible(memb, place)
           case _              => return true
         }
       //todo: ugly workaround, probably FakePsiMethod is better to remove?
-      case f: FakePsiMethod =>
-        f.navElement match {
+      case f: FakePsiMethod => f.navElement match {
           case memb: PsiMember => return isAccessible(memb, place)
           case _               =>
         }
@@ -270,8 +267,7 @@ object ResolveUtils {
     }
 
     member match {
-      case scMember: ScMember =>
-        scMember.getModifierList.accessModifier match {
+      case scMember: ScMember => scMember.getModifierList.accessModifier match {
           case None => true
           case Some(am: ScAccessModifier) =>
             if (am.isPrivate) {
@@ -282,18 +278,15 @@ object ResolveUtils {
                 within the object in which it is defined.
                  */
                 place match {
-                  case ref: ScReferenceElement =>
-                    ref.qualifier match {
+                  case ref: ScReferenceElement => ref.qualifier match {
                       case None =>
                         val enclosing = PsiTreeUtil.getContextOfType(
                           scMember,
                           true,
                           classOf[ScTemplateDefinition])
                         if (enclosing == null) return true
-                        return PsiTreeUtil.isContextAncestor(
-                          enclosing,
-                          place,
-                          false)
+                        return PsiTreeUtil
+                          .isContextAncestor(enclosing, place, false)
                       case Some(t: ScThisReference) =>
                         val enclosing = PsiTreeUtil.getContextOfType(
                           scMember,
@@ -303,10 +296,8 @@ object ResolveUtils {
                         t.refTemplate match {
                           case Some(t) => return t == enclosing
                           case _ =>
-                            return PsiTreeUtil.isContextAncestor(
-                              enclosing,
-                              place,
-                              false)
+                            return PsiTreeUtil
+                              .isContextAncestor(enclosing, place, false)
                         }
                       case Some(ref: ScReferenceElement) =>
                         val enclosing = PsiTreeUtil.getContextOfType(
@@ -326,10 +317,8 @@ object ResolveUtils {
                       true,
                       classOf[ScTemplateDefinition])
                     if (enclosing == null) return true
-                    return PsiTreeUtil.isContextAncestor(
-                      enclosing,
-                      place,
-                      false)
+                    return PsiTreeUtil
+                      .isContextAncestor(enclosing, place, false)
                 }
               }
               val ref = am.getReference
@@ -450,15 +439,14 @@ object ResolveUtils {
                 }
                 bind match {
                   case td: ScTemplateDefinition =>
-                    if (PsiTreeUtil.isContextAncestor(
-                          td,
-                          place,
-                          false) || PsiTreeUtil.isContextAncestor(
-                          ScalaPsiUtil
-                            .getCompanionModule(td)
-                            .getOrElse(null: PsiElement),
-                          place,
-                          false)) return true
+                    if (PsiTreeUtil
+                          .isContextAncestor(td, place, false) || PsiTreeUtil
+                          .isContextAncestor(
+                            ScalaPsiUtil
+                              .getCompanionModule(td)
+                              .getOrElse(null: PsiElement),
+                            place,
+                            false)) return true
                     td match {
                       case o: ScObject if o.isPackageObject =>
                         processPackage(o.qualifiedName) match {
@@ -487,8 +475,7 @@ object ResolveUtils {
                 s"Enclosing is null in file ${scMember.getContainingFile.getName}:\n${scMember.getContainingFile.getText}")
               if (am.isThis) {
                 place match {
-                  case ref: ScReferenceElement =>
-                    ref.qualifier match {
+                  case ref: ScReferenceElement => ref.qualifier match {
                       case None                      =>
                       case Some(t: ScThisReference)  =>
                       case Some(s: ScSuperReference) =>
@@ -579,8 +566,7 @@ object ResolveUtils {
     } else {
       superRef.staticSuper match {
         case Some(t) => processor.processType(t, place)
-        case None =>
-          superRef.drvTemplate match {
+        case None => superRef.drvTemplate match {
             case Some(c) =>
               TypeDefinitionMembers.processSuperDeclarations(
                 c,
@@ -610,8 +596,7 @@ object ResolveUtils {
       td: PsiClass): Boolean = {
     if (ScalaPsiUtil.cachedDeepIsInheritor(placeTd, td)) return true
     placeTd.selfTypeElement match {
-      case Some(te: ScSelfTypeElement) =>
-        te.typeElement match {
+      case Some(te: ScSelfTypeElement) => te.typeElement match {
           case Some(te: ScTypeElement) =>
             def isInheritorOrSame(tp: ScType): Boolean = {
               ScType.extractClass(tp) match {

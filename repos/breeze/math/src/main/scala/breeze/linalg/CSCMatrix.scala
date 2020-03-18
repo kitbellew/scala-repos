@@ -306,10 +306,8 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
           }
         }
         return true
-      case y: Matrix[_] =>
-        return y == this
-      case _ =>
-        return false
+      case y: Matrix[_] => return y == this
+      case _            => return false
     }
 
 }

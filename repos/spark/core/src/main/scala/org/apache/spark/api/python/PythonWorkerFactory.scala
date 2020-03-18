@@ -214,8 +214,7 @@ private[spark] class PythonWorkerFactory(
       new RedirectThread(stderr, System.err, "stderr reader for " + pythonExec)
         .start()
     } catch {
-      case e: Exception =>
-        logError("Exception in redirecting streams", e)
+      case e: Exception => logError("Exception in redirecting streams", e)
     }
   }
 
@@ -248,8 +247,7 @@ private[spark] class PythonWorkerFactory(
         // the worker will exit after closing the socket
         worker.close()
       } catch {
-        case e: Exception =>
-          logWarning("Failed to close worker socket", e)
+        case e: Exception => logWarning("Failed to close worker socket", e)
       }
     }
   }
@@ -297,8 +295,7 @@ private[spark] class PythonWorkerFactory(
       // Cleanup the worker socket. This will also cause the Python worker to exit.
       try { worker.close() }
       catch {
-        case e: Exception =>
-          logWarning("Failed to close worker socket", e)
+        case e: Exception => logWarning("Failed to close worker socket", e)
       }
     }
   }

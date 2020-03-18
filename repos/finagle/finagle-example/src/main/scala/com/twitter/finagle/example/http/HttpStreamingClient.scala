@@ -42,8 +42,7 @@ object HttpStreamingClient {
             println(buf)
             println("--")
 
-          case _ =>
-            client.close()
+          case _ => client.close()
         }
     })
   }

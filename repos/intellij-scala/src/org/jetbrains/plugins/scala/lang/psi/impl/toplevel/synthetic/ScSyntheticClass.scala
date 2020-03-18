@@ -391,9 +391,7 @@ class SyntheticClasses(project: Project)
           "args",
           JavaArrayType(ScDesignatorType(stringClass)))
       }
-    } catch {
-      case _: ProcessCanceledException =>
-    }
+    } catch { case _: ProcessCanceledException => }
     stringPlusMethod = new ScSyntheticFunction(manager, "+", _, Seq(Seq(Any)))
 
     //register synthetic objects

@@ -1087,14 +1087,10 @@ private[spark] object Utils extends Logging {
     val hour = 60 * minute
 
     ms match {
-      case t if t < second =>
-        "%d ms".format(t)
-      case t if t < minute =>
-        "%.1f s".format(t.toFloat / second)
-      case t if t < hour =>
-        "%.1f m".format(t.toFloat / minute)
-      case t =>
-        "%.2f h".format(t.toFloat / hour)
+      case t if t < second => "%d ms".format(t)
+      case t if t < minute => "%.1f s".format(t.toFloat / second)
+      case t if t < hour   => "%.1f m".format(t.toFloat / minute)
+      case t               => "%.2f h".format(t.toFloat / hour)
     }
   }
 
@@ -1795,8 +1791,7 @@ private[spark] object Utils extends Logging {
   def logUncaughtExceptions[T](f: => T): T = {
     try { f }
     catch {
-      case ct: ControlThrowable =>
-        throw ct
+      case ct: ControlThrowable => throw ct
       case t: Throwable =>
         logError(
           s"Uncaught exception in thread ${Thread.currentThread().getName}",
@@ -1811,8 +1806,7 @@ private[spark] object Utils extends Logging {
       val res = f
       scala.util.Success(res)
     } catch {
-      case ct: ControlThrowable =>
-        throw ct
+      case ct: ControlThrowable => throw ct
       case t: Throwable =>
         logError(
           s"Uncaught exception in thread ${Thread.currentThread().getName}",
@@ -1825,10 +1819,8 @@ private[spark] object Utils extends Logging {
   def isFatalError(e: Throwable): Boolean = {
     e match {
       case NonFatal(_) | _: InterruptedException | _: NotImplementedError |
-          _: ControlThrowable =>
-        false
-      case _ =>
-        true
+          _: ControlThrowable => false
+      case _                  => true
     }
   }
 
@@ -1852,9 +1844,7 @@ private[spark] object Utils extends Logging {
           absoluteURI.getPath(),
           uri.getFragment())
       }
-    } catch {
-      case e: URISyntaxException =>
-    }
+    } catch { case e: URISyntaxException => }
     new File(path).getAbsoluteFile().toURI()
   }
 
@@ -1894,10 +1884,7 @@ private[spark] object Utils extends Logging {
     val path = Option(filePath).getOrElse(getDefaultPropertiesFile())
     Option(path).foreach { confFile =>
       getPropertiesFromFile(confFile)
-        .filter {
-          case (k, v) =>
-            k.startsWith("spark.")
-        }
+        .filter { case (k, v) => k.startsWith("spark.") }
         .foreach {
           case (k, v) =>
             conf.setIfMissing(k, v)
@@ -2062,10 +2049,9 @@ private[spark] object Utils extends Logging {
       case e: BindException =>
         if (e.getMessage != null) { return true }
         isBindCollision(e.getCause)
-      case e: MultiException =>
-        e.getThrowables.asScala.exists(isBindCollision)
-      case e: Exception => isBindCollision(e.getCause)
-      case _            => false
+      case e: MultiException => e.getThrowables.asScala.exists(isBindCollision)
+      case e: Exception      => isBindCollision(e.getCause)
+      case _                 => false
     }
   }
 

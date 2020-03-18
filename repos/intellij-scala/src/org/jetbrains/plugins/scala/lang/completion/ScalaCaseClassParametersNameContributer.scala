@@ -104,8 +104,7 @@ class ScalaCaseClassParametersNameContributer
             extends LookupElementWeigher("orderByPosition") {
           override def weigh(item: LookupElement): Comparable[_] = {
             ScalaLookupItem.original(item) match {
-              case s: ScalaLookupItem =>
-                s.element match {
+              case s: ScalaLookupItem => s.element match {
                   case param: ScParameter
                       if param.name == s.name /*not equals when name computed by type*/ =>
                     val positionInClassParameters = classParams.indexOf(param)

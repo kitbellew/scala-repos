@@ -300,8 +300,7 @@ trait CoGrouped[K, +R]
               if (isize != dsize) {
                 // avoid capturing anything other than the mapping ints:
                 val mapping: Map[Int, Int] = inputs.zipWithIndex.map {
-                  case (item, idx) =>
-                    idx -> distincts.indexWhere(_ == item)
+                  case (item, idx) => idx -> distincts.indexWhere(_ == item)
                 }.toMap
 
                 new CoGroupedJoiner(

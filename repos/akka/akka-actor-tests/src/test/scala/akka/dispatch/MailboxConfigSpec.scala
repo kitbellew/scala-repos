@@ -92,8 +92,7 @@ abstract class MailboxSpec
 
   def ensureMailboxSize(q: MessageQueue, expected: Int): Unit =
     q.numberOfMessages match {
-      case -1 | `expected` ⇒
-        q.hasMessages should ===(expected != 0)
+      case -1 | `expected` ⇒ q.hasMessages should ===(expected != 0)
       case other ⇒
         other should ===(expected)
         q.hasMessages should ===(expected != 0)
@@ -122,8 +121,7 @@ abstract class MailboxSpec
   def ensureInitialMailboxState(config: MailboxType, q: MessageQueue) {
     q should not be null
     q match {
-      case aQueue: BlockingQueue[_] ⇒
-        config match {
+      case aQueue: BlockingQueue[_] ⇒ config match {
           case BoundedMailbox(capacity, _) ⇒
             aQueue.remainingCapacity should ===(capacity)
           case UnboundedMailbox() ⇒

@@ -102,9 +102,8 @@ object ScTupleType {
 
   def unapply(tp: ScType): Option[Seq[ScType]] = {
     ScSynteticSugarClassesUtil.extractForPrefix(tp, "scala.Tuple") match {
-      case Some((clazz, typeArgs)) if typeArgs.length > 0 =>
-        Some(typeArgs)
-      case _ => None
+      case Some((clazz, typeArgs)) if typeArgs.length > 0 => Some(typeArgs)
+      case _                                              => None
     }
   }
 }
@@ -120,8 +119,7 @@ object ScSynteticSugarClassesUtil {
     tp.isAliasType match {
       case Some(AliasType(t: ScTypeAliasDefinition, Success(lower, _), _)) =>
         extractForPrefix(lower, prefix, depth - 1)
-      case _ =>
-        tp match {
+      case _ => tp match {
           case p: ScParameterizedType =>
             def startsWith(clazz: PsiClass, qualNamePrefix: String) =
               clazz.qualifiedName != null && clazz.qualifiedName.startsWith(

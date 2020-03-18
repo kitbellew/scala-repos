@@ -46,8 +46,7 @@ class DefaultFailureDetectorRegistry[A](detectorFactory: () ⇒ FailureDetector)
           // when this one acquired it, so the second check is needed.
           val oldTable = resourceToFailureDetector.get
           oldTable.get(resource) match {
-            case Some(failureDetector) ⇒
-              failureDetector.heartbeat()
+            case Some(failureDetector) ⇒ failureDetector.heartbeat()
             case None ⇒
               val newDetector: FailureDetector = detectorFactory()
               newDetector.heartbeat()

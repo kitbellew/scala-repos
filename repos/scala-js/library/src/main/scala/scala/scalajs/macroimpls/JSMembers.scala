@@ -59,8 +59,7 @@ private[macroimpls] trait JSMembers {
           unused.forall(_.isDefault) &&
           (used zip thatParams).forall { case (x, y) => x.conformsTo(y) }
 
-        case _ =>
-          false
+        case _ => false
       }
 
     def displayStr(name: String): String =

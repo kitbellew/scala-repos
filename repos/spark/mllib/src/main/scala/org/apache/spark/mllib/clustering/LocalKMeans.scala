@@ -50,10 +50,7 @@ private[mllib] object LocalKMeans extends Logging {
       val curCenters = centers.view.take(i)
       val sum = points.view
         .zip(weights)
-        .map {
-          case (p, w) =>
-            w * KMeans.pointCost(curCenters, p)
-        }
+        .map { case (p, w) => w * KMeans.pointCost(curCenters, p) }
         .sum
       val r = rand.nextDouble() * sum
       var cumulativeScore = 0.0

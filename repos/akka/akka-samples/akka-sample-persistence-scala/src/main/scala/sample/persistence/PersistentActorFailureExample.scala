@@ -10,10 +10,9 @@ object PersistentActorFailureExample extends App {
     var received: List[String] = Nil // state
 
     def receiveCommand: Receive = {
-      case "print" => println(s"received ${received.reverse}")
-      case "boom"  => throw new Exception("boom")
-      case payload: String =>
-        persist(payload) { p => received = p :: received }
+      case "print"         => println(s"received ${received.reverse}")
+      case "boom"          => throw new Exception("boom")
+      case payload: String => persist(payload) { p => received = p :: received }
 
     }
 

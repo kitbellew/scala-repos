@@ -65,10 +65,10 @@ package object time {
     */
   def parsedate(s: String, euro: Boolean = false): Option[DateTime] = {
     s match {
-      case dfmt1(y, m, d) =>
-        Some(new DateTime(y.toInt, m.toInt, d.toInt, 0, 0, 0, 0))
-      case dfmt2(y, m, d) =>
-        Some(new DateTime(y.toInt, m.toInt, d.toInt, 0, 0, 0, 0))
+      case dfmt1(y, m, d) => Some(
+          new DateTime(y.toInt, m.toInt, d.toInt, 0, 0, 0, 0))
+      case dfmt2(y, m, d) => Some(
+          new DateTime(y.toInt, m.toInt, d.toInt, 0, 0, 0, 0))
       case dfmt3(m, d, y) if !euro =>
         Some(new DateTime(y.toInt, m.toInt, d.toInt, 0, 0, 0, 0))
       case dfmt3(d, m, y) if euro =>

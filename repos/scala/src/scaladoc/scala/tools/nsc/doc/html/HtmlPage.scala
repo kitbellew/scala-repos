@@ -98,8 +98,7 @@ abstract class HtmlPage extends Page {
       case Paragraph(in) => <p>{inlineToHtml(in)}</p>
       case Code(data) =>
         <pre>{SyntaxHigh(data)}</pre> //<pre>{ scala.xml.Text(data) }</pre>
-      case UnorderedList(items) =>
-        <ul>{listItemsToHtml(items)}</ul>
+      case UnorderedList(items) => <ul>{listItemsToHtml(items)}</ul>
       case OrderedList(items, listStyle) =>
         <ol class={listStyle}>{listItemsToHtml(items)}</ol>
       case DefinitionList(items) =>
@@ -108,8 +107,7 @@ abstract class HtmlPage extends Page {
             case (t, d) => <dt>{inlineToHtml(t)}</dt><dd>{blockToHtml(d)}</dd>
           }
         }</dl>
-      case HorizontalRule() =>
-        <hr/>
+      case HorizontalRule() => <hr/>
     }
 
   def listItemsToHtml(items: Seq[Block]) =
@@ -123,8 +121,7 @@ abstract class HtmlPage extends Page {
           xmlList :+ <li>{
             inlineToHtml(inline)
           }</li> // LIs are blocks, no need to use Ps
-        case block =>
-          xmlList :+ <li>{blockToHtml(block)}</li>
+        case block => xmlList :+ <li>{blockToHtml(block)}</li>
       }
     }
 
@@ -167,16 +164,13 @@ abstract class HtmlPage extends Page {
         <span class="extype" name={tooltip}>{inlineToHtml(text)}</span>
       case LinkToExternal(name, url) =>
         <a href={url} class="extype" target="_top">{inlineToHtml(text)}</a>
-      case _ =>
-        inlineToHtml(text)
+      case _ => inlineToHtml(text)
     }
 
   def typeToHtml(tpes: List[model.TypeEntity], hasLinks: Boolean): NodeSeq =
     tpes match {
-      case Nil =>
-        NodeSeq.Empty
-      case List(tpe) =>
-        typeToHtml(tpe, hasLinks)
+      case Nil       => NodeSeq.Empty
+      case List(tpe) => typeToHtml(tpe, hasLinks)
       case tpe :: rest =>
         typeToHtml(tpe, hasLinks) ++ scala.xml.Text(" with ") ++ typeToHtml(
           rest,
@@ -269,8 +263,7 @@ abstract class HtmlPage extends Page {
     (image, companionImage) match {
       case (from, Some(to)) =>
         ((from + "_to_" + to + "_big.png").toLowerCase, from + "/" + to)
-      case (from, None) =>
-        ((from + "_big.png").toLowerCase, from.toString)
+      case (from, None) => ((from + "_big.png").toLowerCase, from.toString)
     }
   }
 

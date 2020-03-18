@@ -149,9 +149,7 @@ object Ticket522 {
       }
   }
 
-  App({ x: Int => x }, 5) match {
-    case App(arg, a) =>
-  }
+  App({ x: Int => x }, 5) match { case App(arg, a) => }
 }
 
 object Ticket710 {

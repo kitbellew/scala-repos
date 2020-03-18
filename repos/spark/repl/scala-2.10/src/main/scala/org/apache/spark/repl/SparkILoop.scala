@@ -615,23 +615,19 @@ class SparkILoop(
       import global._
 
       words(line) match {
-        case Nil =>
-          intp.executionWrapper match {
+        case Nil => intp.executionWrapper match {
             case "" => "No execution wrapper is set."
             case s  => "Current execution wrapper: " + s
           }
-        case "clear" :: Nil =>
-          intp.executionWrapper match {
+        case "clear" :: Nil => intp.executionWrapper match {
             case "" => "No execution wrapper is set."
             case s  => intp.clearExecutionWrapper(); "Cleared execution wrapper."
           }
-        case wrapper :: Nil =>
-          intp.typeOfExpression(wrapper) match {
+        case wrapper :: Nil => intp.typeOfExpression(wrapper) match {
             case PolyType(List(targ), MethodType(List(arg), restpe)) =>
               intp setExecutionWrapper intp.pathToTerm(wrapper)
               "Set wrapper to '" + wrapper + "'"
-            case tp =>
-              failMsg + "\nFound: <unknown>"
+            case tp => failMsg + "\nFound: <unknown>"
           }
         case _ => failMsg
       }
@@ -876,8 +872,8 @@ class SparkILoop(
     if (line startsWith ":") {
       val cmd = line.tail takeWhile (x => !x.isWhitespace)
       uniqueCommand(cmd) match {
-        case Some(lc) =>
-          lc(line.tail stripPrefix cmd dropWhile (_.isWhitespace))
+        case Some(lc) => lc(
+            line.tail stripPrefix cmd dropWhile (_.isWhitespace))
         case _ => ambiguousError(cmd)
       }
     } else if (intp.global == null)

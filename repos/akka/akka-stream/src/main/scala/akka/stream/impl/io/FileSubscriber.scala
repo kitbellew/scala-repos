@@ -77,8 +77,8 @@ private[akka] class FileSubscriber(
     case ActorSubscriberMessage.OnComplete ⇒
       try { chan.force(true) }
       catch {
-        case ex: Exception ⇒
-          closeAndComplete(IOResult(bytesWritten, Failure(ex)))
+        case ex: Exception ⇒ closeAndComplete(
+            IOResult(bytesWritten, Failure(ex)))
       }
       context.stop(self)
   }

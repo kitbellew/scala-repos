@@ -74,10 +74,7 @@ class SQLExecutionSuite extends SparkFunSuite {
       override def run(): Unit = {
         try {
           sc.parallelize(1 to 100).map { i => (i, i) }.toDF("a", "b").collect()
-        } catch {
-          case t: Throwable =>
-            throwable = Some(t)
-        }
+        } catch { case t: Throwable => throwable = Some(t) }
 
       }
     }

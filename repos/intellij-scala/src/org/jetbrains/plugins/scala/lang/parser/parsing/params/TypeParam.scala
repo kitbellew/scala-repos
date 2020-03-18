@@ -40,9 +40,8 @@ object TypeParam {
         return false
     }
     builder.getTokenType match {
-      case ScalaTokenTypes.tLSQBRACKET =>
-        TypeParamClause parse builder
-      case _ =>
+      case ScalaTokenTypes.tLSQBRACKET => TypeParamClause parse builder
+      case _                           =>
     }
 
     val boundParser = parseBound(builder) _

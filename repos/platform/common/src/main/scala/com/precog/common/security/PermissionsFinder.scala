@@ -78,8 +78,7 @@ class PermissionsFinder[M[+_]: Monad](
     } flatMap {
       _.permissions collect {
         case perm @ WritePermission(path0, _)
-            if path0.isEqualOrParentOf(path) =>
-          perm
+            if path0.isEqualOrParentOf(path) => perm
       }
     }
   }
@@ -96,8 +95,7 @@ class PermissionsFinder[M[+_]: Monad](
         }
       val eithers: List[M[Option[Authorities]] \/ M[Option[Authorities]]] =
         writePermissions.map({
-          case WritePermission(_, WriteAsAny) =>
-            left(accountWriter)
+          case WritePermission(_, WriteAsAny) => left(accountWriter)
           case WritePermission(_, WriteAsAll(accountIds)) =>
             (Authorities
               .ifPresent(accountIds)

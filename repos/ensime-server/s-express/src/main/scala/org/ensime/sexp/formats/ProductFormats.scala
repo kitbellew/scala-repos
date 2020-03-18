@@ -85,8 +85,7 @@ trait LowPriorityProductFormats {
             }
             g.from(r.value.read(els))
 
-          case x =>
-            deserializationError(x)
+          case x => deserializationError(x)
         }
     }
 

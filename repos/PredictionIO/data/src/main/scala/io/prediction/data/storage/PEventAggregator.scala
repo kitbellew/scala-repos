@@ -116,8 +116,7 @@ private[prediction] case class EventOp(
           if (delete.t >= set.t) { None }
           else {
             val deleteKeys: Set[String] = set.fields.filter {
-              case (k, PropTime(kv, t)) =>
-                (delete.t >= t)
+              case (k, PropTime(kv, t)) => (delete.t >= t)
             }.keySet
             Some(set.fields -- unsetKeys -- deleteKeys)
           }

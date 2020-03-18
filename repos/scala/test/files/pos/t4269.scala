@@ -1,5 +1,3 @@
 class A {
-  PartialFunction.condOpt(Nil) {
-    case items @ List(_*) if true =>
-  }
+  PartialFunction.condOpt(Nil) { case items @ List(_*) if true => }
 }

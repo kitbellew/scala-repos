@@ -23,13 +23,11 @@ object Macros {
             TypeApply(
               Select(Apply(_, List(Literal(Constant(name: String)))), _),
               _),
-            List(value)) =>
-        name -> value
+            List(value)) => name -> value
     }
     // val fields = kvps map { case (k, v) => q"@body($v) def ${TermName(k)} = macro Macros.selFieldImpl" }
     val fields = kvps map {
-      case (k, v) =>
-        DefDef(
+      case (k, v) => DefDef(
           Modifiers(
             MACRO,
             typeNames.EMPTY,

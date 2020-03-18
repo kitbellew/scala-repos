@@ -116,9 +116,8 @@ class TimeoutFilter[Req, Rep](
     // If there's a current deadline, we combine it with the one derived
     // from our timeout.
     val deadline = Deadline.current match {
-      case Some(current) =>
-        Deadline.combined(timeoutDeadline, current)
-      case None => timeoutDeadline
+      case Some(current) => Deadline.combined(timeoutDeadline, current)
+      case None          => timeoutDeadline
     }
 
     Contexts.broadcast.let(Deadline, deadline) {

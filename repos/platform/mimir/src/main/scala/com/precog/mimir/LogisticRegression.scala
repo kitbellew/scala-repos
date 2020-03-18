@@ -89,8 +89,7 @@ trait LogisticRegressionLibModule[M[+_]]
               t2: => Option[Seq[ColumnValues]]) = {
             t1 match {
               case None => t2
-              case Some(c1) =>
-                t2 match {
+              case Some(c1) => t2 match {
                   case None     => Some(c1)
                   case Some(c2) => Some(c1 ++ c2)
                 }

@@ -212,8 +212,7 @@ abstract class NumericRange[T](
               start == x.start && last == x.last
             ) // same length and same endpoints implies equality
         )
-      case _ =>
-        super.equals(other)
+      case _ => super.equals(other)
     }
 
   override def toString() = {

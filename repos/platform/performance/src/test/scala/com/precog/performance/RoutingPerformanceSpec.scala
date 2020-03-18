@@ -163,8 +163,7 @@ class MockIngestActor(toSend: Int, messageBatch: Seq[IngestMessage])
 
 class MockProjectionActors(projectionActor: ActorRef) extends Actor {
   def receive = {
-    case AcquireProjection(desc) =>
-      sender ! ProjectionAcquired(projectionActor)
+    case AcquireProjection(desc) => sender ! ProjectionAcquired(projectionActor)
     case AcquireProjectionBatch(descs) =>
       var map = Map.empty[ProjectionDescriptor, ActorRef]
       val descItr = descs.iterator
@@ -178,10 +177,8 @@ class MockProjectionActors(projectionActor: ActorRef) extends Actor {
 
 class MockProjectionActor extends Actor {
   def receive = {
-    case ProjectionInsert(_, _) =>
-      sender ! ()
-    case ProjectionBatchInsert(_) =>
-      sender ! ()
-    case _ => println("Unplanned projection actor action")
+    case ProjectionInsert(_, _)   => sender ! ()
+    case ProjectionBatchInsert(_) => sender ! ()
+    case _                        => println("Unplanned projection actor action")
   }
 }

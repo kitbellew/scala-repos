@@ -776,8 +776,7 @@ class ClientBuilder[
     */
   def tls(sslContext: SSLContext, hostname: Option[String]): This =
     configured((Transport.TLSClientEngine(Some({
-      case inet: InetSocketAddress =>
-        Ssl.client(
+      case inet: InetSocketAddress => Ssl.client(
           sslContext,
           hostname.getOrElse(inet.getHostName),
           inet.getPort)

@@ -83,8 +83,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           lineNumber(tree)
           bc.store(idx, tk)
 
-        case _ =>
-          genLoad(tree, UNIT)
+        case _ => genLoad(tree, UNIT)
       }
     }
 
@@ -124,8 +123,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             case POS => () // nothing
             case NEG => bc.neg(resKind)
             case NOT => bc.genPrimitiveNot(resKind)
-            case _ =>
-              abort(
+            case _ => abort(
                 s"Unknown unary operation: ${fun.symbol.fullName} code: $code")
           }
 
@@ -158,8 +156,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             case _ => abort(s"Unknown primitive: ${fun.symbol}[$code]")
           }
 
-        case _ =>
-          abort(s"Too many arguments for primitive function: $tree")
+        case _ => abort(s"Too many arguments for primitive function: $tree")
       }
       lineNumber(tree)
       resKind
@@ -193,8 +190,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             // we pretend we generate whatever type is expected from us.
             //generatedType = UNIT
             bc.astore(elementType)
-          case _ =>
-            abort(s"Too many arguments for array set operation: $tree")
+          case _ => abort(s"Too many arguments for array set operation: $tree")
         }
       } else {
         generatedType = INT
@@ -286,8 +282,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       tree match {
         case lblDf: LabelDef => genLabelDef(lblDf, expectedType)
 
-        case ValDef(_, nme.THIS, _, _) =>
-          debuglog("skipping trivial assign to _$this: " + tree)
+        case ValDef(_, nme.THIS, _, _) => debuglog(
+            "skipping trivial assign to _$this: " + tree)
 
         case ValDef(_, _, _, rhs) =>
           val sym = tree.symbol
@@ -303,26 +299,22 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           }
           generatedType = UNIT
 
-        case t: If =>
-          generatedType = genLoadIf(t, expectedType)
+        case t: If => generatedType = genLoadIf(t, expectedType)
 
         case r: Return =>
           genReturn(r)
           generatedType = expectedType
 
-        case t: Try =>
-          generatedType = genLoadTry(t)
+        case t: Try => generatedType = genLoadTry(t)
 
-        case Throw(expr) =>
-          generatedType = genThrow(expr)
+        case Throw(expr) => generatedType = genThrow(expr)
 
         case New(tpt) =>
           abort(
             s"Unexpected New(${tpt.summaryString}/$tpt) reached GenBCode.\n" +
               "  Call was genLoad" + ((tree, expectedType)))
 
-        case app: Apply =>
-          generatedType = genApply(app, expectedType)
+        case app: Apply => generatedType = genApply(app, expectedType)
 
         case app @ ApplyDynamic(
               qual,
@@ -402,16 +394,16 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             generatedType = tk
           }
 
-        case Literal(value) =>
-          if (value.tag != UnitTag) (value.tag, expectedType) match {
-            case (IntTag, LONG) =>
-              bc.lconst(value.longValue); generatedType = LONG
-            case (FloatTag, DOUBLE) =>
-              bc.dconst(value.doubleValue); generatedType = DOUBLE
-            case (NullTag, _) =>
-              bc.emit(asm.Opcodes.ACONST_NULL); generatedType = srNullRef
-            case _ => genConstant(value); generatedType = tpeTK(tree)
-          }
+        case Literal(value) => if (value.tag != UnitTag)
+            (value.tag, expectedType) match {
+              case (IntTag, LONG) =>
+                bc.lconst(value.longValue); generatedType = LONG
+              case (FloatTag, DOUBLE) =>
+                bc.dconst(value.doubleValue); generatedType = DOUBLE
+              case (NullTag, _) =>
+                bc.emit(asm.Opcodes.ACONST_NULL); generatedType = srNullRef
+              case _ => genConstant(value); generatedType = tpeTK(tree)
+            }
 
         case blck: Block => genBlock(blck, expectedType)
 
@@ -423,11 +415,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           generatedType = UNIT
           genStat(tree)
 
-        case av: ArrayValue =>
-          generatedType = genArrayValue(av)
+        case av: ArrayValue => generatedType = genArrayValue(av)
 
-        case mtch: Match =>
-          generatedType = genMatch(mtch)
+        case mtch: Match => generatedType = genMatch(mtch)
 
         case EmptyTree => if (expectedType != UNIT) { emitZeroOf(expectedType) }
 
@@ -645,8 +635,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                 // We get here for trees created by SuperSelect which use tpnme.EMPTY as the super qualifier
                 // Subsequent code uses the owner of fun.symbol to target the call.
                 null
-              case parent :: Nil =>
-                parent
+              case parent :: Nil => parent
               case parents =>
                 devWarning(
                   "ambiguous parent class qualifier: " + qual.symbol.parentSymbols)
@@ -706,8 +695,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
               genLoadArguments(args, paramTKs(app))
               genCallMethod(ctor, InvokeStyle.Special, app.pos)
 
-            case _ =>
-              abort(s"Cannot instantiate $tpt of kind: $generatedType")
+            case _ => abort(s"Cannot instantiate $tpt of kind: $generatedType")
           }
         case Apply(fun, args)
             if app.hasAttachment[delambdafy.LambdaMetaFactoryCapable] =>
@@ -908,8 +896,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                 abort(
                   s"Invalid alternative in alternative pattern in Match node: $tree at: ${tree.pos}")
             }
-          case _ =>
-            abort(s"Invalid pattern in Match node: $tree at: ${tree.pos}")
+          case _ => abort(
+              s"Invalid pattern in Match node: $tree at: ${tree.pos}")
         }
       }
       bc.emitSWITCH(
@@ -1252,8 +1240,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                 fun.symbol) == scalaPrimitives.CONCAT)
             liftStringConcat(larg) ::: rarg
           else tree :: Nil
-        case _ =>
-          tree :: Nil
+        case _ => tree :: Nil
       }
 
     /* Emit code to compare the two top-most stack values using the 'op' operator. */

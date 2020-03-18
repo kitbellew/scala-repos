@@ -70,9 +70,8 @@ object LAScheduler extends LAScheduler with Loggable {
           60,
           TimeUnit.SECONDS,
           blockingQueueSize match {
-            case Full(x) =>
-              new ArrayBlockingQueue(x)
-            case _ => new LinkedBlockingQueue
+            case Full(x) => new ArrayBlockingQueue(x)
+            case _       => new LinkedBlockingQueue
           })
 
       def execute(f: () => Unit): Unit =
@@ -283,8 +282,7 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
                   mb.remove()
                   try { execTranslate(hiPriPf)(mb.item) }
                   catch { case e: Exception => if (eh.isDefinedAt(e)) eh(e) }
-                case _ =>
-                  baseMailbox.synchronized {
+                case _ => baseMailbox.synchronized {
                     if (msgList.isEmpty) { keepOnDoingHighPriory = false }
                     else { putListIntoMB() }
                   }
@@ -302,8 +300,7 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
             mb.remove()
             try { execTranslate(pf)(mb.item) }
             catch { case e: Exception => if (eh.isDefinedAt(e)) eh(e) }
-          case _ =>
-            baseMailbox.synchronized {
+          case _ => baseMailbox.synchronized {
               if (msgList.isEmpty) {
                 processing = false
                 clearProcessing = false
@@ -358,9 +355,7 @@ class MockSpecializedLiftActor[T] extends SpecializedLiftActor[T] {
 
   // We aren't required to implement a real message handler for the Mock actor
   // since the message handler never runs.
-  override def messageHandler: PartialFunction[T, Unit] = {
-    case _ =>
-  }
+  override def messageHandler: PartialFunction[T, Unit] = { case _ => }
 
   /**
     * Test to see if this actor has received a particular message.
@@ -395,8 +390,7 @@ trait LiftActor
     if (null ne responseFuture) {
       forwardTo match {
         case la: LiftActor => la ! MsgWithResp(msg, responseFuture)
-        case other =>
-          reply(other !? msg)
+        case other         => reply(other !? msg)
       }
     } else forwardTo ! msg
   }

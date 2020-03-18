@@ -420,11 +420,11 @@ abstract class SuperAccessors
             transform(fn),
             transformArgs(fn.tpe.params, args))
 
-        case Function(vparams, body) =>
-          withInvalidOwner { treeCopy.Function(tree, vparams, transform(body)) }
+        case Function(vparams, body) => withInvalidOwner {
+            treeCopy.Function(tree, vparams, transform(body))
+          }
 
-        case _ =>
-          super.transform(tree)
+        case _ => super.transform(tree)
       } catch {
         case ex: AssertionError =>
           if (sym != null && sym != NoSymbol)

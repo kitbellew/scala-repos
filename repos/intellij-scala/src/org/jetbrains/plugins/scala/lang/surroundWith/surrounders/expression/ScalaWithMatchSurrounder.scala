@@ -32,9 +32,8 @@ class ScalaWithMatchSurrounder extends ScalaExpressionSurrounder {
   private def needBraces(expr: PsiElement): Boolean = {
     expr match {
       case _: ScDoStmt | _: ScIfStmt | _: ScTryStmt | _: ScForStatement |
-          _: ScWhileStmt | _: ScThrowStmt | _: ScReturnStmt =>
-        true
-      case _ => false
+          _: ScWhileStmt | _: ScThrowStmt | _: ScReturnStmt => true
+      case _                                                => false
     }
   }
 
@@ -53,8 +52,7 @@ class ScalaWithMatchSurrounder extends ScalaExpressionSurrounder {
 
   override def getSurroundSelectionRange(withMatchNode: ASTNode): TextRange = {
     val element: PsiElement = withMatchNode.getPsi match {
-      case x: ScParenthesisedExpr =>
-        x.expr match {
+      case x: ScParenthesisedExpr => x.expr match {
           case Some(y) => y
           case _       => return x.getTextRange
         }

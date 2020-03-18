@@ -107,8 +107,8 @@ private[evaluation] class ScalaEvaluatorBuilder(
           case t: ScSuperReference =>
             thisOrSuperEvaluator(t.reference, isSuper = true)
           case tuple: ScTuple => tupleEvaluator(tuple)
-          case newTd: ScNewTemplateDefinition =>
-            newTemplateDefinitionEvaluator(newTd)
+          case newTd: ScNewTemplateDefinition => newTemplateDefinitionEvaluator(
+              newTd)
           case inf: ScInfixExpr           => infixExpressionEvaluator(inf)
           case ScParenthesisedExpr(inner) => evaluatorFor(inner)
           case p: ScPrefixExpr            => prefixExprEvaluator(p)
@@ -168,10 +168,8 @@ private object needsCompilation {
 
   def unapply(elem: PsiElement): Option[String] =
     elem match {
-      case m: ScMember =>
-        m match {
-          case td: ScTemplateDefinition =>
-            td match {
+      case m: ScMember => m match {
+          case td: ScTemplateDefinition => td match {
               case o: ScObject => message("object")
               case c: ScClass  => message("class")
               case t: ScTrait  => message("trait")

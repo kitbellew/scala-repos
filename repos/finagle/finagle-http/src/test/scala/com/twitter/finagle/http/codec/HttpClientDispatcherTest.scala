@@ -44,8 +44,7 @@ class OpTransport[In, Out](_ops: List[OpTransport.Op[In, Out]])
       case Read(res) :: rest =>
         ops = rest
         res
-      case _ =>
-        fail(s"Expected ${ops.headOption}; got read()")
+      case _ => fail(s"Expected ${ops.headOption}; got read()")
     }
 
   def write(in: In) =
@@ -55,8 +54,7 @@ class OpTransport[In, Out](_ops: List[OpTransport.Op[In, Out]])
 
         ops = rest
         res
-      case _ =>
-        fail(s"Expected ${ops.headOption}; got write($in)")
+      case _ => fail(s"Expected ${ops.headOption}; got write($in)")
     }
 
   def close(deadline: Time) =
@@ -65,13 +63,10 @@ class OpTransport[In, Out](_ops: List[OpTransport.Op[In, Out]])
         ops = rest
         status = Status.Closed
         res respond {
-          case Return(()) =>
-            onClose.setValue(new Exception("closed"))
-          case Throw(exc) =>
-            onClose.setValue(exc)
+          case Return(()) => onClose.setValue(new Exception("closed"))
+          case Throw(exc) => onClose.setValue(exc)
         }
-      case _ =>
-        fail(s"Expected ${ops.headOption}; got close($deadline)")
+      case _ => fail(s"Expected ${ops.headOption}; got close($deadline)")
     }
 
   var status: Status = Status.Open

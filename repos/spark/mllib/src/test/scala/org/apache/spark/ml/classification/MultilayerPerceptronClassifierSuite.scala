@@ -49,8 +49,7 @@ class MultilayerPerceptronClassifierSuite
     val result = model.transform(dataFrame)
     val predictionAndLabels = result.select("prediction", "label").collect()
     predictionAndLabels.foreach {
-      case Row(p: Double, l: Double) =>
-        assert(p == l)
+      case Row(p: Double, l: Double) => assert(p == l)
     }
   }
 

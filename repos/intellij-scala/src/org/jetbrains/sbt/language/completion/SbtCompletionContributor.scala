@@ -87,9 +87,8 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
                   seqFullType match {
                     case ScParameterizedType(seqType, Seq(valType))
                         if collectionTypeNames contains qualifiedName(
-                          seqType) =>
-                      Some(valType)
-                    case _ => None
+                          seqType) => Some(valType)
+                    case _         => None
                   }
                 case _ => None
               }
@@ -159,8 +158,7 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
             case f: PsiField
                 if ScType
                   .create(f.getType, f.getProject, parentRef.getResolveScope)
-                  .conforms(expectedType) =>
-              apply(variant)
+                  .conforms(expectedType) => apply(variant)
             case typed: ScTypedDefinition
                 if typed.getType().getOrAny.conforms(expectedType) =>
               variant.isLocalVariable =

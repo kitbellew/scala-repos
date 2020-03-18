@@ -95,8 +95,7 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
       attemptNumber: TaskAttemptNumber): Boolean = {
     val msg = AskPermissionToCommitOutput(stage, partition, attemptNumber)
     coordinatorRef match {
-      case Some(endpointRef) =>
-        endpointRef.askWithRetry[Boolean](msg)
+      case Some(endpointRef) => endpointRef.askWithRetry[Boolean](msg)
       case None =>
         logError(
           "canCommit called after coordinator was stopped (is SparkEnv shutdown in progress)?")

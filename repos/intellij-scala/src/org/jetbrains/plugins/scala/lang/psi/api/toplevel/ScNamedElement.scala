@@ -26,8 +26,7 @@ trait ScNamedElement
     with NavigatablePsiElement {
   def name: String = {
     this match {
-      case st: StubBasedPsiElement[_] =>
-        st.getStub match {
+      case st: StubBasedPsiElement[_] => st.getStub match {
           case namedStub: NamedStub[_] => namedStub.getName
           case _                       => nameInner
         }

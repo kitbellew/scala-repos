@@ -84,28 +84,24 @@ trait CommentFactoryBase {
           } catch { case _: java.lang.NumberFormatException => List() }
       }
       val groupNames = groupNames0 flatMap {
-        case (group, body) =>
-          body match {
+        case (group, body) => body match {
             case Body(List(Paragraph(Chain(List(Summary(Text(name)))))))
-                if (!name.trim.contains("\n")) =>
-              List(group -> (name.trim))
-            case _ => List()
+                if (!name.trim.contains("\n")) => List(group -> (name.trim))
+            case _                             => List()
           }
       }
 
       override val shortDescription: Option[Text] =
         shortDescription0.lastOption collect {
           case Body(List(Paragraph(Chain(List(Summary(Text(e)))))))
-              if !e.trim.contains("\n") =>
-            Text(e)
+              if !e.trim.contains("\n") => Text(e)
         }
 
       override val hideImplicitConversions: List[String] =
         hideImplicitConversions0 flatMap {
           case Body(List(Paragraph(Chain(List(Summary(Text(e)))))))
-              if !e.trim.contains("\n") =>
-            List(e)
-          case _ => List()
+              if !e.trim.contains("\n") => List(e)
+          case _                        => List()
         }
     }
 
@@ -668,10 +664,8 @@ trait CommentFactoryBase {
       val stack = mutable.ListBuffer.empty[String]
 
       begin.close match {
-        case Some(HtmlTag(CLOSE_TAG(s))) =>
-          stack += s
-        case _ =>
-          return ""
+        case Some(HtmlTag(CLOSE_TAG(s))) => stack += s
+        case _                           => return ""
       }
 
       do {

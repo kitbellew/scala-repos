@@ -81,9 +81,8 @@ class TypeAliasUsagesSearcher
             element match {
               case resRef: ResolvableReferenceElement =>
                 resRef.bind().flatMap(_.parentElement) match {
-                  case Some(`myTarget`) =>
-                    consumer.process(resRef)
-                  case _ => true
+                  case Some(`myTarget`) => consumer.process(resRef)
+                  case _                => true
                 }
               case _ => true
             }

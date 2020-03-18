@@ -114,8 +114,7 @@ object Grouped {
     WrappedSerialization.rawSetBinary(
       List((cls, boxordSer)),
       {
-        case (k: String, v: String) =>
-          FlowStateMap.mutate(flowDef) { st =>
+        case (k: String, v: String) => FlowStateMap.mutate(flowDef) { st =>
             val newSt = st.addConfigSetting(k + cls, v)
             (newSt, ())
           }
@@ -143,8 +142,9 @@ object Grouped {
 
   def tuple2Conv[K, V](ord: Ordering[K]): TupleConverter[(K, V)] =
     ord match {
-      case _: OrderedSerialization[_] =>
-        tuple2Converter[Boxed[K], V].andThen { kv => (kv._1.get, kv._2) }
+      case _: OrderedSerialization[_] => tuple2Converter[Boxed[K], V].andThen {
+          kv => (kv._1.get, kv._2)
+        }
       case _ => tuple2Converter[K, V]
     }
 
@@ -245,8 +245,7 @@ sealed trait ReduceStep[K, V1] extends KeyedPipe[K] {
                       .asInstanceOf[TupleSetter[(K, Boxed[V1])]]
                       .contraMap { kv1: (K, V1) => (kv1._1, boxfn(kv1._2)) }
                     (Some(valueF), ts2)
-                  case _ =>
-                    (Some(Grouped.valueSorting(vs)), tupleSetter)
+                  case _ => (Some(Grouped.valueSorting(vs)), tupleSetter)
                 }
             }
             .getOrElse((None, tupleSetter))

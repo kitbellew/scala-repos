@@ -148,11 +148,9 @@ private[cluster] class Reachability private (
     val newRecord = Record(observer, subject, status, v)
     observerRows(observer) match {
       case None if status == Reachable ⇒ this
-      case None ⇒
-        new Reachability(records :+ newRecord, newVersions)
+      case None ⇒ new Reachability(records :+ newRecord, newVersions)
 
-      case Some(oldObserverRows) ⇒
-        oldObserverRows.get(subject) match {
+      case Some(oldObserverRows) ⇒ oldObserverRows.get(subject) match {
           case None ⇒
             if (status == Reachable && oldObserverRows.forall {
                   case (_, r) ⇒ r.status == Reachable
@@ -174,9 +172,8 @@ private[cluster] class Reachability private (
                   records.filterNot(_.observer == observer),
                   newVersions)
               } else {
-                val newRecords = records.updated(
-                  records.indexOf(oldRecord),
-                  newRecord)
+                val newRecords = records
+                  .updated(records.indexOf(oldRecord), newRecord)
                 new Reachability(newRecords, newVersions)
               }
             }
@@ -201,13 +198,11 @@ private[cluster] class Reachability private (
           recordBuilder ++= rows.collect {
             case (_, r) if allowed(r.subject) ⇒ r
           }
-        case (Some(rows1), None) ⇒
-          if (observerVersion1 > observerVersion2)
+        case (Some(rows1), None) ⇒ if (observerVersion1 > observerVersion2)
             recordBuilder ++= rows1.collect {
               case (_, r) if allowed(r.subject) ⇒ r
             }
-        case (None, Some(rows2)) ⇒
-          if (observerVersion2 > observerVersion1)
+        case (None, Some(rows2)) ⇒ if (observerVersion2 > observerVersion1)
             recordBuilder ++= rows2.collect {
               case (_, r) if allowed(r.subject) ⇒ r
             }
@@ -249,8 +244,7 @@ private[cluster] class Reachability private (
       subject: UniqueAddress): ReachabilityStatus =
     observerRows(observer) match {
       case None ⇒ Reachable
-      case Some(observerRows) ⇒
-        observerRows.get(subject) match {
+      case Some(observerRows) ⇒ observerRows.get(subject) match {
           case None ⇒ Reachable
           case Some(record) ⇒ record.status
         }
@@ -283,8 +277,7 @@ private[cluster] class Reachability private (
   def allUnreachableFrom(observer: UniqueAddress): Set[UniqueAddress] =
     observerRows(observer) match {
       case None ⇒ Set.empty
-      case Some(observerRows) ⇒
-        observerRows.collect {
+      case Some(observerRows) ⇒ observerRows.collect {
           case (subject, record) if record.status == Unreachable ⇒ subject
         }(breakOut)
     }

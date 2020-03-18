@@ -79,8 +79,7 @@ object Crosstable {
 
     def reads(r: BSON.Reader): Crosstable =
       r str id split '/' match {
-        case Array(u1Id, u2Id) =>
-          Crosstable(
+        case Array(u1Id, u2Id) => Crosstable(
             user1 = User(u1Id, r intD "s1"),
             user2 = User(u2Id, r intD "s2"),
             results = r.get[List[String]](results).map { r =>

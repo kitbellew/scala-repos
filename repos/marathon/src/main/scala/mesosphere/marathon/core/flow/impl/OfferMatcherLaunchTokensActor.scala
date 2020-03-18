@@ -62,7 +62,6 @@ private class OfferMatcherLaunchTokensActor(
 
   override def receive: Receive = {
     case TaskStatusUpdate(_, _, MarathonTaskStatus.Running(Some(mesosStatus)))
-        if healthy(mesosStatus) =>
-      offerMatcherManager.addLaunchTokens(1)
+        if healthy(mesosStatus) => offerMatcherManager.addLaunchTokens(1)
   }
 }

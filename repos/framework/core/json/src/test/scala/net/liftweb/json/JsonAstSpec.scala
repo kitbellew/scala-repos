@@ -113,8 +113,7 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
     val anyReplacement = (x: JValue, replacement: JObject) => {
       def findOnePath(jv: JValue, l: List[String]): List[String] =
         jv match {
-          case JObject(fl) =>
-            fl match {
+          case JObject(fl) => fl match {
               case field :: xs => findOnePath(field.value, l)
               case Nil         => l
             }
@@ -128,14 +127,12 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
         path match {
           case Nil => x == in
 
-          case name :: Nil =>
-            (in \ name) match {
+          case name :: Nil => (in \ name) match {
               case `replacement` => true
               case _             => false
             }
 
-          case name :: xs =>
-            (in \ name) match {
+          case name :: xs => (in \ name) match {
               case JNothing => false
               case value    => replaced(xs, value)
             }

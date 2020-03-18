@@ -32,8 +32,7 @@ object JsonObjectId {
       case JObject(JField("$oid", JString(objectIdString)) :: Nil)
           if ObjectId.isValid(objectIdString) =>
         Some(new ObjectId(objectIdString))
-      case _ =>
-        None
+      case _ => None
     }
   }
 
@@ -59,10 +58,8 @@ object JsonRegex {
       case JObject(
             JField("$regex", JString(regex)) :: JField(
               "$flags",
-              JInt(f)) :: Nil) =>
-        Some(Pattern.compile(regex, f.intValue))
-      case _ =>
-        None
+              JInt(f)) :: Nil) => Some(Pattern.compile(regex, f.intValue))
+      case _                   => None
     }
   }
 
@@ -73,10 +70,9 @@ object JsonRegex {
 object JsonUUID {
   def unapply(json: JValue): Option[UUID] = {
     json match {
-      case JObject(JField("$uuid", JString(s)) :: Nil) =>
-        tryo(UUID.fromString(s))
-      case _ =>
-        None
+      case JObject(JField("$uuid", JString(s)) :: Nil) => tryo(
+          UUID.fromString(s))
+      case _ => None
     }
   }
 
@@ -88,8 +84,7 @@ object JsonDate {
     json match {
       case JObject(JField("$dt", JString(s)) :: Nil) =>
         formats.dateFormat.parse(s)
-      case _ =>
-        None
+      case _ => None
     }
   }
 
@@ -102,8 +97,7 @@ object JsonDateTime {
     json match {
       case JObject(JField("$dt", JString(s)) :: Nil) =>
         formats.dateFormat.parse(s).map(dt => new DateTime(dt))
-      case _ =>
-        None
+      case _ => None
     }
   }
 

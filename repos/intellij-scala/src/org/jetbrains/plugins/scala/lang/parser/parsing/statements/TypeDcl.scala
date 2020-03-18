@@ -20,8 +20,7 @@ object TypeDcl {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val returnMarker = builder.mark
     builder.getTokenType match {
-      case ScalaTokenTypes.kTYPE =>
-        builder.advanceLexer() //Ate type
+      case ScalaTokenTypes.kTYPE => builder.advanceLexer() //Ate type
       case _ =>
         returnMarker.drop()
         return false

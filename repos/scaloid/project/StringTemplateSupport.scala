@@ -15,14 +15,11 @@ class StringTemplateSupport(
   def render(file: File, parameters: Map[String, Any]) = {
     val st = new ST(baseGroup, IO.read(file))
     expandToPackageMap(parameters).foreach {
-      case (k, v: AndroidClass) =>
-        st.add(k, v)
+      case (k, v: AndroidClass) => st.add(k, v)
 
-      case (k, v: Map[String, Any]) =>
-        st.add(k, AndroidPackage(v))
+      case (k, v: Map[String, Any]) => st.add(k, AndroidPackage(v))
 
-      case (k, _) =>
-        throw new Error("Unexpected parameter: " + k)
+      case (k, _) => throw new Error("Unexpected parameter: " + k)
     }
     st.render
   }

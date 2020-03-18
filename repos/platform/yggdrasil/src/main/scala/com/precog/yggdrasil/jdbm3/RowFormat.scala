@@ -403,8 +403,7 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
 
     val colValueEncoders: Array[ColumnValueEncoder] = {
       (columnRefs zip cols).map({
-        case (ColumnRef(_, cType), col) =>
-          getColumnEncoder(cType, col)
+        case (ColumnRef(_, cType), col) => getColumnEncoder(cType, col)
       })(collection.breakOut)
     }
 
@@ -710,11 +709,9 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
     import scalaz.std.list._
 
     val writes: ByteBufferPoolS[List[Unit]] = cvals.map {
-      case v: CNullValue =>
-        writeFlagFor(v.cType)
+      case v: CNullValue => writeFlagFor(v.cType)
 
-      case v: CWrappedValue[_] =>
-        for {
+      case v: CWrappedValue[_] => for {
           _ <- writeFlagFor(v.cType)
           _ <- codecForCValueType(v.cType).write(v.value)
         } yield ()
@@ -732,10 +729,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
 
     def readForSelector(cTypes: List[CType]): List[CValue] = {
       val cValue = cTypeForFlag(buf.get()) match {
-        case cType: CValueType[_] =>
-          cType(codecForCValueType(cType).read(buf))
-        case cType: CNullType =>
-          cType
+        case cType: CValueType[_] => cType(codecForCValueType(cType).read(buf))
+        case cType: CNullType     => cType
       }
 
       val cType = cValue.cType
@@ -745,10 +740,7 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
       }
     }
 
-    selectors.map {
-      case (_, cTypes) =>
-        readForSelector(cTypes)
-    }.flatten
+    selectors.map { case (_, cTypes) => readForSelector(cTypes) }.flatten
   }
 
   override def compare(a: Array[Byte], b: Array[Byte]): Int = {
@@ -763,12 +755,9 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
       if ((aType & 0xF0) == (bType & 0xF0)) {
         ((aType & 0xF0).toByte) match {
           case FUndefined => 0
-          case FBoolean =>
-            abuf.get() - bbuf.get()
-          case FString =>
-            Codec.Utf8Codec.compare(abuf, bbuf)
-          case FNumeric =>
-            aType match {
+          case FBoolean   => abuf.get() - bbuf.get()
+          case FString    => Codec.Utf8Codec.compare(abuf, bbuf)
+          case FNumeric => aType match {
               case FLong =>
                 val a = Codec[Long].read(abuf)
                 bType match {

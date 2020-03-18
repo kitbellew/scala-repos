@@ -95,10 +95,7 @@ object ClusterSingletonProxySpec {
 
     log.info("Singleton created on {}", Cluster(context.system).selfAddress)
 
-    def receive: Actor.Receive = {
-      case msg ⇒
-        sender() ! "Got " + msg
-    }
+    def receive: Actor.Receive = { case msg ⇒ sender() ! "Got " + msg }
   }
 
 }

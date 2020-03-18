@@ -97,10 +97,7 @@ object FormFieldDirectives extends FormFieldDirectives {
       }
     }
 
-    _formFieldSeq.map {
-      case seq ⇒
-        append(Map.empty, seq)
-    }
+    _formFieldSeq.map { case seq ⇒ append(Map.empty, seq) }
   }
 
   private val _formFieldMap: Directive1[Map[String, String]] = _formFieldSeq

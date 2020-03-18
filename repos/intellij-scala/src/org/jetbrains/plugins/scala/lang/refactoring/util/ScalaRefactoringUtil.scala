@@ -113,8 +113,7 @@ object ScalaRefactoringUtil {
   def getExprFrom(expr: ScExpression): ScExpression = {
     var e = unparExpr(expr)
     e match {
-      case x: ScReferenceExpression =>
-        x.resolve() match {
+      case x: ScReferenceExpression => x.resolve() match {
           case _: ScReferencePattern => return e
           case _                     =>
         }
@@ -220,9 +219,8 @@ object ScalaRefactoringUtil {
       firstChild match {
         case reference: ScStableCodeReferenceElement =>
           reference.resolve() match {
-            case ta: ScTypeAlias if !ScalaPsiUtil.hasStablePath(ta) =>
-              ta
-            case _ => null
+            case ta: ScTypeAlias if !ScalaPsiUtil.hasStablePath(ta) => ta
+            case _                                                  => null
           }
         case _ => null
       }
@@ -360,9 +358,8 @@ object ScalaRefactoringUtil {
     // todo add a test for case with only implicit parameter list.
     val exprType = (element, cachedType) match {
       case (ReferenceToFunction(func), ScFunctionType(returnType, _))
-          if (func: ScFunction).parameters.isEmpty =>
-        returnType
-      case _ => cachedType
+          if (func: ScFunction).parameters.isEmpty => returnType
+      case _                                       => cachedType
     }
     val types = addPossibleTypes(exprType, element).map(replaceSingletonTypes)
     Some((element, types))
@@ -375,17 +372,14 @@ object ScalaRefactoringUtil {
         expr.getText + " _",
         expr.getManager)
     expr match {
-      case ref: ScReferenceExpression =>
-        ref.resolve() match {
+      case ref: ScReferenceExpression => ref.resolve() match {
           case fun: ScFunction
               if fun.paramClauses.clauses.nonEmpty &&
-                fun.paramClauses.clauses.head.isImplicit =>
-            copyExpr
+                fun.paramClauses.clauses.head.isImplicit  => copyExpr
           case fun: ScFunction if fun.parameters.nonEmpty => liftMethod
           case meth: PsiMethod
-              if meth.getParameterList.getParameters.nonEmpty =>
-            liftMethod
-          case _ => copyExpr
+              if meth.getParameterList.getParameters.nonEmpty => liftMethod
+          case _                                              => copyExpr
         }
       case _ => copyExpr
     }
@@ -485,8 +479,7 @@ object ScalaRefactoringUtil {
       for (child <- enclosingContainer.getChildren) {
         if (PsiEquivalenceUtil.areElementsEquivalent(child, element)) {
           child match {
-            case x: ScExpression =>
-              x.getParent match {
+            case x: ScExpression => x.getParent match {
                 case y: ScMethodCall if y.args.exprs.isEmpty => occurrences += y
                 case _                                       => occurrences += x
               }
@@ -509,9 +502,8 @@ object ScalaRefactoringUtil {
         if (PsiEquivalenceUtil.areElementsEquivalent(child, element)) {
           child match {
             case typeElement: ScTypeElement
-                if !inTemplateParents(typeElement) =>
-              occurrences += typeElement
-            case _ =>
+                if !inTemplateParents(typeElement) => occurrences += typeElement
+            case _                                 =>
           }
         } else { occurrences ++= getTypeElementOccurrences(element, child) }
       }
@@ -562,8 +554,7 @@ object ScalaRefactoringUtil {
 
   def unparExpr(expr: ScExpression): ScExpression = {
     expr match {
-      case x: ScParenthesisedExpr =>
-        x.expr match {
+      case x: ScParenthesisedExpr => x.expr match {
           case Some(e) => e
           case _       => x
         }
@@ -729,10 +720,8 @@ object ScalaRefactoringUtil {
           case Some(r) => builder.append(getShortText(r))
           case _       =>
         }
-      case bl: ScBlock =>
-        builder.append("{...}")
-      case d: ScDoStmt =>
-        builder.append("do {...} while (...)")
+      case bl: ScBlock => builder.append("{...}")
+      case d: ScDoStmt => builder.append("do {...} while (...)")
       case f: ScForStatement =>
         builder.append("for (...) ")
         if (f.isYield) builder.append("yield ")
@@ -885,9 +874,8 @@ object ScalaRefactoringUtil {
       val element: PsiElement = file.findElementAt(offset) match {
         case w: PsiWhiteSpace
             if w.getTextRange.getStartOffset == offset &&
-              w.getText.contains("\n") =>
-          file.findElementAt(offset - 1)
-        case p => p
+              w.getText.contains("\n") => file.findElementAt(offset - 1)
+        case p                         => p
       }
       val expressions = getExpressions(element).filter(exprFilter)
       def chooseExpression(expr: ScExpression) {
@@ -939,9 +927,8 @@ object ScalaRefactoringUtil {
                     typeInParenthesis.typeElement.get)) {
                 res += typeInParenthesis.typeElement.get
               }
-            case typeElement: ScTypeElement =>
-              res += typeElement
-            case _ =>
+            case typeElement: ScTypeElement => res += typeElement
+            case _                          =>
           }
           parent = PsiTreeUtil.getParentOfType(parent, classOf[ScTypeElement])
         }
@@ -982,13 +969,11 @@ object ScalaRefactoringUtil {
     val element: PsiElement = file.findElementAt(offset) match {
       case w: PsiWhiteSpace
           if w.getTextRange.getStartOffset == offset &&
-            w.getText.contains("\n") =>
-        file.findElementAt(offset - 1)
+            w.getText.contains("\n") => file.findElementAt(offset - 1)
       case w: PsiWhiteSpace
           if w.getTextRange.getStartOffset == offset &&
-            w.getText.contains(" ") =>
-        file.findElementAt(offset - 1)
-      case p => p
+            w.getText.contains(" ") => file.findElementAt(offset - 1)
+      case p                        => p
     }
     element
   }
@@ -1128,8 +1113,7 @@ object ScalaRefactoringUtil {
         ScalaBundle.message("cannot.refactor.named.arg")
       case _: ScLiteralPattern =>
         ScalaBundle.message("cannot.refactor.literal.pattern")
-      case par: ScClassParameter =>
-        par.containingClass match {
+      case par: ScClassParameter => par.containingClass match {
           case clazz: ScClass if clazz.isTopLevel =>
             ScalaBundle.message("cannot.refactor.class.parameter.top.level")
           case _ => null
@@ -1318,13 +1302,11 @@ object ScalaRefactoringUtil {
     prev match {
       case tb: ScTryBlock if !tb.hasRBrace => true
       case _: ScBlock | _: ScTemplateBody | _: ScEarlyDefinitions |
-          _: ScalaFile | _: ScCaseClause =>
-        false
-      case _: ScFunction => true
+          _: ScalaFile | _: ScCaseClause => false
+      case _: ScFunction                 => true
       case Both(
             fun: ScFunction,
-            _ childOf (_: ScTemplateBody | _: ScEarlyDefinitions)) =>
-        true
+            _ childOf (_: ScTemplateBody | _: ScEarlyDefinitions)) => true
       case ifSt: ScIfStmt
           if Seq(ifSt.thenBranch, ifSt.elseBranch) contains Option(parExpr) =>
         true
@@ -1336,8 +1318,7 @@ object ScalaRefactoringUtil {
       case whSt: ScWhileStmt if whSt.body.orNull == parExpr            => true
       case doSt: ScDoStmt if doSt.getExprBody.orNull == parExpr        => true
       case finBl: ScFinallyBlock if finBl.expression.orNull == parExpr => true
-      case fE: ScFunctionExpr =>
-        fE.getContext match {
+      case fE: ScFunctionExpr => fE.getContext match {
           case be: ScBlock if be.lastExpr.contains(fE) => false
           case _                                       => true
         }
@@ -1493,9 +1474,8 @@ object ScalaRefactoringUtil {
     place match {
       case null => None
       case (bs: ScBlockStatement) childOf (_: ScBlock | _: ScEarlyDefinitions |
-          _: ScalaFile | _: ScTemplateBody) =>
-        Some(bs)
-      case other => findEnclosingBlockStatement(other.getParent)
+          _: ScalaFile | _: ScTemplateBody) => Some(bs)
+      case other                            => findEnclosingBlockStatement(other.getParent)
     }
   }
 

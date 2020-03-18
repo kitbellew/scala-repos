@@ -25,8 +25,7 @@ class VerifyTypes(after: Option[Phase] = None) extends Phase {
           case t: TableNode =>
             t.nodeType match {
               case CollectionType(cons, NominalType(ts, _)) =>
-              case _ =>
-                logger.warn("Table has unexpected type:", t)
+              case _                                        => logger.warn("Table has unexpected type:", t)
             }
             t
           case n => n.untyped

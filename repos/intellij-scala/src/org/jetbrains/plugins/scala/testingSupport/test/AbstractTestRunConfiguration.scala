@@ -205,8 +205,7 @@ abstract class AbstractTestRunConfiguration(
       scope
     }
     testKind match {
-      case TestKind.ALL_IN_PACKAGE =>
-        searchTest match {
+      case TestKind.ALL_IN_PACKAGE => searchTest match {
           case SearchForTest.IN_WHOLE_PROJECT => unionScope(_ => true)
           case SearchForTest.IN_SINGLE_MODULE if getModule != null =>
             mScope(getModule)

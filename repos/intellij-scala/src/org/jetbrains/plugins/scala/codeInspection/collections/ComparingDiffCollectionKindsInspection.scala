@@ -70,9 +70,8 @@ object ComparingDiffCollectionKinds extends SimplificationType {
       conversion: String) = {
     val subExprConvertedText = subExpr match {
       case _: ScMethodCall | _: ScReferenceExpression | _: ScParenthesisedExpr |
-          _: ScTuple =>
-        s"${subExpr.getText}.$conversion"
-      case _ => s"(${subExpr.getText}).$conversion"
+          _: ScTuple => s"${subExpr.getText}.$conversion"
+      case _         => s"(${subExpr.getText}).$conversion"
     }
     val exprText = expr.getText
     val rangeInParent = subExpr.getTextRange.shiftRight(-expr.getTextOffset)

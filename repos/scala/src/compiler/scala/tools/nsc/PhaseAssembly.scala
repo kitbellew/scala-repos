@@ -53,9 +53,8 @@ trait PhaseAssembly {
     def getNodeByPhase(phs: SubComponent): Node = {
       val node: Node = getNodeByPhase(phs.phaseName)
       node.phaseobj match {
-        case None =>
-          node.phaseobj = Some(List[SubComponent](phs))
-        case _ =>
+        case None => node.phaseobj = Some(List[SubComponent](phs))
+        case _    =>
       }
       node
     }

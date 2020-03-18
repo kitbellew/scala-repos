@@ -290,8 +290,7 @@ abstract class KafkaShardIngestActor(
             handleBatchComplete(pendingCheckpoint)
             None
 
-          case stillPending =>
-            Some(stillPending)
+          case stillPending => Some(stillPending)
         }
       }
 
@@ -424,8 +423,7 @@ abstract class KafkaShardIngestActor(
         : (Vector[(Long, EventMessage)], YggCheckpoint) = {
 
       input match {
-        case Nil =>
-          (batch, checkpoint)
+        case Nil => (batch, checkpoint)
 
         case (
               offset,
@@ -553,8 +551,7 @@ abstract class KafkaShardIngestActor(
 
             val updatedMessages: List[(Long, EventMessage)] = messageSet
               .flatMap {
-                case (offset, \/-(message)) =>
-                  Some((offset, message))
+                case (offset, \/-(message)) => Some((offset, message))
 
                 case (offset, -\/((apiKey, path, genMessage))) =>
                   authorityCache.get((apiKey, path)) map { authorities =>

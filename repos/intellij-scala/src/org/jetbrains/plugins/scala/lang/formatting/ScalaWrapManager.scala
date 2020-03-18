@@ -125,8 +125,7 @@ object ScalaWrapManager {
                   case _: ScEarlyDefinitions | _: ScTemplateBody => true;
                   case _                                         => false
                 }
-              } =>
-            return Wrap.createWrap(settings.FIELD_ANNOTATION_WRAP, false)
+              } => return Wrap.createWrap(settings.FIELD_ANNOTATION_WRAP, false)
           case _: ScVariable | _: ScValue | _: ScTypeAlias =>
             return Wrap.createWrap(settings.VARIABLE_ANNOTATION_WRAP, false)
           case _: ScParameter =>
@@ -200,8 +199,7 @@ object ScalaWrapManager {
       case args: ScArgumentExprList =>
         if (childPsi.isInstanceOf[ScExpression]) return suggestedWrap
         else return null
-      case patt: ScPatternArgumentList =>
-        childPsi match {
+      case patt: ScPatternArgumentList => childPsi match {
           case _: ScPattern     => return suggestedWrap
           case _: ScSequenceArg => return suggestedWrap
           case _                => return null
@@ -224,8 +222,7 @@ object ScalaWrapManager {
           classOf[ScExtendsBlock])
         val first: PsiElement = e.earlyDefinitions match {
           case Some(z) => z
-          case _ =>
-            e.templateParents match {
+          case _ => e.templateParents match {
               case Some(tp) if tp.typeElements.nonEmpty => tp.typeElements.head
               case _                                    => null
             }

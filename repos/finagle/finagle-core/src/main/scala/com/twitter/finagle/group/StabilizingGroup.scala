@@ -76,15 +76,13 @@ object StabilizingGroup {
           // if our health transitions into healthy,
           // reset removal times foreach elem in remq.
           newh match {
-            case newh if h == newh =>
-              loop(remq, newh)
-            case Healthy =>
+            case newh if h == newh => loop(remq, newh)
+            case Healthy           =>
               // Transitioned to healthy: push back
               val newTime = Time.now + grace
               val newq = remq map { case (elem, _) => (elem, newTime) }
               loop(newq, Healthy)
-            case newh =>
-              loop(remq, newh)
+            case newh => loop(remq, newh)
           }
         },
         newSet.recv map { newSet =>

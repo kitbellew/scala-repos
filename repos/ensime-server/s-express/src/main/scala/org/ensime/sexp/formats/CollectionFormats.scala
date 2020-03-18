@@ -89,8 +89,7 @@ trait CollectionFormats {
       def read(v: Sexp): M[K, V] =
         v match {
           case SexpNil => cbf().result()
-          case SexpList(els) =>
-            els.map {
+          case SexpList(els) => els.map {
               case SexpList(sk :: sv :: Nil) =>
                 (sk.convertTo[K], sv.convertTo[V])
               case x => deserializationError(x)
@@ -170,8 +169,7 @@ trait CollectionFormats {
 
     def read(s: Sexp) =
       s match {
-        case SexpData(data) =>
-          (data(start), data(end), data(step)) match {
+        case SexpData(data) => (data(start), data(end), data(step)) match {
             case (SexpNumber(s), SexpNumber(e), SexpNumber(st)) =>
               Range(s.toInt, e.toInt, st.toInt)
             case _ => deserializationError(s)

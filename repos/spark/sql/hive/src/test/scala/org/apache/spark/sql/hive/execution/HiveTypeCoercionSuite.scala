@@ -34,8 +34,7 @@ class HiveTypeCoercionSuite extends HiveComparisonTest {
     ("'1'", "'1'"))
 
   baseTypes.foreach {
-    case (ni, si) =>
-      baseTypes.foreach {
+    case (ni, si) => baseTypes.foreach {
         case (nj, sj) =>
           createQueryTest(s"$ni + $nj", s"SELECT $si + $sj FROM src LIMIT 1")
       }

@@ -56,9 +56,7 @@ class Goose(config: Configuration = new Configuration) {
 
     val f = new File(config.localStoragePath)
     try { if (!f.isDirectory) { f.mkdirs() } }
-    catch {
-      case e: Exception =>
-    }
+    catch { case e: Exception => }
     if (!f.isDirectory) {
       throw new Exception(
         config.localStoragePath + " directory does not seem to exist, you need to set this for image processing downloads")

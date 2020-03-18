@@ -220,8 +220,7 @@ object SizeEstimator extends Logging {
       // general all ClassLoaders and Classes will be shared between objects anyway.
     } else {
       obj match {
-        case s: KnownSizeEstimation =>
-          state.size += s.estimatedSize
+        case s: KnownSizeEstimation => state.size += s.estimatedSize
         case _ =>
           val classInfo = getClassInfo(cls)
           state.size += alignSize(classInfo.shellSize)

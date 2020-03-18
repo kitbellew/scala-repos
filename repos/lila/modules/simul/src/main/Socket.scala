@@ -74,8 +74,7 @@ private[simul] final class Socket(
       if (timeBomb.boom) self ! PoisonPill
     }
 
-    case lila.chat.actorApi.ChatLine(_, line) =>
-      line match {
+    case lila.chat.actorApi.ChatLine(_, line) => line match {
         case line: lila.chat.UserLine =>
           notifyVersion(
             "message",

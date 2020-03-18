@@ -95,8 +95,7 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
   def parsePreferredReplicaElectionData(
       jsonString: String): immutable.Set[TopicAndPartition] = {
     Json.parseFull(jsonString) match {
-      case Some(m) =>
-        m.asInstanceOf[Map[String, Any]].get("partitions") match {
+      case Some(m) => m.asInstanceOf[Map[String, Any]].get("partitions") match {
           case Some(partitionsList) =>
             val partitionsRaw = partitionsList
               .asInstanceOf[List[Map[String, Any]]]

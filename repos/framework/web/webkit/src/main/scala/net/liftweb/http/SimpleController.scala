@@ -33,8 +33,7 @@ trait SimpleController {
   def param(name: String): Box[String] = {
     request.params.get(name) match {
       case None => Empty
-      case Some(nl) =>
-        nl.take(1) match {
+      case Some(nl) => nl.take(1) match {
           case Nil => Empty
           case l   => Full(l.head)
         }

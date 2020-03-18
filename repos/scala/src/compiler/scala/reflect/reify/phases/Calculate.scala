@@ -77,8 +77,7 @@ trait Calculate {
               registerLocalSymbol(related, currMetalevel)
             }
           super.traverse(tree)
-        case _ =>
-          super.traverse(tree)
+        case _ => super.traverse(tree)
       }
   }
 }

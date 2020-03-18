@@ -108,8 +108,7 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
       }
       .sortBy(_.toString)
     topicSummary.zip(localTopicSummary).foreach {
-      case (topics, topicsLocal) =>
-        assert(topics ~== topicsLocal absTol 0.01)
+      case (topics, topicsLocal) => assert(topics ~== topicsLocal absTol 0.01)
     }
 
     // Check: per-doc topic distributions
@@ -314,8 +313,7 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val ldaModel = lda.run(docs)
     val topicIndices = ldaModel.describeTopics(maxTermsPerTopic = 10)
     val topics = topicIndices.map {
-      case (terms, termWeights) =>
-        terms.zip(termWeights)
+      case (terms, termWeights) => terms.zip(termWeights)
     }
 
     // check distribution for each topic, typical distribution is (0.3, 0.3, 0.3, 0.02, 0.02, 0.02)
@@ -441,10 +439,7 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
       .collect()
       .map(doc => ldaModel.topicDistribution(doc._2))
       .zip(actualPredictions.map(_._2).collect())
-      .foreach {
-        case (single, batch) =>
-          assert(single ~== batch relTol 1e-3d)
-      }
+      .foreach { case (single, batch) => assert(single ~== batch relTol 1e-3d) }
     actualPredictions.unpersist()
   }
 
@@ -466,8 +461,7 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val ldaModel = lda.run(docs)
     val topicIndices = ldaModel.describeTopics(maxTermsPerTopic = 10)
     val topics = topicIndices.map {
-      case (terms, termWeights) =>
-        terms.zip(termWeights)
+      case (terms, termWeights) => terms.zip(termWeights)
     }
 
     /* Verify results with Python:
@@ -617,8 +611,7 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val emptyDocsArray = Array.fill(6)(
       Vectors.sparse(vocabSize, Array.empty, Array.empty))
     val emptyDocs = emptyDocsArray.zipWithIndex.map {
-      case (wordCounts, docId) =>
-        (docId.toLong, wordCounts)
+      case (wordCounts, docId) => (docId.toLong, wordCounts)
     }
     val distributedEmptyDocs = sc.parallelize(emptyDocs, 2)
 
@@ -638,8 +631,7 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val emptyDocsArray = Array.fill(6)(
       Vectors.sparse(vocabSize, Array.empty, Array.empty))
     val emptyDocs = emptyDocsArray.zipWithIndex.map {
-      case (wordCounts, docId) =>
-        (docId.toLong, wordCounts)
+      case (wordCounts, docId) => (docId.toLong, wordCounts)
     }
     val distributedEmptyDocs = sc.parallelize(emptyDocs, 2)
 

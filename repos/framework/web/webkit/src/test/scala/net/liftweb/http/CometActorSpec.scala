@@ -49,10 +49,7 @@ object CometActorSpec extends Specification {
 
   "A CometActor" should {
     class RedirectingComet extends SpecCometActor {
-      override def lowPriority = {
-        case TestMessage =>
-          S.redirectTo("place")
-      }
+      override def lowPriority = { case TestMessage => S.redirectTo("place") }
     }
 
     "redirect the user when a ResponseShortcutException with redirect occurs" in {
@@ -61,17 +58,14 @@ object CometActorSpec extends Specification {
       comet ! TestMessage
 
       comet.receivedMessages.exists {
-        case PartialUpdateMsg(update) if update() == RedirectTo("place") =>
-          true
-        case _ =>
-          false
+        case PartialUpdateMsg(update) if update() == RedirectTo("place") => true
+        case _                                                           => false
       } must beTrue
     }
 
     class FunctionRedirectingComet extends SpecCometActor {
       override def lowPriority = {
-        case TestMessage =>
-          S.redirectTo("place", () => "do stuff")
+        case TestMessage => S.redirectTo("place", () => "do stuff")
       }
     }
 
@@ -81,8 +75,7 @@ object CometActorSpec extends Specification {
       comet ! TestMessage
 
       val matchingMessage = comet.receivedMessages.collect {
-        case PartialUpdateMsg(update) =>
-          update()
+        case PartialUpdateMsg(update) => update()
       }
 
       matchingMessage must beLike {

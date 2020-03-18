@@ -25,10 +25,7 @@ trait ComTests extends AsyncTests {
       try {
         body
         false
-      } catch {
-        case _: ComJSEnv.ComClosedException =>
-          true
-      }
+      } catch { case _: ComJSEnv.ComClosedException => true }
 
     assertTrue(msg, thrown)
   }
@@ -218,9 +215,7 @@ trait ComTests extends AsyncTests {
     try {
       com.await(DefaultTimeout)
       fail("Stopped VM should be in failure state")
-    } catch {
-      case _: Throwable =>
-    }
+    } catch { case _: Throwable => }
   }
 
   @Test
@@ -240,9 +235,7 @@ trait ComTests extends AsyncTests {
     try {
       Await.result(fut, DefaultTimeout)
       fail("Stopped VM should be in failure state")
-    } catch {
-      case _: Throwable =>
-    }
+    } catch { case _: Throwable => }
   }
 
 }

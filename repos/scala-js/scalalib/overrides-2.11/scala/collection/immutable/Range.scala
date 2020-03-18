@@ -361,8 +361,7 @@ class Range(val start: Int, val end: Int, val step: Int)
               ))
             }
         }
-      case _ =>
-        super.equals(other)
+      case _ => super.equals(other)
     }
 
   /** Note: hashCode can't be overridden without breaking Seq's

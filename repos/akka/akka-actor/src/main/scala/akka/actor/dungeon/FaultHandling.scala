@@ -364,7 +364,6 @@ private[akka] trait FaultHandling {
     case e: InterruptedException ⇒
       thunk(e)
       Thread.currentThread().interrupt()
-    case NonFatal(e) ⇒
-      thunk(e)
+    case NonFatal(e) ⇒ thunk(e)
   }
 }

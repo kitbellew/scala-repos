@@ -972,8 +972,7 @@ trait Contexts {
       val pre = qual.tpe
       def collect(sels: List[ImportSelector]): List[ImplicitInfo] =
         sels match {
-          case List() =>
-            List()
+          case List()                                      => List()
           case List(ImportSelector(nme.WILDCARD, _, _, _)) =>
             // Using pre.implicitMembers seems to exposes a problem with out-dated symbols in the IDE,
             // see the example in https://www.assembla.com/spaces/scala-ide/tickets/1002552#/activity/ticket
@@ -1467,8 +1466,7 @@ trait Contexts {
               case _                               => true
             }
           }
-        case _ =>
-          NoImplicitFoundError(fun, param)(context)
+        case _ => NoImplicitFoundError(fun, param)(context)
       }
 
     def retainDivergentErrorsExcept(saved: DivergentImplicitTypeError) =
@@ -1480,9 +1478,8 @@ trait Contexts {
     def propagateImplicitTypeErrorsTo(target: ContextReporter) = {
       errors foreach {
         case err @ (_: DivergentImplicitTypeError |
-            _: AmbiguousImplicitTypeError) =>
-          target.errorBuffer += err
-        case _ =>
+            _: AmbiguousImplicitTypeError) => target.errorBuffer += err
+        case _                             =>
       }
       // debuglog("propagateImplicitTypeErrorsTo: " + errors)
     }

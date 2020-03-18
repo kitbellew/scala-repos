@@ -56,8 +56,7 @@ class ScDocCommentImpl(text: CharSequence)
       place: PsiElement): Boolean = {
     super.processDeclarations(processor, state, lastParent, place) && !Option(
       getOwner).exists {
-      case owner: ScClass =>
-        owner.members.exists {
+      case owner: ScClass => owner.members.exists {
           case named: PsiNamedElement => !processor.execute(named, state)
           case _                      => false
         }

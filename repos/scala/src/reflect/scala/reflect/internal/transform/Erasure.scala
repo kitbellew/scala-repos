@@ -26,12 +26,9 @@ trait Erasure {
          */
         case TypeRef(_, sym, _)
             if sym.isAbstractType && (!sym.owner.isJavaDefined || sym.hasFlag(
-              Flags.EXISTENTIAL)) =>
-          tp
-        case ExistentialType(tparams, restp) =>
-          genericCore(restp)
-        case _ =>
-          NoType
+              Flags.EXISTENTIAL))            => tp
+        case ExistentialType(tparams, restp) => genericCore(restp)
+        case _                               => NoType
       }
 
     /** If `tp` is of the form Array[...Array[T]...] where `T` is an abstract type
@@ -40,20 +37,15 @@ trait Erasure {
       */
     def unapply(tp: Type): Option[(Int, Type)] =
       tp.dealiasWiden match {
-        case TypeRef(_, ArrayClass, List(arg)) =>
-          genericCore(arg) match {
-            case NoType =>
-              unapply(arg) match {
+        case TypeRef(_, ArrayClass, List(arg)) => genericCore(arg) match {
+            case NoType => unapply(arg) match {
                 case Some((level, core)) => Some((level + 1, core))
                 case None                => None
               }
-            case core =>
-              Some((1, core))
+            case core => Some((1, core))
           }
-        case ExistentialType(tparams, restp) =>
-          unapply(restp)
-        case _ =>
-          None
+        case ExistentialType(tparams, restp) => unapply(restp)
+        case _                               => None
       }
   }
 
@@ -119,12 +111,9 @@ trait Erasure {
 
     def apply(tp: Type): Type =
       tp match {
-        case ConstantType(_) =>
-          tp
-        case st: ThisType if st.sym.isPackageClass =>
-          tp
-        case st: SubType =>
-          apply(st.supertype)
+        case ConstantType(_)                       => tp
+        case st: ThisType if st.sym.isPackageClass => tp
+        case st: SubType                           => apply(st.supertype)
         case tref @ TypeRef(pre, sym, args) =>
           if (sym == ArrayClass)
             if (unboundedGenericArrayLevel(tp) == 1) ObjectTpe
@@ -140,22 +129,17 @@ trait Erasure {
             apply(
               sym.info asSeenFrom (pre, sym.owner)
             ) // alias type or abstract type
-        case PolyType(tparams, restpe) =>
-          apply(restpe)
-        case ExistentialType(tparams, restpe) =>
-          apply(restpe)
-        case mt @ MethodType(params, restpe) =>
-          MethodType(
+        case PolyType(tparams, restpe)        => apply(restpe)
+        case ExistentialType(tparams, restpe) => apply(restpe)
+        case mt @ MethodType(params, restpe) => MethodType(
             cloneSymbolsAndModify(params, ErasureMap.this),
             if (restpe.typeSymbol == UnitClass) UnitTpe
             // this replaces each typeref that refers to an argument
             // by the type `p.tpe` of the actual argument p (p in params)
             else apply(mt.resultType(mt.paramTypes))
           )
-        case RefinedType(parents, decls) =>
-          apply(mergeParents(parents))
-        case AnnotatedType(_, atp) =>
-          apply(atp)
+        case RefinedType(parents, decls) => apply(mergeParents(parents))
+        case AnnotatedType(_, atp)       => apply(atp)
         case ClassInfoType(parents, decls, clazz) =>
           ClassInfoType(
             if (clazz == ObjectClass || isPrimitiveValueClass(clazz)) Nil
@@ -163,8 +147,7 @@ trait Erasure {
             else removeLaterObjects(parents map this),
             decls,
             clazz)
-        case _ =>
-          mapOver(tp)
+        case _ => mapOver(tp)
       }
 
     def applyInArray(tp: Type): Type =
@@ -220,16 +203,14 @@ trait Erasure {
 
   def specialConstructorErasure(clazz: Symbol, tpe: Type): Type = {
     tpe match {
-      case PolyType(tparams, restpe) =>
-        specialConstructorErasure(clazz, restpe)
+      case PolyType(tparams, restpe) => specialConstructorErasure(clazz, restpe)
       case ExistentialType(tparams, restpe) =>
         specialConstructorErasure(clazz, restpe)
       case mt @ MethodType(params, restpe) =>
         MethodType(
           cloneSymbolsAndModify(params, specialScalaErasure),
           specialConstructorErasure(clazz, restpe))
-      case TypeRef(pre, `clazz`, args) =>
-        typeRef(pre, clazz, List())
+      case TypeRef(pre, `clazz`, args) => typeRef(pre, clazz, List())
       case tp =>
         if (!(clazz == ArrayClass || tp.isError))
           assert(

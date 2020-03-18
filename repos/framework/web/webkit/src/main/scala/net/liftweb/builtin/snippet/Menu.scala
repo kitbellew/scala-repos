@@ -110,16 +110,14 @@ object Menu extends DispatchSnippet {
       for (lvs <- S.attr("level"); i <- Helpers.asInt(lvs)) yield i
 
     val toRender: Seq[MenuItem] = (S.attr("item"), S.attr("group")) match {
-      case (Full(item), _) =>
-        for {
+      case (Full(item), _) => for {
           sm <- LiftRules.siteMap.toList
           req <- S.request.toList
           loc <- sm.findLoc(item).toList
           item <- buildItemMenu(loc, req.location, expandAll)
         } yield item
 
-      case (_, Full(group)) =>
-        for {
+      case (_, Full(group)) => for {
           sm <- LiftRules.siteMap.toList
           loc <- sm.locForGroup(group)
           req <- S.request.toList
@@ -144,8 +142,7 @@ object Menu extends DispatchSnippet {
           i match {
             // Per Loc.PlaceHolder, placeholder implies HideIfNoKids
             case m @ MenuItem(text, uri, kids, _, _, _)
-                if m.placeholder_? && kids.isEmpty =>
-              NodeSeq.Empty
+                if m.placeholder_? && kids.isEmpty => NodeSeq.Empty
 
             case m @ MenuItem(text, uri, kids, _, _, _) if m.placeholder_? =>
               Helpers.addCssClass(
@@ -180,8 +177,7 @@ object Menu extends DispatchSnippet {
                   S.prefixedAttrsToMetaData("li_item", liMap)
               )
 
-            case MenuItem(text, uri, kids, true, _, _) =>
-              Helpers.addCssClass(
+            case MenuItem(text, uri, kids, true, _, _) => Helpers.addCssClass(
                 i.cssClass,
                 Elem(
                   null,
@@ -196,8 +192,7 @@ object Menu extends DispatchSnippet {
               )
 
             // Not current, but on the path, so we need to expand children to show the current one
-            case MenuItem(text, uri, kids, _, true, _) =>
-              Helpers.addCssClass(
+            case MenuItem(text, uri, kids, _, true, _) => Helpers.addCssClass(
                 i.cssClass,
                 Elem(
                   null,
@@ -281,8 +276,7 @@ object Menu extends DispatchSnippet {
 
     def buildItem(in: MenuItem): JsExp =
       in match {
-        case MenuItem(text, uri, kids, current, path, _) =>
-          JsObj(
+        case MenuItem(text, uri, kids, current, path, _) => JsObj(
             "text" -> text.toString,
             "uri" -> uri.toString,
             "children" -> buildItems(kids),
@@ -491,8 +485,7 @@ object Menu extends DispatchSnippet {
       // Builds a link for the given loc
       def buildLink[T](loc: Loc[T]) = {
         Group(SiteMap.buildLink(name, text) match {
-          case e: Elem =>
-            Helpers.addCssClass(
+          case e: Elem => Helpers.addCssClass(
               loc.cssClassForMenuItem,
               e % S.prefixedAttrsToMetaData("a"))
           case x => x

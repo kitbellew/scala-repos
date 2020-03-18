@@ -88,8 +88,7 @@ object ScalaKeywordLookupItem {
                 case YIELD    => settings.SPACE_BEFORE_FOR_LBRACE
               }
               if (add) addSpace(addCompletionChar = true)
-            case '[' =>
-              keyword match {
+            case '[' => keyword match {
                 case PRIVATE | PROTECTED => //do nothing
                 case _                   => addSpace(addCompletionChar = false)
               }

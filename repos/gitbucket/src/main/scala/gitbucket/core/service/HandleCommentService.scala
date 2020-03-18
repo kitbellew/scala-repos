@@ -89,8 +89,7 @@ trait HandleCommentService {
 
         // call web hooks
         action match {
-          case None =>
-            commentId.map { commentIdSome =>
+          case None => commentId.map { commentIdSome =>
               callIssueCommentWebHook(
                 repository,
                 issue,

@@ -64,8 +64,8 @@ object Resizer {
       defaultResizerConfig.getBoolean("enabled"),
       metricsBasedResizerConfig.getBoolean("enabled")) match {
       case (true, false) ⇒ Some(DefaultResizer(defaultResizerConfig))
-      case (false, true) ⇒
-        Some(OptimalSizeExploringResizer(metricsBasedResizerConfig))
+      case (false, true) ⇒ Some(
+          OptimalSizeExploringResizer(metricsBasedResizerConfig))
       case (false, false) ⇒ None
       case (true, true) ⇒
         throw new ResizerInitializationException(
@@ -216,25 +216,21 @@ case class DefaultResizer(
     */
   def pressure(routees: immutable.IndexedSeq[Routee]): Int = {
     routees count {
-      case ActorRefRoutee(a: ActorRefWithCell) ⇒
-        a.underlying match {
-          case cell: ActorCell ⇒
-            pressureThreshold match {
+      case ActorRefRoutee(a: ActorRefWithCell) ⇒ a.underlying match {
+          case cell: ActorCell ⇒ pressureThreshold match {
               case 1 ⇒ cell.mailbox.isScheduled && cell.mailbox.hasMessages
               case i if i < 1 ⇒
                 cell.mailbox.isScheduled && cell.currentMessage != null
               case threshold ⇒ cell.mailbox.numberOfMessages >= threshold
             }
-          case cell ⇒
-            pressureThreshold match {
+          case cell ⇒ pressureThreshold match {
               case 1 ⇒ cell.hasMessages
               case i if i < 1 ⇒
                 true // unstarted cells are always busy, for example
               case threshold ⇒ cell.numberOfMessages >= threshold
             }
         }
-      case x ⇒
-        false
+      case x ⇒ false
     }
   }
 
@@ -370,8 +366,7 @@ private[akka] class ResizablePoolActor(supervisorStrategy: SupervisorStrategy)
 
   override def receive =
     ({
-      case Resize ⇒
-        resizerCell.resize(initial = false)
+      case Resize ⇒ resizerCell.resize(initial = false)
     }: Actor.Receive) orElse super.receive
 
 }

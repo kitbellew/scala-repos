@@ -39,8 +39,7 @@ trait FileUploadDirectives {
 
           onComplete[(FileInfo, File)](uploadedF).flatMap {
 
-            case Success(uploaded) ⇒
-              provide(uploaded)
+            case Success(uploaded) ⇒ provide(uploaded)
 
             case Failure(ex) ⇒
               destination.delete()

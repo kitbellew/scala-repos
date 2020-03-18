@@ -173,8 +173,8 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
     def fuse(l: List[Tree]): List[Tree] =
       l match {
         case Literal(Constant(s1: String)) :: Literal(
-              Constant(s2: String)) :: ss =>
-          fuse(Literal(Constant(s1 + s2)) :: ss)
+              Constant(s2: String)) :: ss => fuse(
+            Literal(Constant(s1 + s2)) :: ss)
         case s :: ss => s :: fuse(ss)
         case Nil     => Nil
       }

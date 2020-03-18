@@ -61,8 +61,7 @@ object ExtensionDocSpec {
 
   class MyActor extends Actor {
     def receive = {
-      case someMessage =>
-        CountExtension(context.system).increment()
+      case someMessage => CountExtension(context.system).increment()
     }
   }
   //#extension-usage-actor

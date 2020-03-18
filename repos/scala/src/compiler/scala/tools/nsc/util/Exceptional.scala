@@ -12,8 +12,7 @@ object Exceptional {
     x match {
       case _: InvocationTargetException | _: ExceptionInInitializerError |
           _: UndeclaredThrowableException | _: ExecutionException
-          if x.getCause != null =>
-        unwrap(x.getCause)
+          if x.getCause != null => unwrap(x.getCause)
 
       case _ => x
     }

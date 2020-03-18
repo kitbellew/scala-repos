@@ -58,8 +58,7 @@ class ScParameterClauseImpl private (
         val typeParametersOwner: ScTypeParametersOwner =
           clauses.getParent match {
             case f: ScFunction => f
-            case p: ScPrimaryConstructor =>
-              p.containingClass match {
+            case p: ScPrimaryConstructor => p.containingClass match {
                 case c: ScClass => c
                 case _          => return parameters
               }

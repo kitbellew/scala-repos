@@ -66,10 +66,8 @@ class ActivitySourceTest extends FunSuite with BeforeAndAfter {
       var content: Option[String] = None
 
       val listen = buf.run.changes.respond {
-        case Activity.Ok(b) =>
-          content = Some(bufToString(b))
-        case _ =>
-          content = None
+        case Activity.Ok(b) => content = Some(bufToString(b))
+        case _              => content = None
       }
 
       timeControl.advance(2.microsecond)

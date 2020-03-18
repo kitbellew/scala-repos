@@ -54,8 +54,7 @@ class ScAccessModifierImpl private (
     getReference match {
       case null =>
         PsiTreeUtil.getParentOfType(this, classOf[ScTypeDefinition], true)
-      case ref =>
-        ref.resolve() match {
+      case ref => ref.resolve() match {
           case named: PsiNamedElement => named
           case _ =>
             PsiTreeUtil.getParentOfType(this, classOf[ScTypeDefinition], true)
@@ -169,8 +168,8 @@ class ScAccessModifierImpl private (
               case null                 =>
               case td: ScTypeDefinition => buff += td; append(td.getParent)
               case file: ScalaFile      => processPackages("")
-              case container: ScPackageContainer =>
-                processPackages(container.fqn)
+              case container: ScPackageContainer => processPackages(
+                  container.fqn)
               case _ => append(e.getParent)
             }
           }

@@ -53,8 +53,7 @@ trait JValueByteChunkTranscoders {
               val fv: Future[Validation[Seq[Throwable], JValue]] = JsonUtil
                 .parseSingleFromByteChunk(bc)
               fv.map(v => res.copy(content = v.toOption))
-            case None =>
-              M.point(res.copy(content = None))
+            case None => M.point(res.copy(content = None))
           }
         }
       }

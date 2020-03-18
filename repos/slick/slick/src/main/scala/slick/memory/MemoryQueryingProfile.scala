@@ -88,8 +88,7 @@ trait MemoryQueryingProfile extends BasicProfile {
                   gen2,
                   FwdPath(s :: _),
                   Pure(ProductOfCommonPaths(s2, _), _))))
-            if s == gen && s2 == gen2 =>
-          Apply(Library.Count, ch)(n.nodeType)
+            if s == gen && s2 == gen2 => Apply(Library.Count, ch)(n.nodeType)
         case n =>
           n.mapChildren(ch => transformCountAll(gen, ch), keepType = true)
       }

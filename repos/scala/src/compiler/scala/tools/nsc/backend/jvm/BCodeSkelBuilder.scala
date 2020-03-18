@@ -503,8 +503,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
           case lnn: asm.tree.LineNumberNode =>
             // overwrite previous landmark as no instructions have been emitted for it
             lnn.line = nr
-          case _ =>
-            mnode.visitLineNumber(nr, currProgramPoint())
+          case _ => mnode.visitLineNumber(nr, currProgramPoint())
         }
       }
     }
@@ -539,8 +538,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       tree match {
         case EmptyTree => ()
 
-        case _: ModuleDef =>
-          abort(s"Modules should have been eliminated by refchecks: $tree")
+        case _: ModuleDef => abort(
+            s"Modules should have been eliminated by refchecks: $tree")
 
         case ValDef(mods, name, tpt, rhs) =>
           () // fields are added in `genPlainClass()`, via `addClassFields()`
@@ -649,8 +648,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
 
           rhs match {
             case Return(_) | Block(_, Return(_)) | Throw(_) |
-                Block(_, Throw(_)) =>
-              ()
+                Block(_, Throw(_)) => ()
             case EmptyTree =>
               globalError(
                 "Concrete method has no definition: " + dd + (
@@ -659,8 +657,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
                       .mkString(", ") + ")"
                   else ""
                 ))
-            case _ =>
-              bc emitRETURN returnType
+            case _ => bc emitRETURN returnType
           }
           if (emitVars) {
             // add entries to LocalVariableTable JVM attribute

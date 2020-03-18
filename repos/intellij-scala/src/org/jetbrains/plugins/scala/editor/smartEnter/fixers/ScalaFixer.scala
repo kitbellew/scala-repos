@@ -65,8 +65,7 @@ trait ScalaFixer {
     }
 
     block.getRBrace match {
-      case Some(brace) =>
-        block.getFirstChild match {
+      case Some(brace) => block.getFirstChild match {
           case l: PsiElement
               if l.getNode.getElementType == ScalaTokenTypes.tLBRACE =>
             val r = brace.getPsi

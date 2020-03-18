@@ -4,9 +4,8 @@ case class Node[a](left: IntMap[a], keyVal: Tuple2[Int, a], right: IntMap[a])
 abstract class IntMap[a] {
   def lookup(key: Int): a =
     this match {
-      case Empty =>
-        sys.error("clef inexistante")
-      case _ =>
+      case Empty => sys.error("clef inexistante")
+      case _     =>
     };
 
 };

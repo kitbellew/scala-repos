@@ -117,9 +117,8 @@ class NoPersistPersistentActorWithAtLeastOnceDelivery(
       if (n == respondAfter)
         //switch to wait all message confirmed
         context.become(waitConfirm)
-    case Confirm(deliveryId) =>
-      confirmDelivery(deliveryId)
-    case _ => // do nothing
+    case Confirm(deliveryId) => confirmDelivery(deliveryId)
+    case _                   => // do nothing
   }
 
   override def receiveRecover = {
@@ -149,16 +148,14 @@ class PersistPersistentActorWithAtLeastOnceDelivery(
   override def persistenceId: String = self.path.name
 
   override def receiveCommand = {
-    case n: Int =>
-      persist(MsgSent(n)) { e =>
+    case n: Int => persist(MsgSent(n)) { e =>
         deliver(downStream)(deliveryId => Msg(deliveryId, n))
         if (n == respondAfter)
           //switch to wait all message confirmed
           context.become(waitConfirm)
       }
-    case Confirm(deliveryId) =>
-      confirmDelivery(deliveryId)
-    case _ => // do nothing
+    case Confirm(deliveryId) => confirmDelivery(deliveryId)
+    case _                   => // do nothing
   }
 
   override def receiveRecover = {
@@ -188,16 +185,14 @@ class PersistAsyncPersistentActorWithAtLeastOnceDelivery(
   override def persistenceId: String = self.path.name
 
   override def receiveCommand = {
-    case n: Int =>
-      persistAsync(MsgSent(n)) { e =>
+    case n: Int => persistAsync(MsgSent(n)) { e =>
         deliver(downStream)(deliveryId => Msg(deliveryId, n))
         if (n == respondAfter)
           //switch to wait all message confirmed
           context.become(waitConfirm)
       }
-    case Confirm(deliveryId) =>
-      confirmDelivery(deliveryId)
-    case _ => // do nothing
+    case Confirm(deliveryId) => confirmDelivery(deliveryId)
+    case _                   => // do nothing
   }
 
   override def receiveRecover = {
@@ -229,8 +224,7 @@ class DestinationActor extends Actor {
   var seqNr = 0L
 
   override def receive = {
-    case n: Int =>
-      sender() ! Confirm(n)
+    case n: Int => sender() ! Confirm(n)
     case Msg(deliveryId, _) =>
       seqNr += 1
       if (seqNr % 11 == 0) {

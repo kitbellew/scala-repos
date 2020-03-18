@@ -20,8 +20,7 @@ object FoldTrueAnd extends SimplificationType() {
   override def getSimplification(expr: ScExpression): Option[Simplification] = {
     expr match {
       case qual `.foldLeft` (literal("true"), andCondition(cond))
-          if hasSideEffects(cond) =>
-        None
+          if hasSideEffects(cond) => None
       case qual `.fold` (literal("true"), andCondition(cond)) =>
         Some(
           replace(expr)

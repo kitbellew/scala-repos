@@ -91,10 +91,8 @@ object ConnectionPool {
           if !url.contains("DB_CLOSE_DELAY") && mode == Mode.Dev =>
         Some(s"$url;DB_CLOSE_DELAY=-1") -> None
 
-      case Some(url) =>
-        Some(url) -> None
-      case None =>
-        None -> None
+      case Some(url) => Some(url) -> None
+      case None      => None -> None
     }
 
   }

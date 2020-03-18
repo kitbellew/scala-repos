@@ -528,8 +528,7 @@ object Config {
   def stringsFrom[K >: String, V >: String](
       m: Map[K, V]): (Map[K, V], Map[String, String]) =
     m.foldLeft((Map.empty[K, V], Map.empty[String, String])) {
-      case ((kvs, conf), kv) =>
-        kv match {
+      case ((kvs, conf), kv) => kv match {
           case (ks: String, vs: String) => (kvs, conf + (ks -> vs))
           case _                        => (kvs + kv, conf)
         }

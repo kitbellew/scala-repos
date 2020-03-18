@@ -110,26 +110,21 @@ class CommandToEncoding extends OneToOneEncoder {
           Seq(CAS, key, intToUtf8(flags), intToUtf8(expiry.inSeconds)),
           value,
           Some(casUnique))
-      case Get(keys) =>
-        Tokens(GET +: keys)
-      case Gets(keys) =>
-        Tokens(GETS +: keys)
-      case Getv(keys) =>
-        Tokens(GETV +: keys)
+      case Get(keys)  => Tokens(GET +: keys)
+      case Gets(keys) => Tokens(GETS +: keys)
+      case Getv(keys) => Tokens(GETV +: keys)
       case Upsert(key, flags, expiry, value, version) =>
         TokensWithData(
           Seq(UPSERT, key, intToUtf8(flags), intToUtf8(expiry.inSeconds)),
           value,
           Some(version))
-      case Incr(key, amount) =>
-        Tokens(Seq(INCR, key, Buf.Utf8(amount.toString)))
-      case Decr(key, amount) =>
-        Tokens(Seq(DECR, key, Buf.Utf8(amount.toString)))
-      case Delete(key) =>
-        Tokens(Seq(DELETE, key))
+      case Incr(key, amount) => Tokens(
+          Seq(INCR, key, Buf.Utf8(amount.toString)))
+      case Decr(key, amount) => Tokens(
+          Seq(DECR, key, Buf.Utf8(amount.toString)))
+      case Delete(key) => Tokens(Seq(DELETE, key))
       case Stats(args) => Tokens(STATS +: args)
-      case Quit() =>
-        Tokens(Seq(QUIT))
+      case Quit()      => Tokens(Seq(QUIT))
     }
 }
 
@@ -159,13 +154,11 @@ object ExceptionHandler {
 
   def format(e: Throwable) =
     e match {
-      case e: NonexistentCommand =>
-        Seq(ERROR)
+      case e: NonexistentCommand => Seq(ERROR)
       case e: ClientError =>
         Seq(CLIENT_ERROR, Newlines.replaceAllIn(e.getMessage, " ").getBytes)
       case e: ServerError =>
         Seq(SERVER_ERROR, Newlines.replaceAllIn(e.getMessage, " ").getBytes)
-      case t =>
-        throw t
+      case t => throw t
     }
 }

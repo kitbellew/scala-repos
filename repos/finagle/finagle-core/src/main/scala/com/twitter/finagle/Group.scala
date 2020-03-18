@@ -158,8 +158,9 @@ object Group {
   def fromVarAddr(va: Var[Addr]): Group[SocketAddress] =
     new Group[SocketAddress] {
       protected[finagle] val set: Var[Set[SocketAddress]] = va map {
-        case Addr.Bound(addrs, _) =>
-          addrs.collect { case Address.Inet(ia, _) => ia }
+        case Addr.Bound(addrs, _) => addrs.collect {
+            case Address.Inet(ia, _) => ia
+          }
         case _ => Set[SocketAddress]()
       }
     }

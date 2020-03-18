@@ -75,9 +75,8 @@ class ScalaSuppressForStatementFix(key: HighlightDisplayKey)
       case Some(
             _: ScFunctionDefinition | _: ScVariableDefinition |
             _: ScPatternDefinition | _: ScTypeAliasDefinition |
-            _: ScMacroDefinition) =>
-        null
-      case Some(stmt) => stmt
+            _: ScMacroDefinition) => null
+      case Some(stmt)             => stmt
     }
 }
 

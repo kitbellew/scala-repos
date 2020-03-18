@@ -594,8 +594,7 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
       )
 
       out.zipWithIndex.foreach {
-        case (o, idx) ⇒
-          setHandler(
+        case (o, idx) ⇒ setHandler(
             o,
             new OutHandler {
               override def onPull() = {

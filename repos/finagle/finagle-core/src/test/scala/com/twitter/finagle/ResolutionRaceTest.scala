@@ -34,8 +34,7 @@ class ResolutionRaceTest extends FunSuite with AssertionsForJUnit {
         } finally Await.ready(echo.close())
       }
     } catch {
-      case _: NoBrokersAvailableException =>
-        fail("resolution is racy")
+      case _: NoBrokersAvailableException => fail("resolution is racy")
     } finally { Await.result(server.close()) }
   }
 }

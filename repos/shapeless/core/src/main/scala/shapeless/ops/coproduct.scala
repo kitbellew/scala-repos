@@ -144,8 +144,7 @@ object coproduct {
         def coproduct(c: H :+: T): Prefix :+: Suffix :+: CNil =
           c match {
             case Inl(h) => Inl(Inl(h))
-            case Inr(t) =>
-              partition.coproduct(t) match {
+            case Inr(t) => partition.coproduct(t) match {
                 case Inl(h) => Inl(Inr(h))
                 case Inr(t) => Inr(t)
               }
@@ -167,8 +166,7 @@ object coproduct {
         def coproduct(c: H :+: T): Prefix :+: Suffix :+: CNil =
           c match {
             case Inl(h) => Inr(Inl(Inl(h)))
-            case Inr(t) =>
-              partition.coproduct(t) match {
+            case Inr(t) => partition.coproduct(t) match {
                 case Inl(h)      => Inl(h)
                 case Inr(Inl(t)) => Inr(Inl(Inr(t)))
                 case Inr(Inr(c)) => Inr(Inr(c))
@@ -255,8 +253,7 @@ object coproduct {
         def apply(c: H :+: T) =
           c match {
             case Inl(h) => Right(Inl(h))
-            case Inr(t) =>
-              tailRemove(t) match {
+            case Inr(t) => tailRemove(t) match {
                 case Left(i)  => Left(i)
                 case Right(r) => Right(Inr(r))
               }
@@ -1065,10 +1062,8 @@ object coproduct {
 
     def coproduct(c: C): Left :+: Right :+: CNil =
       apply(c) match {
-        case Left(l) =>
-          Inl(l)
-        case Right(r) =>
-          Inr(Inl(r))
+        case Left(l)  => Inl(l)
+        case Right(r) => Inr(Inl(r))
       }
   }
 
@@ -1094,8 +1089,7 @@ object coproduct {
         def apply(c: H :+: T) =
           c match {
             case Inl(h) => Left(Inl(h))
-            case Inr(t) =>
-              tail(t) match {
+            case Inr(t) => tail(t) match {
                 case Left(l)  => Left(Inr(l))
                 case Right(r) => Right(r)
               }
@@ -1456,8 +1450,7 @@ object coproduct {
 
         def apply(s: Super) =
           tailBasis(s) match {
-            case Left(r) =>
-              remove(r) match {
+            case Left(r) => remove(r) match {
                 case Left(h)  => Right(Inl(h))
                 case Right(r) => Left(r)
               }
@@ -1467,8 +1460,7 @@ object coproduct {
         def inverse(e: Either[Rest, H :+: T]) =
           e match {
             case Left(r) => tailBasis.inverse(Left(remove.inverse(Right(r))))
-            case Right(c) =>
-              c match {
+            case Right(c) => c match {
                 case Inl(h) => tailBasis.inverse(Left(remove.inverse(Left(h))))
                 case Inr(t) => tailBasis.inverse(Right(t))
               }

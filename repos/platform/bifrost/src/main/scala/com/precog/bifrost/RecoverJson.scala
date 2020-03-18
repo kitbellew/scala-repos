@@ -81,14 +81,12 @@ object RecoverJson {
           case '{' =>
             val next = accum increment Brace
             buildState(next.copy(stack = next.stack push Colon(NullValue)))
-          case '[' =>
-            buildState(accum increment Bracket)
+          case '[' => buildState(accum increment Bracket)
 
           case '}' =>
             // Assumption: will never output valid {}
             buildState(accum decrement)
-          case ']' =>
-            buildState(accum decrement)
+          case ']' => buildState(accum decrement)
 
           case ',' if accum.stack.nonEmpty && accum.stack.head == Brace =>
             buildState(accum increment Key(Colon(NullValue)))

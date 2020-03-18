@@ -14,8 +14,5 @@ object Test extends App {
     val dyn = cm.mkToolBox().eval(new Foo(10).fun.tree)
     val foo = dyn.asInstanceOf[Int]
     println(foo)
-  } catch {
-    case ex: Throwable =>
-      println(ex)
-  }
+  } catch { case ex: Throwable => println(ex) }
 }

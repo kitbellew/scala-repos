@@ -49,8 +49,7 @@ private object StackClientTest {
         case Some(s) =>
           Service.constant(Future.exception(new IllegalStateException(
             "should not have a local context: " + s)))
-        case None =>
-          new SerialClientDispatcher(transport)
+        case None => new SerialClientDispatcher(transport)
       }
     }
   }

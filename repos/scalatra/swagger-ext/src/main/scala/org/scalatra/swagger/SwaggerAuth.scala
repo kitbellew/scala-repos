@@ -75,8 +75,7 @@ object SwaggerAuthSerializers {
       extends CustomSerializer[AuthOperation[T]](implicit formats =>
         (
           {
-            case value =>
-              AuthOperation[T](
+            case value => AuthOperation[T](
                 (value \ "method").extract[HttpMethod],
                 readDataType(value),
                 (value \ "summary").extract[String],
@@ -122,8 +121,7 @@ object SwaggerAuthSerializers {
       extends CustomSerializer[AuthEndpoint[T]](implicit formats =>
         (
           {
-            case value =>
-              AuthEndpoint[T](
+            case value => AuthEndpoint[T](
                 (value \ "path").extract[String],
                 (value \ "description")
                   .extractOpt[String]
@@ -140,8 +138,7 @@ object SwaggerAuthSerializers {
       extends CustomSerializer[AuthApi[T]](implicit formats =>
         (
           {
-            case json =>
-              AuthApi[T](
+            case json => AuthApi[T](
                 (json \ "apiVersion").extractOrElse(""),
                 (json \ "swaggerVersion").extractOrElse(""),
                 (json \ "resourcePath").extractOrElse(""),

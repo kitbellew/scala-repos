@@ -267,9 +267,8 @@ trait SQLiteProfile extends JdbcProfile {
       sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
       case java.sql.Types.TINYINT | java.sql.Types.SMALLINT |
-          java.sql.Types.BIGINT =>
-        "INTEGER"
-      case _ => super.defaultSqlTypeName(tmd, sym)
+          java.sql.Types.BIGINT => "INTEGER"
+      case _                    => super.defaultSqlTypeName(tmd, sym)
     }
 
   class JdbcTypes extends super.JdbcTypes {

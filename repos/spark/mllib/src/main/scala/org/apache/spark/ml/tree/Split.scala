@@ -188,8 +188,7 @@ final class ContinuousSplit private[ml] (
     o match {
       case other: ContinuousSplit =>
         featureIndex == other.featureIndex && threshold == other.threshold
-      case _ =>
-        false
+      case _ => false
     }
   }
 

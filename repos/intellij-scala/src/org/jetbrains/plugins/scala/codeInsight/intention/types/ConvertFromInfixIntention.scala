@@ -28,9 +28,8 @@ class ConvertFromInfixIntention extends PsiElementBaseIntentionAction {
       case Parent(
             Both(
               ref: ScStableCodeReferenceElement,
-              Parent(Parent(param: ScInfixTypeElement)))) =>
-        true
-      case _ => false
+              Parent(Parent(param: ScInfixTypeElement)))) => true
+      case _                                              => false
     }
   }
 

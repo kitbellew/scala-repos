@@ -33,8 +33,7 @@ object GenerationUtil {
 
   def findAnchor(aClass: PsiClass): Option[PsiElement] =
     aClass match {
-      case cl: ScTemplateDefinition =>
-        cl.extendsBlock match {
+      case cl: ScTemplateDefinition => cl.extendsBlock match {
           case ScExtendsBlock.TemplateBody(body) => body.lastChild
           case _                                 => None
         }
@@ -87,11 +86,10 @@ object GenerationUtil {
   def getAllFields(aClass: PsiClass): Seq[ScNamedElement] = {
     val memberProcessor: (ScMember) => Seq[ScNamedElement] = {
       case classParam: ScClassParameter
-          if classParam.isVal || classParam.isVar =>
-        Seq(classParam)
-      case value: ScValue       => value.declaredElements
-      case variable: ScVariable => variable.declaredElements
-      case _                    => Seq.empty
+          if classParam.isVal || classParam.isVar => Seq(classParam)
+      case value: ScValue                         => value.declaredElements
+      case variable: ScVariable                   => variable.declaredElements
+      case _                                      => Seq.empty
     }
 
     allMembers(aClass).flatMap(memberProcessor)

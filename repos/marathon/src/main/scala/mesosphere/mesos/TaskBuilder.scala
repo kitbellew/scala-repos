@@ -68,8 +68,7 @@ class TaskBuilder(
     }
 
     resourceMatchOpt match {
-      case Some(resourceMatch) =>
-        build(offer, resourceMatch, volumeMatchOpt)
+      case Some(resourceMatch) => build(offer, resourceMatch, volumeMatchOpt)
       case _ =>
         if (log.isInfoEnabled) logInsufficientResources()
         None
@@ -111,8 +110,7 @@ class TaskBuilder(
     val host: Option[String] = Some(offer.getHostname)
 
     val labels = app.labels.map {
-      case (key, value) =>
-        Label.newBuilder.setKey(key).setValue(value).build()
+      case (key, value) => Label.newBuilder.setKey(key).setValue(value).build()
     }
 
     val taskId = newTaskId(app.id)
@@ -177,8 +175,7 @@ class TaskBuilder(
     val mesosHealthChecks: Set[org.apache.mesos.Protos.HealthCheck] =
       app.healthChecks.collect {
         case healthCheck: HealthCheck
-            if healthCheck.protocol == Protocol.COMMAND =>
-          healthCheck.toMesos
+            if healthCheck.protocol == Protocol.COMMAND => healthCheck.toMesos
       }
 
     if (mesosHealthChecks.size > 1) {
@@ -256,8 +253,9 @@ class TaskBuilder(
 
         val containerWithPortMappings = portMappings match {
           case None => c
-          case Some(newMappings) =>
-            c.copy(docker = c.docker.map { _.copy(portMappings = newMappings) })
+          case Some(newMappings) => c.copy(docker = c.docker.map {
+              _.copy(portMappings = newMappings)
+            })
         }
         builder.mergeFrom(
           ContainerSerializer.toMesos(containerWithPortMappings))
@@ -322,10 +320,8 @@ object TaskBuilder {
       .setEnvironment(environment(envMap))
 
     app.cmd match {
-      case Some(cmd) if cmd.nonEmpty =>
-        builder.setValue(cmd)
-      case _ =>
-        builder.setShell(false)
+      case Some(cmd) if cmd.nonEmpty => builder.setValue(cmd)
+      case _                         => builder.setShell(false)
     }
 
     // args take precedence over command, if supplied
@@ -364,8 +360,7 @@ object TaskBuilder {
       val env = Map.newBuilder[String, String]
 
       assignedPorts.zipWithIndex.foreach {
-        case (p, n) =>
-          env += (s"PORT$n" -> p.toString)
+        case (p, n) => env += (s"PORT$n" -> p.toString)
       }
 
       definedPorts.zip(assignedPorts).foreach {
@@ -385,8 +380,9 @@ object TaskBuilder {
       envVarsPrefix: Option[String],
       env: Map[String, String]): Map[String, String] = {
     envVarsPrefix match {
-      case Some(prefix) =>
-        env.map { case (key: String, value: String) => (prefix + key, value) }
+      case Some(prefix) => env.map {
+          case (key: String, value: String) => (prefix + key, value)
+        }
       case None => env
     }
   }
@@ -420,8 +416,7 @@ object TaskBuilder {
     val validLabels = labels.collect {
       case (key, value)
           if key.length < maxVariableLength
-            && value.length < maxEnvironmentVarLength =>
-        escape(key) -> value
+            && value.length < maxEnvironmentVarLength => escape(key) -> value
     }
 
     val names = Map("MARATHON_APP_LABELS" -> validLabels.keys.mkString(" "))

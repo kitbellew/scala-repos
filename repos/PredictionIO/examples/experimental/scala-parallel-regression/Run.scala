@@ -118,7 +118,4 @@ class VectorSerializer
             val v = x.toArray.map { y => y match { case JDouble(z) => z } }
             new DenseVector(v)
         },
-        {
-          case x: Vector =>
-            JArray(x.toArray.toList.map(d => JDouble(d)))
-        }))
+        { case x: Vector => JArray(x.toArray.toList.map(d => JDouble(d))) }))

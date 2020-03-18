@@ -91,8 +91,7 @@ trait BaseReplState {
         val m = customConfig.get(mr2Key) match {
           case Some("local") =>
             s"${hdfsMode.getClass.getSimpleName}Local(${hdfsMode.strict})"
-          case _ =>
-            s"${hdfsMode.getClass.getSimpleName}(${hdfsMode.strict})"
+          case _ => s"${hdfsMode.getClass.getSimpleName}(${hdfsMode.strict})"
         }
         (m, defaultFs.getWorkingDirectory.toString)
       }

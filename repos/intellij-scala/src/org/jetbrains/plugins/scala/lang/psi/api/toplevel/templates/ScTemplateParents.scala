@@ -58,8 +58,7 @@ object ScTemplateParents {
             element
               .getType(TypingContext.empty)
               .map {
-                case tp: ScType =>
-                  ScType.extractClass(tp) match {
+                case tp: ScType => ScType.extractClass(tp) match {
                     case Some(clazz) => clazz
                     case _           => null
                   }
@@ -86,15 +85,12 @@ object ScTemplateParents {
             } else tail()
           }
           element match {
-            case s: ScSimpleTypeElement =>
-              s.reference match {
+            case s: ScSimpleTypeElement => s.reference match {
                 case Some(ref) => refTail(ref)
                 case _         => tail()
               }
-            case p: ScParameterizedTypeElement =>
-              p.typeElement match {
-                case s: ScSimpleTypeElement =>
-                  s.reference match {
+            case p: ScParameterizedTypeElement => p.typeElement match {
+                case s: ScSimpleTypeElement => s.reference match {
                     case Some(ref) => refTail(ref)
                     case _         => tail()
                   }

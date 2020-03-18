@@ -314,8 +314,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       else {
         val tps = (this match {
           case a: AliasType => sym.tpe.dealias.parents
-          case a: AbstractType =>
-            sym.info.bounds match {
+          case a: AbstractType => sym.info.bounds match {
               case TypeBounds(lo, RefinedType(parents, decls)) => parents
               case TypeBounds(lo, hi)                          => hi :: Nil
               case _                                           => Nil
@@ -487,11 +486,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       if (sym.isAliasType || sym.isAbstractType) {
         inTpl.sym.info.member(sym.name.toTermName) match {
           case NoSymbol => NoSymbol
-          case s =>
-            s.info match {
-              case ot: OverloadedType =>
-                NoSymbol
-              case _ =>
+          case s => s.info match {
+              case ot: OverloadedType => NoSymbol
+              case _                  =>
                 // that's to navigate from val Foo: FooExtractor to FooExtractor :)
                 s.info.resultType.typeSymbol
             }
@@ -712,16 +709,12 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     */
   def normalizeTemplate(aSym: Symbol): Symbol =
     aSym match {
-      case null | rootMirror.EmptyPackage | NoSymbol =>
-        normalizeTemplate(RootPackage)
-      case ObjectClass =>
-        normalizeTemplate(AnyRefClass)
-      case _ if aSym.isPackageObject =>
-        normalizeTemplate(aSym.owner)
-      case _ if aSym.isModuleClass =>
-        normalizeTemplate(aSym.sourceModule)
-      case _ =>
-        aSym
+      case null | rootMirror.EmptyPackage | NoSymbol => normalizeTemplate(
+          RootPackage)
+      case ObjectClass               => normalizeTemplate(AnyRefClass)
+      case _ if aSym.isPackageObject => normalizeTemplate(aSym.owner)
+      case _ if aSym.isModuleClass   => normalizeTemplate(aSym.sourceModule)
+      case _                         => aSym
     }
 
   /**
@@ -734,8 +727,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     def createRootPackage: PackageImpl =
       docTemplatesCache.get(RootPackage) match {
         case Some(root: PackageImpl) => root
-        case _ =>
-          modelCreation.createTemplate(RootPackage, null) match {
+        case _ => modelCreation.createTemplate(RootPackage, null) match {
             case Some(root: PackageImpl) => root
             case _                       => sys.error("Scaladoc: Unable to create root package!")
           }
@@ -826,8 +818,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
                 droppedPackages += pack
                 None
               } else Some(pack)
-            case _ =>
-              sys.error("'" + bSym + "' must be in a package")
+            case _ => sys.error("'" + bSym + "' must be in a package")
           }
       else {
         // no class inheritance at this point
@@ -1143,8 +1134,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
           def noDocTemplate = makeTemplate(parent.typeSymbol)
           findTemplateMaybe(parent.typeSymbol) match {
             case Some(tpl) => tpl
-            case None =>
-              parent match {
+            case None => parent match {
                 case TypeRef(pre, sym, args) =>
                   findTemplateMaybe(pre.typeSymbol) match {
                     case Some(tpl) =>
@@ -1163,8 +1153,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
           val typeEntity = makeType(parent, inTpl)
           (templateEntity, typeEntity)
         })
-      case _ =>
-        List((makeTemplate(aType.typeSymbol), makeType(aType, inTpl)))
+      case _ => List((makeTemplate(aType.typeSymbol), makeType(aType, inTpl)))
     }
 
   def makeQualifiedName(

@@ -126,8 +126,7 @@ object InferUtil {
         val exprsBuffer = new ArrayBuffer[Compatibility.Expression]()
         val resolveResultsBuffer = new ArrayBuffer[ScalaResolveResult]()
         coreTypes.foreach {
-          case coreType =>
-            resInner match {
+          case coreType => resInner match {
               case t @ ScTypePolymorphicType(
                     mt @ ScMethodType(retTypeSingle, paramsSingle, _),
                     typeParamsSingle) =>
@@ -337,9 +336,8 @@ object InferUtil {
             return //do not update according to Unit type
           val innerInternal = internal match {
             case ScMethodType(inter, _, innerImpl)
-                if innerImpl && !fromImplicitParameters =>
-              inter
-            case _ => internal
+                if innerImpl && !fromImplicitParameters => inter
+            case _                                      => internal
           }
           val update: ScTypePolymorphicType = localTypeInference(
             m,
@@ -602,8 +600,7 @@ object InferUtil {
                       if (hasRecursiveTypeParameters(substedLowerType))
                         lower = addLower
                       else lower = Bounds.lub(substedLowerType, addLower)
-                    case None =>
-                      lower = unSubst.subst(lower)
+                    case None => lower = unSubst.subst(lower)
                   }
                   subst.rMap.get(
                     (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp))) match {
@@ -621,8 +618,7 @@ object InferUtil {
                       if (hasRecursiveTypeParameters(substedUpperType))
                         upper = addUpper
                       else upper = Bounds.glb(substedUpperType, addUpper)
-                    case None =>
-                      upper = unSubst.subst(upper)
+                    case None => upper = unSubst.subst(upper)
                   }
 
                   if (safeCheck && !undefiningSubstitutor
@@ -736,8 +732,7 @@ object InferUtil {
                                   withoutAliases = false) match {
                                   case Some((named, _)) =>
                                     checkNamed(named, typeParams)
-                                  case _ =>
-                                    tp match {
+                                  case _ => tp match {
                                       case tpt: ScTypeParameterType =>
                                         checkNamed(tpt.param, typeParams)
                                       case _ => false

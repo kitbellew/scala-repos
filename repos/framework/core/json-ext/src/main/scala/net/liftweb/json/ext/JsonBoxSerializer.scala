@@ -31,8 +31,7 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
 
   def deserialize(implicit
       format: Formats): PartialFunction[(TypeInfo, JValue), Box[_]] = {
-    case (TypeInfo(BoxClass, ptype), json) =>
-      json match {
+    case (TypeInfo(BoxClass, ptype), json) => json match {
         case JNull | JNothing => Empty
         case JObject(
               JField("box_failure", JString("Failure")) ::

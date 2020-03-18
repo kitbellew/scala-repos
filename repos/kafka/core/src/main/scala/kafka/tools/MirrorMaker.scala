@@ -357,8 +357,7 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
       }
     } catch {
       case ct: ControlThrowable => throw ct
-      case t: Throwable =>
-        error("Exception when starting mirror maker.", t)
+      case t: Throwable         => error("Exception when starting mirror maker.", t)
     }
 
     mirrorMakerThreads.foreach(_.start())
@@ -516,16 +515,15 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
               maybeFlushAndCommitOffsets()
             }
           } catch {
-            case cte: ConsumerTimeoutException =>
-              trace("Caught ConsumerTimeoutException, continue iteration.")
-            case we: WakeupException =>
-              trace("Caught ConsumerWakeupException, continue iteration.")
+            case cte: ConsumerTimeoutException => trace(
+                "Caught ConsumerTimeoutException, continue iteration.")
+            case we: WakeupException => trace(
+                "Caught ConsumerWakeupException, continue iteration.")
           }
           maybeFlushAndCommitOffsets()
         }
       } catch {
-        case t: Throwable =>
-          fatal("Mirror maker thread failure due to ", t)
+        case t: Throwable => fatal("Mirror maker thread failure due to ", t)
       } finally {
         info("Flushing producer.")
         producer.flush()
@@ -561,8 +559,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
         shuttingDown = true
         mirrorMakerConsumer.stop()
       } catch {
-        case ie: InterruptedException =>
-          warn("Interrupt during shutdown of the mirror maker thread")
+        case ie: InterruptedException => warn(
+            "Interrupt during shutdown of the mirror maker thread")
       }
     }
 
@@ -571,8 +569,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
         shutdownLatch.await()
         info("Mirror maker thread shutdown complete")
       } catch {
-        case ie: InterruptedException =>
-          warn("Shutdown of the mirror maker thread interrupted")
+        case ie: InterruptedException => warn(
+            "Shutdown of the mirror maker thread interrupted")
       }
     }
   }

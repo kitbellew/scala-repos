@@ -737,8 +737,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
                 case StrLit(_, path) => StaticProvenance(path)
 
                 case d @ Dispatch(_, _, Vector(StrLit(_, path)))
-                    if d.binding == ExpandGlobBinding =>
-                  StaticProvenance(path)
+                    if d.binding == ExpandGlobBinding => StaticProvenance(path)
 
                 case param if param.provenance != NullProvenance =>
                   DynamicProvenance(currentId.getAndIncrement())
@@ -1237,8 +1236,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
 
       case ParamProvenance(_, _) | ParametricDynamicProvenance(_, _) |
           StaticProvenance(_) | DynamicProvenance(_) | ValueProvenance |
-          UndefinedProvenance | NullProvenance | InfiniteProvenance =>
-        prov
+          UndefinedProvenance | NullProvenance | InfiniteProvenance => prov
     }
 
   sealed trait Provenance {

@@ -793,8 +793,7 @@ trait ProtoUser {
 
     def testSignup() {
       validateSignup(theUser) match {
-        case Nil =>
-          actionsAfterSignup(theUser, () => S.redirectTo(homePage))
+        case Nil => actionsAfterSignup(theUser, () => S.redirectTo(homePage))
 
         case xs => S.error(xs); signupFunc(Full(innerSignup _))
       }
@@ -897,8 +896,7 @@ trait ProtoUser {
             case Full(url) =>
               loginRedirect(Empty)
               url
-            case _ =>
-              homePage
+            case _ => homePage
           }
 
           logUserIn(

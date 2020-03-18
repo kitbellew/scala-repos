@@ -342,8 +342,7 @@ trait ValidatedFunctions {
         f: => A)(implicit T: ClassTag[T], NT: NotNull[T]): Validated[T, A] =
       try { valid(f) }
       catch {
-        case t if T.runtimeClass.isInstance(t) =>
-          invalid(t.asInstanceOf[T])
+        case t if T.runtimeClass.isInstance(t) => invalid(t.asInstanceOf[T])
       }
   }
 

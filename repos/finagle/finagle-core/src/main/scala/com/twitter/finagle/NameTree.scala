@@ -170,8 +170,7 @@ object NameTree {
             accum: Seq[NameTree[T]]): Seq[NameTree[T]] =
           trees match {
             case Nil => accum
-            case Seq(head, tail @ _*) =>
-              simplify(head) match {
+            case Seq(head, tail @ _*) => simplify(head) match {
                 case Fail => accum :+ Fail
                 case Neg  => loop(tail, accum)
                 case head => loop(tail, accum :+ head)
@@ -192,8 +191,7 @@ object NameTree {
             accum: Seq[Weighted[T]]): Seq[Weighted[T]] =
           trees match {
             case Nil => accum
-            case Seq(Weighted(w, tree), tail @ _*) =>
-              simplify(tree) match {
+            case Seq(Weighted(w, tree), tail @ _*) => simplify(tree) match {
                 case Fail => unionFail
                 case Neg  => loop(tail, accum)
                 case tree => loop(tail, accum :+ Weighted(w, tree))
@@ -276,13 +274,11 @@ object NameTree {
             trees: Seq[Weighted[T]],
             accum: Seq[Set[T]]): NameTree[Set[T]] =
           trees match {
-            case Nil =>
-              accum match {
+            case Nil => accum match {
                 case Nil => Neg
                 case _   => Leaf(accum.flatten.toSet)
               }
-            case Seq(Weighted(_, head), tail @ _*) =>
-              eval(head) match {
+            case Seq(Weighted(_, head), tail @ _*) => eval(head) match {
                 case Fail        => Fail
                 case Neg         => loop(tail, accum)
                 case Leaf(value) => loop(tail, accum :+ value)
@@ -296,8 +292,7 @@ object NameTree {
         def loop(trees: Seq[NameTree[T]]): NameTree[Set[T]] =
           trees match {
             case Nil => Neg
-            case Seq(head, tail @ _*) =>
-              eval(head) match {
+            case Seq(head, tail @ _*) => eval(head) match {
                 case Fail           => Fail
                 case Neg            => loop(tail)
                 case head @ Leaf(_) => head

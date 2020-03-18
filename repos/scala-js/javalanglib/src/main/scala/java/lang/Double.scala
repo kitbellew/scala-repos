@@ -30,8 +30,7 @@ final class Double private () extends Number with Comparable[Double] {
         val a = doubleValue
         val b = that.doubleValue
         (a == b) || (Double.isNaN(a) && Double.isNaN(b))
-      case _ =>
-        false
+      case _ => false
     }
 
   @inline

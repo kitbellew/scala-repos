@@ -106,8 +106,7 @@ abstract class TypeInferenceTestBase
               "Test result must be in last comment statement.")
         }
         output match {
-          case ExpectedPattern("<none>") =>
-            expr.expectedType() match {
+          case ExpectedPattern("<none>") => expr.expectedType() match {
               case Some(et) =>
                 fail("found unexpected expected type: %s".format(
                   ScType.presentableText(et)))

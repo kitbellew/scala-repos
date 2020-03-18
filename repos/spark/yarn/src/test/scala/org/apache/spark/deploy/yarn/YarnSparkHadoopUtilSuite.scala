@@ -55,10 +55,7 @@ class YarnSparkHadoopUtilSuite
         .exec(Array("bash", "--version"))
         .waitFor()
       exitCode == 0
-    } catch {
-      case e: IOException =>
-        false
-    }
+    } catch { case e: IOException => false }
 
   if (!hasBash) { logWarning("Cannot execute bash, skipping bash tests.") }
 

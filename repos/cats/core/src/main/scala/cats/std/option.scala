@@ -64,8 +64,7 @@ trait OptionInstances extends OptionInstances1 {
       def combine(x: Option[A], y: Option[A]): Option[A] =
         x match {
           case None => y
-          case Some(xx) =>
-            y match {
+          case Some(xx) => y match {
               case None     => x
               case Some(yy) => Some(ev.combine(xx, yy))
             }
@@ -76,13 +75,11 @@ trait OptionInstances extends OptionInstances1 {
     new Order[Option[A]] {
       def compare(x: Option[A], y: Option[A]): Int =
         x match {
-          case Some(a) =>
-            y match {
+          case Some(a) => y match {
               case Some(b) => ev.compare(a, b)
               case None    => 1
             }
-          case None =>
-            if (y.isDefined) -1 else 0
+          case None => if (y.isDefined) -1 else 0
         }
     }
 

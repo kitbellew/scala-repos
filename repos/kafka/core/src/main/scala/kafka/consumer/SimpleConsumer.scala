@@ -93,11 +93,9 @@ class SimpleConsumer(
         blockingChannel.send(request)
         response = blockingChannel.receive()
       } catch {
-        case e: ClosedByInterruptException =>
-          throw e
+        case e: ClosedByInterruptException => throw e
         // Should not observe this exception when running Kafka with Java 1.8
-        case e: AsynchronousCloseException =>
-          throw e
+        case e: AsynchronousCloseException => throw e
         case e: Throwable =>
           info("Reconnect due to error:", e)
           // retry once

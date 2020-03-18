@@ -246,8 +246,7 @@ abstract class Parser(
           pos,
           pos,
           RuleTrace(Nil, RuleTrace.Fail(e.expected)) :: Nil))
-      case NonFatal(e) ⇒
-        scheme.failure(e)
+      case NonFatal(e) ⇒ scheme.failure(e)
     } finally { phase = null }
   }
 
@@ -706,8 +705,7 @@ object ParserMacros {
       scheme: c.Expr[Parser.DeliveryScheme[L]]): c.Expr[scheme.value.Result] = {
     import c.universe._
     val runCall = c.prefix.tree match {
-      case q"parboiled2.this.Rule.Runnable[$l]($ruleExpr)" ⇒
-        ruleExpr match {
+      case q"parboiled2.this.Rule.Runnable[$l]($ruleExpr)" ⇒ ruleExpr match {
           case q"$p.$r" if p.tpe <:< typeOf[Parser] ⇒
             q"val p = $p; p.__run[$l](p.$r)($scheme)"
           case q"$p.$r($args)" if p.tpe <:< typeOf[Parser] ⇒

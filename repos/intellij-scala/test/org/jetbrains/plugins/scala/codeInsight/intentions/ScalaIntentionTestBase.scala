@@ -24,8 +24,7 @@ abstract class ScalaIntentionTestBase
       resultText: String,
       familyName: String = this.familyName) {
     intentionByFamilyName(text, familyName) match {
-      case Some(action) =>
-        startCommand(getProject, "Test Intention") {
+      case Some(action) => startCommand(getProject, "Test Intention") {
           action.invoke(
             myFixture.getProject,
             myFixture.getEditor,

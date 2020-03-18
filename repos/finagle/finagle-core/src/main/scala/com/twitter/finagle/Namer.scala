@@ -102,8 +102,8 @@ object Namer {
     private[this] object NamerPath {
       def unapply(path: Path): Option[(Namer, Path)] =
         path match {
-          case Path.Utf8("$", kind, rest @ _*) =>
-            Some((namerOfKind(kind), Path.Utf8(rest: _*)))
+          case Path.Utf8("$", kind, rest @ _*) => Some(
+              (namerOfKind(kind), Path.Utf8(rest: _*)))
           case _ => None
         }
     }
@@ -274,8 +274,7 @@ trait ServiceNamer[Req, Rep] extends Namer {
 
   def lookup(path: Path): Activity[NameTree[Name]] =
     lookupService(path) match {
-      case None =>
-        Activity.value(NameTree.Neg)
+      case None => Activity.value(NameTree.Neg)
       case Some(svc) =>
         val factory = ServiceFactory(() => Future.value(svc))
         val addr = Addr.Bound(exp.Address(factory))

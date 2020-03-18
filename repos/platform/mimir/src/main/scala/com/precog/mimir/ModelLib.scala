@@ -138,8 +138,7 @@ trait ModelLibModule[M[+_]] {
           val featurePaths = model.featureValues.keySet
 
           val res = cols filter {
-            case (ColumnRef(cpath, ctype), col) =>
-              featurePaths.contains(cpath)
+            case (ColumnRef(cpath, ctype), col) => featurePaths.contains(cpath)
           }
 
           val resPaths = res map {
@@ -228,10 +227,7 @@ trait ModelLibModule[M[+_]] {
           }
           (cpath, col)
         }
-        .collect {
-          case (path, col) if col.isDefined =>
-            (path, col.get)
-        }
+        .collect { case (path, col) if col.isDefined => (path, col.get) }
         .toMap
     }
 
@@ -264,8 +260,7 @@ trait ModelLibModule[M[+_]] {
           val modelNames: Set[String] = schema.columnRefs.collect {
             case ColumnRef(
                   CPath(paths.Value, CPathField(modelName), _ @_*),
-                  _) =>
-              modelName
+                  _) => modelName
           }.toSet
 
           val interceptPaths = modelNames.map { modelName =>
@@ -307,12 +302,10 @@ trait ModelLibModule[M[+_]] {
                       CPathField(modelName),
                       CPathField(`varianceCovariance`),
                       _ @_*),
-                    _) =>
-                (modelName, path)
+                    _) => (modelName, path)
             }
             .groupBy(_._1) map {
-            case (modelName, paths) =>
-              (modelName, paths.map(_._2))
+            case (modelName, paths) => (modelName, paths.map(_._2))
           }
 
           val featuresPaths = schema.columnRefs
@@ -329,8 +322,7 @@ trait ModelLibModule[M[+_]] {
                 (modelName, path)
             }
             .groupBy(_._1) map {
-            case (modelName, paths) =>
-              (modelName, paths.map(_._2))
+            case (modelName, paths) => (modelName, paths.map(_._2))
           }
 
           val interceptCols = alignWithModels(schema, interceptPaths)
@@ -369,18 +361,15 @@ trait ModelLibModule[M[+_]] {
                     field,
                     cols @ List(constant, resStdErr, degs, varCovar, values)) =>
                 val cnst = constant.map {
-                  case (_, col) =>
-                    col.apply(i)
+                  case (_, col) => col.apply(i)
                 }.headOption getOrElse { sys.error("Constant term must exist") }
 
                 val rse = resStdErr.map {
-                  case (_, col) =>
-                    col.apply(i)
+                  case (_, col) => col.apply(i)
                 }.headOption getOrElse { sys.error("Error term must exist") }
 
                 val dof = degs.map {
-                  case (_, col) =>
-                    col.apply(i).toInt
+                  case (_, col) => col.apply(i).toInt
                 }.headOption getOrElse { sys.error("DOF term must exist") }
 
                 val fts = values map {
@@ -403,17 +392,15 @@ trait ModelLibModule[M[+_]] {
                           CPathField(_),
                           CPathField(`varianceCovariance`),
                           rest @ _*),
-                        col) =>
-                    (CPath(rest: _*), col.apply(i))
+                        col) => (CPath(rest: _*), col.apply(i))
                 }
                 val size = fts.size + 1
                 val acc = Array.fill(size)(new Array[Double](size))
 
                 vc foreach {
                   case (CPath(CPathIndex(i), CPathIndex(j)), value)
-                      if (i < size) && (j < size) =>
-                    acc(i)(j) = value
-                  case _ => sys.error("Incorrect CPath structure found.")
+                      if (i < size) && (j < size) => acc(i)(j) = value
+                  case _                          => sys.error("Incorrect CPath structure found.")
                 }
 
                 Model(field, fts, cnst, rse, acc, dof)
@@ -445,8 +432,7 @@ trait ModelLibModule[M[+_]] {
           val modelNames: Set[String] = schema.columnRefs.collect {
             case ColumnRef(
                   CPath(paths.Value, CPathField(modelName), _ @_*),
-                  _) =>
-              modelName
+                  _) => modelName
           }.toSet
 
           val interceptPaths = modelNames.map { modelName =>
@@ -474,8 +460,7 @@ trait ModelLibModule[M[+_]] {
                 (modelName, path)
             }
             .groupBy(_._1) map {
-            case (modelName, paths) =>
-              (modelName, paths.map(_._2))
+            case (modelName, paths) => (modelName, paths.map(_._2))
           }
 
           val interceptCols = alignWithModels(schema, interceptPaths)
@@ -501,8 +486,7 @@ trait ModelLibModule[M[+_]] {
             joined.collect {
               case (field, cols @ List(constant, values)) =>
                 val cnst = constant.map {
-                  case (_, col) =>
-                    col.apply(i)
+                  case (_, col) => col.apply(i)
                 }.headOption getOrElse { sys.error("Constant term must exist") }
 
                 val fts = values collect {

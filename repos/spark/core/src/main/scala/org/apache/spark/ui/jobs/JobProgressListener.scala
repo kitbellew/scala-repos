@@ -392,10 +392,8 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
           new ExecutorSummary)
 
         taskEnd.reason match {
-          case Success =>
-            execSummary.succeededTasks += 1
-          case _ =>
-            execSummary.failedTasks += 1
+          case Success => execSummary.succeededTasks += 1
+          case _       => execSummary.failedTasks += 1
         }
         execSummary.taskTime += info.duration
         stageData.numActiveTasks -= 1
@@ -437,10 +435,8 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
              jobData <- jobIdToData.get(jobId)) {
           jobData.numActiveTasks -= 1
           taskEnd.reason match {
-            case Success =>
-              jobData.numCompletedTasks += 1
-            case _ =>
-              jobData.numFailedTasks += 1
+            case Success => jobData.numCompletedTasks += 1
+            case _       => jobData.numFailedTasks += 1
           }
         }
       }

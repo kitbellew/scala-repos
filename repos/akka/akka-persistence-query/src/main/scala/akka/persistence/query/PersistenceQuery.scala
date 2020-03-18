@@ -67,8 +67,7 @@ class PersistenceQuery(system: ExtendedActorSystem) extends Extension {
     val configPath = readJournalPluginId
     val extensionIdMap = readJournalPluginExtensionIds.get
     extensionIdMap.get(configPath) match {
-      case Some(extensionId) ⇒
-        extensionId(system)
+      case Some(extensionId) ⇒ extensionId(system)
       case None ⇒
         val extensionId = new ExtensionId[PluginHolder] {
           override def createExtension(

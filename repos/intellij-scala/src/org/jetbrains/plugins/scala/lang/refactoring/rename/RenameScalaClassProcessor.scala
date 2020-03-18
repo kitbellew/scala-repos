@@ -57,9 +57,8 @@ class RenameScalaClassProcessor
           case Some(companion)
               if ScalaApplicationSettings
                 .getInstance()
-                .RENAME_COMPANION_MODULE =>
-            allRenames.put(companion, newName)
-          case _ =>
+                .RENAME_COMPANION_MODULE => allRenames.put(companion, newName)
+          case _                         =>
         }
         @tailrec
         def isTop(element: PsiElement): Boolean = {
@@ -74,8 +73,7 @@ class RenameScalaClassProcessor
               element.getContext) && file.name == td.name + ".scala") {
           allRenames.put(file, newName + ".scala")
         }
-      case docTagParam: ScTypeParam =>
-        docTagParam.owner match {
+      case docTagParam: ScTypeParam => docTagParam.owner match {
           case commentOwner: ScDocCommentOwner =>
             commentOwner.getDocComment match {
               case comment: ScDocComment =>
@@ -95,8 +93,7 @@ class RenameScalaClassProcessor
     //put rename for fake object companion class
     def addLightClasses(element: PsiElement) {
       element match {
-        case o: ScObject =>
-          o.fakeCompanionClass match {
+        case o: ScObject => o.fakeCompanionClass match {
             case Some(clazz) => allRenames.put(clazz, newName)
             case None        =>
           }
@@ -117,8 +114,7 @@ class RenameScalaClassProcessor
       element: PsiElement): PsiElement = {
     element match {
       case o: ScObject => o.fakeCompanionClassOrCompanionClass
-      case wrapper: PsiClassWrapper =>
-        wrapper.definition match {
+      case wrapper: PsiClassWrapper => wrapper.definition match {
           case o: ScObject => wrapper
           case definition  => definition
         }

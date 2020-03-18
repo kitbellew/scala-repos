@@ -36,8 +36,7 @@ object Producer2FlatMapOperation {
       producers: List[Producer[Storm, _]]): FlatMapOperation[T, U] =
     producers
       .foldLeft(FlatMapOperation.identity[Any]) {
-        case (acc, p) =>
-          p match {
+        case (acc, p) => p match {
             case LeftJoinedProducer(_, wrapper) =>
               FlatMapOperation
                 .combine(

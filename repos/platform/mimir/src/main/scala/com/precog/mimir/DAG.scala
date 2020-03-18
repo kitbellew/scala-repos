@@ -83,8 +83,7 @@ trait DAG extends Instructions {
         }
 
         val eitherRootsOp = maybeOpSort map {
-          case (op, joinSort) =>
-            continue {
+          case (op, joinSort) => continue {
               case Right(right) :: Right(left) :: tl =>
                 Right(Right(Join(op, joinSort, left, right)(loc)) :: tl)
               case Left(_) :: _ | _ :: Left(_) :: _ =>
@@ -94,8 +93,7 @@ trait DAG extends Instructions {
         }
 
         val eitherRootsAbom = Some(instr) collect {
-          case instr @ instructions.Observe =>
-            continue {
+          case instr @ instructions.Observe => continue {
               case Right(samples) :: Right(data) :: tl =>
                 Right(Right(Observe(data, samples)(loc)) :: tl)
               case Left(_) :: _ | _ :: Left(_) :: _ =>
@@ -103,8 +101,7 @@ trait DAG extends Instructions {
               case _ => Left(StackUnderflow(instr))
             }
 
-          case instr @ instructions.Assert =>
-            continue {
+          case instr @ instructions.Assert => continue {
               case Right(child) :: Right(pred) :: tl =>
                 Right(Right(Assert(pred, child)(loc)) :: tl)
               case Left(_) :: _ | _ :: Left(_) :: _ =>
@@ -123,8 +120,7 @@ trait DAG extends Instructions {
               case _ => Left(StackUnderflow(instr))
             }
 
-          case instructions.SetDifference =>
-            continue {
+          case instructions.SetDifference => continue {
               case Right(right) :: Right(left) :: tl =>
                 Right(Right(Diff(left, right)(loc)) :: tl)
               case Left(_) :: _ | _ :: Left(_) :: _ =>
@@ -548,8 +544,7 @@ trait DAG extends Instructions {
             case x if pf isDefinedAt x => pf(x)
 
             // not using extractors due to bug
-            case s: dag.SplitParam =>
-              dag.SplitParam(s.id, s.parentId)(s.loc)
+            case s: dag.SplitParam => dag.SplitParam(s.id, s.parentId)(s.loc)
 
             // not using extractors due to bug
             case s: dag.SplitGroup =>
@@ -639,8 +634,7 @@ trait DAG extends Instructions {
             case dag.UnfixedSolution(id, target) =>
               dag.UnfixedSolution(id, memoized(target))
 
-            case dag.Extra(target) =>
-              dag.Extra(memoized(target))
+            case dag.Extra(target) => dag.Extra(memoized(target))
           }
 
         memotable.get(new DepGraphWrapper(node)) getOrElse {
@@ -772,54 +766,55 @@ trait DAG extends Instructions {
                 for { state <- monadState.gets(identity) } yield rep,
               (_: DepGraph) match {
                 // not using extractors due to bug
-                case s: dag.SplitParam =>
-                  for { state <- monadState.gets(identity) } yield dag
-                    .SplitParam(s.id, s.parentId)(s.loc)
+                case s: dag.SplitParam => for {
+                    state <- monadState.gets(identity)
+                  } yield dag.SplitParam(s.id, s.parentId)(s.loc)
 
                 // not using extractors due to bug
-                case s: dag.SplitGroup =>
-                  for { state <- monadState.gets(identity) } yield dag
-                    .SplitGroup(s.id, s.identities, s.parentId)(s.loc)
+                case s: dag.SplitGroup => for {
+                    state <- monadState.gets(identity)
+                  } yield dag.SplitGroup(s.id, s.identities, s.parentId)(s.loc)
 
-                case graph @ dag.Const(_) =>
-                  for { _ <- monadState.gets(identity) } yield graph
+                case graph @ dag.Const(_) => for {
+                    _ <- monadState.gets(identity)
+                  } yield graph
 
-                case graph @ dag.Undefined() =>
-                  for { _ <- monadState.gets(identity) } yield graph
+                case graph @ dag.Undefined() => for {
+                    _ <- monadState.gets(identity)
+                  } yield graph
 
-                case graph @ dag.New(parent) =>
-                  for { newParent <- memoized(parent) } yield dag.New(
-                    newParent)(graph.loc)
+                case graph @ dag.New(parent) => for {
+                    newParent <- memoized(parent)
+                  } yield dag.New(newParent)(graph.loc)
 
-                case graph @ dag.Morph1(m, parent) =>
-                  for { newParent <- memoized(parent) } yield dag
-                    .Morph1(m, newParent)(graph.loc)
+                case graph @ dag.Morph1(m, parent) => for {
+                    newParent <- memoized(parent)
+                  } yield dag.Morph1(m, newParent)(graph.loc)
 
-                case graph @ dag.Morph2(m, left, right) =>
-                  for {
+                case graph @ dag.Morph2(m, left, right) => for {
                     newLeft <- memoized(left)
                     newRight <- memoized(right)
                   } yield dag.Morph2(m, newLeft, newRight)(graph.loc)
 
-                case graph @ dag.Distinct(parent) =>
-                  for { newParent <- memoized(parent) } yield dag.Distinct(
-                    newParent)(graph.loc)
+                case graph @ dag.Distinct(parent) => for {
+                    newParent <- memoized(parent)
+                  } yield dag.Distinct(newParent)(graph.loc)
 
-                case graph @ dag.AbsoluteLoad(parent, jtpe) =>
-                  for { newParent <- memoized(parent) } yield dag
-                    .AbsoluteLoad(newParent, jtpe)(graph.loc)
+                case graph @ dag.AbsoluteLoad(parent, jtpe) => for {
+                    newParent <- memoized(parent)
+                  } yield dag.AbsoluteLoad(newParent, jtpe)(graph.loc)
 
-                case graph @ dag.Operate(op, parent) =>
-                  for { newParent <- memoized(parent) } yield dag
-                    .Operate(op, newParent)(graph.loc)
+                case graph @ dag.Operate(op, parent) => for {
+                    newParent <- memoized(parent)
+                  } yield dag.Operate(op, newParent)(graph.loc)
 
-                case graph @ dag.Reduce(red, parent) =>
-                  for { newParent <- memoized(parent) } yield dag
-                    .Reduce(red, newParent)(graph.loc)
+                case graph @ dag.Reduce(red, parent) => for {
+                    newParent <- memoized(parent)
+                  } yield dag.Reduce(red, newParent)(graph.loc)
 
-                case dag.MegaReduce(reds, parent) =>
-                  for { newParent <- memoized(parent) } yield dag
-                    .MegaReduce(reds, newParent)
+                case dag.MegaReduce(reds, parent) => for {
+                    newParent <- memoized(parent)
+                  } yield dag.MegaReduce(reds, newParent)
 
                 case s @ dag.Split(spec, child, id) => {
                   for {
@@ -828,49 +823,43 @@ trait DAG extends Instructions {
                   } yield dag.Split(newSpec, newChild, id)(s.loc)
                 }
 
-                case graph @ dag.Assert(pred, child) =>
-                  for {
+                case graph @ dag.Assert(pred, child) => for {
                     newPred <- memoized(pred)
                     newChild <- memoized(child)
                   } yield dag.Assert(newPred, newChild)(graph.loc)
 
-                case graph @ dag.Observe(data, samples) =>
-                  for {
+                case graph @ dag.Observe(data, samples) => for {
                     newData <- memoized(data)
                     newSamples <- memoized(samples)
                   } yield dag.Observe(newData, newSamples)(graph.loc)
 
-                case graph @ dag.IUI(union, left, right) =>
-                  for {
+                case graph @ dag.IUI(union, left, right) => for {
                     newLeft <- memoized(left)
                     newRight <- memoized(right)
                   } yield dag.IUI(union, newLeft, newRight)(graph.loc)
 
-                case graph @ dag.Diff(left, right) =>
-                  for {
+                case graph @ dag.Diff(left, right) => for {
                     newLeft <- memoized(left)
                     newRight <- memoized(right)
                   } yield dag.Diff(newLeft, newRight)(graph.loc)
 
-                case graph @ dag.Join(op, joinSort, left, right) =>
-                  for {
+                case graph @ dag.Join(op, joinSort, left, right) => for {
                     newLeft <- memoized(left)
                     newRight <- memoized(right)
                   } yield dag.Join(op, joinSort, newLeft, newRight)(graph.loc)
 
-                case graph @ dag.Filter(joinSort, target, boolean) =>
-                  for {
+                case graph @ dag.Filter(joinSort, target, boolean) => for {
                     newTarget <- memoized(target)
                     newBoolean <- memoized(boolean)
                   } yield dag.Filter(joinSort, newTarget, newBoolean)(graph.loc)
 
-                case dag.AddSortKey(parent, sortField, valueField, id) =>
-                  for { newParent <- memoized(parent) } yield dag
-                    .AddSortKey(newParent, sortField, valueField, id)
+                case dag.AddSortKey(parent, sortField, valueField, id) => for {
+                    newParent <- memoized(parent)
+                  } yield dag.AddSortKey(newParent, sortField, valueField, id)
 
-                case dag.Memoize(parent, priority) =>
-                  for { newParent <- memoized(parent) } yield dag
-                    .Memoize(newParent, priority)
+                case dag.Memoize(parent, priority) => for {
+                    newParent <- memoized(parent)
+                  } yield dag.Memoize(newParent, priority)
               }
             )
           }
@@ -907,30 +896,28 @@ trait DAG extends Instructions {
             (rep: dag.BucketSpec) =>
               for { state <- monadState.gets(identity) } yield rep,
             (_: dag.BucketSpec) match {
-              case dag.UnionBucketSpec(left, right) =>
-                for {
+              case dag.UnionBucketSpec(left, right) => for {
                   newLeft <- memoizedSpec(left)
                   newRight <- memoizedSpec(right)
                 } yield dag.UnionBucketSpec(newLeft, newRight)
 
-              case dag.IntersectBucketSpec(left, right) =>
-                for {
+              case dag.IntersectBucketSpec(left, right) => for {
                   newLeft <- memoizedSpec(left)
                   newRight <- memoizedSpec(right)
                 } yield dag.IntersectBucketSpec(newLeft, newRight)
 
-              case dag.Group(id, target, child) =>
-                for {
+              case dag.Group(id, target, child) => for {
                   newTarget <- memoized(target)
                   newChild <- memoizedSpec(child)
                 } yield dag.Group(id, newTarget, newChild)
 
-              case dag.UnfixedSolution(id, target) =>
-                for { newTarget <- memoized(target) } yield dag
-                  .UnfixedSolution(id, newTarget)
+              case dag.UnfixedSolution(id, target) => for {
+                  newTarget <- memoized(target)
+                } yield dag.UnfixedSolution(id, newTarget)
 
-              case dag.Extra(target) =>
-                for { newTarget <- memoized(target) } yield dag.Extra(newTarget)
+              case dag.Extra(target) => for {
+                  newTarget <- memoized(target)
+                } yield dag.Extra(newTarget)
             }
           )
         }
@@ -1347,11 +1334,9 @@ trait DAG extends Instructions {
       lazy val containsSplitArg = {
         def loop(spec: BucketSpec): Boolean =
           spec match {
-            case UnionBucketSpec(left, right) =>
-              loop(left) || loop(right)
+            case UnionBucketSpec(left, right) => loop(left) || loop(right)
 
-            case IntersectBucketSpec(left, right) =>
-              loop(left) || loop(right)
+            case IntersectBucketSpec(left, right) => loop(left) || loop(right)
 
             case Group(_, target, child) =>
               target.containsSplitArg || loop(child)
@@ -1661,8 +1646,7 @@ trait DAG extends Instructions {
         identities match {
           case Identities.Specs(ids) =>
             ids.zipWithIndex collect {
-              case (id, index) if !(sharedIds contains id) =>
-                index
+              case (id, index) if !(sharedIds contains id) => index
             }
           case _ => Vector.empty
         }

@@ -97,8 +97,7 @@ abstract class Page {
         case (f :: fs, t :: ts)
             if (f == t) => // both paths are identical to that point
           relativize(fs, ts)
-        case (fss, tss) =>
-          List.fill(fss.length - 1)("..") ::: tss
+        case (fss, tss) => List.fill(fss.length - 1)("..") ::: tss
       }
     relativize(thisPage.path.reverse, destPath.reverse).mkString("/")
   }

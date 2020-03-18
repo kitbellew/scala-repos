@@ -217,8 +217,7 @@ class MarathonHealthCheckManagerTest
 
     updateTaskHealth(task2, version, healthy = true)
     statuses.foreach {
-      case (id, health) if id == task3 =>
-        assert(health.isEmpty)
+      case (id, health) if id == task3 => assert(health.isEmpty)
       case (_, health) =>
         assert(health.size == 1)
         assert(health.head.alive)

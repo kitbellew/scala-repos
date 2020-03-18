@@ -43,10 +43,7 @@ object V1SegmentFormat extends SegmentFormat {
   object reader extends SegmentReader {
     private def wrapException[A](f: => A): Validation[IOException, A] =
       try { Success(f) }
-      catch {
-        case e: Exception =>
-          Failure(new IOException(e))
-      }
+      catch { case e: Exception => Failure(new IOException(e)) }
 
     def readSegmentId(
         channel: ReadableByteChannel): Validation[IOException, SegmentId] =
@@ -119,10 +116,8 @@ object V1SegmentFormat extends SegmentFormat {
         _ <- segment match {
           case seg: ArraySegment[a] =>
             writeArraySegment(channel, seg, getCodecFor(seg.ctype))
-          case seg: BooleanSegment =>
-            writeBooleanSegment(channel, seg)
-          case seg: NullSegment =>
-            writeNullSegment(channel, seg)
+          case seg: BooleanSegment => writeBooleanSegment(channel, seg)
+          case seg: NullSegment    => writeNullSegment(channel, seg)
         }
       } yield PrecogUnit
     }
@@ -201,10 +196,7 @@ object V1SegmentFormat extends SegmentFormat {
     try {
       while (buffer.remaining() > 0) { channel.write(buffer) }
       Success(result)
-    } catch {
-      case ex: IOException =>
-        Failure(ex)
-    }
+    } catch { case ex: IOException => Failure(ex) }
   }
 
   def readChunk(
@@ -219,10 +211,7 @@ object V1SegmentFormat extends SegmentFormat {
       while (buffer.remaining() > 0) { channel.read(buffer) }
       buffer.flip()
       Success(buffer)
-    } catch {
-      case ioe: IOException =>
-        Failure(ioe)
-    }
+    } catch { case ioe: IOException => Failure(ioe) }
   }
 
   private def getCodecFor[A](ctype: CValueType[A]): Codec[A] =

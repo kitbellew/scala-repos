@@ -49,10 +49,8 @@ object Test extends App {
   // throw inside body (finally and catch are executed)
   def throwBody {
     try { throw new Exception }
-    catch {
-      case e: Throwable =>
-        println(e);
-    } finally println("in finally")
+    catch { case e: Throwable => println(e); }
+    finally println("in finally")
   }
 
   // return inside finally (each finally is executed once)

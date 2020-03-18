@@ -361,8 +361,7 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
           } else { bc emitRETURN UNIT }
           shouldEmitCleanup = false
 
-        case nextCleanup :: _ =>
-          bc goTo nextCleanup
+        case nextCleanup :: _ => bc goTo nextCleanup
       }
     }
 

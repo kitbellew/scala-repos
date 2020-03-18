@@ -121,8 +121,9 @@ class PersistPersistentActor(respondAfter: Int) extends PersistentActor {
   override def persistenceId: String = self.path.name
 
   override def receiveCommand = {
-    case n: Int =>
-      persist(Evt(n)) { e => if (e.i == respondAfter) sender() ! e }
+    case n: Int => persist(Evt(n)) { e =>
+        if (e.i == respondAfter) sender() ! e
+      }
   }
   override def receiveRecover = {
     case _ => // do nothing
@@ -134,8 +135,9 @@ class PersistAsyncPersistentActor(respondAfter: Int) extends PersistentActor {
   override def persistenceId: String = self.path.name
 
   override def receiveCommand = {
-    case n: Int =>
-      persistAsync(Evt(n)) { e => if (e.i == respondAfter) sender() ! e }
+    case n: Int => persistAsync(Evt(n)) { e =>
+        if (e.i == respondAfter) sender() ! e
+      }
   }
   override def receiveRecover = {
     case _ => // do nothing

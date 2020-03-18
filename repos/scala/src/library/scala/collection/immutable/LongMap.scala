@@ -263,9 +263,8 @@ sealed abstract class LongMap[+T]
         if ((left eq newleft) && (right eq newright)) this
         else bin(prefix, mask, newleft, newright)
       }
-      case LongMap.Tip(key, value) =>
-        if (f((key, value))) this else LongMap.Nil
-      case LongMap.Nil => LongMap.Nil
+      case LongMap.Tip(key, value) => if (f((key, value))) this else LongMap.Nil
+      case LongMap.Nil             => LongMap.Nil
     }
 
   def transform[S](f: (Long, T) => S): LongMap[S] =
@@ -362,9 +361,8 @@ sealed abstract class LongMap[+T]
         if (!hasMatch(key, prefix, mask)) this
         else if (zero(key, mask)) bin(prefix, mask, left - key, right)
         else bin(prefix, mask, left, right - key)
-      case LongMap.Tip(key2, _) =>
-        if (key == key2) LongMap.Nil else this
-      case LongMap.Nil => LongMap.Nil
+      case LongMap.Tip(key2, _) => if (key == key2) LongMap.Nil else this
+      case LongMap.Nil          => LongMap.Nil
     }
 
   /**
@@ -385,8 +383,7 @@ sealed abstract class LongMap[+T]
           this.asInstanceOf[LongMap[S]]
         else bin(prefix, mask, newleft, newright)
       }
-      case LongMap.Tip(key, value) =>
-        f(key, value) match {
+      case LongMap.Tip(key, value) => f(key, value) match {
           case None         => LongMap.Nil
           case Some(value2) =>
             //hack to preserve sharing
@@ -480,13 +477,11 @@ sealed abstract class LongMap[+T]
           else if (zero(p1, m2)) this.intersectionWith(l2, f)
           else this.intersectionWith(r2, f)
         }
-      case (LongMap.Tip(key, value), that) =>
-        that.get(key) match {
+      case (LongMap.Tip(key, value), that) => that.get(key) match {
           case None         => LongMap.Nil
           case Some(value2) => LongMap.Tip(key, f(key, value, value2))
         }
-      case (_, LongMap.Tip(key, value)) =>
-        this.get(key) match {
+      case (_, LongMap.Tip(key, value)) => this.get(key) match {
           case None         => LongMap.Nil
           case Some(value2) => LongMap.Tip(key, f(key, value2, value))
         }

@@ -32,8 +32,7 @@ private[analyse] final class Annotator(netDomain: String) {
             s"$loserName forfeits by computer assistance".some
           case _ => none
         }
-      case None =>
-        status match {
+      case None => status match {
           case Status.Aborted   => "Game is aborted".some
           case Status.Stalemate => "Stalemate".some
           case Status.Draw      => "Draw".some
@@ -51,8 +50,7 @@ private[analyse] final class Annotator(netDomain: String) {
 
   private def annotateTurns(p: Pgn, advices: List[Advice]): Pgn =
     advices.foldLeft(p) {
-      case (pgn, advice) =>
-        pgn.updateTurn(
+      case (pgn, advice) => pgn.updateTurn(
           advice.turn,
           turn =>
             turn.update(

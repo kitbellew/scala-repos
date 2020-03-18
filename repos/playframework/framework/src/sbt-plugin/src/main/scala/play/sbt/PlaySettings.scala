@@ -92,8 +92,7 @@ object PlaySettings {
     mainClass in (Compile, Keys.run) := Some("play.core.server.DevServerStart"),
     PlayInternalKeys.playStop := {
       playInteractionMode.value match {
-        case nonBlocking: PlayNonBlockingInteractionMode =>
-          nonBlocking.stop()
+        case nonBlocking: PlayNonBlockingInteractionMode => nonBlocking.stop()
         case _ =>
           throw new RuntimeException(
             "Play interaction mode must be non blocking to stop it")

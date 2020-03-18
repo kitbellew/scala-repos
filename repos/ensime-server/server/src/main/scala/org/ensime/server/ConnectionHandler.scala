@@ -34,8 +34,7 @@ class ConnectionHandler(
       val handler = RequestHandler(Canonised(req), project, self)
       context.actorOf(handler, s"${req.callId}")
 
-    case outgoing: RpcResponseEnvelope =>
-      target forward Canonised(outgoing)
+    case outgoing: RpcResponseEnvelope => target forward Canonised(outgoing)
   }
 
   def receiveEvents: Receive = {

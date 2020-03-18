@@ -339,8 +339,7 @@ object Vectors {
     sparse(
       size,
       elements.asScala.map {
-        case (i, x) =>
-          (i.intValue(), x.doubleValue())
+        case (i, x) => (i.intValue(), x.doubleValue())
       }.toSeq)
   }
 
@@ -382,12 +381,10 @@ object Vectors {
 
   private[mllib] def parseNumeric(any: Any): Vector = {
     any match {
-      case values: Array[Double] =>
-        Vectors.dense(values)
+      case values: Array[Double] => Vectors.dense(values)
       case Seq(size: Double, indices: Array[Double], values: Array[Double]) =>
         Vectors.sparse(size.toInt, indices.map(_.toInt), values)
-      case other =>
-        throw new SparkException(s"Cannot parse $other.")
+      case other => throw new SparkException(s"Cannot parse $other.")
     }
   }
 

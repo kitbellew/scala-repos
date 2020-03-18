@@ -144,8 +144,7 @@ object LiftSession {
               }
               .map(const => PConstructor(const)) orElse nullConstructor()
 
-        case _ =>
-          nullConstructor()
+        case _ => nullConstructor()
       }
     }
 
@@ -514,10 +513,7 @@ class LiftSession(
               try {
                 if (r.hostAndPath == hostAndPath) (valid :+ pair, invalid)
                 else soFar
-              } catch {
-                case exception: Exception =>
-                  (valid, invalid :+ pair)
-              }
+              } catch { case exception: Exception => (valid, invalid :+ pair) }
           }
       }
 
@@ -571,14 +567,11 @@ class LiftSession(
         }
         .sortWith {
           case (RunnerHolder(_, _, Full(a)), RunnerHolder(_, _, Full(b)))
-              if a < b =>
-            true
+              if a < b => true
           case (RunnerHolder(_, _, Full(a)), RunnerHolder(_, _, Full(b)))
-              if a > b =>
-            false
+              if a > b => false
           case (RunnerHolder(an, _, Full(a)), RunnerHolder(bn, _, Full(b)))
-              if a == b =>
-            an < bn
+              if a == b                                       => an < bn
           case (RunnerHolder(_, _, Full(_)), _)               => false
           case (_, RunnerHolder(_, _, Full(_)))               => true
           case (RunnerHolder(a, _, _), RunnerHolder(b, _, _)) => a < b
@@ -654,8 +647,7 @@ class LiftSession(
         funcHolder.owner.foreach(removedOwners += _)
         nmessageCallback.remove(functionName)
 
-      case (_, funcHolder) =>
-        funcHolder.owner.foreach(availableOwners += _)
+      case (_, funcHolder) => funcHolder.owner.foreach(availableOwners += _)
     }
 
     val fullyRemovedOwners = removedOwners diff availableOwners
@@ -1080,8 +1072,7 @@ class LiftSession(
             // Process but make sure we're okay, sitemap wise
             val response: Box[LiftResponse] =
               early or (request.testLocation match {
-                case Left(true) =>
-                  checkStatelessInSiteMap(request) {
+                case Left(true) => checkStatelessInSiteMap(request) {
                     cleanUpBeforeRender
 
                     PageName(request.uri + " -> " + request.path)
@@ -1108,8 +1099,7 @@ class LiftSession(
                   } or
                     Full(ForbiddenResponse(
                       "The requested page was not defined in your SiteMap, so access was blocked.  (This message is displayed in development mode only)"))
-                case _ =>
-                  request.createNotFound {
+                case _ => request.createNotFound {
                     processTemplate(Empty, request, _, 404)
                   }
               })
@@ -1126,8 +1116,8 @@ class LiftSession(
             ite.getCause.asInstanceOf[ResponseShortcutException],
             request))
 
-        case rd: net.liftweb.http.ResponseShortcutException =>
-          Full(handleRedirect(rd, request))
+        case rd: net.liftweb.http.ResponseShortcutException => Full(
+            handleRedirect(rd, request))
 
         case e: LiftFlowOfControlException => throw e
 
@@ -1252,22 +1242,19 @@ class LiftSession(
         }
         runSourceContext(ar.toList, xform, ns)
       case n: java.lang.Iterable[_] => runSourceContext(n.iterator(), xform, ns)
-      case n: java.util.Iterator[_] =>
-        for {
+      case n: java.util.Iterator[_] => for {
           i <- n.toSeq;
           nodes <- currentSourceContext.doWith(i)(
             processSurroundAndInclude("Source", xform(ns)))
         } yield nodes
-      case en: java.util.Enumeration[_] =>
-        for {
+      case en: java.util.Enumeration[_] => for {
           i <- en.toSeq;
           nodes <- currentSourceContext.doWith(i)(
             processSurroundAndInclude("Source", xform(ns)))
         } yield nodes
       case se: scala.collection.Iterable[_] =>
         runSourceContext(se.iterator, xform, ns)
-      case se: scala.collection.Iterator[_] =>
-        for {
+      case se: scala.collection.Iterator[_] => for {
           i <- se.toSeq;
           nodes <- currentSourceContext.doWith(i)(
             processSurroundAndInclude("Source", xform(ns)))
@@ -1331,9 +1318,8 @@ class LiftSession(
 
   def findField(name: List[String], cur: Any): Any =
     name.foldLeft(cur) {
-      case (null, _) => Empty
-      case (so: Scriptable, name) =>
-        fixScriptableObject(so.get(name, so))
+      case (null, _)                      => Empty
+      case (so: Scriptable, name)         => fixScriptableObject(so.get(name, so))
       case (m: java.util.Map[_, _], name) => m.get(name)
       case (m: PartialFunction[_, _] /* expect String,Any */, name) =>
         (m.asInstanceOf[PartialFunction[String, Any]]).applyOrElse(name, null)
@@ -1958,8 +1944,7 @@ class LiftSession(
     if (ret.isEmpty) ret
     else
       attrs.get("form").map(_.text.trim.toLowerCase) match {
-        case Some("post") =>
-          S.withAttrs(attrs.filter(_.key == "multipart")) {
+        case Some("post") => S.withAttrs(attrs.filter(_.key == "multipart")) {
             net.liftweb.builtin.snippet.Form.post(ret)
           } match {
             case e: Elem =>
@@ -2057,8 +2042,7 @@ class LiftSession(
     NamedPF("Default Lift Tags") {
       case ("snippet", elm, metaData, kids, page) =>
         metaData.get("type") match {
-          case Some(tn) =>
-            S.doSnippet(tn.text) {
+          case Some(tn) => S.doSnippet(tn.text) {
               NamedPF((tn.text, elm, metaData, kids, page), liftTagProcessing)
             }
 
@@ -2393,11 +2377,9 @@ class LiftSession(
   def processSurroundAndInclude(page: String, in: NodeSeq): NodeSeq = {
     try {
       in.flatMap {
-        case Group(nodes) =>
-          Group(processSurroundAndInclude(page, nodes))
+        case Group(nodes) => Group(processSurroundAndInclude(page, nodes))
 
-        case elem @ DataAttrNode(toDo) =>
-          toDo match {
+        case elem @ DataAttrNode(toDo) => toDo match {
             case DataAttributeProcessorAnswerNodes(nodes) =>
               processSurroundAndInclude(page, nodes)
 
@@ -2425,8 +2407,7 @@ class LiftSession(
             }
           }
 
-        case elem @ TagProcessingNode(toDo) =>
-          toDo match {
+        case elem @ TagProcessingNode(toDo) => toDo match {
             case DataAttributeProcessorAnswerNodes(nodes) => nodes
             case DataAttributeProcessorAnswerFork(nodeFunc) =>
               processOrDefer(true)(nodeFunc())
@@ -2634,8 +2615,7 @@ class LiftSession(
           case (info, message) if info == cometInfo =>
             comet ! message
             false
-          case _ =>
-            true
+          case _ => true
         })
 
         comet
@@ -2773,10 +2753,8 @@ class LiftSession(
       .openOr("/templates-hidden/default")
 
     findTemplate(name) match {
-      case f @ Failure(msg, be, _) if Props.devMode =>
-        failedFind(f)
-      case Full(s) =>
-        atWhat.toList match {
+      case f @ Failure(msg, be, _) if Props.devMode => failedFind(f)
+      case Full(s) => atWhat.toList match {
           case Nil => s
           case xs =>
             xs.map { case (id, replacement) => (("#" + id) #> replacement) }
@@ -3058,8 +3036,7 @@ private object SnippetNode {
 
     snippetInvocation.map { snip =>
       snip.charSplit('?') match {
-        case Nil =>
-          SnippetInformation("this should never happen", Null)
+        case Nil => SnippetInformation("this should never happen", Null)
 
         case snippetName :: Nil =>
           SnippetInformation(urlDecode(removeLift(snippetName)), Null)

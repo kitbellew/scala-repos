@@ -24,8 +24,7 @@ class SbtOrderEnumeratorHandler extends OrderEnumerationHandler {
           _ != library.getOwnerModule)
         if (isTransitive) AddDependencyType.DO_NOT_ADD
         else AddDependencyType.DEFAULT
-      case _ =>
-        AddDependencyType.DEFAULT
+      case _ => AddDependencyType.DEFAULT
     }
   }
 

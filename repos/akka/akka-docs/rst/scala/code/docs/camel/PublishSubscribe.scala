@@ -9,8 +9,8 @@ object PublishSubscribe {
     def endpointUri = uri
 
     def receive = {
-      case msg: CamelMessage =>
-        println("%s received: %s" format (name, msg.body))
+      case msg: CamelMessage => println(
+          "%s received: %s" format (name, msg.body))
     }
   }
 

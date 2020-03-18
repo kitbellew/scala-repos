@@ -118,10 +118,8 @@ private[kestrel] class CommandToEncoding extends OneToOneEncoder {
       case Peek(queueName, timeout) =>
         val key = keyWithSuffix(queueName, PEEK, timeout)
         Tokens(Seq(GET, key))
-      case Delete(key) =>
-        Tokens(Seq(DELETE, key))
-      case Flush(key) =>
-        Tokens(Seq(FLUSH, key))
+      case Delete(key) => Tokens(Seq(DELETE, key))
+      case Flush(key)  => Tokens(Seq(FLUSH, key))
     }
   }
 }

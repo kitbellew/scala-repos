@@ -151,8 +151,7 @@ private[http] class HttpResponseRendererFactory(
               transferEncodingSeen: Boolean = false,
               dateSeen: Boolean = false): Unit =
             remaining match {
-              case head :: tail ⇒
-                head match {
+              case head :: tail ⇒ head match {
                   case x: `Content-Length` ⇒
                     suppressionWarning(
                       log,
@@ -189,8 +188,7 @@ private[http] class HttpResponseRendererFactory(
                       transferEncodingSeen,
                       dateSeen = true)
 
-                  case x: `Transfer-Encoding` ⇒
-                    x.withChunkedPeeled match {
+                  case x: `Transfer-Encoding` ⇒ x.withChunkedPeeled match {
                       case None ⇒
                         suppressionWarning(log, head)
                         renderHeaders(

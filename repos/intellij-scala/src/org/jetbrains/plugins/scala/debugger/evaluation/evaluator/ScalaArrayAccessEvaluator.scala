@@ -38,10 +38,7 @@ class ScalaArrayAccessEvaluator(
     }
     myEvaluatedIndex = indexValue.asInstanceOf[PrimitiveValue].intValue
     try { myEvaluatedArrayReference.getValue(myEvaluatedIndex) }
-    catch {
-      case e: Exception =>
-        throw EvaluationException(e)
-    }
+    catch { case e: Exception => throw EvaluationException(e) }
   }
 
   def getModifier: Modifier = {
@@ -59,8 +56,7 @@ class ScalaArrayAccessEvaluator(
               .asInstanceOf[ArrayType]
             tp.componentType
           } catch {
-            case e: ClassNotLoadedException =>
-              throw EvaluationException(e)
+            case e: ClassNotLoadedException => throw EvaluationException(e)
           }
         }
         def getInspectItem(project: Project): NodeDescriptorImpl = {

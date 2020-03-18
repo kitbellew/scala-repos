@@ -78,13 +78,11 @@ private[master] class MasterArguments(args: Array[String], conf: SparkConf) {
         propertiesFile = value
         parse(tail)
 
-      case ("--help") :: tail =>
-        printUsageAndExit(0)
+      case ("--help") :: tail => printUsageAndExit(0)
 
       case Nil => {}
 
-      case _ =>
-        printUsageAndExit(1)
+      case _ => printUsageAndExit(1)
     }
 
   /**

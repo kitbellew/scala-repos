@@ -81,8 +81,7 @@ private[finagle] object StabilizingAddr {
                 val newTime = Time.now + grace
                 val newq = remq map { case (elem, _) => (elem, newTime) }
                 loop(newq, Healthy, active, needPush, srcAddr)
-              case newh =>
-                loop(remq, newh, active, needPush, srcAddr)
+              case newh => loop(remq, newh, active, needPush, srcAddr)
             }
           },
           addr map {

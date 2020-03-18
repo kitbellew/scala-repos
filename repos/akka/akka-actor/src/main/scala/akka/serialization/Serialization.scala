@@ -63,8 +63,7 @@ object Serialization {
       case _ ⇒ null
     }
     Serialization.currentTransportInformation.value match {
-      case null ⇒
-        originalSystem match {
+      case null ⇒ originalSystem match {
           case null ⇒ path.toSerializationFormat
           case system ⇒
             try path.toSerializationFormatWithAddress(

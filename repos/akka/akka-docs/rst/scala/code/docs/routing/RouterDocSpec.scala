@@ -272,8 +272,7 @@ router-dispatcher {}
     }
 
     def receive = {
-      case w: Work =>
-        router.route(w, sender())
+      case w: Work => router.route(w, sender())
       case Terminated(a) =>
         router = router.removeRoutee(a)
         val r = context.actorOf(Props[Worker])
@@ -284,9 +283,7 @@ router-dispatcher {}
   //#router-in-actor
 
   class Worker extends Actor {
-    def receive = {
-      case _ =>
-    }
+    def receive = { case _ => }
   }
 
   //#create-worker-actors
@@ -297,9 +294,7 @@ router-dispatcher {}
     // ...
     //#create-worker-actors
 
-    def receive = {
-      case _ =>
-    }
+    def receive = { case _ => }
   }
 
   class Parent extends Actor {
@@ -502,9 +497,7 @@ router-dispatcher {}
       "router31")
     //#optimal-size-exploring-resize-pool
 
-    def receive = {
-      case _ =>
-    }
+    def receive = { case _ => }
 
   }
 

@@ -66,8 +66,7 @@ trait RouterConfig extends Serializable {
   def isManagementMessage(msg: Any): Boolean =
     msg match {
       case _: AutoReceivedMessage | _: Terminated |
-          _: RouterManagementMesssage ⇒
-        true
+          _: RouterManagementMesssage ⇒ true
       case _ ⇒ false
     }
 

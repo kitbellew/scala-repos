@@ -212,8 +212,7 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                         if f.name.endsWith(
                           "_=") && parameters.getInvocationCount < 2 => //don't show _= methods for vars in basic completion
                     case fun: ScFun                                  => addElement(el)
-                    case param: ScClassParameter =>
-                      addElement(el)
+                    case param: ScClassParameter                     => addElement(el)
                     case param: ScParameter if !el.isNamedParameter =>
                       el.isLocalVariable = true
                       addElement(el)
@@ -241,8 +240,7 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                       if (parameters.getInvocationCount > 1 || ResolveUtils
                             .isAccessible(memb, position, forCompletion = true))
                         addElement(el)
-                    case _ =>
-                      addElement(el)
+                    case _ => addElement(el)
                   }
                 case _ =>
               }

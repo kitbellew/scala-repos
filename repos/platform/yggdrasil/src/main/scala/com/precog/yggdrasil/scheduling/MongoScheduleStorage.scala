@@ -100,8 +100,7 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
     EitherT {
       database(
         selectOne().from(settings.tasks).where(".id" === id.toString)) flatMap {
-        case Some(taskjv) =>
-          for {
+        case Some(taskjv) => for {
             _ <- insertTask(\/-(taskjv), settings.deletedTasks)
             _ <- database(
               remove.from(settings.tasks) where (".id" === id.toString))

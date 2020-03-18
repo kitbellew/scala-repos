@@ -387,8 +387,7 @@ object AhcWSSpec extends PlaySpecification with Mockito {
 
     val patchFakeApp = GuiceApplicationBuilder()
       .routes {
-        case ("PATCH", "/") =>
-          Action {
+        case ("PATCH", "/") => Action {
             Results.Ok(play.api.libs.json.Json.parse("""{
             |  "data": "body"
             |}
@@ -417,8 +416,7 @@ object AhcWSSpec extends PlaySpecification with Mockito {
       GuiceApplicationBuilder()
         .configure("play.ws.compressionEnabled" -> true)
         .routes({
-          case ("GET", "/") =>
-            Action {
+          case ("GET", "/") => Action {
               request =>
                 request.headers.get("Accept-Encoding") match {
                   case Some(encoding) if encoding.contains("gzip") =>
@@ -430,8 +428,7 @@ object AhcWSSpec extends PlaySpecification with Mockito {
                       .Ok(os.toByteArray)
                       .as("text/plain")
                       .withHeaders("Content-Encoding" -> "gzip")
-                  case _ =>
-                    Results.Ok("plain response")
+                  case _ => Results.Ok("plain response")
                 }
             }
         })

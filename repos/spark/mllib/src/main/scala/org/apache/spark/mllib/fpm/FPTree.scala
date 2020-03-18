@@ -55,10 +55,7 @@ private[fpm] class FPTree[T] extends Serializable {
 
   /** Merges another FP-Tree. */
   def merge(other: FPTree[T]): this.type = {
-    other.transactions.foreach {
-      case (t, c) =>
-        add(t, c)
-    }
+    other.transactions.foreach { case (t, c) => add(t, c) }
     this
   }
 
@@ -87,8 +84,7 @@ private[fpm] class FPTree[T] extends Serializable {
   private def getTransactions(node: Node[T]): Iterator[(List[T], Long)] = {
     var count = node.count
     node.children.iterator.flatMap {
-      case (item, child) =>
-        getTransactions(child).map {
+      case (item, child) => getTransactions(child).map {
           case (t, c) =>
             count -= c
             (item :: t, c)
@@ -108,8 +104,7 @@ private[fpm] class FPTree[T] extends Serializable {
         if (validateSuffix(item) && summary.count >= minCount) {
           Iterator.single((item :: Nil, summary.count)) ++
             project(item).extract(minCount).map {
-              case (t, c) =>
-                (item :: t, c)
+              case (t, c) => (item :: t, c)
             }
         } else { Iterator.empty }
     }

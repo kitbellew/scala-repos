@@ -91,8 +91,7 @@ class JobProgressListenerSuite
 
   private def assertActiveJobsStateIsEmpty(listener: JobProgressListener) {
     listener.getSizesOfActiveStateTrackingCollections.foreach {
-      case (fieldName, size) =>
-        assert(size === 0, s"$fieldName was not empty")
+      case (fieldName, size) => assert(size === 0, s"$fieldName was not empty")
     }
   }
 

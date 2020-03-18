@@ -132,8 +132,7 @@ trait CompletionControl {
         case Left(tree) =>
           logger.debug("Completing at tree:" + tree.summaryString)
           tree match {
-            case Apply(fun, _) =>
-              fun match {
+            case Apply(fun, _) => fun match {
                 case Select(qualifier: New, name) =>
                   Some(ScopeContext(
                     src,
@@ -191,16 +190,15 @@ trait CompletionControl {
                   defaultPrefix,
                   constructing = false))
               }
-            case other =>
-              Some(ScopeContext(src, p.point, defaultPrefix, constructing))
+            case other => Some(
+                ScopeContext(src, p.point, defaultPrefix, constructing))
           }
         case _ =>
           logger.error("Unrecognized completion context.")
           None
       }
       contextOpt match {
-        case Some(context) =>
-          CompletionInfoList(
+        case Some(context) => CompletionInfoList(
             context.prefix,
             makeAll(context, maxResults, caseSens)
               .sortWith({ (c1, c2) =>
@@ -454,8 +452,7 @@ object CompletionUtil {
     val askRes = Patterns.ask(indexer, req, Timeout(1000.milliseconds))
     askRes
       .map {
-        case s: SymbolSearchResults =>
-          s.syms.map { s =>
+        case s: SymbolSearchResults => s.syms.map { s =>
             CompletionInfo(
               s.localName,
               CompletionSignature(List.empty, s.name, false),

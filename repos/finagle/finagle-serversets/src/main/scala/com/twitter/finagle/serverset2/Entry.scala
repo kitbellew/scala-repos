@@ -120,8 +120,7 @@ object Endpoint {
 
     val namesByHostPort = Memoize
       .snappable[(String, Int), ArrayBuffer[String]] {
-        case (host, port) =>
-          new ArrayBuffer[String]
+        case (host, port) => new ArrayBuffer[String]
       }
     for (map <- d("serviceEndpoint"); hostport <- parseEndpoint(map))
       namesByHostPort(hostport) += null

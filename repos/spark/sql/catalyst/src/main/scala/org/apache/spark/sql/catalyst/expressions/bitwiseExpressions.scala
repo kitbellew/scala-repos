@@ -131,10 +131,8 @@ case class BitwiseNot(child: Expression)
       ((evalE: Byte) => (~evalE).toByte).asInstanceOf[(Any) => Any]
     case ShortType =>
       ((evalE: Short) => (~evalE).toShort).asInstanceOf[(Any) => Any]
-    case IntegerType =>
-      ((evalE: Int) => ~evalE).asInstanceOf[(Any) => Any]
-    case LongType =>
-      ((evalE: Long) => ~evalE).asInstanceOf[(Any) => Any]
+    case IntegerType => ((evalE: Int) => ~evalE).asInstanceOf[(Any) => Any]
+    case LongType    => ((evalE: Long) => ~evalE).asInstanceOf[(Any) => Any]
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {

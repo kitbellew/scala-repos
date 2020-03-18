@@ -160,8 +160,7 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
     annTreeOpt match {
       case Some(annTree) =>
         q"_root_.shapeless.Annotation.mkAnnotation[$annTpe, $tpe]($annTree)"
-      case None =>
-        abort(s"No $annTpe annotation found on $tpe")
+      case None => abort(s"No $annTpe annotation found on $tpe")
     }
   }
 

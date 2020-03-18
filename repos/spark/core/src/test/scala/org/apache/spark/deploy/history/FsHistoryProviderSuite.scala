@@ -335,8 +335,7 @@ class FsHistoryProviderSuite
       list.head.attempts.head.attemptId should be(Some("attempt1"))
 
       list.foreach {
-        case app =>
-          app.attempts.foreach { attempt =>
+        case app => app.attempts.foreach { attempt =>
             val appUi = provider.getAppUI(app.id, attempt.attemptId)
             appUi should not be null
           }

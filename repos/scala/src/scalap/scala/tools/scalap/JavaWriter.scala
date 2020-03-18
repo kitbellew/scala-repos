@@ -164,8 +164,7 @@ class JavaWriter(classfile: Classfile, writer: Writer)
     cf.attribs find {
       case cf.Attribute(name, _) => getName(name) == "JacoMeta"
     } match {
-      case None =>
-        printClassHeader;
+      case None => printClassHeader;
       case Some(cf.Attribute(_, data)) =>
         val mp = new MetaParser(
           getName(((data(0) & 0xff) << 8) + (data(1) & 0xff)).trim())

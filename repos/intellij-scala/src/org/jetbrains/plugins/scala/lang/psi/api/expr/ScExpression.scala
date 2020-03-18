@@ -264,8 +264,7 @@ trait ScExpression
             case p: ScPrefixExpr     => false
             case p: ScPostfixExpr    => false
             case _: MethodInvocation => true
-            case p: ScParenthesisedExpr =>
-              p.expr match {
+            case p: ScParenthesisedExpr => p.expr match {
                 case Some(exp) => isMethodInvocation(exp)
                 case _         => false
               }
@@ -288,8 +287,7 @@ trait ScExpression
           def updateRes(exp: Option[ScType]) {
 
             exp match {
-              case Some(expected) =>
-                expected.removeAbstracts match {
+              case Some(expected) => expected.removeAbstracts match {
                   case ScFunctionType(_, params) =>
                   case expect if ScalaPsiUtil.isSAMEnabled(ScExpression.this) =>
                     ScalaPsiUtil.toSAMType(expect, getResolveScope) match {
@@ -330,8 +328,7 @@ trait ScExpression
               val needsNarrowing = ScExpression.this match {
                 case _: ScLiteral =>
                   getNode.getFirstChildNode.getElementType == ScalaTokenTypes.tINTEGER
-                case p: ScPrefixExpr =>
-                  p.operand match {
+                case p: ScPrefixExpr => p.operand match {
                     case l: ScLiteral =>
                       l.getNode.getFirstChildNode.getElementType == ScalaTokenTypes.tINTEGER &&
                         Set("+", "-").contains(p.operation.getText)
@@ -343,16 +340,14 @@ trait ScExpression
               def checkNarrowing: Option[TypeResult[ScType]] = {
                 try {
                   lazy val i = ScExpression.this match {
-                    case l: ScLiteral =>
-                      l.getValue match {
+                    case l: ScLiteral => l.getValue match {
                         case i: Integer => i.intValue
                         case _          => scala.Int.MaxValue
                       }
                     case p: ScPrefixExpr =>
                       val mult = if (p.operation.getText == "-") -1 else 1
                       p.operand match {
-                        case l: ScLiteral =>
-                          l.getValue match {
+                        case l: ScLiteral => l.getValue match {
                             case i: Integer => mult * i.intValue
                             case _          => scala.Int.MaxValue
                           }
@@ -387,24 +382,23 @@ trait ScExpression
                     l: ScType,
                     r: ScType): Option[TypeResult[ScType]] = {
                   (l, r) match {
-                    case (Byte, Short | Int | Long | Float | Double) =>
-                      Some(Success(expected, Some(ScExpression.this)))
-                    case (Short, Int | Long | Float | Double) =>
-                      Some(Success(expected, Some(ScExpression.this)))
+                    case (Byte, Short | Int | Long | Float | Double) => Some(
+                        Success(expected, Some(ScExpression.this)))
+                    case (Short, Int | Long | Float | Double) => Some(
+                        Success(expected, Some(ScExpression.this)))
                     case (Char, Byte | Short | Int | Long | Float | Double) =>
                       Some(Success(expected, Some(ScExpression.this)))
-                    case (Int, Long | Float | Double) =>
-                      Some(Success(expected, Some(ScExpression.this)))
-                    case (Long, Float | Double) =>
-                      Some(Success(expected, Some(ScExpression.this)))
-                    case (Float, Double) =>
-                      Some(Success(expected, Some(ScExpression.this)))
+                    case (Int, Long | Float | Double) => Some(
+                        Success(expected, Some(ScExpression.this)))
+                    case (Long, Float | Double) => Some(
+                        Success(expected, Some(ScExpression.this)))
+                    case (Float, Double) => Some(
+                        Success(expected, Some(ScExpression.this)))
                     case _ => None
                   }
                 }
                 (valType.getValType, expected.getValType) match {
-                  case (Some(l), Some(r)) =>
-                    checkWidening(l, r) match {
+                  case (Some(l), Some(r)) => checkWidening(l, r) match {
                       case Some(x) => x
                       case _       => Success(valType, Some(ScExpression.this))
                     }
@@ -647,8 +641,7 @@ trait ScExpression
           resolve.apply(0).asInstanceOf[ScalaResolveResult].implicitFunction
         } else None
       case call: ScMethodCall => call.getImplicitFunction
-      case gen: ScGenerator =>
-        gen.getParent match {
+      case gen: ScGenerator => gen.getParent match {
           case call: ScMethodCall => call.getImplicitFunction
           case _                  => None
         }
@@ -676,17 +669,13 @@ trait ScExpression
               caseCl.caseClauses.flatMap(_.expr).foreach(calculateReturns0)
             case _ =>
           }
-        case block: ScBlock =>
-          block.lastExpr match {
+        case block: ScBlock => block.lastExpr match {
             case Some(expr) => calculateReturns0(expr)
             case _          => res += block
           }
-        case pe: ScParenthesisedExpr =>
-          pe.expr.foreach(calculateReturns0)
-        case m: ScMatchStmt =>
-          m.getBranches.foreach(calculateReturns0)
-        case i: ScIfStmt =>
-          i.elseBranch match {
+        case pe: ScParenthesisedExpr => pe.expr.foreach(calculateReturns0)
+        case m: ScMatchStmt          => m.getBranches.foreach(calculateReturns0)
+        case i: ScIfStmt => i.elseBranch match {
             case Some(e) =>
               calculateReturns0(e)
               i.thenBranch match {

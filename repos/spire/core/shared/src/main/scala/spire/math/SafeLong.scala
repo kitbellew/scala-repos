@@ -339,10 +339,8 @@ private[math] final case class SafeLongLong(x: Long) extends SafeLong {
 
   def compare(that: SafeLong): Int =
     that match {
-      case SafeLongLong(y) =>
-        x compare y
-      case SafeLongBigInteger(y) =>
-        -y.signum
+      case SafeLongLong(y)       => x compare y
+      case SafeLongBigInteger(y) => -y.signum
     }
 
   def <<(n: Int): SafeLong = {
@@ -457,10 +455,8 @@ private[math] final case class SafeLongBigInteger(x: BigInteger)
 
   def compare(that: SafeLong): Int =
     that match {
-      case SafeLongLong(y) =>
-        x.signum
-      case SafeLongBigInteger(y) =>
-        x compareTo y
+      case SafeLongLong(y)       => x.signum
+      case SafeLongBigInteger(y) => x compareTo y
     }
 
   def <<(n: Int): SafeLong = SafeLong(x.shiftLeft(n))

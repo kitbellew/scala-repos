@@ -212,8 +212,7 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
               logError("Error getting WAL file segment locations", e)
               Seq.empty
           }
-        case _ =>
-          Seq.empty
+        case _ => Seq.empty
       }
     }
   }

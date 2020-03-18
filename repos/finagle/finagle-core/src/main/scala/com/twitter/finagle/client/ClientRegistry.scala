@@ -45,8 +45,7 @@ private[twitter] object ClientRegistry extends StackRegistry {
                 case bound: Addr.Bound =>
                   log.info(
                     s"${name} resolved to Addr.Bound, current size=${bound.addrs.size}")
-                case _ =>
-                  log.info(s"${name} resolved to ${resolution}")
+                case _ => log.info(s"${name} resolved to ${resolution}")
               }
             }
 

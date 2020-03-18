@@ -96,9 +96,8 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
     buf.append(qualifier.getText)
 
     qualifier match {
-      case parenth: ScParenthesisedExpr =>
-        qualifier = parenth.expr.get
-      case _ =>
+      case parenth: ScParenthesisedExpr => qualifier = parenth.expr.get
+      case _                            =>
     }
 
     qualifier match {
@@ -182,10 +181,8 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
 
       case templ: ScNewTemplateDefinition =>
         templ.extendsBlock.templateParents match {
-          case Some(parents: ScClassParents) =>
-            parents.constructor match {
-              case Some(constr) =>
-                constr.reference match {
+          case Some(parents: ScClassParents) => parents.constructor match {
+              case Some(constr) => constr.reference match {
                   case Some(ref) =>
                     val resolve = ref.resolve()
                     val argsCount = constr.arguments.length

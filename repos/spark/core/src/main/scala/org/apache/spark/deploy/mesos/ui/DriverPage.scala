@@ -134,8 +134,7 @@ private[ui] class DriverPage(parent: MesosClusterUI)
   private def propertiesRow(
       properties: collection.Map[String, String]): Seq[Node] = {
     properties.map {
-      case (k, v) =>
-        <tr>
+      case (k, v) => <tr>
         <td>{k}</td><td>{v}</td>
       </tr>
     }.toSeq

@@ -233,8 +233,7 @@ class SparkJLineCompletion(val intp: SparkIMain)
                 new NamedParam.Untyped(id, intp valueOfTerm id getOrElse null)
               Some(TypeMemberCompletion(tpe, runtimeType, param))
             } else default
-          case _ =>
-            default
+          case _ => default
         }
     }
     override def toString = "<repl ids> (%s)".format(completions(0).size)

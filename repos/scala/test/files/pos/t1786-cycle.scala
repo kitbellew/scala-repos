@@ -1,9 +1,7 @@
 trait GenTraversableLike[+A, +Repr] extends Any
 
 object O {
-  (null: Any) match {
-    case _: LongTraversableLike[_] =>
-  }
+  (null: Any) match { case _: LongTraversableLike[_] => }
 }
 
 trait LongTraversable extends LongTraversableLike[LongTraversable]

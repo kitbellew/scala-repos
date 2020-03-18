@@ -8,10 +8,7 @@ class P2[A, B](val _1: A, val _2: B) extends Product2[A, B] {
 
 object Test {
   def main(args: Array[String]): Unit = {
-    "" match {
-      case Extractor(p) =>
-        val pp: Product2[Int, String] = p
-    }
+    "" match { case Extractor(p) => val pp: Product2[Int, String] = p }
     "" match {
       case Extractor(x, y) =>
         val xx: Int = x

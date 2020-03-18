@@ -157,10 +157,7 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
     factory(conn) map { service =>
       new ServiceProxy(service) {
         override def close(deadline: Time) =
-          super.close(deadline) transform {
-            case _ =>
-              factory.close(deadline)
-          }
+          super.close(deadline) transform { case _ => factory.close(deadline) }
       }
     }
 

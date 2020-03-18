@@ -172,8 +172,7 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
 
     super.toForm match {
       case Full(IsElem(elem)) => Full(elem)
-      case _ =>
-        Empty
+      case _                  => Empty
     }
   }
 

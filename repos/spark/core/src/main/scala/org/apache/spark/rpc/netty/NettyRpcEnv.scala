@@ -251,10 +251,7 @@ private[netty] class NettyRpcEnv(
       )
       promise.future.onComplete { v => timeoutCancelable.cancel(true) }(
         ThreadUtils.sameThread)
-    } catch {
-      case NonFatal(e) =>
-        onFailure(e)
-    }
+    } catch { case NonFatal(e) => onFailure(e) }
     promise.future
       .mapTo[T]
       .recover(timeout.addMessageIfTimeout)(ThreadUtils.sameThread)

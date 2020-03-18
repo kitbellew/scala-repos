@@ -40,8 +40,7 @@ object Test {
   // Don't necessarily expect BigDecimal created from BigInt to agree with Double here.
   def isIffy(x: Any, y: Any, canSwap: Boolean = true): Boolean =
     x match {
-      case bd: BigDecimal =>
-        y match {
+      case bd: BigDecimal => y match {
           case _: Float | _: Double => bd.toString.length > 15
           case _                    => false
         }
@@ -51,8 +50,7 @@ object Test {
   // Don't necessarily expect BigInt to agree with Float/Double beyond a Long
   def isIffyB(x: Any, y: Any, canSwap: Boolean = true): Boolean =
     x match {
-      case bi: BigInt =>
-        y match {
+      case bi: BigInt => y match {
           case _: Float | _: Double => bi < Long.MinValue || bi > Long.MaxValue
           case _                    => false
         }

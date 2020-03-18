@@ -23,9 +23,8 @@ class ServerDestTracingProxy[Req, Rep](self: ServiceFactory[Req, Rep])
             case _ => // do nothing for non-ip address
           }
           conn.remoteAddress match {
-            case ia: InetSocketAddress =>
-              Trace.recordClientAddr(ia)
-            case _ => // do nothing for non-ip address
+            case ia: InetSocketAddress => Trace.recordClientAddr(ia)
+            case _                     => // do nothing for non-ip address
           }
         }
         service(request)
@@ -64,9 +63,8 @@ class ClientDestTracingFilter[Req, Rep](addr: Address)
   def apply(request: Req, service: Service[Req, Rep]) = {
     val ret = service(request)
     addr match {
-      case Address.Inet(ia, _) =>
-        Trace.recordServerAddr(ia)
-      case _ => // do nothing for non-ip address
+      case Address.Inet(ia, _) => Trace.recordServerAddr(ia)
+      case _                   => // do nothing for non-ip address
     }
     ret
   }

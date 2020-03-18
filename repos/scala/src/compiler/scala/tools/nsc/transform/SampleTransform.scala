@@ -49,8 +49,7 @@ abstract class SampleTransform extends Transform {
                       tree1.pos)
                 )))
           )
-        case _ =>
-          tree1
+        case _ => tree1
       }
     }
   }

@@ -275,8 +275,7 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
             casegen.ifThenElseZero(
               substitution(cond),
               bindSubPats(substitution(next)))
-          case _ =>
-            bindSubPats(substitution(next))
+          case _ => bindSubPats(substitution(next))
         }
         atPos(extractor.pos)(
           if (extractorReturnsBoolean)
@@ -337,8 +336,7 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         cond match {
           case Some(cond) =>
             casegen.ifThenElseZero(cond, bindSubPats(substitution(next)))
-          case _ =>
-            bindSubPats(substitution(next))
+          case _ => bindSubPats(substitution(next))
         }
       }
 
@@ -363,8 +361,7 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           case ExtractorTreeMaker(extractor, None, nextBinder)
               if irrefutableExtractorType(extractor.tpe) =>
             Some((extractor, nextBinder))
-          case _ =>
-            None
+          case _ => None
         }
     }
 
@@ -555,8 +552,7 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         if (extractorArgTypeTest) mkDefault
         else
           expectedTp match {
-            case SingleType(_, sym) =>
-              mkEqTest(
+            case SingleType(_, sym) => mkEqTest(
                 gen.mkAttributedQualifier(expectedTp)
               ) // SI-4577, SI-4897
             case ThisType(sym) if sym.isModule =>
@@ -737,8 +733,7 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
                 }
                 val requireSwitch = hasSwitchAnnotation && exceedsTwoCasesOrAlts
                 (suppression, requireSwitch)
-              case _ =>
-                (Suppression.NoSuppression, false)
+              case _ => (Suppression.NoSuppression, false)
             }
 
         emitSwitch(

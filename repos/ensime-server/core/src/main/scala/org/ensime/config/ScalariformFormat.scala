@@ -29,8 +29,7 @@ trait ScalariformFormat {
 
     def read(s: Sexp): FormattingPreferences =
       s match {
-        case SexpNil =>
-          FormattingPreferences()
+        case SexpNil => FormattingPreferences()
 
         case SexpData(data) =>
           val custom = for {

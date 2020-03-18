@@ -17,11 +17,9 @@ class ScalaClassObjectWeigher extends ProximityWeigher {
     val ref = PsiTreeUtil.getParentOfType(elem, classOf[ScReferenceElement])
     if (ref == null) return null
     element match {
-      case o: ScObject =>
-        if (ref.isInstanceOf[ScReferenceExpression]) return 1
-      case p: PsiClass =>
-        if (!ref.isInstanceOf[ScReferenceExpression]) return 1
-      case _ =>
+      case o: ScObject => if (ref.isInstanceOf[ScReferenceExpression]) return 1
+      case p: PsiClass => if (!ref.isInstanceOf[ScReferenceExpression]) return 1
+      case _           =>
     }
     0
   }

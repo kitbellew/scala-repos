@@ -40,8 +40,7 @@ class ScalaCalleeMethodsTreeStructure(
     }
     val methods: ArrayBuffer[PsiMethod] = new ArrayBuffer[PsiMethod]
     method match {
-      case fun: ScFunctionDefinition =>
-        fun.body match {
+      case fun: ScFunctionDefinition => fun.body match {
           case Some(body) =>
             ScalaCalleeMethodsTreeStructure.visitor(body, methods)
           case _ =>

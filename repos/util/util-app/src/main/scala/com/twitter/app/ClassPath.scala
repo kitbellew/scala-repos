@@ -137,9 +137,7 @@ private object ClassPath {
       } buf += Info(n, loader)
     } finally {
       try jarFile.close()
-      catch {
-        case _: IOException =>
-      }
+      catch { case _: IOException => }
     }
   }
 

@@ -63,8 +63,7 @@ trait StructureViewBuilder {
             x.name.toString,
             pos(x.symbol),
             new ListBuffer()))
-        case _ =>
-          tree.children.foreach(traverse(_, parent))
+        case _ => tree.children.foreach(traverse(_, parent))
       }
     }
   }

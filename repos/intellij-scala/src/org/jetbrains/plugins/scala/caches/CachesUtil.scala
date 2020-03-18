@@ -64,8 +64,7 @@ object CachesUtil {
   def getOrCreateKey[T](id: String): T =
     Option(keys.get(id)) match {
       case Some(key) => key.asInstanceOf[T]
-      case None =>
-        synchronized {
+      case None => synchronized {
           Option(keys.get(id)) match {
             case Some(key) => key.asInstanceOf[T]
             case None =>
@@ -335,11 +334,12 @@ object CachesUtil {
       false,
       classOf[ScModificationTrackerOwner],
       classOf[ScalaCodeFragment])) match {
-      case Some(_: ScalaCodeFragment) => //do not update on changes in dummy file
+      case Some(
+            _: ScalaCodeFragment
+          ) => //do not update on changes in dummy file
       case Some(owner: ScModificationTrackerOwner)
           if owner.isValidModificationTrackerOwner(checkForChangedReturn =
-            true) =>
-        owner.incModificationCount()
+            true)      => owner.incModificationCount()
       case Some(owner) => updateModificationCount(owner.getContext)
       case _ if incModCountOnTopLevel =>
         ScalaPsiManager.instance(elem.getProject).incModificationCount()

@@ -382,7 +382,9 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
               watchKey.reset()
             }
           } catch {
-            case NonFatal(e) => // Do nothing, this means the watch service has been closed, or we've been interrupted.
+            case NonFatal(
+                  e
+                ) => // Do nothing, this means the watch service has been closed, or we've been interrupted.
           } finally {
             // Just in case it wasn't closed.
             watcher.close()
@@ -475,10 +477,7 @@ private[runsupport] object GlobalStaticVar {
           s"Global static var $name is not an instance of ${ct.runtimeClass}, but is actually a ${Option(
             value).fold("null")(_.getClass.getName)}")
       }
-    } catch {
-      case e: InstanceNotFoundException =>
-        None
-    }
+    } catch { case e: InstanceNotFoundException => None }
   }
 
   /**
@@ -487,8 +486,6 @@ private[runsupport] object GlobalStaticVar {
   def remove(name: String): Unit = {
     try {
       ManagementFactory.getPlatformMBeanServer.unregisterMBean(objectName(name))
-    } catch {
-      case e: InstanceNotFoundException =>
-    }
+    } catch { case e: InstanceNotFoundException => }
   }
 }

@@ -94,10 +94,8 @@ class SemanticHighlighting(val global: RichPresentationCompiler)
                 val end = start + impSel.name.decode.length()
                 addAt(start, end, ImportedNameSymbol)
               }
-            case Ident(_) =>
-              qualifySymbol(sym)
-            case Select(_, _) =>
-              qualifySymbol(sym)
+            case Ident(_)     => qualifySymbol(sym)
+            case Select(_, _) => qualifySymbol(sym)
 
             case ValDef(mods, name, tpt, rhs) =>
               if (sym != NoSymbol) {
@@ -137,10 +135,7 @@ class SemanticHighlighting(val global: RichPresentationCompiler)
               }
             case _ =>
           }
-        } catch {
-          case e: Throwable =>
-            log.error("Error in AST traverse:", e)
-        }
+        } catch { case e: Throwable => log.error("Error in AST traverse:", e) }
         super.traverse(t)
       }
     }
@@ -158,8 +153,7 @@ class SemanticHighlighting(val global: RichPresentationCompiler)
         val traverser = new SymDesigsTraverser(p, requestedTypes.toSet)
         traverser.traverse(tree)
         SymbolDesignations(p.source.file.file, traverser.syms.toList)
-      case None =>
-        SymbolDesignations(new File("."), List.empty)
+      case None => SymbolDesignations(new File("."), List.empty)
     }
   }
 

@@ -72,15 +72,13 @@ sealed trait CPath {
         nodes: List[CPathNode],
         toDrop: List[CPathNode]): Option[CPath] = {
       nodes match {
-        case x :: xs =>
-          toDrop match {
+        case x :: xs => toDrop match {
             case `x` :: ys => remainder(xs, ys)
             case Nil       => Some(CPath(nodes))
             case _         => None
           }
 
-        case Nil =>
-          if (toDrop.isEmpty) Some(CPath(nodes)) else None
+        case Nil => if (toDrop.isEmpty) Some(CPath(nodes)) else None
       }
     }
 
@@ -94,8 +92,7 @@ sealed trait CPath {
       path match {
         case Nil => d
 
-        case head :: tail =>
-          head match {
+        case head :: tail => head match {
             case CPathField(name)  => extract0(tail, d \ name)
             case CPathIndex(index) => extract0(tail, d(index))
           }
@@ -118,15 +115,13 @@ sealed trait CPath {
       right match {
         case Nil => CPath(current) :: Nil
 
-        case head :: tail =>
-          head match {
+        case head :: tail => head match {
             case x @ CPathIndex(index) =>
               expand0(current :+ x, tail, jvalue(index))
             case x @ CPathField(name) if (isRegex(name)) => {
               val R = name.r
               jvalue match {
-                case JObject(fields) =>
-                  fields.toList.flatMap {
+                case JObject(fields) => fields.toList.flatMap {
                     case (R(name), value) =>
                       val expandedNode = CPathField(name)
                       expand0(current :+ expandedNode, tail, value)
@@ -294,8 +289,7 @@ object CPath {
           })
 
         val result = grouped.toSeq.sortBy(_._1) map {
-          case (node, paths) =>
-            node match {
+          case (node, paths) => node match {
               case (field: CPathField) => FieldNode(field, recurse(paths))
               case (index: CPathIndex) => IndexNode(index, recurse(paths))
               case _                   => sys.error("CPathArray and CPathMeta not supported")
@@ -306,8 +300,7 @@ object CPath {
     }
 
     val leaves = pathsAndValues.sortBy(_._1) map {
-      case (path, value) =>
-        PathWithLeaf[A](path.nodes, value)
+      case (path, value) => PathWithLeaf[A](path.nodes, value)
     }
 
     RootNode(inner(leaves))

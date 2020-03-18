@@ -82,8 +82,8 @@ class MongoPasswordField[OwnerType <: BsonRecord[OwnerType]](
   private def validatePassword(pwd: Password): List[FieldError] =
     pwd match {
       case null | Password("", _) | Password("*", _) |
-          Password(MongoPasswordField.blankPw, _) =>
-        Text(S.?("password.must.be.set"))
+          Password(MongoPasswordField.blankPw, _) => Text(
+          S.?("password.must.be.set"))
       case Password(pwd, _) if pwd.length < minLen =>
         Text(S.?("password.too.short"))
       case _ => Nil

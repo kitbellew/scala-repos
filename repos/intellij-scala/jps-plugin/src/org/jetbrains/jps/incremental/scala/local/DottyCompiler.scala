@@ -127,12 +127,9 @@ class ClientDottyReporter(client: Client) extends SimpleReporter {
     val message = unique(diagnostic.message())
 
     diagnostic.level() match {
-      case Diagnostic.ERROR =>
-        client.error(message, file, line, column)
-      case Diagnostic.WARNING =>
-        client.warning(message, file, line, column)
-      case Diagnostic.INFO =>
-        client.info(message, file, line, column)
+      case Diagnostic.ERROR   => client.error(message, file, line, column)
+      case Diagnostic.WARNING => client.warning(message, file, line, column)
+      case Diagnostic.INFO    => client.info(message, file, line, column)
     }
   }
 }

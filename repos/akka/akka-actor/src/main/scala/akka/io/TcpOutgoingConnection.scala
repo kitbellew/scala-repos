@@ -54,13 +54,11 @@ private[io] class TcpOutgoingConnection(
   }
 
   def receive: Receive = {
-    case registration: ChannelRegistration ⇒
-      reportConnectFailure {
+    case registration: ChannelRegistration ⇒ reportConnectFailure {
         if (remoteAddress.isUnresolved) {
           log.debug("Resolving {} before connecting", remoteAddress.getHostName)
           Dns.resolve(remoteAddress.getHostName)(system, self) match {
-            case None ⇒
-              context.become(resolving(registration))
+            case None ⇒ context.become(resolving(registration))
             case Some(resolved) ⇒
               register(
                 new InetSocketAddress(resolved.addr, remoteAddress.getPort),
@@ -71,8 +69,7 @@ private[io] class TcpOutgoingConnection(
   }
 
   def resolving(registration: ChannelRegistration): Receive = {
-    case resolved: Dns.Resolved ⇒
-      reportConnectFailure {
+    case resolved: Dns.Resolved ⇒ reportConnectFailure {
         register(
           new InetSocketAddress(resolved.addr, remoteAddress.getPort),
           registration)
@@ -98,8 +95,7 @@ private[io] class TcpOutgoingConnection(
       registration: ChannelRegistration,
       remainingFinishConnectRetries: Int): Receive = {
     {
-      case ChannelConnectable ⇒
-        reportConnectFailure {
+      case ChannelConnectable ⇒ reportConnectFailure {
           if (channel.finishConnect()) {
             if (timeout.isDefined)
               context.setReceiveTimeout(Duration.Undefined) // Clear the timeout

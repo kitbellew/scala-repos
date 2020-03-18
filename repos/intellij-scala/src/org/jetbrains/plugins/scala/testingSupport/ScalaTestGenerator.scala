@@ -120,8 +120,7 @@ class ScalaTestGenerator extends TestGenerator {
           .filterByType(classOf[ScStableCodeReferenceElement])
           .next()
           .bindToElement(cls)
-      case None =>
-        addExtendsRef(fqName)
+      case None => addExtendsRef(fqName)
     }
   }
 

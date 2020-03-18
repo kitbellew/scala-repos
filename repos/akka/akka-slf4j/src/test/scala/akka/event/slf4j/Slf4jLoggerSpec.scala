@@ -30,10 +30,8 @@ object Slf4jLoggerSpec {
   class LogProducer extends Actor with DiagnosticActorLogging {
 
     def receive = {
-      case e: Exception ⇒
-        log.error(e, e.getMessage)
-      case (s: String, x: Int, y: Int) ⇒
-        log.info(s, x, y)
+      case e: Exception ⇒ log.error(e, e.getMessage)
+      case (s: String, x: Int, y: Int) ⇒ log.info(s, x, y)
       case StringWithMDC(s, mdc) ⇒
         log.mdc(mdc)
         log.info(s)

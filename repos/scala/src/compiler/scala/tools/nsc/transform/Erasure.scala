@@ -49,24 +49,18 @@ abstract class Erasure
     def traverse(tp: Type) {
       if (!result) {
         tp match {
-          case st: SubType =>
-            traverse(st.supertype)
+          case st: SubType => traverse(st.supertype)
           case TypeRef(pre, sym, args) =>
             if (sym == ArrayClass) args foreach traverse
             else if (sym.isTypeParameterOrSkolem || sym.isExistentiallyBound || !args.isEmpty)
               result = true
             else if (sym.isClass) traverse(rebindInnerClass(pre, sym)) // #2585
             else if (!sym.isTopLevel) traverse(pre)
-          case PolyType(_, _) | ExistentialType(_, _) =>
-            result = true
-          case RefinedType(parents, _) =>
-            parents foreach traverse
-          case ClassInfoType(parents, _, _) =>
-            parents foreach traverse
-          case AnnotatedType(_, atp) =>
-            traverse(atp)
-          case _ =>
-            mapOver(tp)
+          case PolyType(_, _) | ExistentialType(_, _) => result = true
+          case RefinedType(parents, _)                => parents foreach traverse
+          case ClassInfoType(parents, _, _)           => parents foreach traverse
+          case AnnotatedType(_, atp)                  => traverse(atp)
+          case _                                      => mapOver(tp)
         }
       }
     }
@@ -128,8 +122,7 @@ abstract class Erasure
         case t @ ExistentialType(tparams, tpe) =>
           val tpe1 = squashBoxed(tpe)
           if (tpe1 eq tpe) t else ExistentialType(tparams, tpe1)
-        case t =>
-          if (boxedClass contains t.typeSymbol) ObjectTpe else tp
+        case t => if (boxedClass contains t.typeSymbol) ObjectTpe else tp
       }
     def apply(tp: Type): Type =
       tp.dealiasWiden match {
@@ -168,10 +161,8 @@ abstract class Erasure
         case t @ ExistentialType(tparams, tpe) =>
           val tpe1 = apply(tpe)
           if (tpe1 eq tpe) t else ExistentialType(tparams, tpe1)
-        case tp1: ClassInfoType =>
-          tp1
-        case tp1 =>
-          mapOver(tp1)
+        case tp1: ClassInfoType => tp1
+        case tp1                => mapOver(tp1)
       }
   }
 
@@ -281,10 +272,8 @@ abstract class Erasure
                 else "*"
               } else
                 tp match {
-                  case PolyType(_, res) =>
-                    "*" // SI-7932
-                  case _ =>
-                    boxedSig(tp)
+                  case PolyType(_, res) => "*" // SI-7932
+                  case _                => boxedSig(tp)
                 }
             def classSig = {
               val preRebound = pre.baseType(sym.owner) // #2585
@@ -350,8 +339,7 @@ abstract class Erasure
 
           case RefinedType(parents, decls) =>
             boxedSig(intersectionDominator(parents))
-          case ClassInfoType(parents, _, _) =>
-            superSig(parents)
+          case ClassInfoType(parents, _, _) => superSig(parents)
           case AnnotatedType(_, atp) =>
             jsig(atp, existentiallyBound, toplevel, primitiveOK)
           case BoundedWildcardType(bounds) =>
@@ -636,10 +624,9 @@ abstract class Erasure
           // !!! Make pending/run/t5866b.scala work. The fix might be here and/or in unbox1.
           if (isPrimitiveValueType(targ.tpe) || isErasedValueType(targ.tpe)) {
             val noNullCheckNeeded = targ.tpe match {
-              case ErasedValueType(_, underlying) =>
-                isPrimitiveValueClass(underlying.typeSymbol)
-              case _ =>
-                true
+              case ErasedValueType(_, underlying) => isPrimitiveValueClass(
+                  underlying.typeSymbol)
+              case _ => true
             }
             if (noNullCheckNeeded) unbox(qual1, targ.tpe)
             else {
@@ -715,8 +702,7 @@ abstract class Erasure
           var qual1 = typedQualifier(qual)
           if (!(qual1.tpe <:< erasure)) qual1 = cast(qual1, erasure)
           Select(qual1, name) copyAttrs tree
-        case _ =>
-          tree
+        case _ => tree
       }
     }
 
@@ -746,8 +732,7 @@ abstract class Erasure
                   return result setType ErasedValueType(tref.sym, result.tpe)
 
               }
-            case _ =>
-              super.typed1(adaptMember(tree), mode, pt)
+            case _ => super.typed1(adaptMember(tree), mode, pt)
           }
         } catch {
           case er: TypeError =>
@@ -790,8 +775,7 @@ abstract class Erasure
             if (tree.symbol ne sym1) { tree1 setSymbol sym1 setType sym1.tpe }
           }
           tree1
-        case _ =>
-          tree1
+        case _ => tree1
       }
     }
   }
@@ -1000,8 +984,7 @@ abstract class Erasure
                         parentTests map mkIsInstanceOf(q) reduceRight gen.mkAnd
                       }
                   }
-                case _ =>
-                  tree
+                case _ => tree
               }
             case _ => tree
           }
@@ -1027,7 +1010,8 @@ abstract class Erasure
               if ((
                 fun.symbol == Any_isInstanceOf || fun.symbol == Object_isInstanceOf
               ) &&
-                unboundedGenericArrayLevel(arg.tpe) > 0) => // !!! todo: simplify by having GenericArray also extract trees
+                unboundedGenericArrayLevel(
+                  arg.tpe) > 0) => // !!! todo: simplify by having GenericArray also extract trees
             val level = unboundedGenericArrayLevel(arg.tpe)
             def isArrayTest(arg: Tree) =
               gen.mkRuntimeCall(
@@ -1141,19 +1125,16 @@ abstract class Erasure
                   val attachment = new TypeRefAttachment(
                     tree.tpe.asInstanceOf[TypeRef])
                   InjectDerivedValue(arg) updateAttachment attachment
-                case _ =>
-                  preEraseNormalApply(tree)
+                case _ => preEraseNormalApply(tree)
               }
 
-          case _ =>
-            preEraseNormalApply(tree)
+          case _ => preEraseNormalApply(tree)
         }
       }
 
       def preErase(tree: Tree): Tree =
         tree match {
-          case tree: Apply =>
-            preEraseApply(tree)
+          case tree: Apply => preEraseApply(tree)
 
           case TypeApply(fun, args)
               if (fun.symbol.owner != AnyClass &&
@@ -1237,13 +1218,10 @@ abstract class Erasure
           case ClassDef(_, _, _, _) =>
             debuglog("defs of " + tree.symbol + " = " + tree.symbol.info.decls)
             copyClassDef(tree)(tparams = Nil)
-          case DefDef(_, _, _, _, _, _) =>
-            copyDefDef(tree)(tparams = Nil)
-          case TypeDef(_, _, _, _) =>
-            EmptyTree
+          case DefDef(_, _, _, _, _, _) => copyDefDef(tree)(tparams = Nil)
+          case TypeDef(_, _, _, _)      => EmptyTree
 
-          case _ =>
-            tree
+          case _ => tree
         }
 
       override def transform(tree: Tree): Tree = {
@@ -1272,10 +1250,8 @@ abstract class Erasure
                 tree1.symbol.tpe).resultType
             case ApplyDynamic(
                   qual,
-                  Literal(Constant(boostrapMethodRef: Symbol)) :: _) =>
-              tree
-            case _ =>
-              super.transform(tree1).clearType()
+                  Literal(Constant(boostrapMethodRef: Symbol)) :: _) => tree
+            case _                                                   => super.transform(tree1).clearType()
           }
         }
       }

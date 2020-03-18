@@ -596,8 +596,7 @@ object ScalaJSPluginInternal {
         val javaSysPropsPattern = "-D([^=]*)=(.*)".r
         javaOptions.value.map {
           case javaSysPropsPattern(propName, propValue) => (propName, propValue)
-          case opt =>
-            sys.error(
+          case opt => sys.error(
               "Scala.js javaOptions can only be \"-D<key>=<value>\"," +
                 " but received: " + opt)
         }
@@ -635,8 +634,7 @@ object ScalaJSPluginInternal {
               log.debug("Loading JSEnv with LinkingUnit")
               env.loadLibs(libs).loadLinkingUnit(unit)
             } tag (usesScalaJSLinkerTag.value)
-          case env =>
-            Def.task {
+          case env => Def.task {
               val file = scalaJSLinkedFile.value
               log.debug(s"Loading JSEnv with linked file ${file.path}")
               env.loadLibs(libs :+ ResolvedJSDependency.minimal(file))
@@ -679,8 +677,7 @@ object ScalaJSPluginInternal {
       discovered.isModule && discovered.baseClasses.contains(jsApp)
 
     Discovery(Set(jsApp), Set.empty)(Tests.allDefs(analysis)) collect {
-      case (definition, discovered) if isJSApp(discovered) =>
-        definition.name
+      case (definition, discovered) if isJSApp(discovered) => definition.name
     }
   }
 

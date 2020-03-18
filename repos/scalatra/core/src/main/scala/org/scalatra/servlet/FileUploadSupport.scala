@@ -108,8 +108,7 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
 
   private def extractMultipartParams(req: HttpServletRequest): BodyParams = {
     req.get(BodyParamsKey).asInstanceOf[Option[BodyParams]] match {
-      case Some(bodyParams) =>
-        bodyParams
+      case Some(bodyParams) => bodyParams
 
       case None => {
         val bodyParams = getParts(req).foldRight(

@@ -376,8 +376,7 @@ class InputOutputMetricsSuite
           .listStatus(outPath)
           .filter(_.getPath.getName != "_SUCCESS")
         taskBytesWritten.zip(outFiles).foreach {
-          case (bytes, fileStatus) =>
-            assert(bytes >= fileStatus.getLen)
+          case (bytes, fileStatus) => assert(bytes >= fileStatus.getLen)
         }
       } finally { fs.delete(outPath, true) }
     }

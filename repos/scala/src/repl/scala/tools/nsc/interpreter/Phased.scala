@@ -42,8 +42,7 @@ trait Phased {
           val (num, rest) = str.tail.span(_.isDigit)
           val diff = if (str.head == '+') num.toInt else -num.toInt
           parsePhaseChange(rest) map (_ + diff)
-        case _ =>
-          None
+        case _ => None
       }
   }
 

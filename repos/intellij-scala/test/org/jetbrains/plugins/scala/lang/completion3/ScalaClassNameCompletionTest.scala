@@ -70,12 +70,10 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
 
     completeLookupItem(
       activeLookup.find {
-        case le: ScalaLookupItem =>
-          le.element match {
+        case le: ScalaLookupItem => le.element match {
             case c: ScObject
-                if c.qualifiedName == "scala.collection.mutable.HashSet" =>
-              true
-            case _ => false
+                if c.qualifiedName == "scala.collection.mutable.HashSet" => true
+            case _                                                       => false
           }
         case _ => false
       }.get,
@@ -108,12 +106,10 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
 
     completeLookupItem(
       activeLookup.find {
-        case le: ScalaLookupItem =>
-          le.element match {
+        case le: ScalaLookupItem => le.element match {
             case c: ScClass
-                if c.qualifiedName == "scala.collection.mutable.HashSet" =>
-              true
-            case _ => false
+                if c.qualifiedName == "scala.collection.mutable.HashSet" => true
+            case _                                                       => false
           }
         case _ => false
       }.get,
@@ -151,8 +147,7 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
 
       completeLookupItem(
         activeLookup.find {
-          case le: ScalaLookupItem =>
-            le.element match {
+          case le: ScalaLookupItem => le.element match {
               case c: ScClass
                   if c.qualifiedName == "scala.collection.mutable.ListMap" =>
                 true
@@ -192,8 +187,7 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
 
     completeLookupItem(
       activeLookup.find {
-        case le: ScalaLookupItem =>
-          le.element match {
+        case le: ScalaLookupItem => le.element match {
             case c: ScClass
                 if c.qualifiedName == "scala.collection.immutable.ListSet" =>
               true

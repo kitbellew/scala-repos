@@ -121,8 +121,7 @@ package object linalg {
       out.println(s"% produced by ${getClass}")
       out.println(s"${mat.rows} ${mat.cols} ${mat.activeSize}")
       mat.activeIterator foreach {
-        case ((i, j), v) =>
-          out.println(s"${i + 1} ${j + 1} $v")
+        case ((i, j), v) => out.println(s"${i + 1} ${j + 1} $v")
       }
       out.close()
     }

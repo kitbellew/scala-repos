@@ -109,8 +109,7 @@ class RichPresentationCompilerSpec
         "object Abc { def main { Bla @2@!@3@ 0 } }") { (p, label, cc) =>
         val sym = cc.askSymbolInfoAt(p).get
         inside(sym.declPos) {
-          case Some(OffsetSourcePosition(f, i)) =>
-            i should be > 0
+          case Some(OffsetSourcePosition(f, i)) => i should be > 0
         }
       }
     }

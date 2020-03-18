@@ -68,13 +68,10 @@ private[mllib] class GridPartitioner(
     */
   override def getPartition(key: Any): Int = {
     key match {
-      case i: Int => i
-      case (i: Int, j: Int) =>
-        getPartitionId(i, j)
-      case (i: Int, j: Int, _: Int) =>
-        getPartitionId(i, j)
-      case _ =>
-        throw new IllegalArgumentException(s"Unrecognized key: $key.")
+      case i: Int                   => i
+      case (i: Int, j: Int)         => getPartitionId(i, j)
+      case (i: Int, j: Int, _: Int) => getPartitionId(i, j)
+      case _                        => throw new IllegalArgumentException(s"Unrecognized key: $key.")
     }
   }
 
@@ -92,8 +89,7 @@ private[mllib] class GridPartitioner(
           (this.rowsPerPart == r.rowsPerPart) && (
           this.colsPerPart == r.colsPerPart
         )
-      case _ =>
-        false
+      case _ => false
     }
   }
 
@@ -537,8 +533,7 @@ class BlockMatrix @Since("1.3.0") (
       val newBlocks = flatA
         .cogroup(flatB, resultPartitioner)
         .flatMap {
-          case (pId, (a, b)) =>
-            a.flatMap {
+          case (pId, (a, b)) => a.flatMap {
               case (leftRowIndex, leftColIndex, leftBlock) =>
                 b.filter(_._1 == leftColIndex).map {
                   case (rightRowIndex, rightColIndex, rightBlock) =>

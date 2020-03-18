@@ -245,8 +245,7 @@ private[spark] class ClientArguments(
           args = tail
 
         case Nil =>
-        case _ =>
-          throw new IllegalArgumentException(getUsageMessage(args))
+        case _   => throw new IllegalArgumentException(getUsageMessage(args))
       }
     }
     // scalastyle:on println

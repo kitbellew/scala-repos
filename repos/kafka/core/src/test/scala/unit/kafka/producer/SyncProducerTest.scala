@@ -77,8 +77,8 @@ class SyncProducerTest extends KafkaServerTestHarness {
         acks = 1))
       assertNotNull(response)
     } catch {
-      case e: Exception =>
-        fail("Unexpected failure sending message to broker. " + e.getMessage)
+      case e: Exception => fail(
+          "Unexpected failure sending message to broker. " + e.getMessage)
     }
     val firstEnd = SystemTime.milliseconds
     assertTrue((firstEnd - firstStart) < 500)
@@ -93,8 +93,8 @@ class SyncProducerTest extends KafkaServerTestHarness {
         acks = 1))
       assertNotNull(response)
     } catch {
-      case e: Exception =>
-        fail("Unexpected failure sending message to broker. " + e.getMessage)
+      case e: Exception => fail(
+          "Unexpected failure sending message to broker. " + e.getMessage)
     }
     val secondEnd = SystemTime.milliseconds
     assertTrue((secondEnd - secondStart) < 500)
@@ -108,8 +108,8 @@ class SyncProducerTest extends KafkaServerTestHarness {
         acks = 1))
       assertNotNull(response)
     } catch {
-      case e: Exception =>
-        fail("Unexpected failure sending message to broker. " + e.getMessage)
+      case e: Exception => fail(
+          "Unexpected failure sending message to broker. " + e.getMessage)
     }
   }
 
@@ -296,8 +296,8 @@ class SyncProducerTest extends KafkaServerTestHarness {
         "Should have received timeout exception since request handling is stopped.")
     } catch {
       case e: SocketTimeoutException => /* success */
-      case e: Throwable =>
-        fail("Unexpected exception when expecting timeout: " + e)
+      case e: Throwable => fail(
+          "Unexpected exception when expecting timeout: " + e)
     }
     val t2 = SystemTime.milliseconds
     // make sure we don't wait fewer than timeoutMs for a response

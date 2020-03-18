@@ -155,8 +155,7 @@ class AlgebraicTest extends SpireProperties {
     val poly = roots.map(x => Polynomial.linear(Rational.one, -x)).qproduct
     val algebraicRoots = Algebraic.roots(poly)
     (roots.sorted zip algebraicRoots).forall {
-      case (qRoot, aRoot) =>
-        aRoot == Algebraic(qRoot)
+      case (qRoot, aRoot) => aRoot == Algebraic(qRoot)
     }
   }
 
@@ -172,8 +171,7 @@ class AlgebraicTest extends SpireProperties {
     val poly = roots.map(x => Polynomial.linear(Rational.one, -x)).qproduct
     val algebraicRoots = Algebraic.roots(poly)
     (roots.sorted zip algebraicRoots).forall {
-      case (qRoot, aRoot) =>
-        aRoot == Algebraic(qRoot)
+      case (qRoot, aRoot) => aRoot == Algebraic(qRoot)
     }
   }
 

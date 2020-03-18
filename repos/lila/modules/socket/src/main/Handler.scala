@@ -45,8 +45,7 @@ object Handler {
       case ("moveLat", o) =>
         hub.channel.roundMoveTime ! (~(o boolean "d"))
           .fold(Channel.Sub(member), Channel.UnSub(member))
-      case ("anaMove", o) =>
-        AnaRateLimit(uid) {
+      case ("anaMove", o) => AnaRateLimit(uid) {
           AnaMove parse o foreach { anaMove =>
             anaMove.step match {
               case scalaz.Success(step) =>
@@ -59,8 +58,7 @@ object Handler {
             }
           }
         }
-      case ("anaDrop", o) =>
-        AnaRateLimit(uid) {
+      case ("anaDrop", o) => AnaRateLimit(uid) {
           AnaDrop parse o foreach { anaDrop =>
             anaDrop.step match {
               case scalaz.Success(step) =>
@@ -73,8 +71,7 @@ object Handler {
             }
           }
         }
-      case ("anaDests", o) =>
-        AnaRateLimit(uid) {
+      case ("anaDests", o) => AnaRateLimit(uid) {
           AnaDests parse o match {
             case Some(req) =>
               member push lila.socket.Socket.makeMessage(

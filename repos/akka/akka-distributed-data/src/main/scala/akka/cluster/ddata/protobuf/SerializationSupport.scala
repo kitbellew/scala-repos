@@ -121,8 +121,7 @@ trait SerializationSupport {
           val manifest = ser2.manifest(m)
           if (manifest != "")
             builder.setMessageManifest(ByteString.copyFromUtf8(manifest))
-        case _ ⇒
-          if (msgSerializer.includeManifest)
+        case _ ⇒ if (msgSerializer.includeManifest)
             builder.setMessageManifest(
               ByteString.copyFromUtf8(m.getClass.getName))
       }

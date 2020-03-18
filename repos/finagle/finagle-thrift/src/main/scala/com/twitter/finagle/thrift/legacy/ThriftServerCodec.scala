@@ -26,8 +26,7 @@ private[thrift] class ThriftServerEncoder(protocolFactory: TProtocolFactory)
           Channels.succeededFuture(e.getChannel()),
           buffer,
           e.getRemoteAddress)
-      case _ =>
-        Channels.fireExceptionCaught(ctx, new IllegalArgumentException)
+      case _ => Channels.fireExceptionCaught(ctx, new IllegalArgumentException)
     }
 }
 

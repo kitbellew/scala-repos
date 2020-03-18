@@ -39,10 +39,7 @@ class SparseVectorBenchmark extends BreezeBenchmark with BuildsRandomVectors {
         (
           randomSparseVector(size, sparsity1),
           randomSparseVector(size, sparsity2))
-      }) {
-      case (a, b) =>
-        a dot b
-    }
+      }) { case (a, b) => a dot b }
   }
 
   def timeDotSmall1_%(reps: Int) = dotProductBench(reps, 1000, 0.01)

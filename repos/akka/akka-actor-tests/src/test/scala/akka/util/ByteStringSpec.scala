@@ -309,13 +309,11 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
     reference.zipWithIndex
       .collect({ // Since there is no partial put on LongBuffer, we need to collect only the interesting bytes
         case (r, i)
-            if byteOrder == ByteOrder.LITTLE_ENDIAN && i % elemSize < nBytes ⇒
-          r
+            if byteOrder == ByteOrder.LITTLE_ENDIAN && i % elemSize < nBytes ⇒ r
         case (r, i)
             if byteOrder == ByteOrder.BIG_ENDIAN && i % elemSize >= (
               elemSize - nBytes
-            ) ⇒
-          r
+            ) ⇒ r
       })
       .toSeq == builder.result
   }
@@ -427,8 +425,7 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
       "calling apply" in {
         check { slice: ByteStringSlice ⇒
           slice match {
-            case (xs, i1, i2) ⇒
-              likeVector(xs) { seq ⇒
+            case (xs, i1, i2) ⇒ likeVector(xs) { seq ⇒
                 (
                   if ((i1 >= 0) && (i1 < seq.length)) seq(i1) else 0,
                   if ((i2 >= 0) && (i2 < seq.length)) seq(i2) else 0)
@@ -500,8 +497,9 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
       "calling take and drop" in {
         check { slice: ByteStringSlice ⇒
           slice match {
-            case (xs, from, until) ⇒
-              likeVector(xs)({ _.drop(from).take(until - from) })
+            case (xs, from, until) ⇒ likeVector(xs)({
+                _.drop(from).take(until - from)
+              })
           }
         }
       }
@@ -509,8 +507,7 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
       "calling copyToArray" in {
         check { slice: ByteStringSlice ⇒
           slice match {
-            case (xs, from, until) ⇒
-              likeVector(xs)({ it ⇒
+            case (xs, from, until) ⇒ likeVector(xs)({ it ⇒
                 val array = Array.ofDim[Byte](xs.length)
                 it.slice(from, until).copyToArray(array, from, until)
                 array.toSeq

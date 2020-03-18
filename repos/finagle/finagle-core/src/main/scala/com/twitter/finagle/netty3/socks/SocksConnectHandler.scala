@@ -180,15 +180,13 @@ class SocksConnectHandler(
         bytes(1) == SuccessResponse &&
         bytes(2) == Reserved) {
       bytes(3) match {
-        case IpV4Indicator =>
-          discardBytes(4)
+        case IpV4Indicator => discardBytes(4)
 
         case HostnameIndicator =>
           checkReadableBytes(1)
           discardBytes(buf.readUnsignedByte())
 
-        case IpV6Indicator =>
-          discardBytes(16)
+        case IpV6Indicator => discardBytes(16)
       }
       discardBytes(2)
       true
@@ -239,8 +237,7 @@ class SocksConnectHandler(
 
         super.connectRequested(ctx, wrappedEvent)
 
-      case _ =>
-        fail(ctx.getChannel, new InconsistentStateException(addr))
+      case _ => fail(ctx.getChannel, new InconsistentStateException(addr))
     }
   }
 
@@ -277,8 +274,7 @@ class SocksConnectHandler(
 
     try {
       state match {
-        case Connected =>
-          readInit() match {
+        case Connected => readInit() match {
             case Some(Unauthenticated) =>
               state = Requested
               writeRequest(ctx)

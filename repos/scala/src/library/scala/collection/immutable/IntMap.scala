@@ -267,9 +267,8 @@ sealed abstract class IntMap[+T]
         if ((left eq newleft) && (right eq newright)) this
         else bin(prefix, mask, newleft, newright)
       }
-      case IntMap.Tip(key, value) =>
-        if (f((key, value))) this else IntMap.Nil
-      case IntMap.Nil => IntMap.Nil
+      case IntMap.Tip(key, value) => if (f((key, value))) this else IntMap.Nil
+      case IntMap.Nil             => IntMap.Nil
     }
 
   def transform[S](f: (Int, T) => S): IntMap[S] =
@@ -366,9 +365,8 @@ sealed abstract class IntMap[+T]
         if (!hasMatch(key, prefix, mask)) this
         else if (zero(key, mask)) bin(prefix, mask, left - key, right)
         else bin(prefix, mask, left, right - key)
-      case IntMap.Tip(key2, _) =>
-        if (key == key2) IntMap.Nil else this
-      case IntMap.Nil => IntMap.Nil
+      case IntMap.Tip(key2, _) => if (key == key2) IntMap.Nil else this
+      case IntMap.Nil          => IntMap.Nil
     }
 
   /**
@@ -388,18 +386,15 @@ sealed abstract class IntMap[+T]
         if ((left eq newleft) && (right eq newright))
           this.asInstanceOf[IntMap[S]]
         else bin(prefix, mask, newleft, newright)
-      case IntMap.Tip(key, value) =>
-        f(key, value) match {
-          case None =>
-            IntMap.Nil
+      case IntMap.Tip(key, value) => f(key, value) match {
+          case None         => IntMap.Nil
           case Some(value2) =>
             //hack to preserve sharing
             if (value.asInstanceOf[AnyRef] eq value2.asInstanceOf[AnyRef])
               this.asInstanceOf[IntMap[S]]
             else IntMap.Tip(key, value2)
         }
-      case IntMap.Nil =>
-        IntMap.Nil
+      case IntMap.Nil => IntMap.Nil
     }
 
   /**
@@ -477,13 +472,11 @@ sealed abstract class IntMap[+T]
           else if (zero(p1, m2)) this.intersectionWith(l2, f)
           else this.intersectionWith(r2, f)
         }
-      case (IntMap.Tip(key, value), that) =>
-        that.get(key) match {
+      case (IntMap.Tip(key, value), that) => that.get(key) match {
           case None         => IntMap.Nil
           case Some(value2) => IntMap.Tip(key, f(key, value, value2))
         }
-      case (_, IntMap.Tip(key, value)) =>
-        this.get(key) match {
+      case (_, IntMap.Tip(key, value)) => this.get(key) match {
           case None         => IntMap.Nil
           case Some(value2) => IntMap.Tip(key, f(key, value2, value))
         }

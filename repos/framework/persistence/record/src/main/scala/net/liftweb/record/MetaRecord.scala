@@ -332,8 +332,7 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
           case _ => NodeSeq.Empty
         }
 
-      case e @ <lift:field>{_*}</lift:field> =>
-        e.attribute("name") match {
+      case e @ <lift:field>{_*}</lift:field> => e.attribute("name") match {
           case Some(name) =>
             fieldByName(name.toString, inst)
               .flatMap(_.toForm)
@@ -346,9 +345,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
           case Some(name) =>
             fieldByName(name.toString, inst)
               .map(_.uniqueFieldId match {
-                case Full(id) =>
-                  <lift:msg id={id}/>
-                case _ => NodeSeq.Empty
+                case Full(id) => <lift:msg id={id}/>
+                case _        => NodeSeq.Empty
               })
               .openOr(NodeSeq.Empty)
           case _ => NodeSeq.Empty
@@ -361,8 +359,7 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
       case s: Seq[_] =>
         s.flatMap(e =>
           e match {
-            case elem: Elem =>
-              elem.copy(child = toForm(
+            case elem: Elem => elem.copy(child = toForm(
                 inst,
                 elem.child.flatMap(n => toForm(inst, n))))
 

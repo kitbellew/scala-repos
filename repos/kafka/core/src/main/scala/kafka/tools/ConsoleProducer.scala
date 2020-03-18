@@ -402,8 +402,7 @@ object ConsoleProducer {
       lineNumber += 1
       (reader.readLine(), parseKey) match {
         case (null, _) => null
-        case (line, true) =>
-          line.indexOf(keySeparator) match {
+        case (line, true) => line.indexOf(keySeparator) match {
             case -1 =>
               if (ignoreError) new ProducerRecord(topic, line.getBytes)
               else
@@ -414,8 +413,7 @@ object ConsoleProducer {
                            else line.substring(n + keySeparator.size)).getBytes
               new ProducerRecord(topic, line.substring(0, n).getBytes, value)
           }
-        case (line, false) =>
-          new ProducerRecord(topic, line.getBytes)
+        case (line, false) => new ProducerRecord(topic, line.getBytes)
       }
     }
   }

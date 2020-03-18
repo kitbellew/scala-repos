@@ -868,10 +868,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       new MapPartitionsRDD[(K, U), (K, V)](
         self,
         (context, pid, iter) =>
-          iter.flatMap {
-            case (k, v) =>
-              cleanF(v).map(x => (k, x))
-          },
+          iter.flatMap { case (k, v) => cleanF(v).map(x => (k, x)) },
         preservesPartitioning = true)
     }
 
@@ -1084,8 +1081,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
             }: Seq[V]
           val res = self.context.runJob(self, process, Array(index))
           res(0)
-        case None =>
-          self.filter(_._1 == key).map(_._2).collect()
+        case None => self.filter(_._1 == key).map(_._2).collect()
       }
     }
 

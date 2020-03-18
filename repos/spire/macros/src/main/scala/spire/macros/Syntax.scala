@@ -99,13 +99,11 @@ class InlineUtil[C <: Context with Singleton](val c: C) {
     class InlineSymbol(symbol: Symbol, value: Tree) extends Transformer {
       override def transform(tree: Tree): Tree =
         tree match {
-          case Ident(_) if tree.symbol == symbol =>
-            value
+          case Ident(_) if tree.symbol == symbol   => value
           case tt: TypeTree if tt.original != null =>
             //super.transform(TypeTree().setOriginal(transform(tt.original)))
             super.transform(setOrig(c)(TypeTree(), transform(tt.original)))
-          case _ =>
-            super.transform(tree)
+          case _ => super.transform(tree)
         }
     }
 
@@ -117,18 +115,15 @@ class InlineUtil[C <: Context with Singleton](val c: C) {
         tree match {
           case Apply(Select(Function(params, body), ApplyName), args) =>
             params.zip(args).foldLeft(body) {
-              case (b, (param, arg)) =>
-                inlineSymbol(param.symbol, b, arg)
+              case (b, (param, arg)) => inlineSymbol(param.symbol, b, arg)
             }
 
           case Apply(Function(params, body), args) =>
             params.zip(args).foldLeft(body) {
-              case (b, (param, arg)) =>
-                inlineSymbol(param.symbol, b, arg)
+              case (b, (param, arg)) => inlineSymbol(param.symbol, b, arg)
             }
 
-          case _ =>
-            super.transform(tree)
+          case _ => super.transform(tree)
         }
     }
 
@@ -205,8 +200,7 @@ v     */
 
     def isLiteral(t: Tree): Option[Int] =
       t match {
-        case Literal(Constant(a)) =>
-          a match {
+        case Literal(Constant(a)) => a match {
             case n: Int => Some(n)
             case _      => None
           }
@@ -251,8 +245,7 @@ v     */
       case q"scala.this.Predef.intWrapper($i).until($j)" =>
         strideUpUntil(i, j, 1)
 
-      case q"scala.this.Predef.intWrapper($i).to($j)" =>
-        strideUpTo(i, j, 1)
+      case q"scala.this.Predef.intWrapper($i).to($j)" => strideUpTo(i, j, 1)
 
       case r @ q"scala.this.Predef.intWrapper($i).until($j).by($step)" =>
         isLiteral(step) match {

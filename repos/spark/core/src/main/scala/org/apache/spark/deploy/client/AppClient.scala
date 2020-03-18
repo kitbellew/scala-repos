@@ -158,8 +158,8 @@ private[spark] class AppClient(
     private def sendToMaster(message: Any): Unit = {
       master match {
         case Some(masterRef) => masterRef.send(message)
-        case None =>
-          logWarning(s"Drop $message because has not yet connected to master")
+        case None => logWarning(
+            s"Drop $message because has not yet connected to master")
       }
     }
 
@@ -222,8 +222,7 @@ private[spark] class AppClient(
         context.reply(true)
         stop()
 
-      case r: RequestExecutors =>
-        master match {
+      case r: RequestExecutors => master match {
           case Some(m) => askAndReplyAsync(m, context, r)
           case None =>
             logWarning(
@@ -231,8 +230,7 @@ private[spark] class AppClient(
             context.reply(false)
         }
 
-      case k: KillExecutors =>
-        master match {
+      case k: KillExecutors => master match {
           case Some(m) => askAndReplyAsync(m, context, k)
           case None =>
             logWarning(
@@ -252,8 +250,7 @@ private[spark] class AppClient(
           try { context.reply(endpointRef.askWithRetry[Boolean](msg)) }
           catch {
             case ie: InterruptedException => // Cancelled
-            case NonFatal(t) =>
-              context.sendFailure(t)
+            case NonFatal(t)              => context.sendFailure(t)
           }
         }
       })
@@ -313,8 +310,7 @@ private[spark] class AppClient(
         val timeout = RpcUtils.askRpcTimeout(conf)
         timeout.awaitResult(endpoint.get.ask[Boolean](StopAppClient))
       } catch {
-        case e: TimeoutException =>
-          logInfo(
+        case e: TimeoutException => logInfo(
             "Stop request to Master timed out; it may already be shut down.")
       }
       endpoint.set(null)

@@ -106,8 +106,7 @@ class WorksheetFoldGroup(
     folding runBatchFoldingOperation new Runnable {
       override def run() {
         elem split '|' foreach {
-          case regionElem =>
-            regionElem split ',' match {
+          case regionElem => regionElem split ',' match {
               case Array(start, end, expanded, trueStart, spaces, lsLength) =>
                 try {
                   val region = new WorksheetFoldRegionDelegate(
@@ -122,9 +121,7 @@ class WorksheetFoldGroup(
                   region.setExpanded(expanded.length == 4)
 
                   folding addFoldRegion region
-                } catch {
-                  case _: NumberFormatException =>
-                }
+                } catch { case _: NumberFormatException => }
               case _ =>
             }
         }

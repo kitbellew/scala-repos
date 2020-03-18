@@ -50,10 +50,8 @@ class QueryDeleteHandler[A](jobManager: JobManager[Future], clock: Clock)(
       request.parameters get 'jobId map { jobId =>
         jobManager
           .cancel(jobId, "User request through HTTP.", clock.now()) map {
-          case Left(error) =>
-            HttpResponse[A](HttpStatus(BadRequest, error))
-          case Right(_) =>
-            HttpResponse[A](Accepted)
+          case Left(error) => HttpResponse[A](HttpStatus(BadRequest, error))
+          case Right(_)    => HttpResponse[A](Accepted)
         }
       } getOrElse {
         Future(HttpResponse[A](

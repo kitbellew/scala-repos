@@ -110,8 +110,7 @@ class ServerActor(
     }
   }
   override def receive: Receive = {
-    case req: ShutdownRequest =>
-      triggerShutdown(req)
+    case req: ShutdownRequest => triggerShutdown(req)
   }
 
   def triggerShutdown(request: ShutdownRequest): Unit = {

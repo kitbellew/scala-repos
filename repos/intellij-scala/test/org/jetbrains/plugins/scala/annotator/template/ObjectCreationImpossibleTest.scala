@@ -82,8 +82,6 @@ class ObjectCreationImpossibleTest
   }
 
   def testSkipTypeDeclarationSCL2887() {
-    assertMatches(messages("trait A { type a }; new A {}")) {
-      case Nil =>
-    }
+    assertMatches(messages("trait A { type a }; new A {}")) { case Nil => }
   }
 }

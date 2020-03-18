@@ -30,7 +30,6 @@ class HStringJavaClassReferenceProvider extends JavaClassReferenceProvider {
     position match {
       case hstr: HString if isEligible(hstr) =>
         super.getReferencesByString(str, position, offsetInPosition)
-      case _ =>
-        PsiReference.EMPTY_ARRAY
+      case _ => PsiReference.EMPTY_ARRAY
     }
 }

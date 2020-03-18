@@ -253,8 +253,7 @@ case class MSet(kv: Map[ChannelBuffer, ChannelBuffer]) extends MultiSet {
 
   def toChannelBuffer = {
     val kvList: Seq[ChannelBuffer] = kv.flatMap {
-      case (k, v) =>
-        k :: v :: Nil
+      case (k, v) => k :: v :: Nil
     }(collection.breakOut)
     RedisCodec.toUnifiedFormat(CommandBytes.MSET +: kvList)
   }
@@ -270,8 +269,7 @@ case class MSetNx(kv: Map[ChannelBuffer, ChannelBuffer]) extends MultiSet {
 
   def toChannelBuffer = {
     val kvList: Seq[ChannelBuffer] = kv.flatMap {
-      case (k, v) =>
-        k :: v :: Nil
+      case (k, v) => k :: v :: Nil
     }(collection.breakOut)
     RedisCodec.toUnifiedFormat(CommandBytes.MSETNX +: kvList)
   }
@@ -358,8 +356,7 @@ object Set {
         case Some(bytes) => {
           val flag = CBToString(ChannelBuffers.wrappedBuffer(bytes)).toUpperCase
           flag match {
-            case Ex =>
-              args.tail.headOption match {
+            case Ex => args.tail.headOption match {
                 case None => throw ClientError("Invalid syntax for SET")
                 case Some(bytes) =>
                   run(
@@ -368,8 +365,7 @@ object Set {
                       NumberFormat.toLong(BytesToString(bytes))
                     }))))
               }
-            case Px =>
-              args.tail.headOption match {
+            case Px => args.tail.headOption match {
                 case None => throw ClientError("Invalid syntax for SET")
                 case Some(bytes) =>
                   run(

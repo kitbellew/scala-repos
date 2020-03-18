@@ -234,8 +234,7 @@ class TopicCommandTest
     TopicCommand.createTopic(zkUtils, createOpts)
 
     var assignment = zkUtils.getReplicaAssignmentForTopics(Seq("foo")).map {
-      case (tp, replicas) =>
-        tp.partition -> replicas
+      case (tp, replicas) => tp.partition -> replicas
     }
     checkReplicaDistribution(
       assignment,
@@ -250,8 +249,7 @@ class TopicCommandTest
       Array("--partitions", alteredNumPartitions.toString, "--topic", "foo"))
     TopicCommand.alterTopic(zkUtils, alterOpts)
     assignment = zkUtils.getReplicaAssignmentForTopics(Seq("foo")).map {
-      case (tp, replicas) =>
-        tp.partition -> replicas
+      case (tp, replicas) => tp.partition -> replicas
     }
     checkReplicaDistribution(
       assignment,

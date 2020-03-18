@@ -39,8 +39,7 @@ object ScalaNamesUtil {
   def isOpCharacter(c: Char): Boolean = {
     c match {
       case '~' | '!' | '@' | '#' | '%' | '^' | '*' | '+' | '-' | '<' | '>' |
-          '?' | ':' | '=' | '&' | '|' | '/' | '\\' =>
-        true
+          '?' | ':' | '=' | '&' | '|' | '/' | '\\' => true
       case ch =>
         Character.getType(ch) == Character.MATH_SYMBOL.toInt || Character
           .getType(ch) == Character.OTHER_SYMBOL.toInt

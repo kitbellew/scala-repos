@@ -5,8 +5,7 @@ object Test {
 
   def test1: Any = {
     a() match {
-      case Some(b1) =>
-        a() match {
+      case Some(b1) => a() match {
           case Some(b2) =>
             @tailrec
             def tick(i: Int): Unit = if (i < 0) () else tick(i - 1)
@@ -19,8 +18,7 @@ object Test {
 
   def test2: Any = {
     a() match {
-      case Some(b1) =>
-        a() match {
+      case Some(b1) => a() match {
           case Some(b2) =>
             @tailrec
             def tick(i: Int): Unit = if (i < 0) () else tick(i - 1)

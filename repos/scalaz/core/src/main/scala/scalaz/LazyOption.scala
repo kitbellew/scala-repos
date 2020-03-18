@@ -152,8 +152,7 @@ sealed abstract class LazyOptionInstances {
     def tailrecM[A, B](f: A => LazyOption[A \/ B])(a: A): LazyOption[B] =
       f(a) match {
         case LazyNone => LazyNone
-        case LazySome(t) =>
-          t() match {
+        case LazySome(t) => t() match {
             case \/-(b)  => lazySome(b)
             case -\/(a0) => tailrecM(f)(a0)
           }

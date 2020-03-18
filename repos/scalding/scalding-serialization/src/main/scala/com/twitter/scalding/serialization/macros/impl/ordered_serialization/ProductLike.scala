@@ -43,8 +43,7 @@ object ProductLike {
                 ${tBuf.compareBinary(inputStreamA, inputStreamB)}
               }
               """)
-            case None =>
-              Some(tBuf.compareBinary(inputStreamA, inputStreamB))
+            case None => Some(tBuf.compareBinary(inputStreamA, inputStreamB))
           }
       }
       .getOrElse(q"0")
@@ -85,8 +84,7 @@ object ProductLike {
     val innerElement = freshT("innerElement")
 
     elementData.foldLeft(q"") {
-      case (existingTree, (tpe, accessorSymbol, tBuf)) =>
-        q"""
+      case (existingTree, (tpe, accessorSymbol, tBuf)) => q"""
           $existingTree
           val $innerElement = $element.$accessorSymbol
           ${tBuf.put(inputStream, innerElement)}
@@ -134,8 +132,7 @@ object ProductLike {
       }
 
     val combinedDynamic = dynamicFunctions.foldLeft(q"""$constSize""") {
-      case (prev, t) =>
-        q"$prev + $t"
+      case (prev, t) => q"$prev + $t"
     }
 
     if (noLength > 0) { NoLengthCalculationAvailable(c) }
@@ -196,14 +193,13 @@ object ProductLike {
       }
       .reverse // go through last to first
       .foldLeft(None: Option[Tree]) {
-        case (Some(rest), (tree, valname)) =>
-          Some(q"""$tree;
+        case (Some(rest), (tree, valname)) => Some(q"""$tree;
               if ($valname != 0) $valname
               else {
                 $rest
               }
           """)
-        case (None, (tree, valname)) => Some(q"""$tree; $valname""")
+        case (None, (tree, valname))       => Some(q"""$tree; $valname""")
       }
       .getOrElse(q"""0""") // all 0 size products are equal
   }

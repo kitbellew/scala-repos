@@ -175,15 +175,13 @@ trait BaseInMemoryJobManager[M[+_]]
     M.point {
       synchronized {
         jobs get id map {
-          case data @ JobData(job, _, _) =>
-            t(job.state) match {
+          case data @ JobData(job, _, _) => t(job.state) match {
               case Right(newState) =>
                 val newJob = job.copy(state = newState)
                 jobs(id) = data.copy(job = newJob)
                 Right(newJob)
 
-              case Left(error) =>
-                Left(error)
+              case Left(error) => Left(error)
             }
         } getOrElse Left("Cannot find job with ID '%s'." format id)
       }

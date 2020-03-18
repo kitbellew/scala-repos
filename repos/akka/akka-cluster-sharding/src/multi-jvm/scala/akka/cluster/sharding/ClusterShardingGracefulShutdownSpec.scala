@@ -28,8 +28,7 @@ object ClusterShardingGracefulShutdownSpec {
   class Entity extends Actor {
     def receive = {
       case id: Int ⇒ sender() ! id
-      case StopEntity ⇒
-        context.stop(self)
+      case StopEntity ⇒ context.stop(self)
     }
   }
 
@@ -60,8 +59,7 @@ object ClusterShardingGracefulShutdownSpec {
         import context.dispatcher
         system.scheduler.scheduleOnce(10.seconds, self, "stop-system")
 
-      case "stop-system" ⇒
-        system.terminate()
+      case "stop-system" ⇒ system.terminate()
     }
   }
   //#graceful-shutdown

@@ -27,8 +27,7 @@ private[lobby] final class SocketHandler(
     case ("p", o) => o int "v" foreach { v => socket ! PingVersion(uid, v) }
     case ("join", o) =>
       o str "d" foreach { id => lobby ! BiteHook(id, uid, member.user) }
-    case ("cancel", o) =>
-      lobby ! CancelHook(uid)
+    case ("cancel", o) => lobby ! CancelHook(uid)
     case ("joinSeek", o) =>
       for {
         id <- o str "d"

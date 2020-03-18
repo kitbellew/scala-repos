@@ -115,8 +115,8 @@ object CompilerData {
       sdk.getProperties.asInstanceOf[LibrarySettings].getCompilerClasspath
 
     val library = find(files, "scala-library", ".jar") match {
-      case Left(error) =>
-        Left(error + " in Scala compiler classpath in Scala SDK " + sdk.getName)
+      case Left(error) => Left(
+          error + " in Scala compiler classpath in Scala SDK " + sdk.getName)
       case right => right
     }
 
@@ -156,10 +156,8 @@ object CompilerData {
       suffix: String): Either[String, File] = {
     files.filter(it =>
       it.getName.startsWith(prefix) && it.getName.endsWith(suffix)) match {
-      case Seq() =>
-        Left("No '%s*%s'".format(prefix, suffix))
-      case Seq(file) =>
-        Right(file)
+      case Seq()     => Left("No '%s*%s'".format(prefix, suffix))
+      case Seq(file) => Right(file)
       case Seq(duplicates @ _*) =>
         Left("Multiple '%s*%s' files (%s)".format(
           prefix,

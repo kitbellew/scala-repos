@@ -272,8 +272,7 @@ object Rational extends RationalInstances {
     else {
       val g = n gcd d
       n / g match {
-        case SafeLongLong(x) =>
-          (d / g) match {
+        case SafeLongLong(x) => (d / g) match {
             case SafeLongLong(y)       => longRational(x, y)
             case y: SafeLongBigInteger => bigRational(x, y)
           }
@@ -619,8 +618,9 @@ object Rational extends RationalInstances {
 
     def compare(r: Rational): Int =
       r match {
-        case r: LongRational =>
-          Checked.tryOrElse { LongAlgebra.compare(n * r.d, r.n * d) } {
+        case r: LongRational => Checked.tryOrElse {
+            LongAlgebra.compare(n * r.d, r.n * d)
+          } {
             val dgcd = spire.math.gcd(d, r.d)
             if (dgcd == 1L) (SafeLong(n) * r.d) compare (SafeLong(r.n) * d)
             else

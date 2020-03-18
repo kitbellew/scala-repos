@@ -37,13 +37,11 @@ private[http] object HttpContext {
     */
   def read[R](msg: Message)(fn: => R): R =
     msg.headerMap.get(DeadlineHeaderKey) match {
-      case Some(str) =>
-        unmarshalDeadline(str) match {
+      case Some(str) => unmarshalDeadline(str) match {
           case Some(deadline) => Contexts.broadcast.let(Deadline, deadline)(fn)
           case None           => fn
         }
-      case None =>
-        fn
+      case None => fn
     }
 
   /**

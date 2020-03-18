@@ -42,9 +42,7 @@ abstract class JSEnvTest {
       try {
         newJSEnv.jsRunner(code).run(NullLogger, NullJSConsole)
         assertTrue("Code snipped should fail", false)
-      } catch {
-        case e: Exception =>
-      }
+      } catch { case e: Exception => }
     }
   }
 

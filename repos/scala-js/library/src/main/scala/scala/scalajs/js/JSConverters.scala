@@ -87,11 +87,9 @@ object JSConverters extends JSConvertersLowPrioImplicits {
             resolve: js.Function1[A | Thenable[A], _],
             reject: js.Function1[scala.Any, _]) =>
           self onComplete {
-            case scala.util.Success(value) =>
-              resolve(value)
+            case scala.util.Success(value) => resolve(value)
 
-            case scala.util.Failure(th) =>
-              reject(th match {
+            case scala.util.Failure(th) => reject(th match {
                 case JavaScriptException(e) => e
                 case _                      => th
               })

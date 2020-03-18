@@ -62,8 +62,7 @@ class RackAwareAutoTopicCreationTest
       // double check that the topic is created with leader elected
       TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 0)
       val assignment = zkUtils.getReplicaAssignmentForTopics(Seq(topic)).map {
-        case (topicPartition, replicas) =>
-          topicPartition.partition -> replicas
+        case (topicPartition, replicas) => topicPartition.partition -> replicas
       }
       val brokerMetadatas = AdminUtils.getBrokerMetadatas(
         zkUtils,

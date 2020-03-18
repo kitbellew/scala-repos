@@ -174,8 +174,7 @@ trait EnumerateeTFunctions {
                 val nextStep = (pairingIteratee &= e2).run
                 iterateeT[(E1, E2), F, A](nextStep) >>== outerLoop
 
-              case None =>
-                done[E1, F, StepT[(E1, E2), F, A]](step, eofInput)
+              case None => done[E1, F, StepT[(E1, E2), F, A]](step, eofInput)
             }
           } yield sa
 

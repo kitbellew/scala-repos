@@ -62,8 +62,7 @@ trait AuthenticationCombinators extends HttpRequestHandlerCombinators {
       service: HttpService[A, Account => Future[HttpResponse[JValue]]])(implicit
       ctx: ExecutionContext) = {
     new AuthenticationService[A, HttpResponse[JValue]](accountManager, service)({
-      case NotProvided =>
-        HttpResponse(
+      case NotProvided => HttpResponse(
           Unauthorized,
           headers = HttpHeaders(List(("WWW-Authenticate", "Basic"))))
       case AuthMismatch(message) =>

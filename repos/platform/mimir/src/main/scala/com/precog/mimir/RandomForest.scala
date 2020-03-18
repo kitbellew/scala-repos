@@ -76,8 +76,7 @@ sealed trait DecisionTree[ /*@specialized(Double) */ A] {
       tree match {
         case Split(i, boundary, left, right) =>
           if (v(i) <= boundary) loop(left) else loop(right)
-        case Leaf(k) =>
-          k
+        case Leaf(k) => k
       }
 
     loop(this)
@@ -432,8 +431,7 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           val valuesOpt: Option[Array[A]] = sliceToArray[A](head, die)(pf)
           loop(tail, valuesOpt map (_ :: acc) getOrElse acc)
 
-        case None =>
-          M.point(collapse(acc.reverse))
+        case None => M.point(collapse(acc.reverse))
       }
     }
 
@@ -459,8 +457,7 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             case Some((head, tail)) =>
               loop(tail, Array.tabulate(head.size)(head.toRValue(_)) :: acc)
 
-            case None =>
-              M.point(collapse(acc.reverse))
+            case None => M.point(collapse(acc.reverse))
           }
         }
 
@@ -517,8 +514,7 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         val table0 = table.transform(spec)
 
         extract[Double](table0) {
-          case col: DoubleColumn =>
-            (row: Int) => col(row)
+          case col: DoubleColumn => (row: Int) => col(row)
         }
       }
 
@@ -674,12 +670,12 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
               val errors: M[List[Double]] =
                 (forests zip validationSamples) traverse {
-                  case (forest, table) =>
-                    withData(table) { (actual, features) =>
-                      val predicted =
-                        features map (forest.predict) // TODO: Unbox me!
-                      val error = findError(actual, predicted)
-                      error
+                  case (forest, table) => withData(table) {
+                      (actual, features) =>
+                        val predicted =
+                          features map (forest.predict) // TODO: Unbox me!
+                        val error = findError(actual, predicted)
+                        error
                     }
                 }
 
@@ -700,14 +696,11 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           def apply(table: Table, ctx: MorphContext): M[Table] = {
 
             lazy val models: Map[String, (JType, F)] = forests.zipWithIndex
-              .map({
-                case (elem, i) =>
-                  ("model" + (i + 1)) -> elem
-              })(collection.breakOut)
+              .map({ case (elem, i) => ("model" + (i + 1)) -> elem })(
+                collection.breakOut)
 
             lazy val specs: Seq[TransSpec1] = models.map({
-              case (modelId, (jtype, _)) =>
-                trans.WrapObject(
+              case (modelId, (jtype, _)) => trans.WrapObject(
                   trans.TypedSubsumes(TransSpec1.Id, jtype),
                   modelId)
             })(collection.breakOut)
@@ -764,8 +757,7 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                   StreamT.Yield(Slice(columns, head.size), predict(tail))
                 }
 
-                case None =>
-                  StreamT.Done
+                case None => StreamT.Done
               })
             }
 

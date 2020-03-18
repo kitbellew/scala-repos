@@ -132,8 +132,7 @@ class MergeToComprehensions extends Phase {
           logger.debug("Merged Distinct into Comprehension:", c2)
           (c2, replacements1a)
 
-        case n =>
-          mergeCommon(mergeSortBy _, mergeGroupBy _, n, buildBase)
+        case n => mergeCommon(mergeSortBy _, mergeGroupBy _, n, buildBase)
       }
 
     /** Merge GroupBy into an existing Comprehension or create new Comprehension from non-grouping Aggregation */
@@ -329,8 +328,7 @@ class MergeToComprehensions extends Phase {
           logger.debug("Converted Union:", u2)
           (u2, rep1)
 
-        case Subquery(n, _) =>
-          createTopLevel(n)
+        case Subquery(n, _) => createTopLevel(n)
 
         case n =>
           val (c, rep) = mergeTakeDrop(n, false)
@@ -349,8 +347,7 @@ class MergeToComprehensions extends Phase {
 
     def convert1(n: Node): Node =
       n match {
-        case CollectionCast(_, _) =>
-          n.mapChildren(convert1, keepType = true)
+        case CollectionCast(_, _) => n.mapChildren(convert1, keepType = true)
         case n :@ Type.Structural(CollectionType(cons, el)) =>
           convertOnlyInScalar(createTopLevel(n)._1)
         case a: Aggregate =>
@@ -364,8 +361,7 @@ class MergeToComprehensions extends Phase {
           val res = Library.SilentCast.typed(a.nodeType, c3).infer()
           logger.debug("Merged Aggregate into Comprehension as:", res)
           res
-        case n =>
-          n.mapChildren(convert1, keepType = true)
+        case n => n.mapChildren(convert1, keepType = true)
       }
 
     def convertOnlyInScalar(n: Node): Node =
@@ -449,8 +445,7 @@ class MergeToComprehensions extends Phase {
         logger.debug("Merged Filter into Comprehension:", c2)
         (c2, replacements1a)
 
-      case CollectionCast(ch, _) =>
-        rec(ch, buildBase)
+      case CollectionCast(ch, _) => rec(ch, buildBase)
 
       case n => parent(n, buildBase)
     }
@@ -507,8 +502,7 @@ class MergeToComprehensions extends Phase {
     val baseM = base.iterator.toMap
     n1.replace(
       {
-        case n @ Select(_ :@ NominalType(ts, _), s) =>
-          r.get((ts, s)) match {
+        case n @ Select(_ :@ NominalType(ts, _), s) => r.get((ts, s)) match {
             case Some(s2) => baseM(s2)
             case None     => n
           }

@@ -99,8 +99,7 @@ private[streaming] class DirectKafkaInputDStream[
       estimatedRateLimit.filter(_ > 0) match {
         case Some(rate) =>
           val lagPerPartition = offsets.map {
-            case (tp, offset) =>
-              tp -> Math.max(offset - currentOffsets(tp), 0)
+            case (tp, offset) => tp -> Math.max(offset - currentOffsets(tp), 0)
           }
           val totalLag = lagPerPartition.values.sum
 
@@ -111,8 +110,9 @@ private[streaming] class DirectKafkaInputDStream[
                        Math.min(backpressureRate, maxRateLimitPerPartition)
                      } else backpressureRate)
           }
-        case None =>
-          offsets.map { case (tp, offset) => tp -> maxRateLimitPerPartition }
+        case None => offsets.map {
+            case (tp, offset) => tp -> maxRateLimitPerPartition
+          }
       }
 
     if (effectiveRateLimitPerPartition.values.sum > 0) {

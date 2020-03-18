@@ -30,8 +30,7 @@ class TestActorRef[T <: Actor](
   val dispatcher = _system.dispatchers.lookup(props.dispatcher)
   private val disregard = _supervisor match {
     case l: LocalActorRef ⇒ l.underlying.reserveChild(name)
-    case r: RepointableActorRef ⇒
-      r.underlying match {
+    case r: RepointableActorRef ⇒ r.underlying match {
         case u: UnstartedCell ⇒
           throw new IllegalStateException(
             "cannot attach a TestActor to an unstarted top-level actor, ensure that it is started by sending a message and observing the reply")

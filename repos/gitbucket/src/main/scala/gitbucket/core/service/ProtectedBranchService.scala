@@ -143,8 +143,8 @@ object ProtectedBranchService {
                   s"${s.size} of ${contexts.size} required status checks are expected")
               case _ => None
             }
-          case ReceiveCommand.Type.DELETE =>
-            Some("Cannot delete a protected branch")
+          case ReceiveCommand.Type.DELETE => Some(
+              "Cannot delete a protected branch")
           case _ => None
         }
       } else { None }

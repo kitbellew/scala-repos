@@ -32,10 +32,8 @@ object Test extends Properties("IndexScript") {
 
   def createIndexScript(path: String) =
     docFactory.makeUniverse(Left(List(path))) match {
-      case Some(universe) =>
-        Some(new IndexScript(universe))
-      case _ =>
-        None
+      case Some(universe) => Some(new IndexScript(universe))
+      case _              => None
     }
 
   property("allPackages") = {
@@ -49,8 +47,7 @@ object Test extends Properties("IndexScript") {
           "scala.tools.nsc.doc",
           "scala.tools.nsc.doc.html",
           "scala.tools.nsc.doc.html.page")
-      case None =>
-        false
+      case None => false
     }
   }
 }

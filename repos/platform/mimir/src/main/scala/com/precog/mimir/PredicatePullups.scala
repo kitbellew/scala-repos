@@ -47,16 +47,14 @@ trait PredicatePullupsModule[M[+_]] extends TransSpecableModule[M] {
           def extractFilter(spec: dag.BucketSpec)
               : Option[(List[DepGraph], List[dag.BucketSpec])] =
             spec match {
-              case dag.IntersectBucketSpec(left, right) =>
-                for {
+              case dag.IntersectBucketSpec(left, right) => for {
                   fl <- extractFilter(left)
                   fr <- extractFilter(right)
                 } yield fl |+| fr
               case dag.Extra(target) => Some((List(target), Nil))
               case u @ dag.UnfixedSolution(id, expr)
-                  if isTransSpecable(expr, target) =>
-                Some((Nil, List(u)))
-              case other => None
+                  if isTransSpecable(expr, target) => Some((Nil, List(u)))
+              case other                           => None
             }
 
           extractFilter(gchild) match {

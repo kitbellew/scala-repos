@@ -31,8 +31,7 @@ class ScalaIfEvaluator(
               value = branch.evaluate(context)
               modifier = branch.getModifier
               return value
-            case None =>
-              modifier = null
+            case None => modifier = null
           }
         }
       case _ => throw EvaluateExceptionUtil.BOOLEAN_EXPECTED

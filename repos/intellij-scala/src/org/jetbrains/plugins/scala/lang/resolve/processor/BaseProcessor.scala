@@ -300,8 +300,7 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
           updateWithProjectionSubst = false,
           visitedAliases = visitedAliases,
           visitedTypeParameter = visitedTypeParameter)
-      case j: JavaArrayType =>
-        processType(
+      case j: JavaArrayType => processType(
           j.getParameterizedType(place.getProject, place.getResolveScope)
             .getOrElse(return true),
           place,
@@ -309,8 +308,7 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
           visitedAliases = visitedAliases,
           visitedTypeParameter = visitedTypeParameter
         )
-      case p @ ScParameterizedType(des, typeArgs) =>
-        p.designator match {
+      case p @ ScParameterizedType(des, typeArgs) => p.designator match {
           case tpt @ ScTypeParameterType(_, _, _, upper, _) =>
             if (visitedTypeParameter.contains(tpt)) return true
             processType(
@@ -320,8 +318,7 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
               visitedAliases = visitedAliases,
               visitedTypeParameter = visitedTypeParameter + tpt
             )
-          case _ =>
-            ScType.extractDesignated(p, withoutAliases = false) match {
+          case _ => ScType.extractDesignated(p, withoutAliases = false) match {
               case Some((designator, subst)) =>
                 processElement(
                   designator,
@@ -456,8 +453,7 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
           case _              => des.getType(TypingContext.empty)
         }
         typeResult match {
-          case Success(tp, _) =>
-            processType(
+          case Success(tp, _) => processType(
               newSubst subst tp,
               place,
               state.put(ScSubstitutor.key, ScSubstitutor.empty),

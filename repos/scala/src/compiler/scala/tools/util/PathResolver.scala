@@ -211,8 +211,7 @@ object PathResolver {
       println("RESIDUAL: 'scala %s'\n".format(rest.mkString(" ")))
 
       pr.result match {
-        case cp: JavaClassPath =>
-          cp.show()
+        case cp: JavaClassPath => cp.show()
         case cp: AggregateFlatClassPath =>
           println(
             s"ClassPath has ${cp.aggregates.size} entries and results in:\n${cp.asClassPathStrings}")

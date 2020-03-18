@@ -136,8 +136,7 @@ class WorksheetInProcessRunnerFactory {
                 arguments.compilationData.sources.headOption.orNull.getName,
                 className + "$" + className)
                 .printStackTrace(new PrintStream(myOut, false))
-            case e: Exception =>
-              client trace e
+            case e: Exception => client trace e
           } finally { myOut.flush() }
       }
     }

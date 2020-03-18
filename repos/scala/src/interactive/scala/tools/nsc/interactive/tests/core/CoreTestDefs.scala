@@ -60,10 +60,7 @@ private[tests] trait CoreTestDefs
               reporter.println(
                 filtered.map(_.forceInfoString).sorted mkString "\n")
             }
-          } catch {
-            case t: Throwable =>
-              t.printStackTrace()
-          }
+          } catch { case t: Throwable => t.printStackTrace() }
 
         }
       }
@@ -124,8 +121,7 @@ private[tests] trait CoreTestDefs
                         "[response] found askHyperlinkPos for `" + tree.symbol.name + "` at " + format(
                           resolvedPos) + " " + tree.symbol.sourceFile.name)
                     }
-                  case Right(ex) =>
-                    ex.printStackTrace()
+                  case Right(ex) => ex.printStackTrace()
                 }
               case None =>
                 reporter.println(

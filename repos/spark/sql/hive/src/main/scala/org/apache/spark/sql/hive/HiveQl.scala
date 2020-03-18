@@ -164,8 +164,7 @@ private[hive] class HiveQl(conf: ParserConf)
 
   protected def getProperties(node: ASTNode): Seq[(String, String)] =
     node match {
-      case Token("TOK_TABLEPROPLIST", list) =>
-        list.map {
+      case Token("TOK_TABLEPROPLIST", list) => list.map {
           case Token(
                 "TOK_TABLEPROPERTY",
                 Token(key, Nil) :: Token(value, Nil) :: Nil) =>
@@ -223,14 +222,12 @@ private[hive] class HiveQl(conf: ParserConf)
 
   protected override def nodeToPlan(node: ASTNode): LogicalPlan = {
     node match {
-      case Token("TOK_DFS", Nil) =>
-        HiveNativeCommand(node.source + " " + node.remainder)
+      case Token("TOK_DFS", Nil) => HiveNativeCommand(
+          node.source + " " + node.remainder)
 
-      case Token("TOK_ADDFILE", Nil) =>
-        AddFile(node.remainder)
+      case Token("TOK_ADDFILE", Nil) => AddFile(node.remainder)
 
-      case Token("TOK_ADDJAR", Nil) =>
-        AddJar(node.remainder)
+      case Token("TOK_ADDJAR", Nil) => AddJar(node.remainder)
 
       // Special drop table that also uncaches.
       case Token(
@@ -593,17 +590,14 @@ private[hive] class HiveQl(conf: ParserConf)
           allowExisting.isDefined)
 
       // If its not a "CTAS" like above then take it as a native command
-      case Token("TOK_CREATETABLE", _) =>
-        NativePlaceholder
+      case Token("TOK_CREATETABLE", _) => NativePlaceholder
 
       // Support "TRUNCATE TABLE table_name [PARTITION partition_spec]"
       case Token(
             "TOK_TRUNCATETABLE",
-            Token("TOK_TABLE_PARTITION", table) :: Nil) =>
-        NativePlaceholder
+            Token("TOK_TABLE_PARTITION", table) :: Nil) => NativePlaceholder
 
-      case _ =>
-        super.nodeToPlan(node)
+      case _ => super.nodeToPlan(node)
     }
   }
 
@@ -649,8 +643,7 @@ private[hive] class HiveQl(conf: ParserConf)
                 AttributeReference("key", StringType)(),
                 AttributeReference("value", StringType)()),
               true)
-          case _ =>
-            noParseRule("Transform", node)
+          case _ => noParseRule("Transform", node)
         }
 
         type SerDeInfo = (
@@ -831,8 +824,7 @@ private[hive] class HiveQl(conf: ParserConf)
             precision + "," + HiveDecimal.USER_DEFAULT_SCALE
           case Nil =>
             HiveDecimal.USER_DEFAULT_PRECISION + "," + HiveDecimal.USER_DEFAULT_SCALE
-          case _ =>
-            noParseRule("Decimal", node)
+          case _ => noParseRule("Decimal", node)
         }
         s"${serdeConstants.DECIMAL_TYPE_NAME}($precisionAndScale)"
 

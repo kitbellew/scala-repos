@@ -45,8 +45,7 @@ class ScalaSafeDeleteProcessorDelegate extends JavaSafeDeleteProcessor {
       case p: ScParameter =>
         findParameterUsages(element.asInstanceOf[PsiParameter], usages)
         insideDeletedCondition
-      case _ =>
-        insideDeletedCondition
+      case _ => insideDeletedCondition
     }
 
     return new NonCodeUsageSearchInfo(insideDeletedCondition, element)

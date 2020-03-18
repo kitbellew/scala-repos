@@ -164,10 +164,8 @@ abstract class Reifier extends States with Phases with Errors with Utils {
 
       untyped
     } catch {
-      case ex: ReificationException =>
-        throw ex
-      case ex: UnexpectedReificationException =>
-        throw ex
+      case ex: ReificationException           => throw ex
+      case ex: UnexpectedReificationException => throw ex
       case ex: Throwable =>
         throw new UnexpectedReificationException(
           defaultErrorPosition,

@@ -31,8 +31,7 @@ class BufInputStreamTest extends FunSuite {
     assert(i != -1)
     try { is.close() }
     catch {
-      case e: IOException =>
-        fail("Test 1: Failed to close the input stream.")
+      case e: IOException => fail("Test 1: Failed to close the input stream.")
     }
     try {
       val j = is.read()
@@ -59,10 +58,7 @@ class BufInputStreamTest extends FunSuite {
       val s1 = new String(array1, 0, array1.length)
       val s2 = new String(array2, 0, array2.length)
       assert(s1.equals(s2), "Failed to mark correct position")
-    } catch {
-      case e: Exception =>
-        fail("Exception during mark test")
-    }
+    } catch { case e: Exception => fail("Exception during mark test") }
   }
 
   test("markSupported") {

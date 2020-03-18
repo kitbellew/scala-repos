@@ -96,8 +96,7 @@ private[http] object RouteImplementation
             code.asScala.asInstanceOf[Redirection])
 
         case MethodFilter(m) ⇒ method(m.asScala)
-        case Extract(extractions) ⇒
-          extractRequestContext.flatMap { ctx ⇒
+        case Extract(extractions) ⇒ extractRequestContext.flatMap { ctx ⇒
             extractions
               .map { e ⇒
                 e.directive.flatMap(
@@ -106,8 +105,7 @@ private[http] object RouteImplementation
               .reduce(_ & _)
           }
 
-        case BasicAuthentication(authenticator) ⇒
-          authenticateBasicAsync(
+        case BasicAuthentication(authenticator) ⇒ authenticateBasicAsync(
             authenticator.realm,
             { creds ⇒
               val javaCreds = creds match {
@@ -137,8 +135,7 @@ private[http] object RouteImplementation
             addExtraction(authenticator.asInstanceOf[RequestVal[Any]], user)
           }
 
-        case OAuth2Authentication(authenticator) ⇒
-          authenticateOAuth2Async(
+        case OAuth2Authentication(authenticator) ⇒ authenticateOAuth2Async(
             authenticator.realm,
             { creds ⇒
               val javaCreds = creds match {
@@ -171,8 +168,8 @@ private[http] object RouteImplementation
           val scalaCoders = coders.map(_._underlyingScalaCoder())
           encodeResponseWith(scalaCoders.head, scalaCoders.tail: _*)
 
-        case DecodeRequest(coders) ⇒
-          decodeRequestWith(coders.map(_._underlyingScalaCoder()): _*)
+        case DecodeRequest(coders) ⇒ decodeRequestWith(
+            coders.map(_._underlyingScalaCoder()): _*)
         case Conditional(eTag, lastModified) ⇒
           conditional(eTag.map(_.asScala), lastModified.map(_.asScala))
         case h: HostFilter ⇒ host(h.filter _)
@@ -185,13 +182,12 @@ private[http] object RouteImplementation
             }
           handleExceptions(pf)
 
-        case HandleRejections(handler) ⇒
-          handleRejections(new RejectionHandlerWrapper(handler))
+        case HandleRejections(handler) ⇒ handleRejections(
+            new RejectionHandlerWrapper(handler))
         case Validated(isValid, errorMsg) ⇒ validate(isValid, errorMsg)
         case RangeSupport() ⇒ withRangeSupport
         case SetCookie(cookie) ⇒ setCookie(cookie.asScala)
-        case DeleteCookie(name, domain, path) ⇒
-          deleteCookie(
+        case DeleteCookie(name, domain, path) ⇒ deleteCookie(
             HttpCookie(name, domain = domain, path = path, value = "deleted"))
       }
 
@@ -216,8 +212,8 @@ private[http] object RouteImplementation
             ContentTypeResolver.Default(fileName)
         }))
 
-      case HandleWebSocketMessages(handler) ⇒
-        handleWebSocketMessages(JavaMapping.toScala(handler))
+      case HandleWebSocketMessages(handler) ⇒ handleWebSocketMessages(
+          JavaMapping.toScala(handler))
       case Redirect(uri, code) ⇒
         redirect(
           uri.asScala,
@@ -249,8 +245,7 @@ private[http] object RouteImplementation
               o.handle(new RequestContextImpl(ctx))
                 .asInstanceOf[RouteResultImpl]
                 .underlying)
-      case p: Product ⇒
-        extractExecutionContext { implicit ec ⇒
+      case p: Product ⇒ extractExecutionContext { implicit ec ⇒
           complete((500, s"Not implemented: ${p.productPrefix}"))
         }
     }

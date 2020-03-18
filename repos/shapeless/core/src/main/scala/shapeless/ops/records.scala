@@ -78,8 +78,7 @@ package record {
             new _root_.shapeless.ops.record.UnsafeSelector($i).
               asInstanceOf[_root_.shapeless.ops.record.Selector.Aux[$lTpe, $kTpe, $vTpe]]
           """
-        case _ =>
-          abort(s"No field $kTpe in record type $lTpe")
+        case _ => abort(s"No field $kTpe in record type $lTpe")
       }
     }
   }

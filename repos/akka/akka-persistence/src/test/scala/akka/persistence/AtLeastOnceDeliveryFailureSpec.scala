@@ -110,8 +110,7 @@ object AtLeastOnceDeliveryFailureSpec {
           add(i)
           deliver(destination.path)(deliveryId ⇒ Msg(deliveryId, i))
 
-        case MsgConfirmed(deliveryId, i) ⇒
-          confirmDelivery(deliveryId)
+        case MsgConfirmed(deliveryId, i) ⇒ confirmDelivery(deliveryId)
       }
 
     private def debugMessage(msg: String): String =

@@ -28,8 +28,7 @@ private[message] final class DataForm(security: MessageSecurity) {
         "subject" -> text(minLength = 3, maxLength = 100),
         "text" -> text(minLength = 3, maxLength = 8000)
       )({
-        case (username, subject, text) =>
-          ThreadData(
+        case (username, subject, text) => ThreadData(
             user = fetchUser(username) err "Unknown username " + username,
             subject = subject,
             text = text)

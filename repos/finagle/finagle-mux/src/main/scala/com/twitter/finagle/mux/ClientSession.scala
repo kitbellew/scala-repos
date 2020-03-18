@@ -75,9 +75,7 @@ private[twitter] class ClientSession(
   private[this] val log = Logger.getLogger(getClass.getName)
   private[this] def safeLog(msg: String, level: Level = Level.INFO): Unit =
     try log.log(level, msg)
-    catch {
-      case _: Throwable =>
-    }
+    catch { case _: Throwable => }
 
   private[this] val leaseGauge = sr.addGauge("current_lease_ms") {
     state match {

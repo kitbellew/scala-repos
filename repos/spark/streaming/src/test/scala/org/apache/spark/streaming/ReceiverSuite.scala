@@ -223,10 +223,7 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
             _.toString
           }
         } else { Seq.empty }
-      } catch {
-        case e: Exception =>
-          Seq.empty
-      }
+      } catch { case e: Exception => Seq.empty }
     }
 
     def printLogFiles(message: String, files: Seq[String]) {

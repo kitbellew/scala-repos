@@ -422,17 +422,14 @@ abstract class TailCalls extends Transform {
           if (res ne arg) treeCopy.Apply(tree, fun, res :: Nil)
           else rewriteApply(fun, fun, Nil, args, mustTransformArgs = false)
 
-        case Apply(fun, args) =>
-          rewriteApply(fun, fun, Nil, args)
+        case Apply(fun, args) => rewriteApply(fun, fun, Nil, args)
         case Alternative(_) | Star(_) | Bind(_, _) =>
           sys.error("We should've never gotten inside a pattern")
         case Select(qual, name) =>
           treeCopy.Select(tree, noTailTransform(qual), name)
         case EmptyTree | Super(_, _) | This(_) | Ident(_) | Literal(_) |
-            Function(_, _) | TypeTree() =>
-          tree
-        case _ =>
-          super.transform(tree)
+            Function(_, _) | TypeTree() => tree
+        case _                          => super.transform(tree)
       }
     }
 
@@ -485,8 +482,7 @@ abstract class TailCalls extends Transform {
           traverseTrees(args)
 
         // a translated casedef
-        case LabelDef(_, _, body) if hasSynthCaseSymbol(tree) =>
-          traverse(body)
+        case LabelDef(_, _, body) if hasSynthCaseSymbol(tree) => traverse(body)
 
         // a translated match
         case Block(stats, expr) if stats forall hasSynthCaseSymbol =>
@@ -499,8 +495,7 @@ abstract class TailCalls extends Transform {
           ) // reverse so that we enter the matchEnd LabelDef before we see jumps to it
           traverseTreesNoTail(prologue) // selector (may be absent)
 
-        case CaseDef(pat, guard, body) =>
-          traverse(body)
+        case CaseDef(pat, guard, body) => traverse(body)
 
         case Match(selector, cases) =>
           traverseNoTail(selector)

@@ -97,8 +97,7 @@ class DocumentationHandler(
           sendFileInline(repo, path)
             .orElse(sendFileInline(apiRepo, path))
             .getOrElse(NotFound("Resource not found [" + path + "]")))
-      case wikiPage(page) =>
-        Some(playDoc.renderPage(page) match {
+      case wikiPage(page) => Some(playDoc.renderPage(page) match {
           case None =>
             NotFound(views.html.play20.manual(page, None, None, locator))
           case Some(RenderedPage(mainPage, None, _)) =>

@@ -381,10 +381,7 @@ object Execution {
         // Don't do any work after the .put call, we want no chance for exception
         // after the put
         fut
-      } catch {
-        case NonFatal(e) =>
-          Future.failed(e)
-      }
+      } catch { case NonFatal(e) => Future.failed(e) }
 
     def start(): Unit = {
       // Make sure this thread can't keep us running if all others are gone

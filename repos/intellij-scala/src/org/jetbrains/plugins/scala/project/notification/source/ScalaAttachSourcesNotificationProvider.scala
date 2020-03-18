@@ -158,9 +158,8 @@ class ScalaAttachSourcesNotificationProvider(
     import scala.collection.JavaConversions._
     for (entry <- entries) {
       entry match {
-        case entry: LibraryOrderEntry =>
-          libs.add(entry)
-        case _ =>
+        case entry: LibraryOrderEntry => libs.add(entry)
+        case _                        =>
       }
     }
     if (libs.isEmpty) null else libs

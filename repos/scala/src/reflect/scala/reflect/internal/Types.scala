@@ -727,16 +727,13 @@ trait Types
     /** The type of `sym`, seen as a member of this type. */
     def memberType(sym: Symbol): Type =
       sym match {
-        case meth: MethodSymbol =>
-          meth.typeAsMemberOf(this)
-        case _ =>
-          computeMemberType(sym)
+        case meth: MethodSymbol => meth.typeAsMemberOf(this)
+        case _                  => computeMemberType(sym)
       }
 
     def computeMemberType(sym: Symbol): Type =
       sym.tpeHK match { //@M don't prematurely instantiate higher-kinded types, they will be instantiated by transform, typedTypeApply, etc. when really necessary
-        case OverloadedType(_, alts) =>
-          OverloadedType(this, alts)
+        case OverloadedType(_, alts) => OverloadedType(this, alts)
         case tp =>
           if (sym eq NoSymbol) NoType else tp.asSeenFrom(this, sym.owner)
       }
@@ -853,8 +850,7 @@ trait Types
               s"$this.matchesPattern($that) depended on discarding args and testing <:< $that1")
             true
           }
-        case _ =>
-          false
+        case _ => false
       })
 
     def stat_<:<(that: Type): Boolean = {
@@ -1023,10 +1019,8 @@ trait Types
     def isGround: Boolean =
       this match {
         case ThisType(_) | NoPrefix | WildcardType | NoType | ErrorType |
-            ConstantType(_) =>
-          true
-        case _ =>
-          typeVarToOriginMap(this) eq this
+            ConstantType(_) => true
+        case _              => typeVarToOriginMap(this) eq this
       }
 
     /** If this is a symbol loader type, load and assign a new type to `sym`. */
@@ -1439,10 +1433,10 @@ trait Types
   object CompoundType {
     def unapply(tp: Type): Option[(List[Type], Scope, Symbol)] =
       tp match {
-        case ClassInfoType(parents, decls, clazz) =>
-          Some((parents, decls, clazz))
-        case RefinedType(parents, decls) =>
-          Some((parents, decls, tp.typeSymbol))
+        case ClassInfoType(parents, decls, clazz) => Some(
+            (parents, decls, clazz))
+        case RefinedType(parents, decls) => Some(
+            (parents, decls, tp.typeSymbol))
         case _ => None
       }
   }
@@ -1502,8 +1496,7 @@ trait Types
       }
 
       intersectionWitness get parents match {
-        case Some(ref) =>
-          ref.get match {
+        case Some(ref) => ref.get match {
             case Some(w) => if (w eq this) op1 else op2(w)
             case None    => updateCache()
           }
@@ -1667,8 +1660,7 @@ trait Types
             try define()
             finally baseClassesCycleMonitor pop clazz
           }
-        case _ =>
-          define()
+        case _ => define()
       }
   }
   private def defineBaseClassesOfCompoundType(
@@ -2508,8 +2500,7 @@ trait Types
                 val out_s =
                   if (isFunctionTypeDirect(out)) "(" + out + ")" else "" + out
                 in_s + " => " + out_s
-              case xs =>
-                xs.init.mkString("(", ", ", ")") + " => " + xs.last
+              case xs => xs.init.mkString("(", ", ", ")") + " => " + xs.last
             }
           } else if (isTupleTypeDirect(this)) tupleTypeString
           else if (sym.isAliasType && prefixChain.exists(
@@ -2636,8 +2627,7 @@ trait Types
             resultType contains p
           ) &&
             areTrivialParams(rest)
-        case _ =>
-          true
+        case _ => true
       }
 
     def isImplicit = (params ne Nil) && params.head.isImplicit
@@ -2920,8 +2910,7 @@ trait Types
       args map {
         case TypeRef(_, sym, _) if (qset contains sym) =>
           "_" + sym.infoString(sym.info)
-        case arg =>
-          arg.toString
+        case arg => arg.toString
       }
 
     /** An existential can only be printed with wildcards if:
@@ -2969,8 +2958,7 @@ trait Types
             args).mkString("[", ", ", "]")
         case MethodType(_, _) | NullaryMethodType(_) | PolyType(_, _) =>
           "(" + underlying + ")" + clauses
-        case _ =>
-          "" + underlying + clauses
+        case _ => "" + underlying + clauses
       }
     }
 
@@ -3053,8 +3041,8 @@ trait Types
     }
     def unapply(tp: Type): Option[(TypeName, Type)] =
       tp match {
-        case RefinedType(List(WildcardType), Scope(sym)) =>
-          Some((sym.name.toTypeName, sym.info))
+        case RefinedType(List(WildcardType), Scope(sym)) => Some(
+            (sym.name.toTypeName, sym.info))
         case _ => None
       }
   }
@@ -3198,8 +3186,7 @@ trait Types
       tp match {
         case t: TypeVar if !t.untouchable =>
           t.registerTypeEquality(this, !typeVarLHS)
-        case _ =>
-          super.registerTypeEquality(tp, typeVarLHS)
+        case _ => super.registerTypeEquality(tp, typeVarLHS)
       }
     override def registerBound(
         tp: Type,
@@ -3208,8 +3195,7 @@ trait Types
       tp match {
         case t: TypeVar if !t.untouchable =>
           t.registerBound(this, !isLowerBound, isNumericBound)
-        case _ =>
-          super.registerBound(tp, isLowerBound, isNumericBound)
+        case _ => super.registerBound(tp, isLowerBound, isNumericBound)
       }
   }
 
@@ -3773,8 +3759,7 @@ trait Types
     tp match {
       case SuperType(thistp, _) =>
         if (sym.isEffectivelyFinal || sym.isDeferred) thistp else tp
-      case _ =>
-        tp
+      case _ => tp
     }
 
   /** The canonical creator for single-types */
@@ -3865,8 +3850,7 @@ trait Types
               args) && !sym.lockOK) throw new RecoverableCyclicReference(sym)
 
         TypeRef(pre, sym, args)
-      case _ =>
-        typeRef(pre, sym, args)
+      case _ => typeRef(pre, sym, args)
     }
 
   /** The canonical creator for implicit method types */
@@ -4317,10 +4301,8 @@ trait Types
                 else arg2 <:< arg1
               }
           })
-        case (et: ExistentialType, _) =>
-          et.withTypeVars(isConsistent(_, tp2))
-        case (_, et: ExistentialType) =>
-          et.withTypeVars(isConsistent(tp1, _))
+        case (et: ExistentialType, _) => et.withTypeVars(isConsistent(_, tp2))
+        case (_, et: ExistentialType) => et.withTypeVars(isConsistent(tp1, _))
       }
 
     def check(tp1: Type, tp2: Type) =
@@ -4639,16 +4621,12 @@ trait Types
       tp2 match {
         case ExistentialType(_, res2) if alwaysMatchSimple =>
           matchesType(tp1, res2, alwaysMatchSimple = true)
-        case MethodType(_, _) =>
-          false
-        case PolyType(_, _) =>
-          false
-        case _ =>
-          alwaysMatchSimple || tp1 =:= tp2
+        case MethodType(_, _) => false
+        case PolyType(_, _)   => false
+        case _                => alwaysMatchSimple || tp1 =:= tp2
       }
     tp1 match {
-      case mt1 @ MethodType(params1, res1) =>
-        tp2 match {
+      case mt1 @ MethodType(params1, res1) => tp2 match {
           case mt2 @ MethodType(params2, res2) =>
             // sameLength(params1, params2) was used directly as pre-screening optimization (now done by matchesQuantified -- is that ok, performancewise?)
             mt1.isImplicit == mt2.isImplicit &&
@@ -4667,11 +4645,9 @@ trait Types
               res1,
               tp2,
               alwaysMatchSimple)
-          case _ =>
-            false
+          case _ => false
         }
-      case mt1 @ NullaryMethodType(res1) =>
-        tp2 match {
+      case mt1 @ NullaryMethodType(res1) => tp2 match {
           case mt2 @ MethodType(
                 Nil,
                 res2
@@ -4686,11 +4662,9 @@ trait Types
               alwaysMatchSimple = true)
           case TypeRef(_, sym, Nil) if sym.isModuleClass =>
             matchesType(res1, tp2, alwaysMatchSimple)
-          case _ =>
-            matchesType(res1, tp2, alwaysMatchSimple)
+          case _ => matchesType(res1, tp2, alwaysMatchSimple)
         }
-      case PolyType(tparams1, res1) =>
-        tp2 match {
+      case PolyType(tparams1, res1) => tp2 match {
           case PolyType(tparams2, res2) =>
             if ((tparams1 corresponds tparams2)(_ eq _))
               matchesType(res1, res2, alwaysMatchSimple)
@@ -4703,8 +4677,7 @@ trait Types
           case _ =>
             false // remember that tparams1.nonEmpty is now an invariant of PolyType
         }
-      case ExistentialType(tparams1, res1) =>
-        tp2 match {
+      case ExistentialType(tparams1, res1) => tp2 match {
           case ExistentialType(tparams2, res2) =>
             matchesQuantified(tparams1, tparams2, res1, res2)
           case _ =>
@@ -4720,8 +4693,7 @@ trait Types
             matchesType(tp1, res2, alwaysMatchSimple)
           case _ => lastTry
         }
-      case _ =>
-        lastTry
+      case _ => lastTry
     }
   }
 
@@ -4769,18 +4741,17 @@ trait Types
       syms1isJava: Boolean,
       syms2isJava: Boolean): Boolean =
     syms1 match {
-      case Nil =>
-        syms2.isEmpty
-      case sym1 :: rest1 =>
-        syms2 match {
-          case Nil =>
-            false
+      case Nil => syms2.isEmpty
+      case sym1 :: rest1 => syms2 match {
+          case Nil => false
           case sym2 :: rest2 =>
             val tp1 = sym1.tpe
             val tp2 = sym2.tpe
-            (tp1 =:= tp2 ||
-            syms1isJava && tp2.typeSymbol == ObjectClass && tp1.typeSymbol == AnyClass ||
-            syms2isJava && tp1.typeSymbol == ObjectClass && tp2.typeSymbol == AnyClass) &&
+            (
+              tp1 =:= tp2 ||
+              syms1isJava && tp2.typeSymbol == ObjectClass && tp1.typeSymbol == AnyClass ||
+              syms2isJava && tp1.typeSymbol == ObjectClass && tp2.typeSymbol == AnyClass
+            ) &&
             matchingParams(rest1, rest2, syms1isJava, syms2isJava)
         }
     }
@@ -4813,8 +4784,7 @@ trait Types
     t match {
       case TypeRef(pre, clazz, Nil) if clazz.isAnonymousClass =>
         clazz.classBound.asSeenFrom(pre, clazz.owner)
-      case _ =>
-        t
+      case _ => t
     }
 
   /** A list of the typevars in a type. */
@@ -4937,8 +4907,8 @@ trait Types
           case NoType => NoType
           case tpe    => existentialAbstraction(tparams, tpe)
         }
-      case _ =>
-        abort(s"mergePrefixAndArgs($tps, $variance, $depth): unsupported tps")
+      case _ => abort(
+          s"mergePrefixAndArgs($tps, $variance, $depth): unsupported tps")
     }
 
   def addMember(thistp: Type, tp: Type, sym: Symbol): Unit =

@@ -125,8 +125,7 @@ object ZkSecurityMigrator extends Logging {
       case "unsecure" =>
         info("zookeeper.acl option is unsecure")
         false
-      case _ =>
-        CommandLineUtils.printUsageAndDie(parser, usageMessage)
+      case _ => CommandLineUtils.printUsageAndDie(parser, usageMessage)
     }
     val zkUrl = options.valueOf(zkUrlOpt)
     val zkSessionTimeout = options.valueOf(zkSessionTimeoutOpt).intValue
@@ -138,10 +137,7 @@ object ZkSecurityMigrator extends Logging {
 
   def main(args: Array[String]) {
     try { run(args) }
-    catch {
-      case e: Exception =>
-        e.printStackTrace()
-    }
+    catch { case e: Exception => e.printStackTrace() }
   }
 }
 

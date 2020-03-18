@@ -96,8 +96,7 @@ class SetterMethodSearcher
       def execute(elem: PsiElement, offsetInElement: Int): Boolean = {
         inReadAction {
           elem match {
-            case ref: PsiReference =>
-              ref.resolve() match {
+            case ref: PsiReference => ref.resolve() match {
                 case fakeMethod: FakePsiMethod
                     if fakeMethod.navElement == element =>
                   if (!consumer.process(ref)) return false

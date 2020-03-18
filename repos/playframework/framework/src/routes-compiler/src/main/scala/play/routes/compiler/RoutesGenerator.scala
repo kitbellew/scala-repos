@@ -286,8 +286,7 @@ object InjectedRoutesGenerator extends RoutesGenerator {
 
     // Get the distinct dependency descriptors in the same order as defined in the routes file
     val orderedDeps = rules.map {
-      case include: Include =>
-        includesDeps(include.router)
+      case include: Include => includesDeps(include.router)
       case route: Route =>
         routesDeps((
           route.call.packageName,
@@ -297,8 +296,7 @@ object InjectedRoutesGenerator extends RoutesGenerator {
 
     // Map all the rules to dependency descriptors
     val rulesWithDeps = rules.map {
-      case include: Include =>
-        includesDeps(include.router).copy(rule = include)
+      case include: Include => includesDeps(include.router).copy(rule = include)
       case route: Route =>
         routesDeps((
           route.call.packageName,

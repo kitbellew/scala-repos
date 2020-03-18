@@ -50,8 +50,8 @@ object ScalaPluginVersionVerifier {
       val VersionRegex = "(\\d+)[.](\\d+)[.](\\d+)".r
       version match {
         case "VERSION" => Some(Snapshot)
-        case VersionRegex(major: String, minor: String, build: String) =>
-          Some(new Version(major.toInt, minor.toInt, build.toInt))
+        case VersionRegex(major: String, minor: String, build: String) => Some(
+            new Version(major.toInt, minor.toInt, build.toInt))
         case _ => None
       }
     }

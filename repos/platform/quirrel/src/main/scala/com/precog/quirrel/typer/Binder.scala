@@ -200,8 +200,7 @@ trait Binder extends parser.AST {
             }
 
             binding match {
-              case LetBinding(let) =>
-                let dispatches_+= d
+              case LetBinding(let) => let dispatches_+= d
 
               case _ =>
             }
@@ -214,8 +213,9 @@ trait Binder extends parser.AST {
           }
         }
 
-        case NaryOp(_, values) =>
-          (values map { loop(_, env) }).fold(Set()) { _ ++ _ }
+        case NaryOp(_, values) => (values map { loop(_, env) }).fold(Set()) {
+            _ ++ _
+          }
       }
 
     // Need to make sure none of the primitives in the bottom Set are

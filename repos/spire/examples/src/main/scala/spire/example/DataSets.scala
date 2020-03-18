@@ -31,8 +31,7 @@ final class DataSet[V, @sp(Double) F, @sp(Double) K](
       }
 
     val vars = variables.zipWithIndex map {
-      case (v, i) =>
-        s"    %2d. ${v.label} (${varType(v)})" format (i + 1)
+      case (v, i) => s"    %2d. ${v.label} (${varType(v)})" format (i + 1)
     } mkString "\n"
 
     s"""$name - ${data.size} points with ${variables.size} variables (${space.dimensions} effective):
@@ -65,10 +64,7 @@ object DataSet {
     // Perform our first pass, building the conversion functions.
     val builders = variables map (_.apply())
     lines foreach { fields =>
-      builders zip fields foreach {
-        case (b, s) =>
-          b += s
-      }
+      builders zip fields foreach { case (b, s) => b += s }
     }
 
     // Perform our second pass, converting strings to variables.
@@ -273,8 +269,7 @@ object CrossValidation {
         val (removed, right) = right0.splitAt(len)
         val predict = train(dataset.space)(left ++ right)
         val results = removed map {
-          case (in, out) =>
-            Result(in, out, predict(in))
+          case (in, out) => Result(in, out, predict(in))
         }
         loop(left ++ removed, right, n - 1, sum + score(results))
       }

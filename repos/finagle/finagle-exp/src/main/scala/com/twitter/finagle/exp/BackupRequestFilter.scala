@@ -187,8 +187,7 @@ class BackupRequestFilter[Req, Rep] private[exp] (
             case r @ Return(v) =>
               if (first eq backup) orig.raise(BackupRequestLost)
               Future.const(r)
-            case Throw(_) =>
-              other
+            case Throw(_) => other
           }
         }
       }

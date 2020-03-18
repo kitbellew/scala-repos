@@ -229,8 +229,7 @@ trait QuirrelCache extends AST {
 
       // Let#children does not return all the children, so we will
       // handle it specially.
-      case Let(_, _, _, c1, c2) =>
-        findHoles(c1) ++ findHoles(c2)
+      case Let(_, _, _, c1, c2) => findHoles(c1) ++ findHoles(c2)
 
       case node => node.children.flatMap(findHoles)
     }
@@ -247,10 +246,7 @@ trait QuirrelCache extends AST {
       slots: Map[String, Slot]): Option[Expr] = {
     val index = buildBindingIndex(expr)
     val sortedBindings = bindings.zipWithIndex
-      .map {
-        case (b, i) =>
-          (b, index(i))
-      }
+      .map { case (b, i) => (b, index(i)) }
       .sortBy(_._2)
       .map(_._1)
       .toList
@@ -277,10 +273,7 @@ trait QuirrelCache extends AST {
           lineNum -> (colNum, delta)
       }
       .groupBy(_._1)
-      .map {
-        case (lineNum, ds) =>
-          (lineNum, ds.map(_._2).sortBy(_._1))
-      }
+      .map { case (lineNum, ds) => (lineNum, ds.map(_._2).sortBy(_._1)) }
 
     { (loc: LineStream) =>
       val colNum = deltas get loc.lineNum map { ds =>
@@ -292,8 +285,7 @@ trait QuirrelCache extends AST {
           new LazyLineCons(ln.head, ln.tail, ln.line, ln.lineNum, colNum)
         case ln: StrictLineCons =>
           new StrictLineCons(ln.head, ln.tail, ln.line, ln.lineNum, colNum)
-        case LineNil =>
-          LineNil
+        case LineNil => LineNil
       }
     }
   }
@@ -309,10 +301,8 @@ trait QuirrelCache extends AST {
 
     def pop: BindingS[Binding] =
       StateT {
-        case binding :: bindings =>
-          Some((bindings, binding))
-        case Nil =>
-          None
+        case binding :: bindings => Some((bindings, binding))
+        case Nil                 => None
       }
 
     def repl(expr: Expr): BindingS[Expr] =
@@ -330,8 +320,7 @@ trait QuirrelCache extends AST {
           for (lchild <- repl(lchild0); rchild <- repl(rchild0))
             yield Let(updateLoc(loc), name, params, lchild, rchild)
 
-        case Solve(loc, constraints0, child0) =>
-          for {
+        case Solve(loc, constraints0, child0) => for {
             child <- repl(child0)
             constraints <- (constraints0 map repl).sequence
           } yield Solve(updateLoc(loc), constraints, child)
@@ -347,30 +336,24 @@ trait QuirrelCache extends AST {
           for (data <- repl(data0); samples <- repl(data0))
             yield Observe(updateLoc(loc), data, samples)
 
-        case New(loc, child0) =>
-          repl(child0) map (New(updateLoc(loc), _))
+        case New(loc, child0) => repl(child0) map (New(updateLoc(loc), _))
 
-        case Relate(loc, from0, to0, in0) =>
-          for {
+        case Relate(loc, from0, to0, in0) => for {
             in <- repl(in0)
             to <- repl(to0)
             from <- repl(from0)
           } yield Relate(updateLoc(loc), from, to, in)
 
-        case TicVar(loc, name) =>
-          TicVar(updateLoc(loc), name).point[BindingS]
+        case TicVar(loc, name) => TicVar(updateLoc(loc), name).point[BindingS]
 
-        case UndefinedLit(loc) =>
-          UndefinedLit(updateLoc(loc)).point[BindingS]
+        case UndefinedLit(loc) => UndefinedLit(updateLoc(loc)).point[BindingS]
 
-        case NullLit(loc) =>
-          NullLit(updateLoc(loc)).point[BindingS]
+        case NullLit(loc) => NullLit(updateLoc(loc)).point[BindingS]
 
         case ObjectDef(loc, props0) =>
           for {
             props <- (props0 map {
-              case (prop, expr) =>
-                repl(expr) map (prop -> _)
+              case (prop, expr) => repl(expr) map (prop -> _)
             }: Vector[BindingS[(String, Expr)]]).sequence
           } yield ObjectDef(updateLoc(loc), props)
 
@@ -390,8 +373,7 @@ trait QuirrelCache extends AST {
         case Dispatch(loc, name, actuals) =>
           (actuals map repl).sequence map (Dispatch(updateLoc(loc), name, _))
 
-        case Cond(loc, pred0, left0, right0) =>
-          for {
+        case Cond(loc, pred0, left0, right0) => for {
             pred <- repl(pred0)
             left <- repl(left0)
             right <- repl(right0)
@@ -473,14 +455,11 @@ trait QuirrelCache extends AST {
           for (left <- repl(left0); right <- repl(right0))
             yield Or(updateLoc(loc), left, right)
 
-        case Comp(loc, expr) =>
-          repl(expr) map (Comp(updateLoc(loc), _))
+        case Comp(loc, expr) => repl(expr) map (Comp(updateLoc(loc), _))
 
-        case Neg(loc, expr) =>
-          repl(expr) map (Neg(updateLoc(loc), _))
+        case Neg(loc, expr) => repl(expr) map (Neg(updateLoc(loc), _))
 
-        case Paren(loc, expr) =>
-          repl(expr) map (Paren(updateLoc(loc), _))
+        case Paren(loc, expr) => repl(expr) map (Paren(updateLoc(loc), _))
       }
 
     val result = for {

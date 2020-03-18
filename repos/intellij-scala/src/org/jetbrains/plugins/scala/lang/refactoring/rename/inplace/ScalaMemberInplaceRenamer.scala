@@ -217,9 +217,8 @@ class ScalaMemberInplaceRenamer(
       case lightPsi: PsiNamedElement if !lightPsi.isPhysical => null
       case nameIdentifierOwner: PsiNameIdentifierOwner
           if myElementToRename.getContainingFile.getViewProvider.getAllFiles
-            .size() > 1 =>
-        nameIdentifierOwner.getNameIdentifier
-      case _ => super.getNameIdentifier
+            .size() > 1 => nameIdentifierOwner.getNameIdentifier
+      case _            => super.getNameIdentifier
     }
 
   override def startsOnTheSameElement(

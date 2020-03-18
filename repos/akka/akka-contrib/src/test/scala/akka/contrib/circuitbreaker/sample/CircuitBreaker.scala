@@ -36,8 +36,7 @@ class SimpleService extends Actor with ActorLogging {
   context.system.scheduler.schedule(1.second, 1.second, self, ResetCount)
 
   override def receive = {
-    case ResetCount ⇒
-      messageCount = 0
+    case ResetCount ⇒ messageCount = 0
 
     case Request(content) ⇒
       messageCount += 1

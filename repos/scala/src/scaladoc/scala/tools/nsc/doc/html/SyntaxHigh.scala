@@ -195,8 +195,7 @@ private[html] object SyntaxHigh {
               if (level > 0) level -= 1
               if (level == 0) i else multiline(i + 1, star = true)
             } else multiline(i + 1, star = false)
-          case _ =>
-            multiline(i + 1, star = false)
+          case _ => multiline(i + 1, star = false)
         }
       }
       if (buf(i) == '/') line(i) else multiline(i, star = true)
@@ -213,10 +212,8 @@ private[html] object SyntaxHigh {
           val ch = buf(i)
           out append ch
           ch match {
-            case '\\' =>
-              charlit0(i + 1, bslash = true)
-            case '\'' if !bslash =>
-              i
+            case '\\'            => charlit0(i + 1, bslash = true)
+            case '\'' if !bslash => i
             case _ =>
               if (bslash && '0' <= ch && ch <= '9')
                 charlit0(i + 1, bslash = true)
@@ -235,12 +232,9 @@ private[html] object SyntaxHigh {
         val ch = buf(i)
         out append ch
         ch match {
-          case '\\' =>
-            strlit0(i + 1, bslash = true)
-          case '"' if !bslash =>
-            i
-          case _ =>
-            strlit0(i + 1, bslash = false)
+          case '\\'           => strlit0(i + 1, bslash = true)
+          case '"' if !bslash => i
+          case _              => strlit0(i + 1, bslash = false)
         }
       }
       strlit0(i, bslash = false)
@@ -300,12 +294,9 @@ private[html] object SyntaxHigh {
       out append pre
       if (i == buf.length) return
       buf(i) match {
-        case '\n' =>
-          parse("\n", i + 1)
-        case ' ' =>
-          parse(" ", i + 1)
-        case '&' =>
-          parse("&amp;", i + 1)
+        case '\n' => parse("\n", i + 1)
+        case ' '  => parse(" ", i + 1)
+        case '&'  => parse("&amp;", i + 1)
         case '<' if i + 1 < buf.length =>
           val ch = buf(i + 1)
           if (ch == '-' || ch == ':' || ch == '%')

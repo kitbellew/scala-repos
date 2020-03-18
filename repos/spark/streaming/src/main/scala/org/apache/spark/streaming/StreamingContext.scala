@@ -623,8 +623,7 @@ class StreamingContext private[streaming] (
           env.metricsSystem.registerSource(streamingSource)
           uiTab.foreach(_.attach())
           logInfo("StreamingContext started")
-        case ACTIVE =>
-          logWarning("StreamingContext has already been started")
+        case ACTIVE => logWarning("StreamingContext has already been started")
         case STOPPED =>
           throw new IllegalStateException(
             "StreamingContext has already been stopped")

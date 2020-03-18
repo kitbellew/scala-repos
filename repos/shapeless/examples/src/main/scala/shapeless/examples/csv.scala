@@ -75,8 +75,7 @@ object CSVConverter {
       ec: CSVConverter[A]): Try[List[A]] =
     l match {
       case Nil => Success(Nil)
-      case Cons(s, ss) =>
-        for {
+      case Cons(s, ss) => for {
           x <- ec.from(s)
           xs <- listCsvLinesConverter(ss)(ec)
         } yield Cons(x, xs)
@@ -109,8 +108,7 @@ object CSVConverter {
 
       def from(s: String): Try[V :: T] =
         s.span(_ != ',') match {
-          case (before, after) =>
-            for {
+          case (before, after) => for {
               front <- scv.value.from(before)
               back <- sct.value.from(if (after.isEmpty) after else after.tail)
             } yield front :: back

@@ -109,13 +109,11 @@ class LineTokenizer() extends Parsers {
       prev: (LinkDefinitionStart, Option[String])): Parser[LinkDefinition] =
     prev match {
       case (lds, Some(title)) => success(lds.toLinkDefinition(Some(title)))
-      case (lds, None) =>
-        Parser { in =>
+      case (lds, None) => Parser { in =>
           if (in.atEnd) { Success(lds.toLinkDefinition(None), in) }
           else {
-            lineParsers.parseAll(
-              lineParsers.linkDefinitionTitle,
-              in.first) match {
+            lineParsers
+              .parseAll(lineParsers.linkDefinitionTitle, in.first) match {
               case lineParsers.Success(title, _) =>
                 Success(lds.toLinkDefinition(Some(title)), in.rest)
               case _ => Success(lds.toLinkDefinition(None), in)

@@ -162,8 +162,7 @@ trait ScFunction
   override def hasModifierProperty(name: String): Boolean = {
     if (name == "abstract") {
       this match {
-        case _: ScFunctionDeclaration =>
-          containingClass match {
+        case _: ScFunctionDeclaration => containingClass match {
             case t: ScTrait                          => return true
             case c: ScClass if c.hasAbstractModifier => return true
             case _                                   =>
@@ -253,8 +252,7 @@ trait ScFunction
     returnTypeElement match {
       case Some(ret)       => ret.getType(TypingContext.empty)
       case _ if !hasAssign => Success(types.Unit, Some(this))
-      case _ =>
-        superMethod match {
+      case _ => superMethod match {
           case Some(f: ScFunction) => f.definedReturnType
           case Some(m: PsiMethod) =>
             Success(
@@ -411,8 +409,7 @@ trait ScFunction
       name: String,
       clausePosition: Int = -1): Option[ScParameter] = {
     clausePosition match {
-      case -1 =>
-        parameters.find {
+      case -1 => parameters.find {
           case param =>
             ScalaPsiUtil.memberNamesEquals(param.name, name) ||
               param.deprecatedName.exists(
@@ -453,8 +450,7 @@ trait ScFunction
     //heuristic algorithm to avoid SOE in MixinNodes.build
     annotations.exists(annot => {
       annot.typeElement match {
-        case s: ScSimpleTypeElement =>
-          s.reference match {
+        case s: ScSimpleTypeElement => s.reference match {
             case Some(ref) => ref.refName == "bridge"
             case _         => false
           }
@@ -627,8 +623,7 @@ trait ScFunction
           x.supers.filter { _.info.namedElement != this }.map {
             _.info
           } :+ x.info
-        case None =>
-          signs.get(s) match {
+        case None => signs.get(s) match {
             case Some(x) if x.info.namedElement == this =>
               x.supers.map { _.info }
             case Some(x) =>

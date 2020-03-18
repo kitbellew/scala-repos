@@ -42,8 +42,7 @@ object FormattedStringFormatter extends StringFormatter {
       case types.Char                                        => 'c'
       case types.Byte | types.Short | types.Int | types.Long => 'd'
       case types.Float | types.Double                        => 'f'
-      case ScDesignatorType(element) =>
-        element.name match {
+      case ScDesignatorType(element) => element.name match {
           case "String"            => 's'
           case "BigInt"            => 'd'
           case "BigDecimal"        => 'f'

@@ -107,8 +107,7 @@ abstract class SimpleRetryPolicy[A](i: Int)
   final def apply(e: A) = {
     if (shouldRetry(e)) {
       backoffAt(i) match {
-        case Duration.Top =>
-          None
+        case Duration.Top => None
         case howlong =>
           Some((
             howlong,
@@ -198,8 +197,8 @@ object RetryPolicy extends JavaSingleton {
         input match {
           case (_, t @ Throw(_)) =>
             policy(t.asInstanceOf[Throw[Nothing]]) match {
-              case Some((howlong, nextPolicy)) =>
-                Some((howlong, convertExceptionPolicy(nextPolicy)))
+              case Some((howlong, nextPolicy)) => Some(
+                  (howlong, convertExceptionPolicy(nextPolicy)))
               case None => None
             }
           case (_, Return(_)) => None
@@ -263,10 +262,8 @@ object RetryPolicy extends JavaSingleton {
     RetryPolicy { e =>
       if (shouldRetry.applyOrElse(e, AlwaysFalse)) {
         backoffs match {
-          case howlong #:: rest =>
-            Some((howlong, backoff(rest)(shouldRetry)))
-          case _ =>
-            None
+          case howlong #:: rest => Some((howlong, backoff(rest)(shouldRetry)))
+          case _                => None
         }
       } else { None }
     }

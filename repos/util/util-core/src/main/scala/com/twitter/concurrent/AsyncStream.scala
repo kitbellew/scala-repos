@@ -206,8 +206,7 @@ sealed abstract class AsyncStream[+A] {
     this match {
       case Empty          => empty
       case FromFuture(fa) => Embed(fa.map { a => if (p(a)) this else empty })
-      case Cons(fa, more) =>
-        Embed(fa.map { a =>
+      case Cons(fa, more) => Embed(fa.map { a =>
           if (p(a)) Cons(fa, () => more().takeWhile(p)) else more().takeWhile(p)
         })
       case Embed(fas) => Embed(fas.map(_.takeWhile(p)))
@@ -226,8 +225,7 @@ sealed abstract class AsyncStream[+A] {
     this match {
       case Empty          => empty
       case FromFuture(fa) => Embed(fa.map { a => if (p(a)) empty else this })
-      case Cons(fa, more) =>
-        Embed(fa.map { a =>
+      case Cons(fa, more) => Embed(fa.map { a =>
           if (p(a)) more().dropWhile(p) else Cons(fa, () => more().dropWhile(p))
         })
       case Embed(fas) => Embed(fas.map(_.dropWhile(p)))
@@ -246,13 +244,10 @@ sealed abstract class AsyncStream[+A] {
 
   protected def concatImpl[B >: A](that: () => AsyncStream[B]): AsyncStream[B] =
     this match {
-      case Empty => that()
-      case FromFuture(fa) =>
-        Cons(fa, that)
-      case Cons(fa, more) =>
-        Cons(fa, () => more().concatImpl(that))
-      case Embed(fas) =>
-        Embed(fas.map(_.concatImpl(that)))
+      case Empty          => that()
+      case FromFuture(fa) => Cons(fa, that)
+      case Cons(fa, more) => Cons(fa, () => more().concatImpl(that))
+      case Embed(fas)     => Embed(fas.map(_.concatImpl(that)))
     }
 
   /**
@@ -293,11 +288,9 @@ sealed abstract class AsyncStream[+A] {
     */
   def filter(p: A => Boolean): AsyncStream[A] =
     this match {
-      case Empty => empty
-      case FromFuture(fa) =>
-        Embed(fa.map { a => if (p(a)) this else empty })
-      case Cons(fa, more) =>
-        Embed(fa.map { a =>
+      case Empty          => empty
+      case FromFuture(fa) => Embed(fa.map { a => if (p(a)) this else empty })
+      case Cons(fa, more) => Embed(fa.map { a =>
           if (p(a)) Cons(fa, () => more().filter(p)) else more().filter(p)
         })
       case Embed(fas) => Embed(fas.map(_.filter(p)))
@@ -499,18 +492,15 @@ sealed abstract class AsyncStream[+A] {
     def go(as: AsyncStream[A]): Future[Unit] =
       as match {
         case Empty => Future.Done
-        case FromFuture(fa) =>
-          fa.flatMap { a =>
+        case FromFuture(fa) => fa.flatMap { a =>
             buf += a
             Future.Done
           }
-        case Cons(fa, more) =>
-          fa.flatMap { a =>
+        case Cons(fa, more) => fa.flatMap { a =>
             buf += a
             go(more())
           }
-        case Embed(fas) =>
-          fas.flatMap(go)
+        case Embed(fas) => fas.flatMap(go)
       }
 
     go(this).transform {
@@ -538,20 +528,17 @@ sealed abstract class AsyncStream[+A] {
         s match {
           case Empty => Future.value((buffer, () => s))
 
-          case FromFuture(fa) =>
-            fa.flatMap { a =>
+          case FromFuture(fa) => fa.flatMap { a =>
               buffer += a
               Future.value((buffer, () => empty))
             }
 
-          case Cons(fa, more) =>
-            fa.flatMap { a =>
+          case Cons(fa, more) => fa.flatMap { a =>
               buffer += a
               fillBuffer(sizeRemaining - 1)(more())
             }
 
-          case Embed(fas) =>
-            fas.flatMap(as => fillBuffer(sizeRemaining)(as))
+          case Embed(fas) => fas.flatMap(as => fillBuffer(sizeRemaining)(as))
         }
 
     fillBuffer(n)(this)

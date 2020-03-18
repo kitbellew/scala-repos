@@ -409,8 +409,7 @@ private[spark] class BlockManager(
       info: BlockInfo): BlockStatus = {
     info.synchronized {
       info.level match {
-        case null =>
-          BlockStatus(StorageLevel.NONE, memSize = 0L, diskSize = 0L)
+        case null => BlockStatus(StorageLevel.NONE, memSize = 0L, diskSize = 0L)
         case level =>
           val inMem = level.useMemory && memoryStore.contains(blockId)
           val onDisk = level.useDisk && diskStore.contains(blockId)
@@ -739,8 +738,7 @@ private[spark] class BlockManager(
       tellMaster: Boolean = true): Boolean = {
     require(values != null, "Values is null")
     doPutIterator(blockId, () => values, level, tellMaster) match {
-      case None =>
-        true
+      case None       => true
       case Some(iter) =>
         // Caller doesn't care about the iterator values, so we can close the iterator here
         // to free resources earlier
@@ -960,8 +958,7 @@ private[spark] class BlockManager(
         // Put it in memory first, even if it also has useDisk set to true;
         // We will drop it to disk later if the memory store can't hold it.
         memoryStore.putIterator(blockId, iterator(), level) match {
-          case Right(s) =>
-            size = s
+          case Right(s)   => size = s
           case Left(iter) =>
             // Not enough space to unroll this block; drop to disk if applicable
             if (level.useDisk) {
@@ -1260,12 +1257,10 @@ private[spark] class BlockManager(
     if (level.useDisk && !diskStore.contains(blockId)) {
       logInfo(s"Writing block $blockId to disk")
       data() match {
-        case Left(elements) =>
-          diskStore.put(blockId) { fileOutputStream =>
+        case Left(elements) => diskStore.put(blockId) { fileOutputStream =>
             dataSerializeStream(blockId, fileOutputStream, elements.toIterator)
           }
-        case Right(bytes) =>
-          diskStore.putBytes(blockId, bytes)
+        case Right(bytes) => diskStore.putBytes(blockId, bytes)
       }
       blockIsUpdated = true
     }

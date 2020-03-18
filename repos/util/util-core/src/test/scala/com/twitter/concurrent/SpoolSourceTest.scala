@@ -77,10 +77,7 @@ class SpoolSourceTest extends WordSpec {
 
       val fired = new AtomicInteger(0)
 
-      val isource = new SpoolSource[Int]({
-        case exc =>
-          fired.addAndGet(1)
-      })
+      val isource = new SpoolSource[Int]({ case exc => fired.addAndGet(1) })
 
       val a = isource()
       val b = a.flatMap(_.tail)

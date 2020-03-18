@@ -271,9 +271,8 @@ final class HIncluded(ast: ASTNode)
 
   def qualifier =
     getFirstChild.getNode.getElementType match {
-      case HoconTokenType.UnquotedChars =>
-        Some(getFirstChild.getText)
-      case _ => None
+      case HoconTokenType.UnquotedChars => Some(getFirstChild.getText)
+      case _                            => None
     }
 
   def target = findChild[HIncludeTarget]
@@ -470,16 +469,14 @@ sealed trait HString
         getText.substring(1, getText.length - (if (isClosed) 1 else 0))
       case HoconTokenType.MultilineString =>
         getText.substring(3, getText.length - (if (isClosed) 3 else 0))
-      case HoconElementType.UnquotedString =>
-        getText
+      case HoconElementType.UnquotedString => getText
     }
 
   def stringValue =
     stringType match {
       case HoconTokenType.QuotedString =>
         StringUtil.unescapeStringCharacters(unquote)
-      case _ =>
-        unquote
+      case _ => unquote
     }
 
   def isClosed =
@@ -488,10 +485,8 @@ sealed trait HString
         HoconConstants.ProperlyClosedQuotedString.pattern
           .matcher(getText)
           .matches
-      case HoconTokenType.MultilineString =>
-        getText.endsWith("\"\"\"")
-      case _ =>
-        true
+      case HoconTokenType.MultilineString => getText.endsWith("\"\"\"")
+      case _                              => true
     }
 
   override def getReferences =

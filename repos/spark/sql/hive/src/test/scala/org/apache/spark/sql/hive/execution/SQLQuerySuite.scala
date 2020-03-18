@@ -1403,10 +1403,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
               |CREATE TEMPORARY FUNCTION example_max
               |AS 'org.apache.hadoop.hive.contrib.udaf.example.UDAFExampleMax'
             """.stripMargin)
-        } catch {
-          case throwable: Throwable =>
-            error = Some(throwable)
-        }
+        } catch { case throwable: Throwable => error = Some(throwable) }
       }
     }
     thread.start()

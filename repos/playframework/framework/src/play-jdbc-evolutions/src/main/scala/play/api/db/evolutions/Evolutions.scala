@@ -262,8 +262,7 @@ object Evolutions {
     finally {
       try { cleanupEvolutions(database, autocommit, schema) }
       catch {
-        case e: Exception =>
-          Logger.warn("Error resetting evolutions", e)
+        case e: Exception => Logger.warn("Error resetting evolutions", e)
       }
     }
   }

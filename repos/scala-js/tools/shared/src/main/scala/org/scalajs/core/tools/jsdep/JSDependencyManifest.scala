@@ -23,8 +23,7 @@ final class JSDependencyManifest(
           this.libDeps == that.libDeps &&
           this.requiresDOM == that.requiresDOM &&
           this.compliantSemantics == that.compliantSemantics
-      case _ =>
-        false
+      case _ => false
     }
 
   override def hashCode(): Int = {

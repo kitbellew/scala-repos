@@ -75,8 +75,7 @@ class ScSuperReferenceImpl(node: ASTNode)
 
   def drvTemplate: Option[ScTemplateDefinition] =
     reference match {
-      case Some(q) =>
-        q.bind() match {
+      case Some(q) => q.bind() match {
           case Some(ScalaResolveResult(td: ScTypeDefinition, _)) => Some(td)
           case _                                                 => None
         }
@@ -131,8 +130,7 @@ class ScSuperReferenceImpl(node: ASTNode)
         def resolve = {
           def resolveNoHack: PsiClass = {
             findSuper(id) match {
-              case Some(t) =>
-                ScType.extractClass(t) match {
+              case Some(t) => ScType.extractClass(t) match {
                   case Some(c) => c
                   case None    => null
                 }
@@ -196,10 +194,8 @@ class ScSuperReferenceImpl(node: ASTNode)
 
   private def superTypes: Option[Seq[ScType]] =
     reference match {
-      case Some(q) =>
-        q.resolve() match {
-          case clazz: PsiClass =>
-            Some(clazz.getSuperTypes.map { t =>
+      case Some(q) => q.resolve() match {
+          case clazz: PsiClass => Some(clazz.getSuperTypes.map { t =>
               ScType.create(t, getProject, getResolveScope)
             })
           case _ => None

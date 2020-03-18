@@ -627,7 +627,8 @@ class ScalaAnnotator
             block.getContext match {
               case t: ScTryStmt =>
                 t.expectedTypeEx(fromUnderscore = false) match {
-                  case Some((tp: ScType, _)) if tp equiv psi.types.Unit => //do nothing
+                  case Some((tp: ScType, _))
+                      if tp equiv psi.types.Unit => //do nothing
                   case Some((tp: ScType, typeElement)) =>
                     import org.jetbrains.plugins.scala.lang.psi.types._
                     val returnType = candidates(0) match {
@@ -818,8 +819,7 @@ class ScalaAnnotator
     if (resolve.length != 1 && !goodDoc) {
       if (resolve.length == 0) { //Let's try to hide dynamic named parameter usage
         refElement match {
-          case e: ScReferenceExpression =>
-            e.getContext match {
+          case e: ScReferenceExpression => e.getContext match {
               case a: ScAssignStmt
                   if a.getLExpression == e && a.isDynamicNamedAssignment =>
                 return
@@ -846,8 +846,7 @@ class ScalaAnnotator
               e.getParent
                 .asInstanceOf[ScInfixPattern]
                 .reference == e => //todo: this is hide A op B in patterns
-        case _ =>
-          refElement.getParent match {
+        case _ => refElement.getParent match {
             case s: ScImportSelector if resolve.length > 0 =>
             case _                                         => processError(countError = true, fixes = getFix)
           }
@@ -1198,16 +1197,14 @@ class ScalaAnnotator
           expr.getParent match {
             case a: ScAssignStmt
                 if a.getRExpression.contains(
-                  expr) && a.isDynamicNamedAssignment =>
-              return
+                  expr) && a.isDynamicNamedAssignment       => return
             case args: ScArgumentExprList                   => return
             case inf: ScInfixExpr if inf.getArgExpr == expr => return
             case tuple: ScTuple
                 if tuple.getContext.isInstanceOf[ScInfixExpr] &&
                   tuple.getContext
                     .asInstanceOf[ScInfixExpr]
-                    .getArgExpr == tuple =>
-              return
+                    .getArgExpr == tuple => return
             case e: ScParenthesisedExpr
                 if e.getContext.isInstanceOf[ScInfixExpr] &&
                   e.getContext.asInstanceOf[ScInfixExpr].getArgExpr == e =>
@@ -1232,7 +1229,8 @@ class ScalaAnnotator
           }
 
           expr.expectedTypeEx(fromUnderscore) match {
-            case Some((tp: ScType, _)) if tp equiv psi.types.Unit => //do nothing
+            case Some((tp: ScType, _))
+                if tp equiv psi.types.Unit => //do nothing
             case Some((tp: ScType, typeElement)) =>
               import org.jetbrains.plugins.scala.lang.psi.types._
               val expectedType = Success(tp, None)
@@ -1368,8 +1366,7 @@ class ScalaAnnotator
           error)
         annotation.setHighlightType(ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
       case _ if !fun.hasAssign || fun.returnType.exists(_ == psi.types.Unit) =>
-      case _ =>
-        fun.returnTypeElement match {
+      case _ => fun.returnTypeElement match {
           case Some(x: ScTypeElement) =>
             import org.jetbrains.plugins.scala.lang.psi.types._
             val funType = fun.returnType
@@ -1422,11 +1419,9 @@ class ScalaAnnotator
     typeElement match {
       case simpleTypeElement: ScSimpleTypeElement =>
         simpleTypeElement.findImplicitParameters match {
-          case Some(parameters) =>
-            parameters.foreach {
-              case r: ScalaResolveResult =>
-                registerUsedImports(typeElement, r)
-              case null =>
+          case Some(parameters) => parameters.foreach {
+              case r: ScalaResolveResult => registerUsedImports(typeElement, r)
+              case null                  =>
             }
           case _ =>
         }
@@ -1444,12 +1439,9 @@ class ScalaAnnotator
       teOption: Option[ScTypeElement],
       annotation: String): Boolean =
     teOption match {
-      case Some(te) =>
-        te.breadthFirst.exists {
-          case annot: ScAnnotationExpr =>
-            annot.constr.reference match {
-              case Some(ref) =>
-                Option(ref.resolve()) match {
+      case Some(te) => te.breadthFirst.exists {
+          case annot: ScAnnotationExpr => annot.constr.reference match {
+              case Some(ref) => Option(ref.resolve()) match {
                   case Some(res: PsiNamedElement) => res.getName == annotation
                   case _                          => false
                 }
@@ -1569,8 +1561,7 @@ class ScalaAnnotator
 
     def functionToSendIn(tp: ScType, i: Int) = {
       tp match {
-        case paramType: ScTypeParameterType =>
-          paramType.param match {
+        case paramType: ScTypeParameterType => paramType.param match {
             case scTypeParam: ScTypeParam =>
               val compareTo = scTypeParam.owner
               val parentIt = checkParentOf.parents

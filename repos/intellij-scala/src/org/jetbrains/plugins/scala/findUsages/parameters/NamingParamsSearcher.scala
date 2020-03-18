@@ -43,8 +43,7 @@ class NamingParamsSearcher
             for (ref <- references if ref.getRangeInElement.contains(
                    offsetInElement) && !collectedReferences.contains(ref)) {
               ref match {
-                case refElement: ScReferenceElement =>
-                  inReadAction {
+                case refElement: ScReferenceElement => inReadAction {
                     refElement.getParent match {
                       case assign: ScAssignStmt
                           if assign.getLExpression == refElement &&

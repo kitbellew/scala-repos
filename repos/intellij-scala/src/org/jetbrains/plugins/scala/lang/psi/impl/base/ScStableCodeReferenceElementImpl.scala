@@ -85,10 +85,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
 
   def getConstructor = {
     getContext match {
-      case s: ScSimpleTypeElement =>
-        s.getContext match {
-          case p: ScParameterizedTypeElement =>
-            p.getContext match {
+      case s: ScSimpleTypeElement => s.getContext match {
+          case p: ScParameterizedTypeElement => p.getContext match {
               case constr: ScConstructor => Some(constr)
               case _                     => None
             }
@@ -112,12 +110,10 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
     // may only refer to a method.
     def isInMacroDef =
       getContext match {
-        case _: ScMacroDefinition =>
-          prevSiblings.exists {
+        case _: ScMacroDefinition => prevSiblings.exists {
             case l: LeafPsiElement
-                if l.getNode.getElementType == ScalaTokenTypes.kMACRO =>
-              true
-            case _ => false
+                if l.getNode.getElementType == ScalaTokenTypes.kMACRO => true
+            case _                                                    => false
           }
         case _ => false
       }
@@ -271,8 +267,7 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
               //todo: nothing to do yet, probably in future it would be great to implement something context-specific
               this
             }
-          case binding: ScBindingPattern =>
-            binding.nameContext match {
+          case binding: ScBindingPattern => binding.nameContext match {
               case member: ScMember =>
                 val containingClass = member.containingClass
                 val refToClass = bindToElement(containingClass)
@@ -284,8 +279,7 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
             }
           case fun: ScFunction
               if Seq("unapply", "unapplySeq").contains(fun.name) && ScalaPsiUtil
-                .hasStablePath(fun) =>
-            bindToElement(fun.containingClass)
+                .hasStablePath(fun) => bindToElement(fun.containingClass)
           case fun: ScFunction if fun.isConstructor =>
             bindToElement(fun.containingClass)
           case m: PsiMethod if m.isConstructor =>

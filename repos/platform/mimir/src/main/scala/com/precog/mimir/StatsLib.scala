@@ -1686,8 +1686,7 @@ trait StatsLibModule[M[+_]]
                 Loop.range(0, r.size)(j =>
                   if (bs2.get(j)) arr(j) = col(j + start))
                 bs.or(bs2)
-              case col =>
-                sys.error("unexpected column found: %s" format col)
+              case col => sys.error("unexpected column found: %s" format col)
             }
 
             m2(ColumnRef(path, CNum)) = shiftColumn(

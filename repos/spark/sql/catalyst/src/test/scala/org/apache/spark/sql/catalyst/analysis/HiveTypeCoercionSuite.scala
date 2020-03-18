@@ -474,8 +474,7 @@ class HiveTypeCoercionSuite extends PlanTest {
       logical: LogicalPlan,
       expectTypes: Seq[DataType]): Unit = {
     logical.output.zip(expectTypes).foreach {
-      case (attr, dt) =>
-        assert(attr.dataType === dt)
+      case (attr, dt) => assert(attr.dataType === dt)
     }
   }
 
@@ -577,8 +576,7 @@ class HiveTypeCoercionSuite extends PlanTest {
   test("Transform Decimal precision/scale for union except and intersect") {
     def checkOutput(logical: LogicalPlan, expectTypes: Seq[DataType]): Unit = {
       logical.output.zip(expectTypes).foreach {
-        case (attr, dt) =>
-          assert(attr.dataType === dt)
+        case (attr, dt) => assert(attr.dataType === dt)
       }
     }
 

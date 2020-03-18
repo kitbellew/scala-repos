@@ -75,8 +75,7 @@ object Bounds {
   } with AnyRef {
     private val typeNamedElement: Option[(PsiNamedElement, ScSubstitutor)] = {
       ScType.extractClassType(tp) match {
-        case None =>
-          tp.isAliasType match {
+        case None => tp.isAliasType match {
             case Some(AliasType(ta, _, _)) => Some(ta, ScSubstitutor.empty)
             case _                         => None
           }
@@ -159,8 +158,9 @@ object Bounds {
             visited += drv
             val superTypes: Seq[ScType] = drv match {
               case td: ScTemplateDefinition => td.superTypes
-              case _ =>
-                drv.getSuperTypes.map { t => ScType.create(t, drv.getProject) }
+              case _ => drv.getSuperTypes.map { t =>
+                  ScType.create(t, drv.getProject)
+                }
             }
             val iterator = superTypes.iterator
             while (iterator.hasNext) {
@@ -193,8 +193,7 @@ object Bounds {
                   bClass.getTypeParameters
                     .zip(typeArgs)
                     .foldLeft(ScSubstitutor.empty) {
-                      case (subst: ScSubstitutor, (ptp, typez)) =>
-                        subst.bindT(
+                      case (subst: ScSubstitutor, (ptp, typez)) => subst.bindT(
                           (ptp.name, ScalaPsiUtil.getPsiElementId(ptp)),
                           typez)
                     })

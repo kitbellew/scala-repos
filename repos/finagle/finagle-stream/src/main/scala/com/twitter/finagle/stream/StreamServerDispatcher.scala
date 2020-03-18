@@ -25,8 +25,7 @@ private[twitter] class StreamServerDispatcher[Req: RequestType](
       case Left(buf) =>
         val bytes = BufChannelBuffer(buf)
         trans.write(new DefaultHttpChunk(bytes)) before writeChunks(rep)
-      case Right(exc) =>
-        trans.write(HttpChunk.LAST_CHUNK)
+      case Right(exc) => trans.write(HttpChunk.LAST_CHUNK)
     }
   }
 

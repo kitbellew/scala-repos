@@ -32,8 +32,7 @@ object CharEncoding {
 
     private def step[A](initial: From = empty)(
         it: Inner[A]): K[From, Inner[A]] = {
-      case in @ Input.El(chars) =>
-        it.pureFlatFold[From, Inner[A]] {
+      case in @ Input.El(chars) => it.pureFlatFold[From, Inner[A]] {
           case Step.Cont(k) =>
             code(concat(initial, chars), false).fold(
               { result => Error(s"coding error: $result", in) },
@@ -47,8 +46,7 @@ object CharEncoding {
       case in @ Input.Empty =>
         val newIt = Iteratee.flatten(it.feed(in))
         Cont(step(initial)(newIt))
-      case in @ Input.EOF =>
-        code(initial, true).fold(
+      case in @ Input.EOF => code(initial, true).fold(
           { result => Error(s"coding error: $result", in) },
           {
             case (string, remaining) =>

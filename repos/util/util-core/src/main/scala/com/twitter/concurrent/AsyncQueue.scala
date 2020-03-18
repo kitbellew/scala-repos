@@ -80,8 +80,7 @@ class AsyncQueue[T](maxPendingOffers: Int) {
         val nextState = if (nextq.nonEmpty) Offering(nextq) else Idle
         if (state.compareAndSet(s, nextState)) Future.value(elem) else poll()
 
-      case s: Excepting[T] =>
-        pollExcepting(s)
+      case s: Excepting[T] => pollExcepting(s)
     }
 
   /**
@@ -96,8 +95,7 @@ class AsyncQueue[T](maxPendingOffers: Int) {
         if (!state.compareAndSet(Idle, Offering(queueOf(elem)))) offer(elem)
         else true
 
-      case Offering(q) if q.size >= maxPendingOffers =>
-        false
+      case Offering(q) if q.size >= maxPendingOffers => false
 
       case s @ Offering(q) =>
         if (!state.compareAndSet(s, Offering(q.enqueue(elem)))) offer(elem)
@@ -111,8 +109,7 @@ class AsyncQueue[T](maxPendingOffers: Int) {
           true
         } else { offer(elem) }
 
-      case Excepting(_, _) =>
-        false // Drop.
+      case Excepting(_, _) => false // Drop.
     }
 
   /**
@@ -130,10 +127,8 @@ class AsyncQueue[T](maxPendingOffers: Int) {
       case s @ Excepting(q, e) if q.nonEmpty =>
         if (state.compareAndSet(s, Excepting(Queue.empty, e))) Return(q)
         else drain()
-      case s @ Excepting(q, e) =>
-        Throw(e)
-      case _ =>
-        Return(Queue.empty)
+      case s @ Excepting(q, e) => Throw(e)
+      case _                   => Return(Queue.empty)
     }
 
   /**
@@ -152,8 +147,7 @@ class AsyncQueue[T](maxPendingOffers: Int) {
   @tailrec
   final def fail(exc: Throwable, discard: Boolean): Unit =
     state.get match {
-      case Idle =>
-        if (!state.compareAndSet(Idle, Excepting(Queue.empty, exc)))
+      case Idle => if (!state.compareAndSet(Idle, Excepting(Queue.empty, exc)))
           fail(exc, discard)
 
       case s @ Polling(q) =>

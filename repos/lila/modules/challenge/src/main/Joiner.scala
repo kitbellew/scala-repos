@@ -63,8 +63,7 @@ private[challenge] final class Joiner(onStart: String => Unit) {
             .copy(id = c.id)
             .|> { g =>
               state.fold(g) {
-                case sit @ SituationPlus(Situation(board, _), _) =>
-                  g.copy(
+                case sit @ SituationPlus(Situation(board, _), _) => g.copy(
                     variant = chess.variant.FromPosition,
                     castleLastMoveTime = g.castleLastMoveTime.copy(
                       lastMove = board.history.lastMove.map(_.origDest),

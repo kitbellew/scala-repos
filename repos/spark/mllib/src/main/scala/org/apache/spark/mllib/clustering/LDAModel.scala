@@ -517,8 +517,7 @@ object LocalLDAModel extends Loader[LocalLDAModel] {
 
       val brzTopics = BDM.zeros[Double](vocabSize, k)
       topics.foreach {
-        case Row(vec: Vector, ind: Int) =>
-          brzTopics(::, ind) := vec.toBreeze
+        case Row(vec: Vector, ind: Int) => brzTopics(::, ind) := vec.toBreeze
       }
       val topicsMat = Matrices.fromBreeze(brzTopics)
 
@@ -614,10 +613,7 @@ class DistributedLDAModel private[clustering] (
     // Collect row-major topics
     val termTopicCounts: Array[(Int, TopicCounts)] = graph.vertices
       .filter(_._1 < 0)
-      .map {
-        case (termIndex, cnts) =>
-          (index2term(termIndex), cnts)
-      }
+      .map { case (termIndex, cnts) => (index2term(termIndex), cnts) }
       .collect()
     // Convert to Matrix
     val brzTopics = BDM.zeros[Double](vocabSize, k)
@@ -968,8 +964,7 @@ object DistributedLDAModel extends Loader[DistributedLDAModel] {
         new Path(Loader.dataPath(path), "topicCounts").toUri.toString
       graph.vertices
         .map {
-          case (ind, vertex) =>
-            VertexData(ind, Vectors.fromBreeze(vertex))
+          case (ind, vertex) => VertexData(ind, Vectors.fromBreeze(vertex))
         }
         .toDF()
         .write
@@ -978,10 +973,7 @@ object DistributedLDAModel extends Loader[DistributedLDAModel] {
       val edgesPath =
         new Path(Loader.dataPath(path), "tokenCounts").toUri.toString
       graph.edges
-        .map {
-          case Edge(srcId, dstId, prop) =>
-            EdgeData(srcId, dstId, prop)
-        }
+        .map { case Edge(srcId, dstId, prop) => EdgeData(srcId, dstId, prop) }
         .toDF()
         .write
         .parquet(edgesPath)

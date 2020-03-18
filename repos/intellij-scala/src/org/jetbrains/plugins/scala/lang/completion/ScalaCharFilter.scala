@@ -17,8 +17,7 @@ class ScalaCharFilter extends CharFilter {
         case Parent(importExpr: ScImportExpr) =>
           // import a.<caret/>
           return Result.HIDE_LOOKUP
-        case _ =>
-          return Result.SELECT_ITEM_AND_FINISH_LOOKUP
+        case _ => return Result.SELECT_ITEM_AND_FINISH_LOOKUP
       }
     }
     if (c == '`') return Result.ADD_TO_PREFIX

@@ -186,7 +186,9 @@ class GroupManager @Singleton @Inject() (
         case Success(plan) =>
           log.info(s"Deployment acknowledged. Waiting to get processed:\n$plan")
           eventBus.publish(GroupChangeSuccess(gid, version.toString))
-        case Failure(ex: AccessDeniedException) => // If the request was not authorized, we should not publish an event
+        case Failure(
+              ex: AccessDeniedException
+            ) => // If the request was not authorized, we should not publish an event
         case Failure(ex) =>
           log.warn(s"Deployment failed for change: $version", ex)
           eventBus.publish(

@@ -43,8 +43,7 @@ class StatsFactoryWrapper[Req, Rep](
       case Throw(t) =>
         failureStats.counter(Throwables.mkString(t): _*).incr()
         latencyStat.add(elapsed().inMilliseconds)
-      case Return(_) =>
-        latencyStat.add(elapsed().inMilliseconds)
+      case Return(_) => latencyStat.add(elapsed().inMilliseconds)
     }
   }
 }

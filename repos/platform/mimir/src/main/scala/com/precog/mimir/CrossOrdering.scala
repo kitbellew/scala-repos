@@ -46,16 +46,14 @@ trait CrossOrdering extends DAG {
         case UnfixedSolution(id, target) =>
           UnfixedSolution(id, memoized(target))
 
-        case dag.Extra(target) =>
-          dag.Extra(memoized(target))
+        case dag.Extra(target) => dag.Extra(memoized(target))
       }
 
     def memoized(node: DepGraph): DepGraph = {
       def inner(node: DepGraph): DepGraph =
         node match {
           // not using extractors due to bug
-          case node: SplitParam =>
-            SplitParam(node.id, node.parentId)(node.loc)
+          case node: SplitParam => SplitParam(node.id, node.parentId)(node.loc)
 
           // not using extractors due to bug
           case node: SplitGroup =>
@@ -65,8 +63,7 @@ trait CrossOrdering extends DAG {
 
           case node @ Undefined() => node
 
-          case node @ dag.New(parent) =>
-            dag.New(memoized(parent))(node.loc)
+          case node @ dag.New(parent) => dag.New(memoized(parent))(node.loc)
 
           case node @ dag.AbsoluteLoad(parent, tpe) =>
             dag.AbsoluteLoad(memoized(parent), tpe)(node.loc)

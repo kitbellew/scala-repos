@@ -691,8 +691,7 @@ private[collection] object RedBlackTree {
 
     override def next: R =
       lookahead match {
-        case null =>
-          throw new NoSuchElementException("next on empty iterator")
+        case null => throw new NoSuchElementException("next on empty iterator")
         case tree =>
           lookahead = findLeftMostOrPopOnEmpty(goRight(tree))
           nextResult(tree)

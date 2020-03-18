@@ -160,8 +160,7 @@ final class ResponseDecodingSuite extends RedisResponseTest {
 
   test("Correctly decode first multi-bulk messages") {
     codec(wrap("World\r\n")) match {
-      case reply :: Nil =>
-        reply match {
+      case reply :: Nil => reply match {
           case MBulkReply(msgs) =>
             assert(
               ReplyFormat
@@ -195,8 +194,7 @@ final class ResponseDecodingSuite extends RedisResponseTest {
 
   test("Correctly decode second multi-bulk messages") {
     codec(wrap("bar\r\n")) match {
-      case reply :: Nil =>
-        reply match {
+      case reply :: Nil => reply match {
           case MBulkReply(msgs) =>
             assert(ReplyFormat.toString(msgs) == List("foo", "nil", "bar"))
           case _ => fail("Expected MBulkReply")
@@ -240,8 +238,7 @@ final class ResponseDecodingSuite extends RedisResponseTest {
 
   test("Correctly decode third multi-bulk messagess") {
     codec(wrap("bar\r\n")) match {
-      case reply :: Nil =>
-        reply match {
+      case reply :: Nil => reply match {
           case MBulkReply(msgs) =>
             assert(ReplyFormat.toString(msgs) == List("foo", "", "moo", "bar"))
           case _ => fail("Expected MBulkReply")
@@ -281,8 +278,7 @@ final class ResponseDecodingSuite extends RedisResponseTest {
 
   test("Correctly decode first nested multi-bulk messages") {
     codec(wrap(":3\r\n")) match {
-      case reply :: Nil =>
-        reply match {
+      case reply :: Nil => reply match {
           case MBulkReply(List(a, b, c)) =>
             assert(a == IntegerReply(1))
             b match {
@@ -336,8 +332,7 @@ final class ResponseDecodingSuite extends RedisResponseTest {
 
   test("Correctly decode second nested multi-bulk messages") {
     codec(wrap(":2\r\n")) match {
-      case reply :: Nil =>
-        reply match {
+      case reply :: Nil => reply match {
           case MBulkReply(List(a, b, c, d)) =>
             assert(a == IntegerReply(0))
             assert(b == IntegerReply(1))
@@ -364,8 +359,7 @@ final class ResponseDecodingSuite extends RedisResponseTest {
   private[this] def decomposeSingleElemDecoding(
       reply: List[AnyRef]): (String, String) =
     reply match {
-      case reply :: Nil =>
-        reply match {
+      case reply :: Nil => reply match {
           case BulkReply(msg) => (CBToString(msg), "")
           case _ =>
             (

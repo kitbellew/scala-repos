@@ -80,11 +80,10 @@ private[pickling] class IrScalaSymbols[
     override def primaryConstructor: Option[IrConstructor] = {
       tpe.declaration(nme.CONSTRUCTOR) match {
         // NOTE: primary ctor is always the first in the list
-        case overloaded: TermSymbol =>
-          Some(
+        case overloaded: TermSymbol => Some(
             new ScalaIrConstructor(overloaded.alternatives.head.asMethod, this))
-        case primaryCtor: MethodSymbol =>
-          Some(new ScalaIrConstructor(primaryCtor, this))
+        case primaryCtor: MethodSymbol => Some(
+            new ScalaIrConstructor(primaryCtor, this))
         case NoSymbol => None
       }
     }

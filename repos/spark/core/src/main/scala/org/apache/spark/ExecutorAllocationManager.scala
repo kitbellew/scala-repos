@@ -239,8 +239,7 @@ private[spark] class ExecutorAllocationManager(
       override def run(): Unit = {
         try { schedule() }
         catch {
-          case ct: ControlThrowable =>
-            throw ct
+          case ct: ControlThrowable => throw ct
           case t: Throwable =>
             logWarning(
               s"Uncaught exception in thread ${Thread.currentThread().getName}",

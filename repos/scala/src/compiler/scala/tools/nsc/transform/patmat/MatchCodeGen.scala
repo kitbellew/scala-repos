@@ -72,8 +72,7 @@ trait MatchCodeGen extends Interface {
         thenp match {
           case If(c1, thenp1, elsep1) if z equalsStructure elsep1 =>
             If(c AND c1, thenp1, elsep1) // cleaner, leaner trees
-          case _ =>
-            If(c, thenp, zero)
+          case _ => If(c, thenp, zero)
         }
       }
       protected def zero: Tree

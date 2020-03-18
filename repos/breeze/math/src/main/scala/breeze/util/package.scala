@@ -47,10 +47,7 @@ package object util {
           val currentTccl: ClassLoader =
             Thread.currentThread.getContextClassLoader
           currentTccl.loadClass(desc.getName)
-        } catch {
-          case e: Exception =>
-            super.resolveClass(desc)
-        }
+        } catch { case e: Exception => super.resolveClass(desc) }
       }
 
       // from http://stackoverflow.com/questions/1816559/make-java-runtime-ignore-serialversionuids

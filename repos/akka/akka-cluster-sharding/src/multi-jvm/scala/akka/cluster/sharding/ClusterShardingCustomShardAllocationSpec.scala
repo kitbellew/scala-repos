@@ -52,8 +52,7 @@ object ClusterShardingCustomShardAllocationSpec {
       case UseRegion(region) ⇒
         useRegion = Some(region)
         sender() ! UseRegionAck
-      case AllocateReq ⇒
-        useRegion.foreach { sender() ! _ }
+      case AllocateReq ⇒ useRegion.foreach { sender() ! _ }
       case RebalanceShards(shards) ⇒
         rebalance = shards
         sender() ! RebalanceShardsAck

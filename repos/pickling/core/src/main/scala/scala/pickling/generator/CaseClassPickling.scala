@@ -60,8 +60,7 @@ class CaseClassPickling(
                 standAloneVars.map { field =>
                   field.setter match {
                     case Some(mth) => SetField(field.methodName, mth)
-                    case _ =>
-                      sys.error(
+                    case _ => sys.error(
                         s"Attempting to define unpickle behavior, when no setter is defined on a var: ${field}")
                   }
                 })
@@ -101,8 +100,7 @@ class CaseClassPickling(
           else
             AlgorithmFailure(
               s"Encountered a case class (${tpe.className}) where we could not find all the constructor parameters.  This may be because some fields are marked transient.")
-        case _ =>
-          AlgorithmFailure("case-class constructor is not public")
+        case _ => AlgorithmFailure("case-class constructor is not public")
       }
     } else AlgorithmFailure("class is not a case class")
   }
@@ -147,8 +145,8 @@ class CaseClassPickling(
           s"Encountered a case class (${tpe.className}) where we could not find all the constructor parameters.")
     }) match {
       case Some(success) => AlgorithmSucccess(success)
-      case None =>
-        AlgorithmFailure("Could not find a valid case-class factory method.")
+      case None => AlgorithmFailure(
+          "Could not find a valid case-class factory method.")
     }
   }
 
@@ -193,8 +191,7 @@ class CaseClassPickling(
           case scala.util.Failure(ex) if !allowReflection =>
             AlgorithmFailure(
               s"Case class $tpe is not final, and all subclasses are unknown.  Annotate with @directSubclasses or mark final.")
-          case scala.util.Failure(ex) =>
-            behavior.map { b =>
+          case scala.util.Failure(ex) => behavior.map { b =>
               logger.warn(
                 s"Warning:   Unpickler does not currently handle subclasss dipatch for type: $tpe")
               IrAst

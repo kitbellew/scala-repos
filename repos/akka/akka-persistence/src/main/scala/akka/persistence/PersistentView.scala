@@ -310,26 +310,18 @@ trait PersistentView
             try {
               updateLastSequenceNr(p)
               PersistentView.super.aroundReceive(receive, p.payload)
-            } catch {
-              case NonFatal(t) ⇒
-                changeState(ignoreRemainingReplay(t))
-            }
-          case _: RecoverySuccess ⇒
-            onReplayComplete()
+            } catch { case NonFatal(t) ⇒ changeState(ignoreRemainingReplay(t)) }
+          case _: RecoverySuccess ⇒ onReplayComplete()
           case ReplayMessagesFailure(cause) ⇒
             try onReplayError(cause)
             finally onReplayComplete()
           case ScheduledUpdate(_) ⇒ // ignore
-          case Update(a, _) ⇒
-            if (a) internalStash.stash()
+          case Update(a, _) ⇒ if (a) internalStash.stash()
           case other ⇒
             if (await) internalStash.stash()
             else {
               try { PersistentView.super.aroundReceive(receive, other) }
-              catch {
-                case NonFatal(t) ⇒
-                  changeState(ignoreRemainingReplay(t))
-              }
+              catch { case NonFatal(t) ⇒ changeState(ignoreRemainingReplay(t)) }
             }
         }
 

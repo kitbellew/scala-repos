@@ -32,8 +32,7 @@ object Tools {
 
   def subclassCache(key: AnyRef, valueThunk: => AnyRef): AnyRef = {
     subclassCaches get key match {
-      case SomeRef(value) =>
-        value
+      case SomeRef(value) => value
       case _ =>
         val value = valueThunk
         subclassCaches(key) = new WeakReference(value)
@@ -257,15 +256,13 @@ trait RichTypes {
       tpe.normalize match {
         case ExistentialType(tparams, TypeRef(pre, sym, targs))
             if targs.nonEmpty && targs.forall(targ =>
-              tparams.contains(targ.typeSymbol)) =>
-          TypeRef(pre, sym, Nil).key
+              tparams.contains(targ.typeSymbol)) => TypeRef(pre, sym, Nil).key
         case TypeRef(pre, sym, targs) if pre.typeSymbol.isModuleClass =>
           sym.fullName +
             (if (sym.isModuleClass) ".type" else "") +
             (if (targs.isEmpty) ""
              else targs.map(_.key).mkString("[", ",", "]"))
-        case _ =>
-          tpe.toString
+        case _ => tpe.toString
       }
     }
 

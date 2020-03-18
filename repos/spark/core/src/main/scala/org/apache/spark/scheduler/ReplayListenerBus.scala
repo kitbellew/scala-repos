@@ -68,8 +68,7 @@ private[spark] class ReplayListenerBus extends SparkListenerBus with Logging {
         lineNumber += 1
       }
     } catch {
-      case ioe: IOException =>
-        throw ioe
+      case ioe: IOException => throw ioe
       case e: Exception =>
         logError(s"Exception parsing Spark event log: $sourceName", e)
         logError(s"Malformed line #$lineNumber: $currentLine\n")

@@ -80,8 +80,7 @@ class ParHashSet[T] private[immutable] (private[this] val trie: HashSet[T])
     var i = 0
     def dup =
       triter match {
-        case t: TrieIterator[_] =>
-          dupFromIterator(t.dupIterator)
+        case t: TrieIterator[_] => dupFromIterator(t.dupIterator)
         case _ =>
           val buff = triter.toBuffer
           triter = buff.iterator

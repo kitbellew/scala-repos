@@ -50,8 +50,7 @@ private[sql] class CatalystQl(val conf: ParserConf = SimpleParserConf())
     catch {
       case e: MatchError        => throw e
       case e: AnalysisException => throw e
-      case e: Exception =>
-        throw new AnalysisException(e.getMessage)
+      case e: Exception         => throw new AnalysisException(e.getMessage)
       case e: NotImplementedError =>
         throw new AnalysisException(s"""Unsupported language features in query
              |== SQL ==
@@ -133,16 +132,14 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
 
         // Extract Database and Function name
         pattern match {
-          case Nil =>
-            ShowFunctions(None, None)
+          case Nil => ShowFunctions(None, None)
           case Token(name, Nil) :: Nil =>
             ShowFunctions(None, Some(unquoteString(cleanIdentifier(name))))
           case Token(db, Nil) :: Token(name, Nil) :: Nil =>
             ShowFunctions(
               Some(unquoteString(cleanIdentifier(db))),
               Some(unquoteString(cleanIdentifier(name))))
-          case _ =>
-            noParseRule("SHOW FUNCTIONS", node)
+          case _ => noParseRule("SHOW FUNCTIONS", node)
         }
 
       case Token("TOK_DESCFUNCTION", Token(functionName, Nil) :: isExtended) =>
@@ -161,8 +158,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
               (Some(from.head), inserts, Some(cteRelations.toMap))
             case Token("TOK_FROM", from) :: inserts =>
               (Some(from.head), inserts, None)
-            case Token("TOK_INSERT", _) :: Nil =>
-              (None, queryArgs, None)
+            case Token("TOK_INSERT", _) :: Nil => (None, queryArgs, None)
           }
 
         // Return one query for each insert clause.
@@ -264,8 +260,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                   }),
                 rollupGroupByClause.map(e =>
                   e match {
-                    case Token("TOK_ROLLUP_GROUPBY", children) =>
-                      Aggregate(
+                    case Token("TOK_ROLLUP_GROUPBY", children) => Aggregate(
                         Seq(Rollup(children.map(nodeToExpr))),
                         selectExpressions,
                         withWhere)
@@ -273,8 +268,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                   }),
                 cubeGroupByClause.map(e =>
                   e match {
-                    case Token("TOK_CUBE_GROUPBY", children) =>
-                      Aggregate(
+                    case Token("TOK_CUBE_GROUPBY", children) => Aggregate(
                         Seq(Cube(children.map(nodeToExpr))),
                         selectExpressions,
                         withWhere)
@@ -332,8 +326,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                   RepartitionByExpression(
                     partitionExprs.children.map(nodeToExpr),
                     withDistinct))
-              case (None, None, None, Some(clusterExprs)) =>
-                Sort(
+              case (None, None, None, Some(clusterExprs)) => Sort(
                   clusterExprs.children
                     .map(nodeToExpr)
                     .map(SortOrder(_, Ascending)),
@@ -395,15 +388,14 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
 
       case Token("TOK_UNIONALL", left :: right :: Nil) =>
         Union(nodeToPlan(left), nodeToPlan(right))
-      case Token("TOK_UNIONDISTINCT", left :: right :: Nil) =>
-        Distinct(Union(nodeToPlan(left), nodeToPlan(right)))
+      case Token("TOK_UNIONDISTINCT", left :: right :: Nil) => Distinct(
+          Union(nodeToPlan(left), nodeToPlan(right)))
       case Token("TOK_EXCEPT", left :: right :: Nil) =>
         Except(nodeToPlan(left), nodeToPlan(right))
       case Token("TOK_INTERSECT", left :: right :: Nil) =>
         Intersect(nodeToPlan(left), nodeToPlan(right))
 
-      case _ =>
-        noParseRule("Plan", node)
+      case _ => noParseRule("Plan", node)
     }
 
   val allJoinTokens = "(TOK_.*JOIN)".r
@@ -477,8 +469,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                 withReplacement = false,
                 (math.random * 1000).toInt,
                 relation)(isTableSample = true)
-            case a =>
-              noParseRule("Sampling", a)
+            case a => noParseRule("Sampling", a)
           }
           .getOrElse(relation)
 
@@ -494,8 +485,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           nodeToRelation(relation2),
           joinType,
           joinCondition)
-      case _ =>
-        noParseRule("Relation", node)
+      case _ => noParseRule("Relation", node)
     }
   }
 
@@ -535,8 +525,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         SortOrder(nodeToExpr(sortExpr), Ascending)
       case Token("TOK_TABSORTCOLNAMEDESC", sortExpr :: Nil) =>
         SortOrder(nodeToExpr(sortExpr), Descending)
-      case _ =>
-        noParseRule("SortOrder", node)
+      case _ => noParseRule("SortOrder", node)
     }
 
   val destinationToken = "TOK_DESTINATION|TOK_INSERT_INTO".r
@@ -547,8 +536,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
     node match {
       case Token(
             destinationToken(),
-            Token("TOK_DIR", Token("TOK_TMP_FILE", Nil) :: Nil) :: Nil) =>
-        query
+            Token("TOK_DIR", Token("TOK_TMP_FILE", Nil) :: Nil) :: Nil) => query
 
       case Token(destinationToken(), Token("TOK_TAB", tableArgs) :: Nil) =>
         val Some(tableNameParts) :: partitionClause :: Nil = getClauses(
@@ -605,17 +593,15 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           overwrite,
           ifNotExists = true)
 
-      case _ =>
-        noParseRule("Destination", node)
+      case _ => noParseRule("Destination", node)
     }
 
   protected def selExprNodeToExpr(node: ASTNode): Option[Expression] =
     node match {
-      case Token("TOK_SELEXPR", e :: Nil) =>
-        Some(nodeToExpr(e))
+      case Token("TOK_SELEXPR", e :: Nil) => Some(nodeToExpr(e))
 
-      case Token("TOK_SELEXPR", e :: Token(alias, Nil) :: Nil) =>
-        Some(Alias(nodeToExpr(e), cleanIdentifier(alias))())
+      case Token("TOK_SELEXPR", e :: Token(alias, Nil) :: Nil) => Some(
+          Alias(nodeToExpr(e), cleanIdentifier(alias))())
 
       case Token("TOK_SELEXPR", e :: aliasChildren) =>
         val aliasNames = aliasChildren.collect {
@@ -626,8 +612,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
       /* Hints are ignored */
       case Token("TOK_HINTLIST", _) => None
 
-      case _ =>
-        noParseRule("Select", node)
+      case _ => noParseRule("Select", node)
     }
 
   /**
@@ -676,15 +661,15 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         UnresolvedAttribute.quoted(cleanIdentifier(name))
       case Token(".", qualifier :: Token(attr, Nil) :: Nil) =>
         nodeToExpr(qualifier) match {
-          case UnresolvedAttribute(nameParts) =>
-            UnresolvedAttribute(nameParts :+ cleanIdentifier(attr))
+          case UnresolvedAttribute(nameParts) => UnresolvedAttribute(
+              nameParts :+ cleanIdentifier(attr))
           case other =>
             UnresolvedExtractValue(other, Literal(cleanIdentifier(attr)))
         }
       case Token(
             "TOK_SUBQUERY_EXPR",
-            Token("TOK_SUBQUERY_OP", Nil) :: subquery :: Nil) =>
-        ScalarSubquery(nodeToPlan(subquery))
+            Token("TOK_SUBQUERY_OP", Nil) :: subquery :: Nil) => ScalarSubquery(
+          nodeToPlan(subquery))
 
       /* Stars (*) */
       case Token("TOK_ALLCOLREF", Nil) => UnresolvedStar(None)
@@ -770,10 +755,10 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         EqualTo(nodeToExpr(left), nodeToExpr(right))
       case Token("<=>", left :: right :: Nil) =>
         EqualNullSafe(nodeToExpr(left), nodeToExpr(right))
-      case Token("!=", left :: right :: Nil) =>
-        Not(EqualTo(nodeToExpr(left), nodeToExpr(right)))
-      case Token("<>", left :: right :: Nil) =>
-        Not(EqualTo(nodeToExpr(left), nodeToExpr(right)))
+      case Token("!=", left :: right :: Nil) => Not(
+          EqualTo(nodeToExpr(left), nodeToExpr(right)))
+      case Token("<>", left :: right :: Nil) => Not(
+          EqualTo(nodeToExpr(left), nodeToExpr(right)))
       case Token(">", left :: right :: Nil) =>
         GreaterThan(nodeToExpr(left), nodeToExpr(right))
       case Token(">=", left :: right :: Nil) =>
@@ -855,8 +840,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
       case Token("TOK_NULL", Nil) => Literal.create(null, NullType)
       case Token(TRUE(), Nil)     => Literal.create(true, BooleanType)
       case Token(FALSE(), Nil)    => Literal.create(false, BooleanType)
-      case Token("TOK_STRINGLITERALSEQUENCE", strings) =>
-        Literal(strings.map(s => ParseUtils.unescapeSQLString(s.text)).mkString)
+      case Token("TOK_STRINGLITERALSEQUENCE", strings) => Literal(
+          strings.map(s => ParseUtils.unescapeSQLString(s.text)).mkString)
 
       case ast if ast.tokenType == SparkSqlParser.TinyintLiteral =>
         Literal.create(
@@ -879,17 +864,13 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
       case ast if ast.tokenType == SparkSqlParser.Number =>
         val text = ast.text
         text match {
-          case INTEGRAL() =>
-            BigDecimal(text) match {
-              case v if v.isValidInt =>
-                Literal(v.intValue())
-              case v if v.isValidLong =>
-                Literal(v.longValue())
-              case v => Literal(v.underlying())
+          case INTEGRAL() => BigDecimal(text) match {
+              case v if v.isValidInt  => Literal(v.intValue())
+              case v if v.isValidLong => Literal(v.longValue())
+              case v                  => Literal(v.underlying())
             }
-          case DECIMAL(_*) =>
-            Literal(BigDecimal(text).underlying())
-          case _ =>
+          case DECIMAL(_*) => Literal(BigDecimal(text).underlying())
+          case _           =>
             // Convert a scientifically notated decimal into a double.
             Literal(text.toDouble)
         }
@@ -937,8 +918,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         }
         Literal(interval)
 
-      case _ =>
-        noParseRule("Expression", node)
+      case _ => noParseRule("Expression", node)
     }
 
   /* Case insensitive matches for Window Specification */
@@ -1009,8 +989,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                   if (count.toLowerCase() == "unbounded") { UnboundedFollowing }
                   else { ValueFollowing(count.toInt) }
                 case Token(CURRENT(), Nil) => CurrentRow
-                case _ =>
-                  noParseRule("Window Frame Boundary", node)
+                case _                     => noParseRule("Window Frame Boundary", node)
               }
 
             rowFrame
@@ -1027,8 +1006,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                       frameType,
                       nodeToBoundary(precedingNode),
                       CurrentRow)
-                  case _ =>
-                    noParseRule("Window Frame", frame)
+                  case _ => noParseRule("Window Frame", frame)
                 }
               }
               .getOrElse(sys.error(
@@ -1058,8 +1036,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         Explode(nodeToExpr(childNode))
       case Token("TOK_FUNCTION", Token(jsonTuple(), Nil) :: children) =>
         JsonTuple(children.map(nodeToExpr))
-      case other =>
-        nodeToGenerator(other)
+      case other => nodeToGenerator(other)
     }
 
     val attributes = clauses.collect {

@@ -189,8 +189,7 @@ sealed abstract class LazyEitherInstances {
           a: A): LazyEither[E, B] =
         f(a) match {
           case LazyLeft(l) => LazyLeft(l)
-          case LazyRight(r) =>
-            r() match {
+          case LazyRight(r) => r() match {
               case \/-(b)  => LazyEither.lazyRight(b)
               case -\/(a0) => tailrecM(f)(a0)
             }

@@ -39,8 +39,7 @@ private[tracker] object TaskOpProcessorImpl {
     def resolve(taskId: Task.Id, status: TaskStatus)(implicit
         ec: ExecutionContext): Future[Action] = {
       directTaskTracker.task(taskId).map {
-        case Some(existingTask) =>
-          actionForTaskAndStatus(existingTask, status)
+        case Some(existingTask) => actionForTaskAndStatus(existingTask, status)
         case None =>
           Action.Fail(new IllegalStateException(
             s"$taskId of app [${taskId.appId}] does not exist"))

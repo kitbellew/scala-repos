@@ -9,9 +9,7 @@ object Macros {
     try {
       c.inferImplicitValue(typeOf[Foo], silent = false)
       c.abort(c.enclosingPosition, "silent=false is not working")
-    } catch {
-      case _: Exception =>
-    }
+    } catch { case _: Exception => }
     c.Expr[Null](Literal(Constant(null)))
   }
 

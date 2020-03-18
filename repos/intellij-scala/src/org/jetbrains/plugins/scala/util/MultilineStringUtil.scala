@@ -40,8 +40,7 @@ object MultilineStringUtil {
     if (element == null) return false
     element.getNode.getElementType match {
       case ScalaTokenTypes.tMULTILINE_STRING |
-          ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING =>
-        true
+          ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING => true
       case ScalaTokenTypes.tINTERPOLATED_STRING_END |
           ScalaTokenTypes.tINTERPOLATED_STRING_INJECTION |
           ScalaTokenTypes.tINTERPOLATED_STRING_ESCAPE =>
@@ -97,8 +96,7 @@ object MultilineStringUtil {
     literal match {
       case interpolated: ScInterpolatedStringLiteral =>
         interpolated.reference match {
-          case Some(ref: ScReferenceExpression) =>
-            ref.resolve() match {
+          case Some(ref: ScReferenceExpression) => ref.resolve() match {
               case funDef: ScFunction =>
                 val tpe = funDef.returnType
                 tpe.exists(scType =>
@@ -158,8 +156,7 @@ object MultilineStringUtil {
             if (prevParent != parent.getFirstChild) return callsArray
             calls += Array(inf.rOp)
           }
-        case call: ScMethodCall =>
-          call.getEffectiveInvokedExpr match {
+        case call: ScMethodCall => call.getEffectiveInvokedExpr match {
             case ref: ScReferenceExpression if ref.refName == methodName =>
               calls += call.args.exprsArray
             case _ =>

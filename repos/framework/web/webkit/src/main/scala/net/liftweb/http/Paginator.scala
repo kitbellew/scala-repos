@@ -125,8 +125,7 @@ trait SortedPaginator[T, C] extends Paginator[T] {
             true
           ) => // descending is only if it was already sorted ascending
         (column, false)
-      case _ =>
-        (column, true)
+      case _ => (column, true)
     }
 }
 
@@ -236,8 +235,9 @@ trait PaginatorSnippet[T] extends Paginator[T] {
       pageXml(n * itemsPerPage, Text((n + 1).toString))
     } match {
       case one :: Nil => one
-      case first :: rest =>
-        rest.foldLeft(first) { case (a, b) => a ++ sep ++ b }
+      case first :: rest => rest.foldLeft(first) {
+          case (a, b) => a ++ sep ++ b
+        }
       case Nil => Nil
     }
   }

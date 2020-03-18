@@ -36,8 +36,7 @@ abstract class ScalaMemberSelectionTableBase[
         null
       case member: ScMember
           if member.hasAbstractModifier && myMemberInfoModel.isFixedAbstract(
-            memberInfo) != null =>
-        myMemberInfoModel.isFixedAbstract(memberInfo)
+            memberInfo) != null => myMemberInfoModel.isFixedAbstract(memberInfo)
       case _ if !myMemberInfoModel.isAbstractEnabled(memberInfo) =>
         val res: java.lang.Boolean = myMemberInfoModel.isAbstractWhenDisabled(
           memberInfo)
@@ -52,16 +51,14 @@ abstract class ScalaMemberSelectionTableBase[
     info.getMember match {
       case member: ScMember
           if member.hasAbstractModifier && myMemberInfoModel.isFixedAbstract(
-            info) == java.lang.Boolean.TRUE =>
-        false
-      case _ => info.isChecked && myMemberInfoModel.isAbstractEnabled(info)
+            info) == java.lang.Boolean.TRUE => false
+      case _                                => info.isChecked && myMemberInfoModel.isAbstractEnabled(info)
     }
   }
 
   def setVisibilityIcon(memberInfo: I, icon: RowIcon) {
     memberInfo.getMember match {
-      case owner: PsiModifierListOwner =>
-        owner.getModifierList match {
+      case owner: PsiModifierListOwner => owner.getModifierList match {
           case mods: PsiModifierList =>
             VisibilityIcons.setVisibilityIcon(mods, icon)
           case _ =>

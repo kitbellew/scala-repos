@@ -84,9 +84,7 @@ class AkkaSpecSpec extends WordSpec with Matchers {
          * may happen that the system.stop() suspends the testActor before it had
          * a chance to put the message into its private queue
          */
-        probe.receiveWhile(1 second) {
-          case null ⇒
-        }
+        probe.receiveWhile(1 second) { case null ⇒ }
 
         val latch = new TestLatch(1)(system)
         system.registerOnTermination(latch.countDown())

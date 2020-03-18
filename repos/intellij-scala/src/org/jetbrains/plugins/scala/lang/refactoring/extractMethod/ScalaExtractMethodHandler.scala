@@ -109,8 +109,7 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     def checkLastReturn(elem: PsiElement): Boolean = {
       elem match {
         case ret: ScReturnStmt => true
-        case m: ScMatchStmt =>
-          m.getBranches.forall(checkLastReturn(_))
+        case m: ScMatchStmt    => m.getBranches.forall(checkLastReturn(_))
         case f: ScIfStmt if f.elseBranch.isDefined && f.thenBranch.isDefined =>
           checkLastReturn(f.thenBranch.get) && checkLastReturn(f.elseBranch.get)
         case block: ScBlock if block.lastExpr.isDefined =>
@@ -227,9 +226,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       }
       prev = parent
       parent = parent match {
-        case file: ScalaFile =>
-          null
-        case _ => parent.getParent
+        case file: ScalaFile => null
+        case _               => parent.getParent
       }
     }
     res.toArray.reverse
@@ -258,18 +256,15 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
           case td: ScTypeDefinition => td.parent
           case ScalaPsiUtil.inNameContext(varDef: ScVariableDefinition)
               if ScalaPsiUtil.isLValue(ref) && !elements.exists(
-                _.isAncestorOf(varDef)) =>
-            varDef.parent
-          case member: PsiMember => member.containingClass.toOption
-          case _                 => return None
+                _.isAncestorOf(varDef)) => varDef.parent
+          case member: PsiMember        => member.containingClass.toOption
+          case _                        => return None
         }
       }
       defScope match {
-        case Some(clazz: PsiClass) =>
-          commonParent.parentsInFile.collectFirst {
+        case Some(clazz: PsiClass) => commonParent.parentsInFile.collectFirst {
             case td: ScTemplateDefinition
-                if td == clazz || td.isInheritor(clazz, deep = true) =>
-              td
+                if td == clazz || td.isInheritor(clazz, deep = true) => td
           }
         case local @ Some(_) => local
         case _ =>
@@ -285,9 +280,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       override def visitReference(ref: ScReferenceElement) {
         scopeBound(ref) match {
           case Some(bound: PsiElement)
-              if PsiTreeUtil.isAncestor(result, bound, true) =>
-            result = bound
-          case _ =>
+              if PsiTreeUtil.isAncestor(result, bound, true) => result = bound
+          case _                                             =>
         }
       }
     }
@@ -385,8 +379,7 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
         }
       case _: ScTryBlock    => local("try block")
       case _: ScConstrBlock => local("constructor")
-      case b: ScBlock =>
-        b.getParent match {
+      case b: ScBlock => b.getParent match {
           case f: ScFunctionDefinition => local(s"def ${f.name}")
           case p: ScPatternDefinition if p.bindings.nonEmpty =>
             local(s"val ${p.bindings.head.name}")

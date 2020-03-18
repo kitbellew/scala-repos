@@ -268,8 +268,7 @@ abstract class Message extends HttpMessageProxy {
         val parts = StringUtils.split(contentType, ";", 2)
         if (parts.length == 2) { this.contentType = value + ";" + parts(1) }
         else { this.contentType = value }
-      case None =>
-        this.contentType = value
+      case None => this.contentType = value
     }
   }
 
@@ -382,8 +381,7 @@ abstract class Message extends HttpMessageProxy {
   /** Append bytes to content. */
   def write(bytes: Array[Byte]) {
     getContent match {
-      case buffer: DynamicChannelBuffer =>
-        buffer.writeBytes(bytes)
+      case buffer: DynamicChannelBuffer => buffer.writeBytes(bytes)
       case _ =>
         val buffer = ChannelBuffers.wrappedBuffer(bytes)
         write(buffer)
@@ -404,10 +402,9 @@ abstract class Message extends HttpMessageProxy {
     if (isChunked) writeChunk(buffer)
     else {
       getContent match {
-        case ChannelBuffers.EMPTY_BUFFER =>
-          setContent(buffer)
-        case content =>
-          setContent(ChannelBuffers.wrappedBuffer(content, buffer))
+        case ChannelBuffers.EMPTY_BUFFER => setContent(buffer)
+        case content => setContent(
+            ChannelBuffers.wrappedBuffer(content, buffer))
       }
     }
   }

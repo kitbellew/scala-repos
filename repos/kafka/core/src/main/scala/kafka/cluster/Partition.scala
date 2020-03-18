@@ -88,10 +88,8 @@ class Partition(
 
   def isUnderReplicated(): Boolean = {
     leaderReplicaIfLocal() match {
-      case Some(_) =>
-        inSyncReplicas.size < assignedReplicas.size
-      case None =>
-        false
+      case Some(_) => inSyncReplicas.size < assignedReplicas.size
+      case None    => false
     }
   }
 
@@ -362,8 +360,7 @@ class Partition(
           if (minIsr <= curInSyncReplicas.size) { (true, Errors.NONE.code) }
           else { (true, Errors.NOT_ENOUGH_REPLICAS_AFTER_APPEND.code) }
         } else (false, Errors.NONE.code)
-      case None =>
-        (false, Errors.NOT_LEADER_FOR_PARTITION.code)
+      case None => (false, Errors.NOT_LEADER_FOR_PARTITION.code)
     }
   }
 

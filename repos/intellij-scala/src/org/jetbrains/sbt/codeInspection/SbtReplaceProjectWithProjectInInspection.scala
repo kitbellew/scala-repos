@@ -49,8 +49,7 @@ class SbtReplaceProjectWithProjectInInspection extends AbstractInspection {
           case ScMethodCall(expr, Seq(ScLiteralImpl.string(name), _))
               if expr.getText == "Project" && name == projectName =>
             placeToFix = Some(call)
-          case _ =>
-            super.visitMethodCallExpression(call)
+          case _ => super.visitMethodCallExpression(call)
         }
     }
     call.accept(visitor)

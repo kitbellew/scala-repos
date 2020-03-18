@@ -81,8 +81,7 @@ trait ScalaClassLoader extends JClassLoader {
         fail(s"Not a ${classTag[T]}: ${path}")
       }
     } catch {
-      case e: ClassNotFoundException =>
-        error(s"Class not found: ${path}", e)
+      case e: ClassNotFoundException => error(s"Class not found: ${path}", e)
       case e @ (_: LinkageError | _: ReflectiveOperationException) =>
         error(s"Unable to create instance: ${path}: ${e.toString}", e)
     }

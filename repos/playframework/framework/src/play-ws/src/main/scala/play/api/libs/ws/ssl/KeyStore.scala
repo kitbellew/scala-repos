@@ -86,8 +86,7 @@ class FileBasedKeyStoreBuilder(
       case "PEM" =>
         val certs = readCertificates(file)
         loadCertificates(certs)
-      case otherFormat =>
-        buildFromKeystoreFile(otherFormat, file)
+      case otherFormat => buildFromKeystoreFile(otherFormat, file)
     }
   }
 

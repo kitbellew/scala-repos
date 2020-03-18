@@ -104,10 +104,7 @@ class VectorSerializer
               case _          => 0
             }.toVector
         },
-        {
-          case x: Vector[Double] =>
-            JArray(x.toList.map(y => JDouble(y)))
-        }))
+        { case x: Vector[Double] => JArray(x.toList.map(y => JDouble(y))) }))
 
 object RegressionEngineFactory extends IEngineFactory {
   def apply() = {

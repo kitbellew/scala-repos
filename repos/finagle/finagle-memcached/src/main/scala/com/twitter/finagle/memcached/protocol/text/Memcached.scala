@@ -93,8 +93,7 @@ private class MemcachedTracingFilter extends SimpleFilter[Command, Response] {
     val response = service(command)
     if (Trace.isActivelyTracing) {
       response onSuccess {
-        case Values(values) =>
-          command match {
+        case Values(values) => command match {
             case cmd: RetrievalCommand =>
               val keys: immutable.Set[String] = immutable.Set(cmd.keys map {
                 case Buf.Utf8(s) => s

@@ -66,16 +66,13 @@ class MutableSettings(val errorFn: String => Unit)
         args: List[String],
         residualArgs: List[String]): (Boolean, List[String]) =
       args match {
-        case Nil =>
-          (checkDependencies, residualArgs)
-        case "--" :: xs =>
-          (checkDependencies, xs)
+        case Nil        => (checkDependencies, residualArgs)
+        case "--" :: xs => (checkDependencies, xs)
         // discard empties, sometimes they appear because of ant or etc.
         // but discard carefully, because an empty string is valid as an argument
         // to an option, e.g. -cp "" .  So we discard them only when they appear
         // where an option should be, not where an argument to an option should be.
-        case "" :: xs =>
-          loop(xs, residualArgs)
+        case "" :: xs => loop(xs, residualArgs)
         case x :: xs =>
           if (x startsWith "-") {
             parseParams(args) match {
@@ -357,8 +354,7 @@ class MutableSettings(val errorFn: String => Unit)
 
       singleOutDir match {
         case Some(d) => d
-        case None =>
-          (outputs find (isBelow _).tupled) match {
+        case None => (outputs find (isBelow _).tupled) match {
             case Some((_, d)) => d
             case _ =>
               throw new FatalError(
@@ -392,13 +388,11 @@ class MutableSettings(val errorFn: String => Unit)
         classFile.path.startsWith(outDir.path)
 
       singleOutDir match {
-        case Some(d) =>
-          d match {
+        case Some(d) => d match {
             case _: VirtualDirectory | _: io.ZipArchive => Nil
             case _                                      => List(d.lookupPathUnchecked(srcPath, directory = false))
           }
-        case None =>
-          (outputs filter (isBelow _).tupled) match {
+        case None => (outputs filter (isBelow _).tupled) match {
             case Nil => Nil
             case matches =>
               matches.map(_._1.lookupPathUnchecked(srcPath, directory = false))
@@ -549,8 +543,7 @@ class MutableSettings(val errorFn: String => Unit)
         case x :: xs if x startsWith prefix =>
           v = v :+ x
           Some(xs)
-        case _ =>
-          None
+        case _ => None
       }
     override def respondsTo(token: String) = token startsWith prefix
     def unparse: List[String] = value
@@ -595,8 +588,8 @@ class MutableSettings(val errorFn: String => Unit)
     override def tryToSet(args: List[String]) = {
       default match {
         case Some(d) => value = d
-        case None =>
-          errorFn(s"$name requires an argument, the syntax is $helpSyntax")
+        case None => errorFn(
+            s"$name requires an argument, the syntax is $helpSyntax")
       }
       Some(args)
     }
@@ -772,8 +765,7 @@ class MutableSettings(val errorFn: String => Unit)
     /** Add a named choice to the multichoice value. */
     def add(arg: String) =
       arg match {
-        case _ if !isChoice(arg) =>
-          badChoice(arg)
+        case _ if !isChoice(arg) => badChoice(arg)
         case "_" =>
           sawAll = true
           compute()
@@ -783,8 +775,7 @@ class MutableSettings(val errorFn: String => Unit)
         case _ =>
           val choice = domain withName pos(arg)
           choice match {
-            case ChoiceOrVal(_, _, _ :: _) =>
-              errorFn(
+            case ChoiceOrVal(_, _, _ :: _) => errorFn(
                 s"'${pos(arg)}' cannot be negated, it enables other arguments")
             case _ =>
           }

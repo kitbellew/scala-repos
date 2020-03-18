@@ -149,8 +149,7 @@ class DriverActor(schedulerProps: Props) extends Actor {
         log.debug(s"pass on driver to scheduler $scheduler")
         scheduler ! driver
 
-      case LaunchTasks(offers, tasks) =>
-        simulateTaskLaunch(offers, tasks)
+      case LaunchTasks(offers, tasks) => simulateTaskLaunch(offers, tasks)
 
       case AcceptOffers(offers, ops, filters) =>
         val taskInfos = extractTaskInfos(ops)
@@ -172,11 +171,9 @@ class DriverActor(schedulerProps: Props) extends Actor {
 
       case SuppressOffers => ()
 
-      case ReviveOffers =>
-        scheduler ! offers
+      case ReviveOffers => scheduler ! offers
 
-      case ChangeTaskStatus(status, create) =>
-        changeTaskStatus(status, create)
+      case ChangeTaskStatus(status, create) => changeTaskStatus(status, create)
 
       case ReconcileTask(taskStatuses) =>
         if (taskStatuses.isEmpty) { tasks.values.foreach(scheduler ! _) }
@@ -233,8 +230,7 @@ class DriverActor(schedulerProps: Props) extends Actor {
         case TaskState.TASK_ERROR | TaskState.TASK_FAILED |
             TaskState.TASK_FINISHED | TaskState.TASK_LOST =>
           tasks -= status.getTaskId.getValue
-        case _ =>
-          tasks += (status.getTaskId.getValue -> status)
+        case _ => tasks += (status.getTaskId.getValue -> status)
       }
       log.debug(s"${tasks.size} tasks")
       scheduler ! status

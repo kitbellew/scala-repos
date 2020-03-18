@@ -265,24 +265,23 @@ trait Importers {
       their match {
         case from.TypeRef(pre, sym, args) =>
           TypeRef(importType(pre), importSymbol(sym), args map importType)
-        case from.ThisType(clazz) =>
-          ThisType(importSymbol(clazz))
+        case from.ThisType(clazz) => ThisType(importSymbol(clazz))
         case from.SingleType(pre, sym) =>
           SingleType(importType(pre), importSymbol(sym))
         case from.MethodType(params, result) =>
           MethodType(params map importSymbol, importType(result))
         case from.PolyType(tparams, result) =>
           PolyType(tparams map importSymbol, importType(result))
-        case from.NullaryMethodType(result) =>
-          NullaryMethodType(importType(result))
-        case from.ConstantType(constant @ from.Constant(_)) =>
-          ConstantType(importConstant(constant))
+        case from.NullaryMethodType(result) => NullaryMethodType(
+            importType(result))
+        case from.ConstantType(constant @ from.Constant(_)) => ConstantType(
+            importConstant(constant))
         case from.SuperType(thistpe, supertpe) =>
           SuperType(importType(thistpe), importType(supertpe))
         case from.TypeBounds(lo, hi) =>
           TypeBounds(importType(lo), importType(hi))
-        case from.BoundedWildcardType(bounds) =>
-          BoundedWildcardType(importType(bounds).asInstanceOf[TypeBounds])
+        case from.BoundedWildcardType(bounds) => BoundedWildcardType(
+            importType(bounds).asInstanceOf[TypeBounds])
         case from.ClassInfoType(parents, decls, clazz) =>
           val myclazz = importSymbol(clazz)
           val myscope =
@@ -306,8 +305,7 @@ trait Importers {
           newExistentialType(tparams map importSymbol, importType(result))
         case from.OverloadedType(pre, alts) =>
           OverloadedType(importType(pre), alts map importSymbol)
-        case from.ImportType(qual) =>
-          ImportType(importTree(qual))
+        case from.ImportType(qual) => ImportType(importTree(qual))
         case from.AntiPolyType(pre, targs) =>
           AntiPolyType(importType(pre), targs map importType)
         case their: from.TypeVar =>
@@ -322,16 +320,11 @@ trait Importers {
             their.params map importSymbol)
         case from.AnnotatedType(annots, result) =>
           AnnotatedType(annots map importAnnotationInfo, importType(result))
-        case from.ErrorType =>
-          ErrorType
-        case from.WildcardType =>
-          WildcardType
-        case from.NoType =>
-          NoType
-        case from.NoPrefix =>
-          NoPrefix
-        case null =>
-          null
+        case from.ErrorType    => ErrorType
+        case from.WildcardType => WildcardType
+        case from.NoType       => NoType
+        case from.NoPrefix     => NoPrefix
+        case null              => null
       }
 
     def importType(their: from.Type): Type = {
@@ -360,8 +353,7 @@ trait Importers {
           case (their: from.TypeTree, my: to.TypeTree) =>
             if (their.wasEmpty) my.defineType(importType(their.tpe))
             else my.setType(importType(their.tpe))
-          case (_, _) =>
-            my.setType(importType(their.tpe))
+          case (_, _) => my.setType(importType(their.tpe))
         }
       }
     }
@@ -381,10 +373,8 @@ trait Importers {
             importModifiers(mods),
             importName(name).toTermName,
             importTemplate(impl))
-        case from.noSelfType =>
-          noSelfType
-        case from.pendingSuperCall =>
-          pendingSuperCall
+        case from.noSelfType       => noSelfType
+        case from.pendingSuperCall => pendingSuperCall
         case from.ValDef(mods, name, tpt, rhs) =>
           new ValDef(
             importModifiers(mods),
@@ -421,10 +411,8 @@ trait Importers {
           new Block(stats map importTree, importTree(expr))
         case from.CaseDef(pat, guard, body) =>
           new CaseDef(importTree(pat), importTree(guard), importTree(body))
-        case from.Alternative(trees) =>
-          new Alternative(trees map importTree)
-        case from.Star(elem) =>
-          new Star(importTree(elem))
+        case from.Alternative(trees) => new Alternative(trees map importTree)
+        case from.Star(elem)         => new Star(importTree(elem))
         case from.Bind(name, body) =>
           new Bind(importName(name), importTree(body))
         case from.UnApply(fun, args) =>
@@ -441,40 +429,33 @@ trait Importers {
           new If(importTree(cond), importTree(thenp), importTree(elsep))
         case from.Match(selector, cases) =>
           new Match(importTree(selector), cases map importCaseDef)
-        case from.Return(expr) =>
-          new Return(importTree(expr))
+        case from.Return(expr) => new Return(importTree(expr))
         case from.Try(block, catches, finalizer) =>
           new Try(
             importTree(block),
             catches map importCaseDef,
             importTree(finalizer))
-        case from.Throw(expr) =>
-          new Throw(importTree(expr))
-        case from.New(tpt) =>
-          new New(importTree(tpt))
+        case from.Throw(expr) => new Throw(importTree(expr))
+        case from.New(tpt)    => new New(importTree(tpt))
         case from.Typed(expr, tpt) =>
           new Typed(importTree(expr), importTree(tpt))
         case from.TypeApply(fun, args) =>
           new TypeApply(importTree(fun), args map importTree)
-        case from.Apply(fun, args) =>
-          their match {
+        case from.Apply(fun, args) => their match {
             case _: from.ApplyToImplicitArgs =>
               new ApplyToImplicitArgs(importTree(fun), args map importTree)
             case _: from.ApplyImplicitView =>
               new ApplyImplicitView(importTree(fun), args map importTree)
-            case _ =>
-              new Apply(importTree(fun), args map importTree)
+            case _ => new Apply(importTree(fun), args map importTree)
           }
         case from.ApplyDynamic(qual, args) =>
           new ApplyDynamic(importTree(qual), args map importTree)
         case from.Super(qual, mix) =>
           new Super(importTree(qual), importName(mix).toTypeName)
-        case from.This(qual) =>
-          new This(importName(qual).toTypeName)
+        case from.This(qual) => new This(importName(qual).toTypeName)
         case from.Select(qual, name) =>
           new Select(importTree(qual), importName(name))
-        case from.Ident(name) =>
-          new Ident(importName(name))
+        case from.Ident(name) => new Ident(importName(name))
         case from.ReferenceToBoxed(ident) =>
           new ReferenceToBoxed(importTree(ident) match {
             case ident: Ident => ident
@@ -502,10 +483,8 @@ trait Importers {
           new ExistentialTypeTree(
             importTree(tpt),
             whereClauses map importMemberDef)
-        case from.EmptyTree =>
-          EmptyTree
-        case null =>
-          null
+        case from.EmptyTree => EmptyTree
+        case null           => null
       }
 
     def importTree(their: from.Tree): Tree = {
@@ -544,14 +523,11 @@ trait Importers {
       arg match {
         case from.LiteralAnnotArg(constant @ from.Constant(_)) =>
           LiteralAnnotArg(importConstant(constant))
-        case from.ArrayAnnotArg(args) =>
-          ArrayAnnotArg(args map importAnnotArg)
-        case from.ScalaSigBytes(bytes) =>
-          ScalaSigBytes(bytes)
-        case from.NestedAnnotArg(annInfo) =>
-          NestedAnnotArg(importAnnotationInfo(annInfo))
-        case from.UnmappableAnnotArg =>
-          UnmappableAnnotArg
+        case from.ArrayAnnotArg(args)  => ArrayAnnotArg(args map importAnnotArg)
+        case from.ScalaSigBytes(bytes) => ScalaSigBytes(bytes)
+        case from.NestedAnnotArg(annInfo) => NestedAnnotArg(
+            importAnnotationInfo(annInfo))
+        case from.UnmappableAnnotArg => UnmappableAnnotArg
       }
 
     // todo. careful import of positions

@@ -378,9 +378,8 @@ class AsyncProducerTest {
     try {
       producer.send(getProduceData(1): _*)
       fail("Should fail with ClassCastException due to incompatible Encoder")
-    } catch {
-      case e: ClassCastException =>
-    } finally { producer.close() }
+    } catch { case e: ClassCastException => }
+    finally { producer.close() }
   }
 
   @Test
@@ -422,8 +421,7 @@ class AsyncProducerTest {
                  TopicAndPartition(topic, partitionId),
                  dataPerTopic) <- dataPerBroker) assertTrue(partitionId == 0)
         }
-      case None =>
-        fail("Failed to collate requests by topic, partition")
+      case None => fail("Failed to collate requests by topic, partition")
     }
   }
 

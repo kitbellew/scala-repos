@@ -158,8 +158,7 @@ private[streaming] abstract class ReceiverSupervisor(
             None)
         }
       } catch {
-        case NonFatal(t) =>
-          stop("Error starting receiver " + streamId, Some(t))
+        case NonFatal(t) => stop("Error starting receiver " + streamId, Some(t))
       }
     }
 
@@ -178,8 +177,7 @@ private[streaming] abstract class ReceiverSupervisor(
             receiver.onStop()
             logInfo("Called receiver onStop")
             onReceiverStop(message, error)
-          case Stopped =>
-            logWarning("Receiver has been stopped")
+          case Stopped => logWarning("Receiver has been stopped")
         }
       } catch {
         case NonFatal(t) =>

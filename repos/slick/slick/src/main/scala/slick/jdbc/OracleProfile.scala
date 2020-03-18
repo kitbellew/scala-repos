@@ -204,14 +204,12 @@ trait OracleProfile extends JdbcProfile {
 
     def createAutoIncSequences =
       columns.flatMap {
-        case cb: ColumnDDLBuilder =>
-          cb.createSequenceAndTrigger(table)
+        case cb: ColumnDDLBuilder => cb.createSequenceAndTrigger(table)
       }
 
     def dropAutoIncSequences =
       columns.flatMap {
-        case cb: ColumnDDLBuilder =>
-          cb.dropTriggerAndSequence(table)
+        case cb: ColumnDDLBuilder => cb.dropTriggerAndSequence(table)
       }
 
     override protected def addForeignKey(fk: ForeignKey, sb: StringBuilder) {
@@ -477,8 +475,7 @@ trait OracleProfile extends JdbcProfile {
         case Apply(_, _)
             if !n.nodeType.structural.isInstanceOf[CollectionType] =>
           n.mapChildren(ch => rewrite(ch, true), keepType = true)
-        case n =>
-          n.mapChildren(ch => rewrite(ch, false), keepType = true)
+        case n => n.mapChildren(ch => rewrite(ch, false), keepType = true)
       }
   }
 }

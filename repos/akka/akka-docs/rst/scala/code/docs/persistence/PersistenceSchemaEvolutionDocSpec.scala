@@ -267,8 +267,8 @@ class UserEventsAdapter extends EventAdapter {
 
   override def fromJournal(event: Any, manifest: String): EventSeq =
     event match {
-      case UserDetailsChanged(null, address) =>
-        EventSeq(UserAddressChanged(address))
+      case UserDetailsChanged(null, address) => EventSeq(
+          UserAddressChanged(address))
       case UserDetailsChanged(name, null) => EventSeq(UserNameChanged(name))
       case UserDetailsChanged(name, address) =>
         EventSeq(UserNameChanged(name), UserAddressChanged(address))
@@ -376,8 +376,7 @@ class DetachedModelsAdapter extends EventAdapter {
     }
   override def fromJournal(event: Any, manifest: String): EventSeq =
     event match {
-      case DataModel.SeatBooked(code, customerName) =>
-        EventSeq(
+      case DataModel.SeatBooked(code, customerName) => EventSeq(
           DomainModel.SeatBooked(code, DomainModel.Customer(customerName)))
     }
 }
@@ -399,8 +398,7 @@ class JsonDataModelAdapter extends EventAdapter {
 
   override def fromJournal(event: Any, manifest: String): EventSeq =
     event match {
-      case json: JsObject =>
-        EventSeq(marshaller.fromJson(json))
+      case json: JsObject => EventSeq(marshaller.fromJson(json))
       case _ =>
         throw new IllegalArgumentException(
           "Unable to fromJournal a non-JSON object! Was: " + event.getClass)

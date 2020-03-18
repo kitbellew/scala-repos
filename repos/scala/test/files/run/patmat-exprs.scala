@@ -173,8 +173,7 @@ trait Pattern {
         case Add2(a, b)    => Add(a :: b :: Nil)
         case Add3(a, b, c) => Add(a :: b :: c :: Nil)
         case Sub(a, b)     => Add(a :: Neg(b) :: Nil)
-        case Add(x) =>
-          Add(x flatMap {
+        case Add(x) => Add(x flatMap {
             case Neg(Add(y)) => y.map(Neg(_))
             case Add(y)      => y
             case y           => y :: Nil

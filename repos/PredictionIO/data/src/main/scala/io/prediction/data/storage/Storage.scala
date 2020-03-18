@@ -226,8 +226,7 @@ object Storage extends Logging {
           .getConstructors()(0)
           .newInstance(clientConfig)
           .asInstanceOf[BaseStorageClient]
-      case e: java.lang.reflect.InvocationTargetException =>
-        throw e.getCause
+      case e: java.lang.reflect.InvocationTargetException => throw e.getCause
     }
   }
 
@@ -326,8 +325,7 @@ object Storage extends Logging {
         )
         errors += 1
         throw e
-      case e: java.lang.reflect.InvocationTargetException =>
-        throw e.getCause
+      case e: java.lang.reflect.InvocationTargetException => throw e.getCause
     }
   }
 

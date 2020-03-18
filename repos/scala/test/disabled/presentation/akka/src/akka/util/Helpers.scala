@@ -39,10 +39,7 @@ object Helpers {
     */
   def narrowSilently[T: ClassTag](o: Option[Any]): Option[T] =
     try { narrow(o) }
-    catch {
-      case e: ClassCastException =>
-        None
-    }
+    catch { case e: ClassCastException => None }
 
   /**
     * Reference that can hold either a typed value or an exception.

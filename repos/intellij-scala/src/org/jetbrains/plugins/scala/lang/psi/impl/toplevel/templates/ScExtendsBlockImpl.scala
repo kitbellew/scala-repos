@@ -142,17 +142,15 @@ class ScExtendsBlockImpl private (
         buffer -= res.get
         if (javaObject != null) buffer += javaObject
       case Some(_) => //do nothing
-      case _ =>
-        if (javaObject != null) buffer += javaObject
+      case _       => if (javaObject != null) buffer += javaObject
     }
     buffer.toList
   }
 
   def isScalaObject: Boolean = {
     getParentByStub match {
-      case clazz: PsiClass =>
-        clazz.qualifiedName == "scala.ScalaObject"
-      case _ => false
+      case clazz: PsiClass => clazz.qualifiedName == "scala.ScalaObject"
+      case _               => false
     }
   }
 
@@ -258,8 +256,7 @@ class ScExtendsBlockImpl private (
         buffer -= s
         if (javaObjectClass != null) buffer += javaObjectClass
       case Some(clazz: PsiClass) => //do nothing
-      case _ =>
-        if (javaObjectClass != null) buffer += javaObjectClass
+      case _                     => if (javaObjectClass != null) buffer += javaObjectClass
     }
     buffer.toSeq
   }
@@ -268,20 +265,16 @@ class ScExtendsBlockImpl private (
     @tailrec
     def process(te: ScTypeElement, acc: Vector[String]): Vector[String] = {
       te match {
-        case simpleType: ScSimpleTypeElement =>
-          simpleType.reference match {
+        case simpleType: ScSimpleTypeElement => simpleType.reference match {
             case Some(ref) => acc :+ ref.refName
             case _         => acc
           }
-        case infixType: ScInfixTypeElement =>
-          acc :+ infixType.ref.refName
-        case x: ScParameterizedTypeElement =>
-          x.typeElement match {
+        case infixType: ScInfixTypeElement => acc :+ infixType.ref.refName
+        case x: ScParameterizedTypeElement => x.typeElement match {
             case scType: ScTypeElement => process(scType, acc)
             case _                     => acc
           }
-        case x: ScParenthesisedTypeElement =>
-          x.typeElement match {
+        case x: ScParenthesisedTypeElement => x.typeElement match {
             case Some(typeElement) => process(typeElement, acc)
             case None              => acc
           }

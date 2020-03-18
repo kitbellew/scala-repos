@@ -56,8 +56,7 @@ private[akka] final case class ScatterGatherFirstCompletedRoutees(
       implicit val timeout = Timeout(within)
       val promise = Promise[Any]()
       routees.foreach {
-        case ActorRefRoutee(ref) ⇒
-          promise.tryCompleteWith(ref.ask(message))
+        case ActorRefRoutee(ref) ⇒ promise.tryCompleteWith(ref.ask(message))
         case ActorSelectionRoutee(sel) ⇒
           promise.tryCompleteWith(sel.ask(message))
         case _ ⇒

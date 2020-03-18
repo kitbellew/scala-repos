@@ -224,8 +224,7 @@ abstract class MongoAccountManager(
             .where("accountId" === account.accountId)
         } map { _ => true }
 
-      case None =>
-        M.point(false)
+      case None => M.point(false)
     }
   }
 
@@ -238,8 +237,7 @@ abstract class MongoAccountManager(
           _ <- database(
             remove.from(settings.accounts).where("accountId" === accountId))
         } yield { ot }
-      case None =>
-        M.point(None)
+      case None => M.point(None)
     }
   }
 

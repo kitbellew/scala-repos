@@ -81,23 +81,19 @@ object Terms {
 
   def unify1(x: Term, y: Term, s: Subst): Option[Subst] =
     (x, y) match {
-      case (Var(a), Var(b)) if (a == b) =>
-        Some(s)
-      case (Var(a), _) =>
-        lookup(s, a) match {
+      case (Var(a), Var(b)) if (a == b) => Some(s)
+      case (Var(a), _) => lookup(s, a) match {
           case Some(x1) => unify(x1, y, s)
           case None =>
             if (y.tyvars contains a) None else Some(Binding(a, y) :: s)
         }
-      case (_, Var(b)) =>
-        lookup(s, b) match {
+      case (_, Var(b)) => lookup(s, b) match {
           case Some(y1) => unify(x, y1, s)
           case None =>
             if (x.tyvars contains b) None else Some(Binding(b, x) :: s)
         }
-      case (Con(a, xs), Con(b, ys)) if (a == b) =>
-        unify(xs, ys, s)
-      case _ => None
+      case (Con(a, xs), Con(b, ys)) if (a == b) => unify(xs, ys, s)
+      case _                                    => None
     }
 
   def unify(x: Term, y: Term, s: Subst): Option[Subst] = {
@@ -109,8 +105,7 @@ object Terms {
   def unify(xs: List[Term], ys: List[Term], s: Subst): Option[Subst] =
     (xs, ys) match {
       case (List(), List()) => Some(s)
-      case (x :: xs1, y :: ys1) =>
-        unify(x, y, s) match {
+      case (x :: xs1, y :: ys1) => unify(x, y, s) match {
           case Some(s1) => unify(xs1, ys1, s1)
           case None     => None
         }
@@ -148,8 +143,7 @@ object Programs {
 
     def solve2(query: List[Term], s: Subst): Stream[Subst] =
       query match {
-        case List() =>
-          Stream.cons(s, Stream.empty)
+        case List() => Stream.cons(s, Stream.empty)
         case Con("not", qs) :: query1 =>
           if (solve1(qs, s).isEmpty) Stream.cons(s, Stream.empty)
           else Stream.empty
@@ -240,8 +234,7 @@ object Prolog {
       new Parser(input).all foreach { c =>
         if (c.lhs == NoTerm) {
           c.rhs match {
-            case List(Con("more", List())) =>
-              solutions = solutions.tail;
+            case List(Con("more", List())) => solutions = solutions.tail;
             case _ =>
               solutions = solve(c.rhs, program);
               tvs = c.tyvars;

@@ -58,8 +58,7 @@ private[sbt] object SbtRefactorings {
       case (_, command) =>
         val map = toTreeStringMap(command)
         map.flatMap {
-          case (name, statement) =>
-            treesToReplacements(split, name, command)
+          case (name, statement) => treesToReplacements(split, name, command)
         }
     }
 
@@ -82,18 +81,15 @@ private[sbt] object SbtRefactorings {
     val split = SbtParser(FAKE_FILE, command)
     val trees = split.settingsTrees
     val seq = trees.map {
-      case (statement, tree) =>
-        (extractSettingName(tree), statement)
+      case (statement, tree) => (extractSettingName(tree), statement)
     }
     seq.toMap
   }
 
   private def extractSettingName(tree: Tree): String =
     tree.children match {
-      case h :: _ =>
-        extractSettingName(h)
-      case _ =>
-        tree.toString()
+      case h :: _ => extractSettingName(h)
+      case _      => tree.toString()
     }
 
 }

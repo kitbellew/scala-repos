@@ -115,8 +115,7 @@ class JasmineTestReporter(
 
   private def displayResult(log: Logger)(result: Result) = {
     (result.`type`: String) match {
-      case "log" =>
-        log.info(s"    ${result.toString}")
+      case "log" => log.info(s"    ${result.toString}")
       case "expect" =>
         val r = result.asInstanceOf[ExpectationResult]
 

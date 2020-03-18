@@ -45,8 +45,7 @@ object TypecheckingMacros {
         case Apply(Select(t1, name), List(t2)) if name.decoded == "+" =>
           treeToString(t1) + treeToString(t2)
 
-        case _ =>
-          c.abort(t.pos, "Expected literal string.")
+        case _ => c.abort(t.pos, "Expected literal string.")
 
       }
   }

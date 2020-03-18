@@ -83,8 +83,7 @@ sealed abstract class Ior[+A, +B] extends Product with Serializable {
     this match {
       case l @ Ior.Left(_) => l
       case Ior.Right(b)    => f(b)
-      case Ior.Both(a1, b) =>
-        f(b) match {
+      case Ior.Both(a1, b) => f(b) match {
           case Ior.Left(a2)    => Ior.Left(AA.combine(a1, a2))
           case Ior.Right(b)    => Ior.Both(a1, b)
           case Ior.Both(a2, d) => Ior.Both(AA.combine(a1, a2), d)
@@ -118,20 +117,17 @@ sealed abstract class Ior[+A, +B] extends Product with Serializable {
       AA: Semigroup[AA],
       BB: Semigroup[BB]): AA Ior BB =
     this match {
-      case Ior.Left(a1) =>
-        that match {
+      case Ior.Left(a1) => that match {
           case Ior.Left(a2)     => Ior.Left(AA.combine(a1, a2))
           case Ior.Right(b2)    => Ior.Both(a1, b2)
           case Ior.Both(a2, b2) => Ior.Both(AA.combine(a1, a2), b2)
         }
-      case Ior.Right(b1) =>
-        that match {
+      case Ior.Right(b1) => that match {
           case Ior.Left(a2)     => Ior.Both(a2, b1)
           case Ior.Right(b2)    => Ior.Right(BB.combine(b1, b2))
           case Ior.Both(a2, b2) => Ior.Both(a2, BB.combine(b1, b2))
         }
-      case Ior.Both(a1, b1) =>
-        that match {
+      case Ior.Both(a1, b1) => that match {
           case Ior.Left(a2)  => Ior.Both(AA.combine(a1, a2), b1)
           case Ior.Right(b2) => Ior.Both(a1, BB.combine(b1, b2))
           case Ior.Both(a2, b2) =>
@@ -222,13 +218,11 @@ sealed trait IorFunctions {
     */
   def fromOptions[A, B](oa: Option[A], ob: Option[B]): Option[A Ior B] =
     oa match {
-      case Some(a) =>
-        ob match {
+      case Some(a) => ob match {
           case Some(b) => Some(Ior.Both(a, b))
           case None    => Some(Ior.Left(a))
         }
-      case None =>
-        ob match {
+      case None => ob match {
           case Some(b) => Some(Ior.Right(b))
           case None    => None
         }

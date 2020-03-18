@@ -141,8 +141,7 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
 
   override def setFromAny(f: Any): String = {
     f match {
-      case a: Array[String] if (a.length == 2 && a(0) == a(1)) =>
-        this.set(a(0))
+      case a: Array[String] if (a.length == 2 && a(0) == a(1)) => this.set(a(0))
       case l: List[_] if (l.length == 2 && l.head == l(1)) =>
         this.set(l.head.asInstanceOf[String])
       case _ =>

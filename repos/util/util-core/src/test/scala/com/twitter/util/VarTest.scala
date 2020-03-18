@@ -95,8 +95,7 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
             case 0 => short(tl)
             case i => Var(i)
           }
-        case Seq() =>
-          Var(-1)
+        case Seq() => Var(-1)
       }
 
     val s = short(us)

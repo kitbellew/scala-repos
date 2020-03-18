@@ -117,9 +117,7 @@ class VM(
       evtQ.finished = true
       vm.dispose()
       monitor.foreach { _.finished = true }
-    } catch {
-      case e: VMDisconnectedException =>
-    }
+    } catch { case e: VMDisconnectedException => }
 
   def remember(value: Value): Value = {
     value match {
@@ -208,14 +206,10 @@ class VM(
       for (t <- types) {
         for (m <- t.methods()) {
           try { buf ++= m.locationsOfLine(line).map(LocationClass.apply) }
-          catch {
-            case e: AbsentInformationException =>
-          }
+          catch { case e: AbsentInformationException => }
         }
         try { buf ++= t.locationsOfLine(line).map(LocationClass.apply) }
-        catch {
-          case e: AbsentInformationException =>
-        }
+        catch { case e: AbsentInformationException => }
       }
     }
     buf.map(_.loc).toSet
@@ -367,17 +361,13 @@ class VM(
 
   private def valueAtLocation(location: DebugLocation): Option[Value] = {
     location match {
-      case DebugObjectReference(objId) =>
-        valueForId(objId)
-      case DebugObjectField(objectId, name) =>
-        valueForField(objectId, name)
-      case DebugArrayElement(objectId, index) =>
-        valueForIndex(objectId, index)
+      case DebugObjectReference(objId)        => valueForId(objId)
+      case DebugObjectField(objectId, name)   => valueForField(objectId, name)
+      case DebugArrayElement(objectId, index) => valueForIndex(objectId, index)
       case DebugStackSlot(threadId, frame, offset) =>
         threadById(threadId) match {
-          case Some(thread) =>
-            valueForStackVar(thread, frame, offset)
-          case None => None
+          case Some(thread) => valueForStackVar(thread, frame, offset)
+          case None         => None
         }
     }
   }
@@ -423,8 +413,7 @@ class VM(
       case Some(arr: ArrayReference) =>
         val quantifier = if (arr.length == 1) "element" else "elements"
         Some("<array of " + arr.length + " " + quantifier + ">")
-      case Some(str: StringReference) =>
-        Some(str.value)
+      case Some(str: StringReference) => Some(str.value)
       case Some(obj: ObjectReference) =>
         threadById(threadId) flatMap { thread =>
           callMethod(
@@ -433,10 +422,9 @@ class VM(
             "toString",
             "()Ljava/lang/String;",
             new java.util.Vector()) match {
-            case Some(v: StringReference) =>
-              Some(v.value)
-            case Some(null) => Some("null")
-            case _          => None
+            case Some(v: StringReference) => Some(v.value)
+            case Some(null)               => Some("null")
+            case _                        => None
           }
         }
       case Some(value) => Some(valueSummary(value))
@@ -509,8 +497,7 @@ class VM(
     val locals = ignoreErr(
       {
         frame.visibleVariables.zipWithIndex.map {
-          case (v, i) =>
-            DebugStackLocal(
+          case (v, i) => DebugStackLocal(
               i,
               v.name,
               valueSummary(frame.getValue(v)),
@@ -586,9 +573,8 @@ class VM(
       val stackFrame = thread.frame(frame)
       val localVar: LocalVariable = stackFrame.visibleVariables.get(offset)
       mirrorFromString(localVar.`type`(), newValue) match {
-        case Some(v) =>
-          stackFrame.setValue(localVar, v); true
-        case None => false
+        case Some(v) => stackFrame.setValue(localVar, v); true
+        case None    => false
       }
     } else false
   }

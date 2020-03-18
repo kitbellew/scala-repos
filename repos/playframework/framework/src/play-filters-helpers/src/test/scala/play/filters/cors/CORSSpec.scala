@@ -114,9 +114,8 @@ object CORSActionBuilderSpec extends CORSCommonSpec {
         CORSActionBuilder(Configuration.reference ++ Configuration.from(conf)) {
           req => throw sys.error("error")
         }
-      case _ =>
-        CORSActionBuilder(Configuration.reference ++ Configuration.from(conf))(
-          Results.Ok)
+      case _ => CORSActionBuilder(
+          Configuration.reference ++ Configuration.from(conf))(Results.Ok)
     })(_ => block)
   }
 

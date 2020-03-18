@@ -31,8 +31,7 @@ object ImplicitParamClause {
         return false
     }
     builder.getTokenType match {
-      case ScalaTokenTypes.kIMPLICIT =>
-        builder.advanceLexer() //Ate implicit
+      case ScalaTokenTypes.kIMPLICIT => builder.advanceLexer() //Ate implicit
       case _ =>
         paramMarker.rollbackTo()
         builder.restoreNewlinesState
@@ -42,10 +41,8 @@ object ImplicitParamClause {
       builder error ScalaBundle.message("implicit.params.excepted")
     }
     builder.getTokenType match {
-      case ScalaTokenTypes.tRPARENTHESIS =>
-        builder.advanceLexer() //Ate )
-      case _ =>
-        builder error ScalaBundle.message("rparenthesis.expected")
+      case ScalaTokenTypes.tRPARENTHESIS => builder.advanceLexer() //Ate )
+      case _                             => builder error ScalaBundle.message("rparenthesis.expected")
     }
     builder.restoreNewlinesState
     paramMarker.done(ScalaElementTypes.PARAM_CLAUSE)

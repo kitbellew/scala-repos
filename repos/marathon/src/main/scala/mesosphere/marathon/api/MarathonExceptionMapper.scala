@@ -83,7 +83,6 @@ class MarathonExceptionMapper extends ExceptionMapper[Exception] {
               .fromStatusCode(e.getResponse.getStatus)
               .getReasonPhrase)
         } else { Json.obj("message" -> e.getMessage) }
-      case _ =>
-        Json.obj("message" -> exception.getMessage)
+      case _ => Json.obj("message" -> exception.getMessage)
     }
 }

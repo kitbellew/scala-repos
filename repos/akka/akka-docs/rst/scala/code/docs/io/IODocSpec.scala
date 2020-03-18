@@ -85,15 +85,12 @@ class Client(remote: InetSocketAddress, listener: ActorRef) extends Actor {
       val connection = sender()
       connection ! Register(self)
       context become {
-        case data: ByteString =>
-          connection ! Write(data)
+        case data: ByteString        => connection ! Write(data)
         case CommandFailed(w: Write) =>
           // O/S buffer was full
           listener ! "write failed"
-        case Received(data) =>
-          listener ! data
-        case "close" =>
-          connection ! Close
+        case Received(data) => listener ! data
+        case "close"        => connection ! Close
         case _: ConnectionClosed =>
           listener ! "connection closed"
           context stop self

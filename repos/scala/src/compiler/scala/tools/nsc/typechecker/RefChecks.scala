@@ -97,10 +97,8 @@ abstract class RefChecks
       prefix: Type,
       isModuleOverride: Boolean): Boolean =
     (tp1.dealiasWiden, tp2.dealiasWiden) match {
-      case (MethodType(List(), rtp1), NullaryMethodType(rtp2)) =>
-        rtp1 <:< rtp2
-      case (NullaryMethodType(rtp1), MethodType(List(), rtp2)) =>
-        rtp1 <:< rtp2
+      case (MethodType(List(), rtp1), NullaryMethodType(rtp2)) => rtp1 <:< rtp2
+      case (NullaryMethodType(rtp1), MethodType(List(), rtp2)) => rtp1 <:< rtp2
       case (TypeRef(_, sym, _), _) if sym.isModuleClass =>
         overridesTypeInPrefix(
           NullaryMethodType(tp1),
@@ -588,8 +586,7 @@ abstract class RefChecks
             rootType,
             low.owner) match { // (1.7.2)
             case Nil =>
-            case kindErrors =>
-              reporter.error(
+            case kindErrors => reporter.error(
                 member.pos,
                 "The kind of " + member.keyString + " " + member.varianceString + member.nameString +
                   " does not conform to the expected kind of " + other.defString + other.locationString + "." +
@@ -605,8 +602,7 @@ abstract class RefChecks
               rootType,
               low.owner) match {
               case Nil =>
-              case kindErrors =>
-                reporter.error(
+              case kindErrors => reporter.error(
                   member.pos,
                   "The kind of the right-hand side " + lowType.normalize + " of " + low.keyString + " " +
                     low.varianceString + low.nameString + " does not conform to its expected kind." +
@@ -838,11 +834,9 @@ abstract class RefChecks
                         pa,
                         pc,
                         addendum))
-                    case xs =>
-                      undefined("")
+                    case xs => undefined("")
                   }
-                case _ =>
-                  undefined("")
+                case _ => undefined("")
               }
             } else undefined("")
           }
@@ -973,8 +967,7 @@ abstract class RefChecks
               member.pos,
               member.toString() + " overrides nothing" + suffix)
           nonMatching match {
-            case Nil =>
-              issueError("")
+            case Nil => issueError("")
             case ms =>
               val superSigs = ms
                 .map(m => m.defStringSeenAs(clazz.tpe memberType m))
@@ -1024,8 +1017,7 @@ abstract class RefChecks
           case Nil =>
             devWarning(
               s"base $baseClass not found in basetypes of $clazz. This might indicate incorrect caching of TypeRef#parents.")
-          case _ :: Nil =>
-            ; // OK
+          case _ :: Nil => ; // OK
           case tp1 :: tp2 :: _ =>
             reporter.error(
               clazz.pos,
@@ -1481,9 +1473,8 @@ abstract class RefChecks
           }
         case Import(_, _) => Nil
         case DefDef(mods, _, _, _, _, _)
-            if (mods hasFlag MACRO) || (tree.symbol hasFlag MACRO) =>
-          Nil
-        case _ => transform(tree) :: Nil
+            if (mods hasFlag MACRO) || (tree.symbol hasFlag MACRO) => Nil
+        case _                                                     => transform(tree) :: Nil
       }
 
     /* Check whether argument types conform to bounds of type parameters */
@@ -1516,14 +1507,10 @@ abstract class RefChecks
           (args corresponds clazz.primaryConstructor.tpe
             .asSeenFrom(seltpe, clazz)
             .paramTypes)(isIrrefutable)
-        case Typed(pat, tpt) =>
-          seltpe <:< tpt.tpe
-        case Ident(tpnme.WILDCARD) =>
-          true
-        case Bind(_, pat) =>
-          isIrrefutable(pat, seltpe)
-        case _ =>
-          false
+        case Typed(pat, tpt)       => seltpe <:< tpt.tpe
+        case Ident(tpnme.WILDCARD) => true
+        case Bind(_, pat)          => isIrrefutable(pat, seltpe)
+        case _                     => false
       }
 
     // Note: if a symbol has both @deprecated and @migration annotations and both
@@ -1598,8 +1585,7 @@ abstract class RefChecks
           // object which contains a type alias, which normalizes to a visible type.
           args filterNot (_ eq NoPrefix) flatMap (tp =>
             lessAccessibleSymsInType(tp, memberSym))
-        case _ =>
-          Nil
+        case _ => Nil
       }
       if (lessAccessible(other.typeSymbol, memberSym))
         other.typeSymbol :: extras
@@ -1688,15 +1674,15 @@ abstract class RefChecks
             && (args.last eq tree)
             && (fn.tpe.params.length == args.length)
             && isRepeatedParamType(fn.tpe.params.last.tpe))
-        case _ =>
-          false
+        case _ => false
       }
 
     private def checkTypeRef(tp: Type, tree: Tree, skipBounds: Boolean) =
       tp match {
         case TypeRef(pre, sym, args) =>
           tree match {
-            case tt: TypeTree if tt.original == null => // SI-7783 don't warn about inferred types
+            case tt: TypeTree
+                if tt.original == null => // SI-7783 don't warn about inferred types
             // FIXME: reconcile this check with one in resetAttrs
             case _ => checkUndesiredProperties(sym, tree.pos)
           }
@@ -1717,8 +1703,7 @@ abstract class RefChecks
           if (!tp.isHigherKinded && !skipBounds)
             checkBounds(tree, pre, sym.owner, sym.typeParams, args)
           tp
-        case _ =>
-          tp
+        case _ => tp
       }
     }
 
@@ -1762,9 +1747,8 @@ abstract class RefChecks
           }
 
           doTypeTraversal(tree) {
-            case tp @ AnnotatedType(annots, _) =>
-              applyChecks(annots)
-            case tp =>
+            case tp @ AnnotatedType(annots, _) => applyChecks(annots)
+            case tp                            =>
           }
         case _ =>
       }
@@ -1774,8 +1758,7 @@ abstract class RefChecks
       val sym = tree.symbol
       def isClassTypeAccessible(tree: Tree): Boolean =
         tree match {
-          case TypeApply(fun, targs) =>
-            isClassTypeAccessible(fun)
+          case TypeApply(fun, targs) => isClassTypeAccessible(fun)
           case Select(module, apply) =>
             ( // SI-4859 `CaseClass1().InnerCaseClass2()` must not be rewritten to `new InnerCaseClass2()`;
               //          {expr; Outer}.Inner() must not be rewritten to `new Outer.Inner()`.
@@ -1796,8 +1779,7 @@ abstract class RefChecks
     private def transformCaseApply(tree: Tree) = {
       def loop(t: Tree): Unit =
         t match {
-          case Ident(_) =>
-            checkUndesiredProperties(t.symbol, t.pos)
+          case Ident(_) => checkUndesiredProperties(t.symbol, t.pos)
           case Select(qual, _) =>
             checkUndesiredProperties(t.symbol, t.pos)
             loop(qual)
@@ -2025,11 +2007,9 @@ abstract class RefChecks
               args map (_.tpe))
             if (isSimpleCaseApply(tree)) transformCaseApply(tree) else tree
 
-          case x @ Apply(_, _) =>
-            transformApply(x)
+          case x @ Apply(_, _) => transformApply(x)
 
-          case x @ If(_, _, _) =>
-            transformIf(x)
+          case x @ If(_, _, _) => transformIf(x)
 
           case New(tpt) =>
             enterReference(tree.pos, tpt.tpe.typeSymbol)
@@ -2053,8 +2033,7 @@ abstract class RefChecks
             }
             tree
 
-          case x @ Select(_, _) =>
-            transformSelect(x)
+          case x @ Select(_, _) => transformSelect(x)
 
           case UnApply(fun, args) =>
             transform(
@@ -2098,8 +2077,7 @@ abstract class RefChecks
             deriveValDef(result)(
               transform
             ) // SI-7716 Don't refcheck the tpt of the synthetic val that holds the selector.
-          case _ =>
-            super.transform(result)
+          case _ => super.transform(result)
         }
         result match {
           case ClassDef(_, _, _, _) | TypeDef(_, _, _, _) =>

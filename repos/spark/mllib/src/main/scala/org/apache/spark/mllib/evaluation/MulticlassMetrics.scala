@@ -46,8 +46,7 @@ class MulticlassMetrics @Since("1.1.0") (
   private lazy val labelCount: Long = labelCountByClass.values.sum
   private lazy val tpByClass: Map[Double, Int] = predictionAndLabels
     .map {
-      case (prediction, label) =>
-        (label, if (label == prediction) 1 else 0)
+      case (prediction, label) => (label, if (label == prediction) 1 else 0)
     }
     .reduceByKey(_ + _)
     .collectAsMap()
@@ -59,10 +58,7 @@ class MulticlassMetrics @Since("1.1.0") (
     .reduceByKey(_ + _)
     .collectAsMap()
   private lazy val confusions = predictionAndLabels
-    .map {
-      case (prediction, label) =>
-        ((label, prediction), 1)
-    }
+    .map { case (prediction, label) => ((label, prediction), 1) }
     .reduceByKey(_ + _)
     .collectAsMap()
 
@@ -189,8 +185,7 @@ class MulticlassMetrics @Since("1.1.0") (
     */
   @Since("1.1.0")
   lazy val weightedRecall: Double = labelCountByClass.map {
-    case (category, count) =>
-      recall(category) * count.toDouble / labelCount
+    case (category, count) => recall(category) * count.toDouble / labelCount
   }.sum
 
   /**
@@ -198,8 +193,7 @@ class MulticlassMetrics @Since("1.1.0") (
     */
   @Since("1.1.0")
   lazy val weightedPrecision: Double = labelCountByClass.map {
-    case (category, count) =>
-      precision(category) * count.toDouble / labelCount
+    case (category, count) => precision(category) * count.toDouble / labelCount
   }.sum
 
   /**

@@ -178,9 +178,8 @@ object Multipart {
                 innerKey,
                 innerFilename,
                 innerContentType,
-                _) =>
-            (innerKey, Option(innerFilename), innerContentType)
-          case _ => throw new UnsupportedOperationException()
+                _) => (innerKey, Option(innerFilename), innerContentType)
+          case _   => throw new UnsupportedOperationException()
         }
         renderDisposition(f, key, filename)
         contentType.foreach { ct => renderContentType(f, ct) }

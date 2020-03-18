@@ -136,8 +136,8 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
       override def length = {
         import java.math.MathContext
         val fieldLength = metaField match {
-          case (stringTypedField: StringTypedField) =>
-            Some(stringTypedField.maxLength)
+          case (stringTypedField: StringTypedField) => Some(
+              stringTypedField.maxLength)
           case decimalField: DecimalField[_] => {
             val precision = decimalField.context.getPrecision();
             if (precision != 0) Some(precision) else None
@@ -173,8 +173,7 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
         */
       override def set(target: AnyRef, value: AnyRef) =
         target match {
-          case record: Record[_] =>
-            record.runSafe {
+          case record: Record[_] => record.runSafe {
               val typedField: TypedField[_] = fieldFor(target)
               typedField.setFromAny(Box !! value)
               typedField.resetDirty
@@ -192,8 +191,7 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
         */
       override def get(o: AnyRef) =
         fieldFor(o) match {
-          case enumField: EnumTypedField[_] =>
-            enumField.valueBox match {
+          case enumField: EnumTypedField[_] => enumField.valueBox match {
               case Full(enum: Enumeration#Value) => enum.id: java.lang.Integer
               case _                             => null
             }
@@ -202,8 +200,7 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
               case Full(enum: Enumeration#Value) => enum.toString
               case _                             => null
             }
-          case other =>
-            other.valueBox match {
+          case other => other.valueBox match {
               case Full(c: Calendar)   => new Timestamp(c.getTime.getTime)
               case Full(other: AnyRef) => other
               case _                   => null

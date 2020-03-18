@@ -240,10 +240,7 @@ object Request {
     */
   def apply(uri: String, params: Tuple2[String, String]*): Request = {
     val encoder = new QueryStringEncoder(uri)
-    params.foreach {
-      case (key, value) =>
-        encoder.addParam(key, value)
-    }
+    params.foreach { case (key, value) => encoder.addParam(key, value) }
     apply(Method.Get, encoder.toString)
   }
 
@@ -320,10 +317,7 @@ object Request {
   /** Create a query string from URI and parameters. */
   def queryString(uri: String, params: Tuple2[String, String]*): String = {
     val encoder = new QueryStringEncoder(uri)
-    params.foreach {
-      case (key, value) =>
-        encoder.addParam(key, value)
-    }
+    params.foreach { case (key, value) => encoder.addParam(key, value) }
     encoder.toString
   }
 

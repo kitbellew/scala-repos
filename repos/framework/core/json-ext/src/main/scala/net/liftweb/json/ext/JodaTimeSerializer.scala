@@ -142,8 +142,7 @@ case class ClassSerializer[A: Manifest, B: Manifest](t: ClassType[A, B])
 
   def deserialize(implicit
       format: Formats): PartialFunction[(TypeInfo, JValue), A] = {
-    case (TypeInfo(Class, _), json) =>
-      json match {
+    case (TypeInfo(Class, _), json) => json match {
         case JNull => null.asInstanceOf[A]
         case xs: JObject if (xs.extractOpt[B].isDefined) =>
           t.unwrap(xs.extract[B])

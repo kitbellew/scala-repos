@@ -482,8 +482,7 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       runSqlHive("set hive.metastore.partition.name.whitelist.pattern=.*")
 
       configure().foreach {
-        case (k, v) =>
-          metadataHive.runSqlHive(s"SET $k=$v")
+        case (k, v) => metadataHive.runSqlHive(s"SET $k=$v")
       }
       defaultOverrides()
 

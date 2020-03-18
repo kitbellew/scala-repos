@@ -43,8 +43,7 @@ class ScalaInheritedMembersNodeProvider
           val signs = clazz.allSignatures
           for (sign <- signs) {
             sign match {
-              case sign: PhysicalSignature =>
-                sign.method match {
+              case sign: PhysicalSignature => sign.method match {
                   case x if x.name == "$tag" || x.name == "$init$" =>
                   case x
                       if x.containingClass.qualifiedName == "java.lang.Object" =>
@@ -54,8 +53,7 @@ class ScalaInheritedMembersNodeProvider
                   case x: PsiMethod =>
                     children.add(new PsiMethodTreeElement(x, true))
                 }
-              case _ =>
-                sign.namedElement match {
+              case _ => sign.namedElement match {
                   case named: ScNamedElement =>
                     ScalaPsiUtil.nameContext(named) match {
                       case x: ScValue if x.containingClass != clazz =>

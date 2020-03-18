@@ -968,8 +968,7 @@ private[akka] class ActorSystemImpl(
                   "\n" + indent + "   |    toDie: ", "\n" + indent + "   |           ", ""
                 ))
             case x @ (ChildrenContainer.TerminatedChildrenContainer |
-                ChildrenContainer.EmptyChildrenContainer) ⇒
-              x.toString
+                ChildrenContainer.EmptyChildrenContainer) ⇒ x.toString
             case n: ChildrenContainer.NormalChildrenContainer ⇒
               n.c.size + " children"
             case x ⇒ Logging.simpleName(x)
@@ -981,8 +980,7 @@ private[akka] class ActorSystemImpl(
                 children.dropRight(1) map (printNode(_, indent + "   |"))
               bulk ++ (children.lastOption map (printNode(_, indent + "    ")))
             } mkString ("\n"))
-        case _ ⇒
-          indent + node.path.name + " " + Logging.simpleName(node)
+        case _ ⇒ indent + node.path.name + " " + Logging.simpleName(node)
       }
     }
     printNode(lookupRoot, "")

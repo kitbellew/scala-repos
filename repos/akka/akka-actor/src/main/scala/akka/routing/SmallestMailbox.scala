@@ -95,8 +95,7 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
     */
   protected def isProcessingMessage(a: Routee): Boolean =
     a match {
-      case ActorRefRoutee(x: ActorRefWithCell) ⇒
-        x.underlying match {
+      case ActorRefRoutee(x: ActorRefWithCell) ⇒ x.underlying match {
           case cell: ActorCell ⇒
             cell.mailbox.isScheduled && cell.currentMessage != null
           case _ ⇒ false
@@ -125,8 +124,7 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
     */
   protected def isSuspended(a: Routee): Boolean =
     a match {
-      case ActorRefRoutee(x: ActorRefWithCell) ⇒
-        x.underlying match {
+      case ActorRefRoutee(x: ActorRefWithCell) ⇒ x.underlying match {
           case cell: ActorCell ⇒ cell.mailbox.isSuspended
           case _ ⇒ true
         }

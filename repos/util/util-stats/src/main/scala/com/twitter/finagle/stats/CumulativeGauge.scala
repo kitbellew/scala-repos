@@ -105,8 +105,7 @@ trait StatsReceiverWithCumulativeGauges extends StatsReceiver {
         if (largeCgs.isEmpty) { Nil }
         else {
           largeCgs.map {
-            case (ks, size) =>
-              Issue(ks.mkString("/") + "=" + size)
+            case (ks, size) => Issue(ks.mkString("/") + "=" + size)
           }.toSeq
         }
       })

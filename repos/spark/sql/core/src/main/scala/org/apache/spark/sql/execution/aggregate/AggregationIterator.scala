@@ -164,8 +164,7 @@ abstract class AggregationIterator(
     val joinedRow = new JoinedRow
     if (expressions.nonEmpty) {
       val mergeExpressions = functions.zipWithIndex.flatMap {
-        case (ae: DeclarativeAggregate, i) =>
-          expressions(i).mode match {
+        case (ae: DeclarativeAggregate, i) => expressions(i).mode match {
             case Partial | Complete   => ae.updateExpressions
             case PartialMerge | Final => ae.mergeExpressions
           }
@@ -173,8 +172,7 @@ abstract class AggregationIterator(
           Seq.fill(agg.aggBufferAttributes.length)(NoOp)
       }
       val updateFunctions = functions.zipWithIndex.collect {
-        case (ae: ImperativeAggregate, i) =>
-          expressions(i).mode match {
+        case (ae: ImperativeAggregate, i) => expressions(i).mode match {
             case Partial | Complete =>
               (buffer: MutableRow, row: InternalRow) => ae.update(buffer, row)
             case PartialMerge | Final =>
